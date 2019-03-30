@@ -26,26 +26,42 @@ for i in range(17*2):
 
         text = byte_len = cycles = flags = 'FIXME: undefined'   #vim highlight
 
+
+        clear_flags_mask = 0
+        set_flags_mask = 0
+
         if len(data) > 1:
             text = data[0]
             byte_len = data[2].split()[0]
             cycles = data[2].split()[1]
             flags = data[4]
+
+            flags_sp = flags.split()
+
+            for f in range(4):
+                if flags_sp[f] == '0':
+                    clear_flags_mask += (1 << (7-f))
+                elif flags_sp[f] == '1':
+                    set_flags_mask += (1 << (7-f))
+
     
-        c_code = [
-                    'void op_%s(void *reg, void *data)' % (opcode,),
-                    '{',
-                    '\t/*',
-                    '\t\t instruction: %s ' % (text,),
-                    '\t\t   num bytes: %s ' % (byte_len,),
-                    '\t\t      cycles: %s ' % (cycles,),
-                    '\t\t       flags: %s ' % (flags,),
-                    '\t*/',
-                    '}'
-                ]
+        c  = 'void op_%s(void *reg, void *data)\n' % (opcode,)
+        c += '{\n'
+        c += '\t/*\n'
+        c += '\t\t instruction: %s\n' % (text,)
+        c += '\t\t   num bytes: %s\n' % (byte_len,)
+        c += '\t\t      cycles: %s\n' % (cycles,)
+        c += '\t\t       flags: %s\n' % (flags,)
+        c +=  '\t*/\n'
+        if clear_flags_mask != 0:
+            c += '\tclear_flags_mask(reg, %s)\n' % (hex(clear_flags_mask),)
+        if set_flags_mask != 0:
+            c += '\tset_flags_mask(reg, %s)\n' % (hex(set_flags_mask),)
+        c += '}\n'
+        c += '\n'
 
 
-        print('\n'.join(c_code)+'\n')
+        print(c)
 
 
 
