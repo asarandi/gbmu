@@ -62,7 +62,7 @@ for i in range(17*2):
                     set_flags_mask += (1 << (7-f))
 
     
-        c  = 'void op_%s(void *reg, void *data)\n' % (opcode,)
+        c  = 'void op_%s(uint8_t *reg, uint8_t *data)\n' % (opcode,)
         c += '{\n'
         c += '\t/*\n'
         c += '\t\t    category: %s\n' % (bgcolor[bgc],)
@@ -72,9 +72,9 @@ for i in range(17*2):
         c += '\t\t       flags: %s\n' % (flags,)
         c +=  '\t*/\n'
         if clear_flags_mask != 0:
-            c += '\tclear_flags_mask(reg, %s)\n' % (hex(clear_flags_mask),)
+            c += '\treg[1] &= (~%s); /* clear flags */\n' % (hex(clear_flags_mask),)
         if set_flags_mask != 0:
-            c += '\tset_flags_mask(reg, %s)\n' % (hex(set_flags_mask),)
+            c += '\treg[1] |= %s; /* set flags */\n' % (hex(set_flags_mask),)
         c += '}\n'
         c += '\n'
 
