@@ -27,15 +27,42 @@ bgcolor = {
 headers = [
             '#include <stdint.h>',
             '',
-            '#define set_z       (reg[1] |= 0x80)',
-            '#define set_n       (reg[1] |= 0x40)',
-            '#define set_h       (reg[1] |= 0x20)',
-            '#define set_c       (reg[1] |= 0x10)',
+            'typedef struct s_r16 {',
+            '    uint16_t    AF; ',
+            '    uint16_t    BC; ',
+            '    uint16_t    DE; ',
+            '    uint16_t    HL; ',
+            '    uint16_t    SP; ',
+            '    uint16_t    PC; ',
+            '} t_r16;            ',
+            '                    ',
+            'typedef struct s_r8 {',
+            '    uint8_t     A;  ',
+            '    uint8_t     F;  ',
+            '    uint8_t     B;  ',
+            '    uint8_t     C;  ',
+            '    uint8_t     D;  ',
+            '    uint8_t     E;  ',
+            '    uint8_t     H;  ',
+            '    uint8_t     L;  ',
+            '    uint16_t    SP; ',
+            '    uint16_t    PC; ',
+            '} t_r8;             ',
+            '',            
+            '#define set_z      (r8->F |= 0x80)',
+            '#define set_n      (r8->F |= 0x40)',
+            '#define set_h      (r8->F |= 0x20)',
+            '#define set_c      (r8->F |= 0x10)',
             '',
-            '#define clear_z     (reg[1] &= (~0x80))',
-            '#define clear_n     (reg[1] &= (~0x40))',
-            '#define clear_h     (reg[1] &= (~0x20))',
-            '#define clear_c     (reg[1] &= (~0x10))',
+            '#define clear_z    (r8->F &= (~0x80))',
+            '#define clear_n    (r8->F &= (~0x40))',
+            '#define clear_h    (r8->F &= (~0x20))',
+            '#define clear_c    (r8->F &= (~0x10))',
+            '',
+
+
+
+            
             ''
 
         ]
@@ -95,28 +122,55 @@ for i in range(17*2):
 
         code = None
 
+        set_z_flag_if_a_is_zero = '\tr8->A == 0 ? set_z : clear_z;\n'
+
+
         if sp[0] == 'LD':   #loads
             ops = sp[1].split(',')
             if ops[0] in addr:
                 if ops[1] == 'd8':  # 8-bit loads
-                    code = '\treg[%s] = mem[1]; /* code LD imm */\n' % (addr[ops[0]],)
+                    code = '\tr8->%s = mem[(r8->PC)+1]; /* code LD imm */\n' % (ops[0],)
                 elif ops[1] in addr:
-                    code = '\treg[%s] = reg[%s]; /* code LD reg */\n' % (addr[ops[0]], addr[ops[1]])
+                    code = '\tr8->%s = r8->%s; /* code LD reg */\n' % (ops[0], ops[1])
                 else:                    
                     code = '/* FIXME: code LD */\n'
                     
         elif sp[0] == 'AND':                
             if sp[1] in addr:
-                code  = '\treg[0] &= reg[%s];    /* code AND */\n' % (addr[sp[1]], )
-                code += '\treg[0] == 0 ? set_z : clear_z;\n'
+                code  = '\tr8->A &= r8->%s;    /* code AND */\n' % (sp[1], )
+            elif sp[1] == 'd8':
+                code  = '\tr8->A &= mem[r16->PC+1]; /* code AND */\n'
+            elif sp[1] == '(HL)':
+                code  = '\tr8->A &= mem[r16->HL]; /* code AND A,(HL)*/\n'
             else:
                 code = '/* FIXME: code AND */\n'
+            code += set_z_flag_if_a_is_zero
+
+        elif sp[0] == 'OR':                
+            if sp[1] in addr:
+                code  = '\tr8->A |= r8->%s;    /* code OR */\n' % (sp[1], )
+            elif sp[1] == 'd8':
+                code  = '\tr8->A |= mem[r16->PC+1]; /* code OR */\n'
+            elif sp[1] == '(HL)':
+                code  = '\tr8->A |= mem[r16->HL]; /* code OR A,(HL)*/\n'
+            else:
+                code = '/* FIXME: code OR */\n'
+            code += set_z_flag_if_a_is_zero
 
 
-
+        elif sp[0] == 'XOR':                
+            if sp[1] in addr:
+                code  = '\tr8->A ^= r8->%s;    /* code XOR */\n' % (sp[1], )
+            elif sp[1] == 'd8':
+                code  = '\tr8->A ^= mem[r16->PC+1]; /* code XOR */\n'
+            elif sp[1] == '(HL)':
+                code  = '\tr8->A ^= mem[r16->HL]; /* code XOR A,(HL)*/\n'
+            else:
+                code = '/* FIXME: code XOR */\n'
+            code += set_z_flag_if_a_is_zero
 
     
-        c  = 'void op_%s(uint8_t *reg, uint8_t *mem)\n' % (opcode,)
+        c  = 'void op_%s(void *reg, uint8_t *mem)\n' % (opcode,)
         c += '{\n'
         c += '\t/*\n'
         c += '\t\t    category: %s\n' % (bgcolor[bgc],)
@@ -125,14 +179,16 @@ for i in range(17*2):
         c += '\t\t      cycles: %s\n' % (cycles,)
         c += '\t\t       flags: %s\n' % (flags,)
         c +=  '\t*/\n'
+        c += '\t\tt_r8 *r8 = reg;\n'
+        c += '\t\tt_r16 *r16 = reg;\n'
 
         if code:
             c += code
 
         if clear_flags_mask != 0:
-            c += '\treg[1] &= (~%s); /* clear flags */\n' % (hex(clear_flags_mask),)
+            c += '\tr8->F &= (~%s); /* clear flags */\n' % (hex(clear_flags_mask),)
         if set_flags_mask != 0:
-            c += '\treg[1] |= %s; /* set flags */\n' % (hex(set_flags_mask),)
+            c += '\tr8->F |= %s; /* set flags */\n' % (hex(set_flags_mask),)
 
         c += '}\n'
         c += '\n'

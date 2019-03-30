@@ -1,16 +1,39 @@
 #include <stdint.h>
 
-#define set_z       (reg[1] |= 0x80)
-#define set_n       (reg[1] |= 0x40)
-#define set_h       (reg[1] |= 0x20)
-#define set_c       (reg[1] |= 0x10)
+typedef struct s_r16 {
+    uint16_t    AF; 
+    uint16_t    BC; 
+    uint16_t    DE; 
+    uint16_t    HL; 
+    uint16_t    SP; 
+    uint16_t    PC; 
+} t_r16;            
+                    
+typedef struct s_r8 {
+    uint8_t     A;  
+    uint8_t     F;  
+    uint8_t     B;  
+    uint8_t     C;  
+    uint8_t     D;  
+    uint8_t     E;  
+    uint8_t     H;  
+    uint8_t     L;  
+    uint16_t    SP; 
+    uint16_t    PC; 
+} t_r8;             
 
-#define clear_z     (reg[1] &= (~0x80))
-#define clear_n     (reg[1] &= (~0x40))
-#define clear_h     (reg[1] &= (~0x20))
-#define clear_c     (reg[1] &= (~0x10))
+#define set_z      (r8->F |= 0x80)
+#define set_n      (r8->F |= 0x40)
+#define set_h      (r8->F |= 0x20)
+#define set_c      (r8->F |= 0x10)
 
-void op_00(uint8_t *reg, uint8_t *mem)
+#define clear_z    (r8->F &= (~0x80))
+#define clear_n    (r8->F &= (~0x40))
+#define clear_h    (r8->F &= (~0x20))
+#define clear_c    (r8->F &= (~0x10))
+
+
+void op_00(void *reg, uint8_t *mem)
 {
 	/*
 		    category: Misc/control instructions
@@ -19,10 +42,12 @@ void op_00(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_01(uint8_t *reg, uint8_t *mem)
+void op_01(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 16bit load/store/move instructions
@@ -31,10 +56,12 @@ void op_01(uint8_t *reg, uint8_t *mem)
 		      cycles: 12
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_02(uint8_t *reg, uint8_t *mem)
+void op_02(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -43,10 +70,12 @@ void op_02(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_03(uint8_t *reg, uint8_t *mem)
+void op_03(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 16bit arithmetic/logical instructions
@@ -55,10 +84,12 @@ void op_03(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_04(uint8_t *reg, uint8_t *mem)
+void op_04(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -67,11 +98,13 @@ void op_04(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 0 H -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
 }
 
 
-void op_05(uint8_t *reg, uint8_t *mem)
+void op_05(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -80,11 +113,13 @@ void op_05(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 1 H -
 	*/
-	reg[1] |= 0x40; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F |= 0x40; /* set flags */
 }
 
 
-void op_06(uint8_t *reg, uint8_t *mem)
+void op_06(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -93,11 +128,13 @@ void op_06(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
-	reg[2] = mem[1]; /* code LD imm */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->B = mem[(r8->PC)+1]; /* code LD imm */
 }
 
 
-void op_07(uint8_t *reg, uint8_t *mem)
+void op_07(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -106,11 +143,13 @@ void op_07(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: 0 0 0 C
 	*/
-	reg[1] &= (~0xe0); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0xe0); /* clear flags */
 }
 
 
-void op_08(uint8_t *reg, uint8_t *mem)
+void op_08(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 16bit load/store/move instructions
@@ -119,10 +158,12 @@ void op_08(uint8_t *reg, uint8_t *mem)
 		      cycles: 20
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_09(uint8_t *reg, uint8_t *mem)
+void op_09(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 16bit arithmetic/logical instructions
@@ -131,11 +172,13 @@ void op_09(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - 0 H C
 	*/
-	reg[1] &= (~0x40); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
 }
 
 
-void op_0a(uint8_t *reg, uint8_t *mem)
+void op_0a(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -144,11 +187,13 @@ void op_0a(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 /* FIXME: code LD */
 }
 
 
-void op_0b(uint8_t *reg, uint8_t *mem)
+void op_0b(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 16bit arithmetic/logical instructions
@@ -157,10 +202,12 @@ void op_0b(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_0c(uint8_t *reg, uint8_t *mem)
+void op_0c(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -169,11 +216,13 @@ void op_0c(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 0 H -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
 }
 
 
-void op_0d(uint8_t *reg, uint8_t *mem)
+void op_0d(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -182,11 +231,13 @@ void op_0d(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 1 H -
 	*/
-	reg[1] |= 0x40; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F |= 0x40; /* set flags */
 }
 
 
-void op_0e(uint8_t *reg, uint8_t *mem)
+void op_0e(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -195,11 +246,13 @@ void op_0e(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
-	reg[3] = mem[1]; /* code LD imm */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->C = mem[(r8->PC)+1]; /* code LD imm */
 }
 
 
-void op_0f(uint8_t *reg, uint8_t *mem)
+void op_0f(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -208,11 +261,13 @@ void op_0f(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: 0 0 0 C
 	*/
-	reg[1] &= (~0xe0); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0xe0); /* clear flags */
 }
 
 
-void op_10(uint8_t *reg, uint8_t *mem)
+void op_10(void *reg, uint8_t *mem)
 {
 	/*
 		    category: Misc/control instructions
@@ -221,10 +276,12 @@ void op_10(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_11(uint8_t *reg, uint8_t *mem)
+void op_11(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 16bit load/store/move instructions
@@ -233,10 +290,12 @@ void op_11(uint8_t *reg, uint8_t *mem)
 		      cycles: 12
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_12(uint8_t *reg, uint8_t *mem)
+void op_12(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -245,10 +304,12 @@ void op_12(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_13(uint8_t *reg, uint8_t *mem)
+void op_13(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 16bit arithmetic/logical instructions
@@ -257,10 +318,12 @@ void op_13(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_14(uint8_t *reg, uint8_t *mem)
+void op_14(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -269,11 +332,13 @@ void op_14(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 0 H -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
 }
 
 
-void op_15(uint8_t *reg, uint8_t *mem)
+void op_15(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -282,11 +347,13 @@ void op_15(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 1 H -
 	*/
-	reg[1] |= 0x40; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F |= 0x40; /* set flags */
 }
 
 
-void op_16(uint8_t *reg, uint8_t *mem)
+void op_16(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -295,11 +362,13 @@ void op_16(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
-	reg[4] = mem[1]; /* code LD imm */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->D = mem[(r8->PC)+1]; /* code LD imm */
 }
 
 
-void op_17(uint8_t *reg, uint8_t *mem)
+void op_17(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -308,11 +377,13 @@ void op_17(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: 0 0 0 C
 	*/
-	reg[1] &= (~0xe0); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0xe0); /* clear flags */
 }
 
 
-void op_18(uint8_t *reg, uint8_t *mem)
+void op_18(void *reg, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -321,10 +392,12 @@ void op_18(uint8_t *reg, uint8_t *mem)
 		      cycles: 12
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_19(uint8_t *reg, uint8_t *mem)
+void op_19(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 16bit arithmetic/logical instructions
@@ -333,11 +406,13 @@ void op_19(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - 0 H C
 	*/
-	reg[1] &= (~0x40); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
 }
 
 
-void op_1a(uint8_t *reg, uint8_t *mem)
+void op_1a(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -346,11 +421,13 @@ void op_1a(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 /* FIXME: code LD */
 }
 
 
-void op_1b(uint8_t *reg, uint8_t *mem)
+void op_1b(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 16bit arithmetic/logical instructions
@@ -359,10 +436,12 @@ void op_1b(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_1c(uint8_t *reg, uint8_t *mem)
+void op_1c(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -371,11 +450,13 @@ void op_1c(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 0 H -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
 }
 
 
-void op_1d(uint8_t *reg, uint8_t *mem)
+void op_1d(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -384,11 +465,13 @@ void op_1d(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 1 H -
 	*/
-	reg[1] |= 0x40; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F |= 0x40; /* set flags */
 }
 
 
-void op_1e(uint8_t *reg, uint8_t *mem)
+void op_1e(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -397,11 +480,13 @@ void op_1e(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
-	reg[5] = mem[1]; /* code LD imm */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->E = mem[(r8->PC)+1]; /* code LD imm */
 }
 
 
-void op_1f(uint8_t *reg, uint8_t *mem)
+void op_1f(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -410,11 +495,13 @@ void op_1f(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: 0 0 0 C
 	*/
-	reg[1] &= (~0xe0); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0xe0); /* clear flags */
 }
 
 
-void op_20(uint8_t *reg, uint8_t *mem)
+void op_20(void *reg, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -423,10 +510,12 @@ void op_20(uint8_t *reg, uint8_t *mem)
 		      cycles: 12/8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_21(uint8_t *reg, uint8_t *mem)
+void op_21(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 16bit load/store/move instructions
@@ -435,10 +524,12 @@ void op_21(uint8_t *reg, uint8_t *mem)
 		      cycles: 12
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_22(uint8_t *reg, uint8_t *mem)
+void op_22(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -447,10 +538,12 @@ void op_22(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_23(uint8_t *reg, uint8_t *mem)
+void op_23(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 16bit arithmetic/logical instructions
@@ -459,10 +552,12 @@ void op_23(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_24(uint8_t *reg, uint8_t *mem)
+void op_24(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -471,11 +566,13 @@ void op_24(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 0 H -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
 }
 
 
-void op_25(uint8_t *reg, uint8_t *mem)
+void op_25(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -484,11 +581,13 @@ void op_25(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 1 H -
 	*/
-	reg[1] |= 0x40; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F |= 0x40; /* set flags */
 }
 
 
-void op_26(uint8_t *reg, uint8_t *mem)
+void op_26(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -497,11 +596,13 @@ void op_26(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
-	reg[6] = mem[1]; /* code LD imm */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->H = mem[(r8->PC)+1]; /* code LD imm */
 }
 
 
-void op_27(uint8_t *reg, uint8_t *mem)
+void op_27(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -510,11 +611,13 @@ void op_27(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z - 0 C
 	*/
-	reg[1] &= (~0x20); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x20); /* clear flags */
 }
 
 
-void op_28(uint8_t *reg, uint8_t *mem)
+void op_28(void *reg, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -523,10 +626,12 @@ void op_28(uint8_t *reg, uint8_t *mem)
 		      cycles: 12/8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_29(uint8_t *reg, uint8_t *mem)
+void op_29(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 16bit arithmetic/logical instructions
@@ -535,11 +640,13 @@ void op_29(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - 0 H C
 	*/
-	reg[1] &= (~0x40); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
 }
 
 
-void op_2a(uint8_t *reg, uint8_t *mem)
+void op_2a(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -548,11 +655,13 @@ void op_2a(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 /* FIXME: code LD */
 }
 
 
-void op_2b(uint8_t *reg, uint8_t *mem)
+void op_2b(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 16bit arithmetic/logical instructions
@@ -561,10 +670,12 @@ void op_2b(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_2c(uint8_t *reg, uint8_t *mem)
+void op_2c(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -573,11 +684,13 @@ void op_2c(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 0 H -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
 }
 
 
-void op_2d(uint8_t *reg, uint8_t *mem)
+void op_2d(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -586,11 +699,13 @@ void op_2d(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 1 H -
 	*/
-	reg[1] |= 0x40; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F |= 0x40; /* set flags */
 }
 
 
-void op_2e(uint8_t *reg, uint8_t *mem)
+void op_2e(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -599,11 +714,13 @@ void op_2e(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
-	reg[7] = mem[1]; /* code LD imm */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->L = mem[(r8->PC)+1]; /* code LD imm */
 }
 
 
-void op_2f(uint8_t *reg, uint8_t *mem)
+void op_2f(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -612,11 +729,13 @@ void op_2f(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - 1 1 -
 	*/
-	reg[1] |= 0x60; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F |= 0x60; /* set flags */
 }
 
 
-void op_30(uint8_t *reg, uint8_t *mem)
+void op_30(void *reg, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -625,10 +744,12 @@ void op_30(uint8_t *reg, uint8_t *mem)
 		      cycles: 12/8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_31(uint8_t *reg, uint8_t *mem)
+void op_31(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 16bit load/store/move instructions
@@ -637,10 +758,12 @@ void op_31(uint8_t *reg, uint8_t *mem)
 		      cycles: 12
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_32(uint8_t *reg, uint8_t *mem)
+void op_32(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -649,10 +772,12 @@ void op_32(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_33(uint8_t *reg, uint8_t *mem)
+void op_33(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 16bit arithmetic/logical instructions
@@ -661,10 +786,12 @@ void op_33(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_34(uint8_t *reg, uint8_t *mem)
+void op_34(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -673,11 +800,13 @@ void op_34(uint8_t *reg, uint8_t *mem)
 		      cycles: 12
 		       flags: Z 0 H -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
 }
 
 
-void op_35(uint8_t *reg, uint8_t *mem)
+void op_35(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -686,11 +815,13 @@ void op_35(uint8_t *reg, uint8_t *mem)
 		      cycles: 12
 		       flags: Z 1 H -
 	*/
-	reg[1] |= 0x40; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F |= 0x40; /* set flags */
 }
 
 
-void op_36(uint8_t *reg, uint8_t *mem)
+void op_36(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -699,10 +830,12 @@ void op_36(uint8_t *reg, uint8_t *mem)
 		      cycles: 12
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_37(uint8_t *reg, uint8_t *mem)
+void op_37(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -711,12 +844,14 @@ void op_37(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - 0 0 1
 	*/
-	reg[1] &= (~0x60); /* clear flags */
-	reg[1] |= 0x10; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
+	r8->F |= 0x10; /* set flags */
 }
 
 
-void op_38(uint8_t *reg, uint8_t *mem)
+void op_38(void *reg, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -725,10 +860,12 @@ void op_38(uint8_t *reg, uint8_t *mem)
 		      cycles: 12/8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_39(uint8_t *reg, uint8_t *mem)
+void op_39(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 16bit arithmetic/logical instructions
@@ -737,11 +874,13 @@ void op_39(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - 0 H C
 	*/
-	reg[1] &= (~0x40); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
 }
 
 
-void op_3a(uint8_t *reg, uint8_t *mem)
+void op_3a(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -750,11 +889,13 @@ void op_3a(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 /* FIXME: code LD */
 }
 
 
-void op_3b(uint8_t *reg, uint8_t *mem)
+void op_3b(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 16bit arithmetic/logical instructions
@@ -763,10 +904,12 @@ void op_3b(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_3c(uint8_t *reg, uint8_t *mem)
+void op_3c(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -775,11 +918,13 @@ void op_3c(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 0 H -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
 }
 
 
-void op_3d(uint8_t *reg, uint8_t *mem)
+void op_3d(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -788,11 +933,13 @@ void op_3d(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 1 H -
 	*/
-	reg[1] |= 0x40; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F |= 0x40; /* set flags */
 }
 
 
-void op_3e(uint8_t *reg, uint8_t *mem)
+void op_3e(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -801,11 +948,13 @@ void op_3e(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
-	reg[0] = mem[1]; /* code LD imm */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->A = mem[(r8->PC)+1]; /* code LD imm */
 }
 
 
-void op_3f(uint8_t *reg, uint8_t *mem)
+void op_3f(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -814,11 +963,13 @@ void op_3f(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - 0 0 C
 	*/
-	reg[1] &= (~0x60); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
 }
 
 
-void op_40(uint8_t *reg, uint8_t *mem)
+void op_40(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -827,11 +978,13 @@ void op_40(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
-	reg[2] = reg[2]; /* code LD reg */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->B = r8->B; /* code LD reg */
 }
 
 
-void op_41(uint8_t *reg, uint8_t *mem)
+void op_41(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -840,11 +993,13 @@ void op_41(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
-	reg[2] = reg[3]; /* code LD reg */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->B = r8->C; /* code LD reg */
 }
 
 
-void op_42(uint8_t *reg, uint8_t *mem)
+void op_42(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -853,11 +1008,13 @@ void op_42(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
-	reg[2] = reg[4]; /* code LD reg */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->B = r8->D; /* code LD reg */
 }
 
 
-void op_43(uint8_t *reg, uint8_t *mem)
+void op_43(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -866,11 +1023,13 @@ void op_43(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
-	reg[2] = reg[5]; /* code LD reg */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->B = r8->E; /* code LD reg */
 }
 
 
-void op_44(uint8_t *reg, uint8_t *mem)
+void op_44(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -879,11 +1038,13 @@ void op_44(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
-	reg[2] = reg[6]; /* code LD reg */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->B = r8->H; /* code LD reg */
 }
 
 
-void op_45(uint8_t *reg, uint8_t *mem)
+void op_45(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -892,11 +1053,13 @@ void op_45(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
-	reg[2] = reg[7]; /* code LD reg */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->B = r8->L; /* code LD reg */
 }
 
 
-void op_46(uint8_t *reg, uint8_t *mem)
+void op_46(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -905,11 +1068,13 @@ void op_46(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 /* FIXME: code LD */
 }
 
 
-void op_47(uint8_t *reg, uint8_t *mem)
+void op_47(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -918,11 +1083,13 @@ void op_47(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
-	reg[2] = reg[0]; /* code LD reg */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->B = r8->A; /* code LD reg */
 }
 
 
-void op_48(uint8_t *reg, uint8_t *mem)
+void op_48(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -931,11 +1098,13 @@ void op_48(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
-	reg[3] = reg[2]; /* code LD reg */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->C = r8->B; /* code LD reg */
 }
 
 
-void op_49(uint8_t *reg, uint8_t *mem)
+void op_49(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -944,11 +1113,13 @@ void op_49(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
-	reg[3] = reg[3]; /* code LD reg */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->C = r8->C; /* code LD reg */
 }
 
 
-void op_4a(uint8_t *reg, uint8_t *mem)
+void op_4a(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -957,11 +1128,13 @@ void op_4a(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
-	reg[3] = reg[4]; /* code LD reg */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->C = r8->D; /* code LD reg */
 }
 
 
-void op_4b(uint8_t *reg, uint8_t *mem)
+void op_4b(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -970,11 +1143,13 @@ void op_4b(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
-	reg[3] = reg[5]; /* code LD reg */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->C = r8->E; /* code LD reg */
 }
 
 
-void op_4c(uint8_t *reg, uint8_t *mem)
+void op_4c(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -983,11 +1158,13 @@ void op_4c(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
-	reg[3] = reg[6]; /* code LD reg */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->C = r8->H; /* code LD reg */
 }
 
 
-void op_4d(uint8_t *reg, uint8_t *mem)
+void op_4d(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -996,11 +1173,13 @@ void op_4d(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
-	reg[3] = reg[7]; /* code LD reg */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->C = r8->L; /* code LD reg */
 }
 
 
-void op_4e(uint8_t *reg, uint8_t *mem)
+void op_4e(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1009,11 +1188,13 @@ void op_4e(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 /* FIXME: code LD */
 }
 
 
-void op_4f(uint8_t *reg, uint8_t *mem)
+void op_4f(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1022,11 +1203,13 @@ void op_4f(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
-	reg[3] = reg[0]; /* code LD reg */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->C = r8->A; /* code LD reg */
 }
 
 
-void op_50(uint8_t *reg, uint8_t *mem)
+void op_50(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1035,11 +1218,13 @@ void op_50(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
-	reg[4] = reg[2]; /* code LD reg */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->D = r8->B; /* code LD reg */
 }
 
 
-void op_51(uint8_t *reg, uint8_t *mem)
+void op_51(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1048,11 +1233,13 @@ void op_51(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
-	reg[4] = reg[3]; /* code LD reg */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->D = r8->C; /* code LD reg */
 }
 
 
-void op_52(uint8_t *reg, uint8_t *mem)
+void op_52(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1061,11 +1248,13 @@ void op_52(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
-	reg[4] = reg[4]; /* code LD reg */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->D = r8->D; /* code LD reg */
 }
 
 
-void op_53(uint8_t *reg, uint8_t *mem)
+void op_53(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1074,11 +1263,13 @@ void op_53(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
-	reg[4] = reg[5]; /* code LD reg */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->D = r8->E; /* code LD reg */
 }
 
 
-void op_54(uint8_t *reg, uint8_t *mem)
+void op_54(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1087,11 +1278,13 @@ void op_54(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
-	reg[4] = reg[6]; /* code LD reg */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->D = r8->H; /* code LD reg */
 }
 
 
-void op_55(uint8_t *reg, uint8_t *mem)
+void op_55(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1100,11 +1293,13 @@ void op_55(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
-	reg[4] = reg[7]; /* code LD reg */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->D = r8->L; /* code LD reg */
 }
 
 
-void op_56(uint8_t *reg, uint8_t *mem)
+void op_56(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1113,11 +1308,13 @@ void op_56(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 /* FIXME: code LD */
 }
 
 
-void op_57(uint8_t *reg, uint8_t *mem)
+void op_57(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1126,11 +1323,13 @@ void op_57(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
-	reg[4] = reg[0]; /* code LD reg */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->D = r8->A; /* code LD reg */
 }
 
 
-void op_58(uint8_t *reg, uint8_t *mem)
+void op_58(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1139,11 +1338,13 @@ void op_58(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
-	reg[5] = reg[2]; /* code LD reg */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->E = r8->B; /* code LD reg */
 }
 
 
-void op_59(uint8_t *reg, uint8_t *mem)
+void op_59(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1152,11 +1353,13 @@ void op_59(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
-	reg[5] = reg[3]; /* code LD reg */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->E = r8->C; /* code LD reg */
 }
 
 
-void op_5a(uint8_t *reg, uint8_t *mem)
+void op_5a(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1165,11 +1368,13 @@ void op_5a(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
-	reg[5] = reg[4]; /* code LD reg */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->E = r8->D; /* code LD reg */
 }
 
 
-void op_5b(uint8_t *reg, uint8_t *mem)
+void op_5b(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1178,11 +1383,13 @@ void op_5b(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
-	reg[5] = reg[5]; /* code LD reg */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->E = r8->E; /* code LD reg */
 }
 
 
-void op_5c(uint8_t *reg, uint8_t *mem)
+void op_5c(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1191,11 +1398,13 @@ void op_5c(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
-	reg[5] = reg[6]; /* code LD reg */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->E = r8->H; /* code LD reg */
 }
 
 
-void op_5d(uint8_t *reg, uint8_t *mem)
+void op_5d(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1204,11 +1413,13 @@ void op_5d(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
-	reg[5] = reg[7]; /* code LD reg */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->E = r8->L; /* code LD reg */
 }
 
 
-void op_5e(uint8_t *reg, uint8_t *mem)
+void op_5e(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1217,11 +1428,13 @@ void op_5e(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 /* FIXME: code LD */
 }
 
 
-void op_5f(uint8_t *reg, uint8_t *mem)
+void op_5f(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1230,11 +1443,13 @@ void op_5f(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
-	reg[5] = reg[0]; /* code LD reg */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->E = r8->A; /* code LD reg */
 }
 
 
-void op_60(uint8_t *reg, uint8_t *mem)
+void op_60(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1243,11 +1458,13 @@ void op_60(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
-	reg[6] = reg[2]; /* code LD reg */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->H = r8->B; /* code LD reg */
 }
 
 
-void op_61(uint8_t *reg, uint8_t *mem)
+void op_61(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1256,11 +1473,13 @@ void op_61(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
-	reg[6] = reg[3]; /* code LD reg */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->H = r8->C; /* code LD reg */
 }
 
 
-void op_62(uint8_t *reg, uint8_t *mem)
+void op_62(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1269,11 +1488,13 @@ void op_62(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
-	reg[6] = reg[4]; /* code LD reg */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->H = r8->D; /* code LD reg */
 }
 
 
-void op_63(uint8_t *reg, uint8_t *mem)
+void op_63(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1282,11 +1503,13 @@ void op_63(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
-	reg[6] = reg[5]; /* code LD reg */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->H = r8->E; /* code LD reg */
 }
 
 
-void op_64(uint8_t *reg, uint8_t *mem)
+void op_64(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1295,11 +1518,13 @@ void op_64(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
-	reg[6] = reg[6]; /* code LD reg */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->H = r8->H; /* code LD reg */
 }
 
 
-void op_65(uint8_t *reg, uint8_t *mem)
+void op_65(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1308,11 +1533,13 @@ void op_65(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
-	reg[6] = reg[7]; /* code LD reg */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->H = r8->L; /* code LD reg */
 }
 
 
-void op_66(uint8_t *reg, uint8_t *mem)
+void op_66(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1321,11 +1548,13 @@ void op_66(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 /* FIXME: code LD */
 }
 
 
-void op_67(uint8_t *reg, uint8_t *mem)
+void op_67(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1334,11 +1563,13 @@ void op_67(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
-	reg[6] = reg[0]; /* code LD reg */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->H = r8->A; /* code LD reg */
 }
 
 
-void op_68(uint8_t *reg, uint8_t *mem)
+void op_68(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1347,11 +1578,13 @@ void op_68(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
-	reg[7] = reg[2]; /* code LD reg */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->L = r8->B; /* code LD reg */
 }
 
 
-void op_69(uint8_t *reg, uint8_t *mem)
+void op_69(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1360,11 +1593,13 @@ void op_69(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
-	reg[7] = reg[3]; /* code LD reg */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->L = r8->C; /* code LD reg */
 }
 
 
-void op_6a(uint8_t *reg, uint8_t *mem)
+void op_6a(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1373,11 +1608,13 @@ void op_6a(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
-	reg[7] = reg[4]; /* code LD reg */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->L = r8->D; /* code LD reg */
 }
 
 
-void op_6b(uint8_t *reg, uint8_t *mem)
+void op_6b(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1386,11 +1623,13 @@ void op_6b(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
-	reg[7] = reg[5]; /* code LD reg */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->L = r8->E; /* code LD reg */
 }
 
 
-void op_6c(uint8_t *reg, uint8_t *mem)
+void op_6c(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1399,11 +1638,13 @@ void op_6c(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
-	reg[7] = reg[6]; /* code LD reg */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->L = r8->H; /* code LD reg */
 }
 
 
-void op_6d(uint8_t *reg, uint8_t *mem)
+void op_6d(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1412,11 +1653,13 @@ void op_6d(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
-	reg[7] = reg[7]; /* code LD reg */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->L = r8->L; /* code LD reg */
 }
 
 
-void op_6e(uint8_t *reg, uint8_t *mem)
+void op_6e(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1425,11 +1668,13 @@ void op_6e(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 /* FIXME: code LD */
 }
 
 
-void op_6f(uint8_t *reg, uint8_t *mem)
+void op_6f(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1438,11 +1683,13 @@ void op_6f(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
-	reg[7] = reg[0]; /* code LD reg */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->L = r8->A; /* code LD reg */
 }
 
 
-void op_70(uint8_t *reg, uint8_t *mem)
+void op_70(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1451,10 +1698,12 @@ void op_70(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_71(uint8_t *reg, uint8_t *mem)
+void op_71(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1463,10 +1712,12 @@ void op_71(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_72(uint8_t *reg, uint8_t *mem)
+void op_72(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1475,10 +1726,12 @@ void op_72(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_73(uint8_t *reg, uint8_t *mem)
+void op_73(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1487,10 +1740,12 @@ void op_73(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_74(uint8_t *reg, uint8_t *mem)
+void op_74(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1499,10 +1754,12 @@ void op_74(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_75(uint8_t *reg, uint8_t *mem)
+void op_75(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1511,10 +1768,12 @@ void op_75(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_76(uint8_t *reg, uint8_t *mem)
+void op_76(void *reg, uint8_t *mem)
 {
 	/*
 		    category: Misc/control instructions
@@ -1523,10 +1782,12 @@ void op_76(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_77(uint8_t *reg, uint8_t *mem)
+void op_77(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1535,10 +1796,12 @@ void op_77(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_78(uint8_t *reg, uint8_t *mem)
+void op_78(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1547,11 +1810,13 @@ void op_78(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
-	reg[0] = reg[2]; /* code LD reg */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->A = r8->B; /* code LD reg */
 }
 
 
-void op_79(uint8_t *reg, uint8_t *mem)
+void op_79(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1560,11 +1825,13 @@ void op_79(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
-	reg[0] = reg[3]; /* code LD reg */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->A = r8->C; /* code LD reg */
 }
 
 
-void op_7a(uint8_t *reg, uint8_t *mem)
+void op_7a(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1573,11 +1840,13 @@ void op_7a(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
-	reg[0] = reg[4]; /* code LD reg */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->A = r8->D; /* code LD reg */
 }
 
 
-void op_7b(uint8_t *reg, uint8_t *mem)
+void op_7b(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1586,11 +1855,13 @@ void op_7b(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
-	reg[0] = reg[5]; /* code LD reg */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->A = r8->E; /* code LD reg */
 }
 
 
-void op_7c(uint8_t *reg, uint8_t *mem)
+void op_7c(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1599,11 +1870,13 @@ void op_7c(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
-	reg[0] = reg[6]; /* code LD reg */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->A = r8->H; /* code LD reg */
 }
 
 
-void op_7d(uint8_t *reg, uint8_t *mem)
+void op_7d(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1612,11 +1885,13 @@ void op_7d(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
-	reg[0] = reg[7]; /* code LD reg */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->A = r8->L; /* code LD reg */
 }
 
 
-void op_7e(uint8_t *reg, uint8_t *mem)
+void op_7e(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1625,11 +1900,13 @@ void op_7e(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 /* FIXME: code LD */
 }
 
 
-void op_7f(uint8_t *reg, uint8_t *mem)
+void op_7f(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1638,11 +1915,13 @@ void op_7f(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
-	reg[0] = reg[0]; /* code LD reg */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->A = r8->A; /* code LD reg */
 }
 
 
-void op_80(uint8_t *reg, uint8_t *mem)
+void op_80(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -1651,11 +1930,13 @@ void op_80(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 0 H C
 	*/
-	reg[1] &= (~0x40); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
 }
 
 
-void op_81(uint8_t *reg, uint8_t *mem)
+void op_81(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -1664,11 +1945,13 @@ void op_81(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 0 H C
 	*/
-	reg[1] &= (~0x40); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
 }
 
 
-void op_82(uint8_t *reg, uint8_t *mem)
+void op_82(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -1677,11 +1960,13 @@ void op_82(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 0 H C
 	*/
-	reg[1] &= (~0x40); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
 }
 
 
-void op_83(uint8_t *reg, uint8_t *mem)
+void op_83(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -1690,11 +1975,13 @@ void op_83(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 0 H C
 	*/
-	reg[1] &= (~0x40); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
 }
 
 
-void op_84(uint8_t *reg, uint8_t *mem)
+void op_84(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -1703,11 +1990,13 @@ void op_84(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 0 H C
 	*/
-	reg[1] &= (~0x40); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
 }
 
 
-void op_85(uint8_t *reg, uint8_t *mem)
+void op_85(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -1716,11 +2005,13 @@ void op_85(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 0 H C
 	*/
-	reg[1] &= (~0x40); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
 }
 
 
-void op_86(uint8_t *reg, uint8_t *mem)
+void op_86(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -1729,11 +2020,13 @@ void op_86(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 H C
 	*/
-	reg[1] &= (~0x40); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
 }
 
 
-void op_87(uint8_t *reg, uint8_t *mem)
+void op_87(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -1742,11 +2035,13 @@ void op_87(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 0 H C
 	*/
-	reg[1] &= (~0x40); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
 }
 
 
-void op_88(uint8_t *reg, uint8_t *mem)
+void op_88(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -1755,11 +2050,13 @@ void op_88(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 0 H C
 	*/
-	reg[1] &= (~0x40); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
 }
 
 
-void op_89(uint8_t *reg, uint8_t *mem)
+void op_89(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -1768,11 +2065,13 @@ void op_89(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 0 H C
 	*/
-	reg[1] &= (~0x40); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
 }
 
 
-void op_8a(uint8_t *reg, uint8_t *mem)
+void op_8a(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -1781,11 +2080,13 @@ void op_8a(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 0 H C
 	*/
-	reg[1] &= (~0x40); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
 }
 
 
-void op_8b(uint8_t *reg, uint8_t *mem)
+void op_8b(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -1794,11 +2095,13 @@ void op_8b(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 0 H C
 	*/
-	reg[1] &= (~0x40); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
 }
 
 
-void op_8c(uint8_t *reg, uint8_t *mem)
+void op_8c(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -1807,11 +2110,13 @@ void op_8c(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 0 H C
 	*/
-	reg[1] &= (~0x40); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
 }
 
 
-void op_8d(uint8_t *reg, uint8_t *mem)
+void op_8d(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -1820,11 +2125,13 @@ void op_8d(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 0 H C
 	*/
-	reg[1] &= (~0x40); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
 }
 
 
-void op_8e(uint8_t *reg, uint8_t *mem)
+void op_8e(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -1833,11 +2140,13 @@ void op_8e(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 H C
 	*/
-	reg[1] &= (~0x40); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
 }
 
 
-void op_8f(uint8_t *reg, uint8_t *mem)
+void op_8f(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -1846,11 +2155,13 @@ void op_8f(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 0 H C
 	*/
-	reg[1] &= (~0x40); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
 }
 
 
-void op_90(uint8_t *reg, uint8_t *mem)
+void op_90(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -1859,11 +2170,13 @@ void op_90(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 1 H C
 	*/
-	reg[1] |= 0x40; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F |= 0x40; /* set flags */
 }
 
 
-void op_91(uint8_t *reg, uint8_t *mem)
+void op_91(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -1872,11 +2185,13 @@ void op_91(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 1 H C
 	*/
-	reg[1] |= 0x40; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F |= 0x40; /* set flags */
 }
 
 
-void op_92(uint8_t *reg, uint8_t *mem)
+void op_92(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -1885,11 +2200,13 @@ void op_92(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 1 H C
 	*/
-	reg[1] |= 0x40; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F |= 0x40; /* set flags */
 }
 
 
-void op_93(uint8_t *reg, uint8_t *mem)
+void op_93(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -1898,11 +2215,13 @@ void op_93(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 1 H C
 	*/
-	reg[1] |= 0x40; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F |= 0x40; /* set flags */
 }
 
 
-void op_94(uint8_t *reg, uint8_t *mem)
+void op_94(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -1911,11 +2230,13 @@ void op_94(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 1 H C
 	*/
-	reg[1] |= 0x40; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F |= 0x40; /* set flags */
 }
 
 
-void op_95(uint8_t *reg, uint8_t *mem)
+void op_95(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -1924,11 +2245,13 @@ void op_95(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 1 H C
 	*/
-	reg[1] |= 0x40; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F |= 0x40; /* set flags */
 }
 
 
-void op_96(uint8_t *reg, uint8_t *mem)
+void op_96(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -1937,11 +2260,13 @@ void op_96(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 1 H C
 	*/
-	reg[1] |= 0x40; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F |= 0x40; /* set flags */
 }
 
 
-void op_97(uint8_t *reg, uint8_t *mem)
+void op_97(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -1950,11 +2275,13 @@ void op_97(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 1 H C
 	*/
-	reg[1] |= 0x40; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F |= 0x40; /* set flags */
 }
 
 
-void op_98(uint8_t *reg, uint8_t *mem)
+void op_98(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -1963,11 +2290,13 @@ void op_98(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 1 H C
 	*/
-	reg[1] |= 0x40; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F |= 0x40; /* set flags */
 }
 
 
-void op_99(uint8_t *reg, uint8_t *mem)
+void op_99(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -1976,11 +2305,13 @@ void op_99(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 1 H C
 	*/
-	reg[1] |= 0x40; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F |= 0x40; /* set flags */
 }
 
 
-void op_9a(uint8_t *reg, uint8_t *mem)
+void op_9a(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -1989,11 +2320,13 @@ void op_9a(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 1 H C
 	*/
-	reg[1] |= 0x40; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F |= 0x40; /* set flags */
 }
 
 
-void op_9b(uint8_t *reg, uint8_t *mem)
+void op_9b(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -2002,11 +2335,13 @@ void op_9b(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 1 H C
 	*/
-	reg[1] |= 0x40; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F |= 0x40; /* set flags */
 }
 
 
-void op_9c(uint8_t *reg, uint8_t *mem)
+void op_9c(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -2015,11 +2350,13 @@ void op_9c(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 1 H C
 	*/
-	reg[1] |= 0x40; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F |= 0x40; /* set flags */
 }
 
 
-void op_9d(uint8_t *reg, uint8_t *mem)
+void op_9d(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -2028,11 +2365,13 @@ void op_9d(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 1 H C
 	*/
-	reg[1] |= 0x40; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F |= 0x40; /* set flags */
 }
 
 
-void op_9e(uint8_t *reg, uint8_t *mem)
+void op_9e(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -2041,11 +2380,13 @@ void op_9e(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 1 H C
 	*/
-	reg[1] |= 0x40; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F |= 0x40; /* set flags */
 }
 
 
-void op_9f(uint8_t *reg, uint8_t *mem)
+void op_9f(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -2054,11 +2395,13 @@ void op_9f(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 1 H C
 	*/
-	reg[1] |= 0x40; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F |= 0x40; /* set flags */
 }
 
 
-void op_a0(uint8_t *reg, uint8_t *mem)
+void op_a0(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -2067,14 +2410,16 @@ void op_a0(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 0 1 0
 	*/
-	reg[0] &= reg[2];    /* code AND */
-	reg[0] == 0 ? set_z : clear_z;
-	reg[1] &= (~0x50); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->A &= r8->B;    /* code AND */
+	r8->A == 0 ? set_z : clear_z;
+	r8->F &= (~0x50); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_a1(uint8_t *reg, uint8_t *mem)
+void op_a1(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -2083,14 +2428,16 @@ void op_a1(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 0 1 0
 	*/
-	reg[0] &= reg[3];    /* code AND */
-	reg[0] == 0 ? set_z : clear_z;
-	reg[1] &= (~0x50); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->A &= r8->C;    /* code AND */
+	r8->A == 0 ? set_z : clear_z;
+	r8->F &= (~0x50); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_a2(uint8_t *reg, uint8_t *mem)
+void op_a2(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -2099,14 +2446,16 @@ void op_a2(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 0 1 0
 	*/
-	reg[0] &= reg[4];    /* code AND */
-	reg[0] == 0 ? set_z : clear_z;
-	reg[1] &= (~0x50); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->A &= r8->D;    /* code AND */
+	r8->A == 0 ? set_z : clear_z;
+	r8->F &= (~0x50); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_a3(uint8_t *reg, uint8_t *mem)
+void op_a3(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -2115,14 +2464,16 @@ void op_a3(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 0 1 0
 	*/
-	reg[0] &= reg[5];    /* code AND */
-	reg[0] == 0 ? set_z : clear_z;
-	reg[1] &= (~0x50); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->A &= r8->E;    /* code AND */
+	r8->A == 0 ? set_z : clear_z;
+	r8->F &= (~0x50); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_a4(uint8_t *reg, uint8_t *mem)
+void op_a4(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -2131,14 +2482,16 @@ void op_a4(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 0 1 0
 	*/
-	reg[0] &= reg[6];    /* code AND */
-	reg[0] == 0 ? set_z : clear_z;
-	reg[1] &= (~0x50); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->A &= r8->H;    /* code AND */
+	r8->A == 0 ? set_z : clear_z;
+	r8->F &= (~0x50); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_a5(uint8_t *reg, uint8_t *mem)
+void op_a5(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -2147,14 +2500,16 @@ void op_a5(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 0 1 0
 	*/
-	reg[0] &= reg[7];    /* code AND */
-	reg[0] == 0 ? set_z : clear_z;
-	reg[1] &= (~0x50); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->A &= r8->L;    /* code AND */
+	r8->A == 0 ? set_z : clear_z;
+	r8->F &= (~0x50); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_a6(uint8_t *reg, uint8_t *mem)
+void op_a6(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -2163,13 +2518,16 @@ void op_a6(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 0
 	*/
-/* FIXME: code AND */
-	reg[1] &= (~0x50); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->A &= mem[r16->HL]; /* code AND A,(HL)*/
+	r8->A == 0 ? set_z : clear_z;
+	r8->F &= (~0x50); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_a7(uint8_t *reg, uint8_t *mem)
+void op_a7(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -2178,14 +2536,16 @@ void op_a7(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 0 1 0
 	*/
-	reg[0] &= reg[0];    /* code AND */
-	reg[0] == 0 ? set_z : clear_z;
-	reg[1] &= (~0x50); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->A &= r8->A;    /* code AND */
+	r8->A == 0 ? set_z : clear_z;
+	r8->F &= (~0x50); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_a8(uint8_t *reg, uint8_t *mem)
+void op_a8(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -2194,11 +2554,15 @@ void op_a8(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 0 0 0
 	*/
-	reg[1] &= (~0x70); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->A ^= r8->B;    /* code XOR */
+	r8->A == 0 ? set_z : clear_z;
+	r8->F &= (~0x70); /* clear flags */
 }
 
 
-void op_a9(uint8_t *reg, uint8_t *mem)
+void op_a9(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -2207,11 +2571,15 @@ void op_a9(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 0 0 0
 	*/
-	reg[1] &= (~0x70); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->A ^= r8->C;    /* code XOR */
+	r8->A == 0 ? set_z : clear_z;
+	r8->F &= (~0x70); /* clear flags */
 }
 
 
-void op_aa(uint8_t *reg, uint8_t *mem)
+void op_aa(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -2220,11 +2588,15 @@ void op_aa(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 0 0 0
 	*/
-	reg[1] &= (~0x70); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->A ^= r8->D;    /* code XOR */
+	r8->A == 0 ? set_z : clear_z;
+	r8->F &= (~0x70); /* clear flags */
 }
 
 
-void op_ab(uint8_t *reg, uint8_t *mem)
+void op_ab(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -2233,11 +2605,15 @@ void op_ab(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 0 0 0
 	*/
-	reg[1] &= (~0x70); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->A ^= r8->E;    /* code XOR */
+	r8->A == 0 ? set_z : clear_z;
+	r8->F &= (~0x70); /* clear flags */
 }
 
 
-void op_ac(uint8_t *reg, uint8_t *mem)
+void op_ac(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -2246,11 +2622,15 @@ void op_ac(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 0 0 0
 	*/
-	reg[1] &= (~0x70); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->A ^= r8->H;    /* code XOR */
+	r8->A == 0 ? set_z : clear_z;
+	r8->F &= (~0x70); /* clear flags */
 }
 
 
-void op_ad(uint8_t *reg, uint8_t *mem)
+void op_ad(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -2259,11 +2639,15 @@ void op_ad(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 0 0 0
 	*/
-	reg[1] &= (~0x70); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->A ^= r8->L;    /* code XOR */
+	r8->A == 0 ? set_z : clear_z;
+	r8->F &= (~0x70); /* clear flags */
 }
 
 
-void op_ae(uint8_t *reg, uint8_t *mem)
+void op_ae(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -2272,11 +2656,15 @@ void op_ae(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 0
 	*/
-	reg[1] &= (~0x70); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->A ^= mem[r16->HL]; /* code XOR A,(HL)*/
+	r8->A == 0 ? set_z : clear_z;
+	r8->F &= (~0x70); /* clear flags */
 }
 
 
-void op_af(uint8_t *reg, uint8_t *mem)
+void op_af(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -2285,11 +2673,15 @@ void op_af(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 0 0 0
 	*/
-	reg[1] &= (~0x70); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->A ^= r8->A;    /* code XOR */
+	r8->A == 0 ? set_z : clear_z;
+	r8->F &= (~0x70); /* clear flags */
 }
 
 
-void op_b0(uint8_t *reg, uint8_t *mem)
+void op_b0(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -2298,11 +2690,15 @@ void op_b0(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 0 0 0
 	*/
-	reg[1] &= (~0x70); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->A |= r8->B;    /* code OR */
+	r8->A == 0 ? set_z : clear_z;
+	r8->F &= (~0x70); /* clear flags */
 }
 
 
-void op_b1(uint8_t *reg, uint8_t *mem)
+void op_b1(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -2311,11 +2707,15 @@ void op_b1(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 0 0 0
 	*/
-	reg[1] &= (~0x70); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->A |= r8->C;    /* code OR */
+	r8->A == 0 ? set_z : clear_z;
+	r8->F &= (~0x70); /* clear flags */
 }
 
 
-void op_b2(uint8_t *reg, uint8_t *mem)
+void op_b2(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -2324,11 +2724,15 @@ void op_b2(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 0 0 0
 	*/
-	reg[1] &= (~0x70); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->A |= r8->D;    /* code OR */
+	r8->A == 0 ? set_z : clear_z;
+	r8->F &= (~0x70); /* clear flags */
 }
 
 
-void op_b3(uint8_t *reg, uint8_t *mem)
+void op_b3(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -2337,11 +2741,15 @@ void op_b3(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 0 0 0
 	*/
-	reg[1] &= (~0x70); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->A |= r8->E;    /* code OR */
+	r8->A == 0 ? set_z : clear_z;
+	r8->F &= (~0x70); /* clear flags */
 }
 
 
-void op_b4(uint8_t *reg, uint8_t *mem)
+void op_b4(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -2350,11 +2758,15 @@ void op_b4(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 0 0 0
 	*/
-	reg[1] &= (~0x70); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->A |= r8->H;    /* code OR */
+	r8->A == 0 ? set_z : clear_z;
+	r8->F &= (~0x70); /* clear flags */
 }
 
 
-void op_b5(uint8_t *reg, uint8_t *mem)
+void op_b5(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -2363,11 +2775,15 @@ void op_b5(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 0 0 0
 	*/
-	reg[1] &= (~0x70); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->A |= r8->L;    /* code OR */
+	r8->A == 0 ? set_z : clear_z;
+	r8->F &= (~0x70); /* clear flags */
 }
 
 
-void op_b6(uint8_t *reg, uint8_t *mem)
+void op_b6(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -2376,11 +2792,15 @@ void op_b6(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 0
 	*/
-	reg[1] &= (~0x70); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->A |= mem[r16->HL]; /* code OR A,(HL)*/
+	r8->A == 0 ? set_z : clear_z;
+	r8->F &= (~0x70); /* clear flags */
 }
 
 
-void op_b7(uint8_t *reg, uint8_t *mem)
+void op_b7(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -2389,11 +2809,15 @@ void op_b7(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 0 0 0
 	*/
-	reg[1] &= (~0x70); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->A |= r8->A;    /* code OR */
+	r8->A == 0 ? set_z : clear_z;
+	r8->F &= (~0x70); /* clear flags */
 }
 
 
-void op_b8(uint8_t *reg, uint8_t *mem)
+void op_b8(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -2402,11 +2826,13 @@ void op_b8(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 1 H C
 	*/
-	reg[1] |= 0x40; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F |= 0x40; /* set flags */
 }
 
 
-void op_b9(uint8_t *reg, uint8_t *mem)
+void op_b9(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -2415,11 +2841,13 @@ void op_b9(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 1 H C
 	*/
-	reg[1] |= 0x40; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F |= 0x40; /* set flags */
 }
 
 
-void op_ba(uint8_t *reg, uint8_t *mem)
+void op_ba(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -2428,11 +2856,13 @@ void op_ba(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 1 H C
 	*/
-	reg[1] |= 0x40; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F |= 0x40; /* set flags */
 }
 
 
-void op_bb(uint8_t *reg, uint8_t *mem)
+void op_bb(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -2441,11 +2871,13 @@ void op_bb(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 1 H C
 	*/
-	reg[1] |= 0x40; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F |= 0x40; /* set flags */
 }
 
 
-void op_bc(uint8_t *reg, uint8_t *mem)
+void op_bc(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -2454,11 +2886,13 @@ void op_bc(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 1 H C
 	*/
-	reg[1] |= 0x40; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F |= 0x40; /* set flags */
 }
 
 
-void op_bd(uint8_t *reg, uint8_t *mem)
+void op_bd(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -2467,11 +2901,13 @@ void op_bd(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 1 H C
 	*/
-	reg[1] |= 0x40; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F |= 0x40; /* set flags */
 }
 
 
-void op_be(uint8_t *reg, uint8_t *mem)
+void op_be(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -2480,11 +2916,13 @@ void op_be(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 1 H C
 	*/
-	reg[1] |= 0x40; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F |= 0x40; /* set flags */
 }
 
 
-void op_bf(uint8_t *reg, uint8_t *mem)
+void op_bf(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -2493,11 +2931,13 @@ void op_bf(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: Z 1 H C
 	*/
-	reg[1] |= 0x40; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F |= 0x40; /* set flags */
 }
 
 
-void op_c0(uint8_t *reg, uint8_t *mem)
+void op_c0(void *reg, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -2506,10 +2946,12 @@ void op_c0(uint8_t *reg, uint8_t *mem)
 		      cycles: 20/8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_c1(uint8_t *reg, uint8_t *mem)
+void op_c1(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 16bit load/store/move instructions
@@ -2518,10 +2960,12 @@ void op_c1(uint8_t *reg, uint8_t *mem)
 		      cycles: 12
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_c2(uint8_t *reg, uint8_t *mem)
+void op_c2(void *reg, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -2530,10 +2974,12 @@ void op_c2(uint8_t *reg, uint8_t *mem)
 		      cycles: 16/12
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_c3(uint8_t *reg, uint8_t *mem)
+void op_c3(void *reg, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -2542,10 +2988,12 @@ void op_c3(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_c4(uint8_t *reg, uint8_t *mem)
+void op_c4(void *reg, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -2554,10 +3002,12 @@ void op_c4(uint8_t *reg, uint8_t *mem)
 		      cycles: 24/12
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_c5(uint8_t *reg, uint8_t *mem)
+void op_c5(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 16bit load/store/move instructions
@@ -2566,10 +3016,12 @@ void op_c5(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_c6(uint8_t *reg, uint8_t *mem)
+void op_c6(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -2578,11 +3030,13 @@ void op_c6(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 H C
 	*/
-	reg[1] &= (~0x40); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
 }
 
 
-void op_c7(uint8_t *reg, uint8_t *mem)
+void op_c7(void *reg, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -2591,10 +3045,12 @@ void op_c7(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_c8(uint8_t *reg, uint8_t *mem)
+void op_c8(void *reg, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -2603,10 +3059,12 @@ void op_c8(uint8_t *reg, uint8_t *mem)
 		      cycles: 20/8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_c9(uint8_t *reg, uint8_t *mem)
+void op_c9(void *reg, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -2615,10 +3073,12 @@ void op_c9(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_ca(uint8_t *reg, uint8_t *mem)
+void op_ca(void *reg, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -2627,10 +3087,12 @@ void op_ca(uint8_t *reg, uint8_t *mem)
 		      cycles: 16/12
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cb(uint8_t *reg, uint8_t *mem)
+void op_cb(void *reg, uint8_t *mem)
 {
 	/*
 		    category: Misc/control instructions
@@ -2639,10 +3101,12 @@ void op_cb(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cc(uint8_t *reg, uint8_t *mem)
+void op_cc(void *reg, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -2651,10 +3115,12 @@ void op_cc(uint8_t *reg, uint8_t *mem)
 		      cycles: 24/12
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cd(uint8_t *reg, uint8_t *mem)
+void op_cd(void *reg, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -2663,10 +3129,12 @@ void op_cd(uint8_t *reg, uint8_t *mem)
 		      cycles: 24
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_ce(uint8_t *reg, uint8_t *mem)
+void op_ce(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -2675,11 +3143,13 @@ void op_ce(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 H C
 	*/
-	reg[1] &= (~0x40); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
 }
 
 
-void op_cf(uint8_t *reg, uint8_t *mem)
+void op_cf(void *reg, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -2688,10 +3158,12 @@ void op_cf(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_d0(uint8_t *reg, uint8_t *mem)
+void op_d0(void *reg, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -2700,10 +3172,12 @@ void op_d0(uint8_t *reg, uint8_t *mem)
 		      cycles: 20/8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_d1(uint8_t *reg, uint8_t *mem)
+void op_d1(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 16bit load/store/move instructions
@@ -2712,10 +3186,12 @@ void op_d1(uint8_t *reg, uint8_t *mem)
 		      cycles: 12
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_d2(uint8_t *reg, uint8_t *mem)
+void op_d2(void *reg, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -2724,10 +3200,12 @@ void op_d2(uint8_t *reg, uint8_t *mem)
 		      cycles: 16/12
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_d3(uint8_t *reg, uint8_t *mem)
+void op_d3(void *reg, uint8_t *mem)
 {
 	/*
 		    category: UNDEFINED XXX
@@ -2736,10 +3214,12 @@ void op_d3(uint8_t *reg, uint8_t *mem)
 		      cycles: undefined
 		       flags: undefined
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_d4(uint8_t *reg, uint8_t *mem)
+void op_d4(void *reg, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -2748,10 +3228,12 @@ void op_d4(uint8_t *reg, uint8_t *mem)
 		      cycles: 24/12
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_d5(uint8_t *reg, uint8_t *mem)
+void op_d5(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 16bit load/store/move instructions
@@ -2760,10 +3242,12 @@ void op_d5(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_d6(uint8_t *reg, uint8_t *mem)
+void op_d6(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -2772,11 +3256,13 @@ void op_d6(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 1 H C
 	*/
-	reg[1] |= 0x40; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F |= 0x40; /* set flags */
 }
 
 
-void op_d7(uint8_t *reg, uint8_t *mem)
+void op_d7(void *reg, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -2785,10 +3271,12 @@ void op_d7(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_d8(uint8_t *reg, uint8_t *mem)
+void op_d8(void *reg, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -2797,10 +3285,12 @@ void op_d8(uint8_t *reg, uint8_t *mem)
 		      cycles: 20/8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_d9(uint8_t *reg, uint8_t *mem)
+void op_d9(void *reg, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -2809,10 +3299,12 @@ void op_d9(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_da(uint8_t *reg, uint8_t *mem)
+void op_da(void *reg, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -2821,10 +3313,12 @@ void op_da(uint8_t *reg, uint8_t *mem)
 		      cycles: 16/12
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_db(uint8_t *reg, uint8_t *mem)
+void op_db(void *reg, uint8_t *mem)
 {
 	/*
 		    category: UNDEFINED XXX
@@ -2833,10 +3327,12 @@ void op_db(uint8_t *reg, uint8_t *mem)
 		      cycles: undefined
 		       flags: undefined
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_dc(uint8_t *reg, uint8_t *mem)
+void op_dc(void *reg, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -2845,10 +3341,12 @@ void op_dc(uint8_t *reg, uint8_t *mem)
 		      cycles: 24/12
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_dd(uint8_t *reg, uint8_t *mem)
+void op_dd(void *reg, uint8_t *mem)
 {
 	/*
 		    category: UNDEFINED XXX
@@ -2857,10 +3355,12 @@ void op_dd(uint8_t *reg, uint8_t *mem)
 		      cycles: undefined
 		       flags: undefined
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_de(uint8_t *reg, uint8_t *mem)
+void op_de(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -2869,11 +3369,13 @@ void op_de(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 1 H C
 	*/
-	reg[1] |= 0x40; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F |= 0x40; /* set flags */
 }
 
 
-void op_df(uint8_t *reg, uint8_t *mem)
+void op_df(void *reg, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -2882,10 +3384,12 @@ void op_df(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_e0(uint8_t *reg, uint8_t *mem)
+void op_e0(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -2894,10 +3398,12 @@ void op_e0(uint8_t *reg, uint8_t *mem)
 		      cycles: 12
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_e1(uint8_t *reg, uint8_t *mem)
+void op_e1(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 16bit load/store/move instructions
@@ -2906,10 +3412,12 @@ void op_e1(uint8_t *reg, uint8_t *mem)
 		      cycles: 12
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_e2(uint8_t *reg, uint8_t *mem)
+void op_e2(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -2918,10 +3426,12 @@ void op_e2(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_e3(uint8_t *reg, uint8_t *mem)
+void op_e3(void *reg, uint8_t *mem)
 {
 	/*
 		    category: UNDEFINED XXX
@@ -2930,10 +3440,12 @@ void op_e3(uint8_t *reg, uint8_t *mem)
 		      cycles: undefined
 		       flags: undefined
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_e4(uint8_t *reg, uint8_t *mem)
+void op_e4(void *reg, uint8_t *mem)
 {
 	/*
 		    category: UNDEFINED XXX
@@ -2942,10 +3454,12 @@ void op_e4(uint8_t *reg, uint8_t *mem)
 		      cycles: undefined
 		       flags: undefined
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_e5(uint8_t *reg, uint8_t *mem)
+void op_e5(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 16bit load/store/move instructions
@@ -2954,10 +3468,12 @@ void op_e5(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_e6(uint8_t *reg, uint8_t *mem)
+void op_e6(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -2966,13 +3482,16 @@ void op_e6(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 0
 	*/
-/* FIXME: code AND */
-	reg[1] &= (~0x50); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->A &= mem[r16->PC+1]; /* code AND */
+	r8->A == 0 ? set_z : clear_z;
+	r8->F &= (~0x50); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_e7(uint8_t *reg, uint8_t *mem)
+void op_e7(void *reg, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -2981,10 +3500,12 @@ void op_e7(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_e8(uint8_t *reg, uint8_t *mem)
+void op_e8(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 16bit arithmetic/logical instructions
@@ -2993,11 +3514,13 @@ void op_e8(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: 0 0 H C
 	*/
-	reg[1] &= (~0xc0); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0xc0); /* clear flags */
 }
 
 
-void op_e9(uint8_t *reg, uint8_t *mem)
+void op_e9(void *reg, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -3006,10 +3529,12 @@ void op_e9(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_ea(uint8_t *reg, uint8_t *mem)
+void op_ea(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -3018,10 +3543,12 @@ void op_ea(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_eb(uint8_t *reg, uint8_t *mem)
+void op_eb(void *reg, uint8_t *mem)
 {
 	/*
 		    category: UNDEFINED XXX
@@ -3030,10 +3557,12 @@ void op_eb(uint8_t *reg, uint8_t *mem)
 		      cycles: undefined
 		       flags: undefined
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_ec(uint8_t *reg, uint8_t *mem)
+void op_ec(void *reg, uint8_t *mem)
 {
 	/*
 		    category: UNDEFINED XXX
@@ -3042,10 +3571,12 @@ void op_ec(uint8_t *reg, uint8_t *mem)
 		      cycles: undefined
 		       flags: undefined
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_ed(uint8_t *reg, uint8_t *mem)
+void op_ed(void *reg, uint8_t *mem)
 {
 	/*
 		    category: UNDEFINED XXX
@@ -3054,10 +3585,12 @@ void op_ed(uint8_t *reg, uint8_t *mem)
 		      cycles: undefined
 		       flags: undefined
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_ee(uint8_t *reg, uint8_t *mem)
+void op_ee(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -3066,11 +3599,15 @@ void op_ee(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 0
 	*/
-	reg[1] &= (~0x70); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->A ^= mem[r16->PC+1]; /* code XOR */
+	r8->A == 0 ? set_z : clear_z;
+	r8->F &= (~0x70); /* clear flags */
 }
 
 
-void op_ef(uint8_t *reg, uint8_t *mem)
+void op_ef(void *reg, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -3079,10 +3616,12 @@ void op_ef(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_f0(uint8_t *reg, uint8_t *mem)
+void op_f0(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -3091,10 +3630,12 @@ void op_f0(uint8_t *reg, uint8_t *mem)
 		      cycles: 12
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_f1(uint8_t *reg, uint8_t *mem)
+void op_f1(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 16bit load/store/move instructions
@@ -3103,10 +3644,12 @@ void op_f1(uint8_t *reg, uint8_t *mem)
 		      cycles: 12
 		       flags: Z N H C
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_f2(uint8_t *reg, uint8_t *mem)
+void op_f2(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -3115,11 +3658,13 @@ void op_f2(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 /* FIXME: code LD */
 }
 
 
-void op_f3(uint8_t *reg, uint8_t *mem)
+void op_f3(void *reg, uint8_t *mem)
 {
 	/*
 		    category: Misc/control instructions
@@ -3128,10 +3673,12 @@ void op_f3(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_f4(uint8_t *reg, uint8_t *mem)
+void op_f4(void *reg, uint8_t *mem)
 {
 	/*
 		    category: UNDEFINED XXX
@@ -3140,10 +3687,12 @@ void op_f4(uint8_t *reg, uint8_t *mem)
 		      cycles: undefined
 		       flags: undefined
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_f5(uint8_t *reg, uint8_t *mem)
+void op_f5(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 16bit load/store/move instructions
@@ -3152,10 +3701,12 @@ void op_f5(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_f6(uint8_t *reg, uint8_t *mem)
+void op_f6(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -3164,11 +3715,15 @@ void op_f6(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 0
 	*/
-	reg[1] &= (~0x70); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->A |= mem[r16->PC+1]; /* code OR */
+	r8->A == 0 ? set_z : clear_z;
+	r8->F &= (~0x70); /* clear flags */
 }
 
 
-void op_f7(uint8_t *reg, uint8_t *mem)
+void op_f7(void *reg, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -3177,10 +3732,12 @@ void op_f7(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_f8(uint8_t *reg, uint8_t *mem)
+void op_f8(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 16bit load/store/move instructions
@@ -3189,11 +3746,13 @@ void op_f8(uint8_t *reg, uint8_t *mem)
 		      cycles: 12
 		       flags: 0 0 H C
 	*/
-	reg[1] &= (~0xc0); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0xc0); /* clear flags */
 }
 
 
-void op_f9(uint8_t *reg, uint8_t *mem)
+void op_f9(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 16bit load/store/move instructions
@@ -3202,10 +3761,12 @@ void op_f9(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_fa(uint8_t *reg, uint8_t *mem)
+void op_fa(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -3214,11 +3775,13 @@ void op_fa(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 /* FIXME: code LD */
 }
 
 
-void op_fb(uint8_t *reg, uint8_t *mem)
+void op_fb(void *reg, uint8_t *mem)
 {
 	/*
 		    category: Misc/control instructions
@@ -3227,10 +3790,12 @@ void op_fb(uint8_t *reg, uint8_t *mem)
 		      cycles: 4
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_fc(uint8_t *reg, uint8_t *mem)
+void op_fc(void *reg, uint8_t *mem)
 {
 	/*
 		    category: UNDEFINED XXX
@@ -3239,10 +3804,12 @@ void op_fc(uint8_t *reg, uint8_t *mem)
 		      cycles: undefined
 		       flags: undefined
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_fd(uint8_t *reg, uint8_t *mem)
+void op_fd(void *reg, uint8_t *mem)
 {
 	/*
 		    category: UNDEFINED XXX
@@ -3251,10 +3818,12 @@ void op_fd(uint8_t *reg, uint8_t *mem)
 		      cycles: undefined
 		       flags: undefined
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_fe(uint8_t *reg, uint8_t *mem)
+void op_fe(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -3263,11 +3832,13 @@ void op_fe(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 1 H C
 	*/
-	reg[1] |= 0x40; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F |= 0x40; /* set flags */
 }
 
 
-void op_ff(uint8_t *reg, uint8_t *mem)
+void op_ff(void *reg, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -3276,10 +3847,12 @@ void op_ff(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cb00(uint8_t *reg, uint8_t *mem)
+void op_cb00(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3288,11 +3861,13 @@ void op_cb00(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 C
 	*/
-	reg[1] &= (~0x60); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
 }
 
 
-void op_cb01(uint8_t *reg, uint8_t *mem)
+void op_cb01(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3301,11 +3876,13 @@ void op_cb01(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 C
 	*/
-	reg[1] &= (~0x60); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
 }
 
 
-void op_cb02(uint8_t *reg, uint8_t *mem)
+void op_cb02(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3314,11 +3891,13 @@ void op_cb02(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 C
 	*/
-	reg[1] &= (~0x60); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
 }
 
 
-void op_cb03(uint8_t *reg, uint8_t *mem)
+void op_cb03(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3327,11 +3906,13 @@ void op_cb03(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 C
 	*/
-	reg[1] &= (~0x60); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
 }
 
 
-void op_cb04(uint8_t *reg, uint8_t *mem)
+void op_cb04(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3340,11 +3921,13 @@ void op_cb04(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 C
 	*/
-	reg[1] &= (~0x60); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
 }
 
 
-void op_cb05(uint8_t *reg, uint8_t *mem)
+void op_cb05(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3353,11 +3936,13 @@ void op_cb05(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 C
 	*/
-	reg[1] &= (~0x60); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
 }
 
 
-void op_cb06(uint8_t *reg, uint8_t *mem)
+void op_cb06(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3366,11 +3951,13 @@ void op_cb06(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: Z 0 0 C
 	*/
-	reg[1] &= (~0x60); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
 }
 
 
-void op_cb07(uint8_t *reg, uint8_t *mem)
+void op_cb07(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3379,11 +3966,13 @@ void op_cb07(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 C
 	*/
-	reg[1] &= (~0x60); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
 }
 
 
-void op_cb08(uint8_t *reg, uint8_t *mem)
+void op_cb08(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3392,11 +3981,13 @@ void op_cb08(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 C
 	*/
-	reg[1] &= (~0x60); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
 }
 
 
-void op_cb09(uint8_t *reg, uint8_t *mem)
+void op_cb09(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3405,11 +3996,13 @@ void op_cb09(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 C
 	*/
-	reg[1] &= (~0x60); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
 }
 
 
-void op_cb0a(uint8_t *reg, uint8_t *mem)
+void op_cb0a(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3418,11 +4011,13 @@ void op_cb0a(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 C
 	*/
-	reg[1] &= (~0x60); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
 }
 
 
-void op_cb0b(uint8_t *reg, uint8_t *mem)
+void op_cb0b(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3431,11 +4026,13 @@ void op_cb0b(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 C
 	*/
-	reg[1] &= (~0x60); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
 }
 
 
-void op_cb0c(uint8_t *reg, uint8_t *mem)
+void op_cb0c(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3444,11 +4041,13 @@ void op_cb0c(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 C
 	*/
-	reg[1] &= (~0x60); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
 }
 
 
-void op_cb0d(uint8_t *reg, uint8_t *mem)
+void op_cb0d(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3457,11 +4056,13 @@ void op_cb0d(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 C
 	*/
-	reg[1] &= (~0x60); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
 }
 
 
-void op_cb0e(uint8_t *reg, uint8_t *mem)
+void op_cb0e(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3470,11 +4071,13 @@ void op_cb0e(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: Z 0 0 C
 	*/
-	reg[1] &= (~0x60); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
 }
 
 
-void op_cb0f(uint8_t *reg, uint8_t *mem)
+void op_cb0f(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3483,11 +4086,13 @@ void op_cb0f(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 C
 	*/
-	reg[1] &= (~0x60); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
 }
 
 
-void op_cb10(uint8_t *reg, uint8_t *mem)
+void op_cb10(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3496,11 +4101,13 @@ void op_cb10(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 C
 	*/
-	reg[1] &= (~0x60); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
 }
 
 
-void op_cb11(uint8_t *reg, uint8_t *mem)
+void op_cb11(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3509,11 +4116,13 @@ void op_cb11(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 C
 	*/
-	reg[1] &= (~0x60); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
 }
 
 
-void op_cb12(uint8_t *reg, uint8_t *mem)
+void op_cb12(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3522,11 +4131,13 @@ void op_cb12(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 C
 	*/
-	reg[1] &= (~0x60); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
 }
 
 
-void op_cb13(uint8_t *reg, uint8_t *mem)
+void op_cb13(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3535,11 +4146,13 @@ void op_cb13(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 C
 	*/
-	reg[1] &= (~0x60); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
 }
 
 
-void op_cb14(uint8_t *reg, uint8_t *mem)
+void op_cb14(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3548,11 +4161,13 @@ void op_cb14(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 C
 	*/
-	reg[1] &= (~0x60); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
 }
 
 
-void op_cb15(uint8_t *reg, uint8_t *mem)
+void op_cb15(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3561,11 +4176,13 @@ void op_cb15(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 C
 	*/
-	reg[1] &= (~0x60); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
 }
 
 
-void op_cb16(uint8_t *reg, uint8_t *mem)
+void op_cb16(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3574,11 +4191,13 @@ void op_cb16(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: Z 0 0 C
 	*/
-	reg[1] &= (~0x60); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
 }
 
 
-void op_cb17(uint8_t *reg, uint8_t *mem)
+void op_cb17(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3587,11 +4206,13 @@ void op_cb17(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 C
 	*/
-	reg[1] &= (~0x60); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
 }
 
 
-void op_cb18(uint8_t *reg, uint8_t *mem)
+void op_cb18(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3600,11 +4221,13 @@ void op_cb18(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 C
 	*/
-	reg[1] &= (~0x60); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
 }
 
 
-void op_cb19(uint8_t *reg, uint8_t *mem)
+void op_cb19(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3613,11 +4236,13 @@ void op_cb19(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 C
 	*/
-	reg[1] &= (~0x60); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
 }
 
 
-void op_cb1a(uint8_t *reg, uint8_t *mem)
+void op_cb1a(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3626,11 +4251,13 @@ void op_cb1a(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 C
 	*/
-	reg[1] &= (~0x60); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
 }
 
 
-void op_cb1b(uint8_t *reg, uint8_t *mem)
+void op_cb1b(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3639,11 +4266,13 @@ void op_cb1b(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 C
 	*/
-	reg[1] &= (~0x60); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
 }
 
 
-void op_cb1c(uint8_t *reg, uint8_t *mem)
+void op_cb1c(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3652,11 +4281,13 @@ void op_cb1c(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 C
 	*/
-	reg[1] &= (~0x60); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
 }
 
 
-void op_cb1d(uint8_t *reg, uint8_t *mem)
+void op_cb1d(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3665,11 +4296,13 @@ void op_cb1d(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 C
 	*/
-	reg[1] &= (~0x60); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
 }
 
 
-void op_cb1e(uint8_t *reg, uint8_t *mem)
+void op_cb1e(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3678,11 +4311,13 @@ void op_cb1e(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: Z 0 0 C
 	*/
-	reg[1] &= (~0x60); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
 }
 
 
-void op_cb1f(uint8_t *reg, uint8_t *mem)
+void op_cb1f(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3691,11 +4326,13 @@ void op_cb1f(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 C
 	*/
-	reg[1] &= (~0x60); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
 }
 
 
-void op_cb20(uint8_t *reg, uint8_t *mem)
+void op_cb20(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3704,11 +4341,13 @@ void op_cb20(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 C
 	*/
-	reg[1] &= (~0x60); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
 }
 
 
-void op_cb21(uint8_t *reg, uint8_t *mem)
+void op_cb21(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3717,11 +4356,13 @@ void op_cb21(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 C
 	*/
-	reg[1] &= (~0x60); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
 }
 
 
-void op_cb22(uint8_t *reg, uint8_t *mem)
+void op_cb22(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3730,11 +4371,13 @@ void op_cb22(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 C
 	*/
-	reg[1] &= (~0x60); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
 }
 
 
-void op_cb23(uint8_t *reg, uint8_t *mem)
+void op_cb23(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3743,11 +4386,13 @@ void op_cb23(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 C
 	*/
-	reg[1] &= (~0x60); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
 }
 
 
-void op_cb24(uint8_t *reg, uint8_t *mem)
+void op_cb24(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3756,11 +4401,13 @@ void op_cb24(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 C
 	*/
-	reg[1] &= (~0x60); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
 }
 
 
-void op_cb25(uint8_t *reg, uint8_t *mem)
+void op_cb25(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3769,11 +4416,13 @@ void op_cb25(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 C
 	*/
-	reg[1] &= (~0x60); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
 }
 
 
-void op_cb26(uint8_t *reg, uint8_t *mem)
+void op_cb26(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3782,11 +4431,13 @@ void op_cb26(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: Z 0 0 C
 	*/
-	reg[1] &= (~0x60); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
 }
 
 
-void op_cb27(uint8_t *reg, uint8_t *mem)
+void op_cb27(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3795,11 +4446,13 @@ void op_cb27(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 C
 	*/
-	reg[1] &= (~0x60); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
 }
 
 
-void op_cb28(uint8_t *reg, uint8_t *mem)
+void op_cb28(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3808,11 +4461,13 @@ void op_cb28(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 0
 	*/
-	reg[1] &= (~0x70); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x70); /* clear flags */
 }
 
 
-void op_cb29(uint8_t *reg, uint8_t *mem)
+void op_cb29(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3821,11 +4476,13 @@ void op_cb29(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 0
 	*/
-	reg[1] &= (~0x70); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x70); /* clear flags */
 }
 
 
-void op_cb2a(uint8_t *reg, uint8_t *mem)
+void op_cb2a(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3834,11 +4491,13 @@ void op_cb2a(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 0
 	*/
-	reg[1] &= (~0x70); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x70); /* clear flags */
 }
 
 
-void op_cb2b(uint8_t *reg, uint8_t *mem)
+void op_cb2b(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3847,11 +4506,13 @@ void op_cb2b(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 0
 	*/
-	reg[1] &= (~0x70); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x70); /* clear flags */
 }
 
 
-void op_cb2c(uint8_t *reg, uint8_t *mem)
+void op_cb2c(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3860,11 +4521,13 @@ void op_cb2c(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 0
 	*/
-	reg[1] &= (~0x70); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x70); /* clear flags */
 }
 
 
-void op_cb2d(uint8_t *reg, uint8_t *mem)
+void op_cb2d(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3873,11 +4536,13 @@ void op_cb2d(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 0
 	*/
-	reg[1] &= (~0x70); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x70); /* clear flags */
 }
 
 
-void op_cb2e(uint8_t *reg, uint8_t *mem)
+void op_cb2e(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3886,11 +4551,13 @@ void op_cb2e(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: Z 0 0 0
 	*/
-	reg[1] &= (~0x70); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x70); /* clear flags */
 }
 
 
-void op_cb2f(uint8_t *reg, uint8_t *mem)
+void op_cb2f(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3899,11 +4566,13 @@ void op_cb2f(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 0
 	*/
-	reg[1] &= (~0x70); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x70); /* clear flags */
 }
 
 
-void op_cb30(uint8_t *reg, uint8_t *mem)
+void op_cb30(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3912,11 +4581,13 @@ void op_cb30(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 0
 	*/
-	reg[1] &= (~0x70); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x70); /* clear flags */
 }
 
 
-void op_cb31(uint8_t *reg, uint8_t *mem)
+void op_cb31(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3925,11 +4596,13 @@ void op_cb31(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 0
 	*/
-	reg[1] &= (~0x70); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x70); /* clear flags */
 }
 
 
-void op_cb32(uint8_t *reg, uint8_t *mem)
+void op_cb32(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3938,11 +4611,13 @@ void op_cb32(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 0
 	*/
-	reg[1] &= (~0x70); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x70); /* clear flags */
 }
 
 
-void op_cb33(uint8_t *reg, uint8_t *mem)
+void op_cb33(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3951,11 +4626,13 @@ void op_cb33(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 0
 	*/
-	reg[1] &= (~0x70); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x70); /* clear flags */
 }
 
 
-void op_cb34(uint8_t *reg, uint8_t *mem)
+void op_cb34(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3964,11 +4641,13 @@ void op_cb34(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 0
 	*/
-	reg[1] &= (~0x70); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x70); /* clear flags */
 }
 
 
-void op_cb35(uint8_t *reg, uint8_t *mem)
+void op_cb35(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3977,11 +4656,13 @@ void op_cb35(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 0
 	*/
-	reg[1] &= (~0x70); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x70); /* clear flags */
 }
 
 
-void op_cb36(uint8_t *reg, uint8_t *mem)
+void op_cb36(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -3990,11 +4671,13 @@ void op_cb36(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: Z 0 0 0
 	*/
-	reg[1] &= (~0x70); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x70); /* clear flags */
 }
 
 
-void op_cb37(uint8_t *reg, uint8_t *mem)
+void op_cb37(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4003,11 +4686,13 @@ void op_cb37(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 0
 	*/
-	reg[1] &= (~0x70); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x70); /* clear flags */
 }
 
 
-void op_cb38(uint8_t *reg, uint8_t *mem)
+void op_cb38(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4016,11 +4701,13 @@ void op_cb38(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 C
 	*/
-	reg[1] &= (~0x60); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
 }
 
 
-void op_cb39(uint8_t *reg, uint8_t *mem)
+void op_cb39(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4029,11 +4716,13 @@ void op_cb39(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 C
 	*/
-	reg[1] &= (~0x60); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
 }
 
 
-void op_cb3a(uint8_t *reg, uint8_t *mem)
+void op_cb3a(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4042,11 +4731,13 @@ void op_cb3a(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 C
 	*/
-	reg[1] &= (~0x60); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
 }
 
 
-void op_cb3b(uint8_t *reg, uint8_t *mem)
+void op_cb3b(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4055,11 +4746,13 @@ void op_cb3b(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 C
 	*/
-	reg[1] &= (~0x60); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
 }
 
 
-void op_cb3c(uint8_t *reg, uint8_t *mem)
+void op_cb3c(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4068,11 +4761,13 @@ void op_cb3c(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 C
 	*/
-	reg[1] &= (~0x60); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
 }
 
 
-void op_cb3d(uint8_t *reg, uint8_t *mem)
+void op_cb3d(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4081,11 +4776,13 @@ void op_cb3d(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 C
 	*/
-	reg[1] &= (~0x60); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
 }
 
 
-void op_cb3e(uint8_t *reg, uint8_t *mem)
+void op_cb3e(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4094,11 +4791,13 @@ void op_cb3e(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: Z 0 0 C
 	*/
-	reg[1] &= (~0x60); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
 }
 
 
-void op_cb3f(uint8_t *reg, uint8_t *mem)
+void op_cb3f(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4107,11 +4806,13 @@ void op_cb3f(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 0 C
 	*/
-	reg[1] &= (~0x60); /* clear flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x60); /* clear flags */
 }
 
 
-void op_cb40(uint8_t *reg, uint8_t *mem)
+void op_cb40(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4120,12 +4821,14 @@ void op_cb40(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb41(uint8_t *reg, uint8_t *mem)
+void op_cb41(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4134,12 +4837,14 @@ void op_cb41(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb42(uint8_t *reg, uint8_t *mem)
+void op_cb42(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4148,12 +4853,14 @@ void op_cb42(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb43(uint8_t *reg, uint8_t *mem)
+void op_cb43(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4162,12 +4869,14 @@ void op_cb43(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb44(uint8_t *reg, uint8_t *mem)
+void op_cb44(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4176,12 +4885,14 @@ void op_cb44(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb45(uint8_t *reg, uint8_t *mem)
+void op_cb45(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4190,12 +4901,14 @@ void op_cb45(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb46(uint8_t *reg, uint8_t *mem)
+void op_cb46(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4204,12 +4917,14 @@ void op_cb46(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb47(uint8_t *reg, uint8_t *mem)
+void op_cb47(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4218,12 +4933,14 @@ void op_cb47(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb48(uint8_t *reg, uint8_t *mem)
+void op_cb48(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4232,12 +4949,14 @@ void op_cb48(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb49(uint8_t *reg, uint8_t *mem)
+void op_cb49(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4246,12 +4965,14 @@ void op_cb49(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb4a(uint8_t *reg, uint8_t *mem)
+void op_cb4a(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4260,12 +4981,14 @@ void op_cb4a(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb4b(uint8_t *reg, uint8_t *mem)
+void op_cb4b(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4274,12 +4997,14 @@ void op_cb4b(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb4c(uint8_t *reg, uint8_t *mem)
+void op_cb4c(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4288,12 +5013,14 @@ void op_cb4c(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb4d(uint8_t *reg, uint8_t *mem)
+void op_cb4d(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4302,12 +5029,14 @@ void op_cb4d(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb4e(uint8_t *reg, uint8_t *mem)
+void op_cb4e(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4316,12 +5045,14 @@ void op_cb4e(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb4f(uint8_t *reg, uint8_t *mem)
+void op_cb4f(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4330,12 +5061,14 @@ void op_cb4f(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb50(uint8_t *reg, uint8_t *mem)
+void op_cb50(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4344,12 +5077,14 @@ void op_cb50(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb51(uint8_t *reg, uint8_t *mem)
+void op_cb51(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4358,12 +5093,14 @@ void op_cb51(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb52(uint8_t *reg, uint8_t *mem)
+void op_cb52(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4372,12 +5109,14 @@ void op_cb52(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb53(uint8_t *reg, uint8_t *mem)
+void op_cb53(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4386,12 +5125,14 @@ void op_cb53(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb54(uint8_t *reg, uint8_t *mem)
+void op_cb54(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4400,12 +5141,14 @@ void op_cb54(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb55(uint8_t *reg, uint8_t *mem)
+void op_cb55(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4414,12 +5157,14 @@ void op_cb55(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb56(uint8_t *reg, uint8_t *mem)
+void op_cb56(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4428,12 +5173,14 @@ void op_cb56(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb57(uint8_t *reg, uint8_t *mem)
+void op_cb57(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4442,12 +5189,14 @@ void op_cb57(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb58(uint8_t *reg, uint8_t *mem)
+void op_cb58(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4456,12 +5205,14 @@ void op_cb58(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb59(uint8_t *reg, uint8_t *mem)
+void op_cb59(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4470,12 +5221,14 @@ void op_cb59(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb5a(uint8_t *reg, uint8_t *mem)
+void op_cb5a(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4484,12 +5237,14 @@ void op_cb5a(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb5b(uint8_t *reg, uint8_t *mem)
+void op_cb5b(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4498,12 +5253,14 @@ void op_cb5b(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb5c(uint8_t *reg, uint8_t *mem)
+void op_cb5c(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4512,12 +5269,14 @@ void op_cb5c(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb5d(uint8_t *reg, uint8_t *mem)
+void op_cb5d(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4526,12 +5285,14 @@ void op_cb5d(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb5e(uint8_t *reg, uint8_t *mem)
+void op_cb5e(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4540,12 +5301,14 @@ void op_cb5e(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb5f(uint8_t *reg, uint8_t *mem)
+void op_cb5f(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4554,12 +5317,14 @@ void op_cb5f(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb60(uint8_t *reg, uint8_t *mem)
+void op_cb60(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4568,12 +5333,14 @@ void op_cb60(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb61(uint8_t *reg, uint8_t *mem)
+void op_cb61(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4582,12 +5349,14 @@ void op_cb61(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb62(uint8_t *reg, uint8_t *mem)
+void op_cb62(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4596,12 +5365,14 @@ void op_cb62(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb63(uint8_t *reg, uint8_t *mem)
+void op_cb63(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4610,12 +5381,14 @@ void op_cb63(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb64(uint8_t *reg, uint8_t *mem)
+void op_cb64(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4624,12 +5397,14 @@ void op_cb64(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb65(uint8_t *reg, uint8_t *mem)
+void op_cb65(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4638,12 +5413,14 @@ void op_cb65(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb66(uint8_t *reg, uint8_t *mem)
+void op_cb66(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4652,12 +5429,14 @@ void op_cb66(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb67(uint8_t *reg, uint8_t *mem)
+void op_cb67(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4666,12 +5445,14 @@ void op_cb67(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb68(uint8_t *reg, uint8_t *mem)
+void op_cb68(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4680,12 +5461,14 @@ void op_cb68(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb69(uint8_t *reg, uint8_t *mem)
+void op_cb69(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4694,12 +5477,14 @@ void op_cb69(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb6a(uint8_t *reg, uint8_t *mem)
+void op_cb6a(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4708,12 +5493,14 @@ void op_cb6a(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb6b(uint8_t *reg, uint8_t *mem)
+void op_cb6b(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4722,12 +5509,14 @@ void op_cb6b(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb6c(uint8_t *reg, uint8_t *mem)
+void op_cb6c(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4736,12 +5525,14 @@ void op_cb6c(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb6d(uint8_t *reg, uint8_t *mem)
+void op_cb6d(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4750,12 +5541,14 @@ void op_cb6d(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb6e(uint8_t *reg, uint8_t *mem)
+void op_cb6e(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4764,12 +5557,14 @@ void op_cb6e(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb6f(uint8_t *reg, uint8_t *mem)
+void op_cb6f(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4778,12 +5573,14 @@ void op_cb6f(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb70(uint8_t *reg, uint8_t *mem)
+void op_cb70(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4792,12 +5589,14 @@ void op_cb70(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb71(uint8_t *reg, uint8_t *mem)
+void op_cb71(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4806,12 +5605,14 @@ void op_cb71(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb72(uint8_t *reg, uint8_t *mem)
+void op_cb72(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4820,12 +5621,14 @@ void op_cb72(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb73(uint8_t *reg, uint8_t *mem)
+void op_cb73(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4834,12 +5637,14 @@ void op_cb73(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb74(uint8_t *reg, uint8_t *mem)
+void op_cb74(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4848,12 +5653,14 @@ void op_cb74(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb75(uint8_t *reg, uint8_t *mem)
+void op_cb75(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4862,12 +5669,14 @@ void op_cb75(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb76(uint8_t *reg, uint8_t *mem)
+void op_cb76(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4876,12 +5685,14 @@ void op_cb76(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb77(uint8_t *reg, uint8_t *mem)
+void op_cb77(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4890,12 +5701,14 @@ void op_cb77(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb78(uint8_t *reg, uint8_t *mem)
+void op_cb78(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4904,12 +5717,14 @@ void op_cb78(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb79(uint8_t *reg, uint8_t *mem)
+void op_cb79(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4918,12 +5733,14 @@ void op_cb79(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb7a(uint8_t *reg, uint8_t *mem)
+void op_cb7a(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4932,12 +5749,14 @@ void op_cb7a(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb7b(uint8_t *reg, uint8_t *mem)
+void op_cb7b(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4946,12 +5765,14 @@ void op_cb7b(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb7c(uint8_t *reg, uint8_t *mem)
+void op_cb7c(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4960,12 +5781,14 @@ void op_cb7c(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb7d(uint8_t *reg, uint8_t *mem)
+void op_cb7d(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4974,12 +5797,14 @@ void op_cb7d(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb7e(uint8_t *reg, uint8_t *mem)
+void op_cb7e(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -4988,12 +5813,14 @@ void op_cb7e(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb7f(uint8_t *reg, uint8_t *mem)
+void op_cb7f(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5002,12 +5829,14 @@ void op_cb7f(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: Z 0 1 -
 	*/
-	reg[1] &= (~0x40); /* clear flags */
-	reg[1] |= 0x20; /* set flags */
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
+	r8->F &= (~0x40); /* clear flags */
+	r8->F |= 0x20; /* set flags */
 }
 
 
-void op_cb80(uint8_t *reg, uint8_t *mem)
+void op_cb80(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5016,10 +5845,12 @@ void op_cb80(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cb81(uint8_t *reg, uint8_t *mem)
+void op_cb81(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5028,10 +5859,12 @@ void op_cb81(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cb82(uint8_t *reg, uint8_t *mem)
+void op_cb82(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5040,10 +5873,12 @@ void op_cb82(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cb83(uint8_t *reg, uint8_t *mem)
+void op_cb83(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5052,10 +5887,12 @@ void op_cb83(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cb84(uint8_t *reg, uint8_t *mem)
+void op_cb84(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5064,10 +5901,12 @@ void op_cb84(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cb85(uint8_t *reg, uint8_t *mem)
+void op_cb85(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5076,10 +5915,12 @@ void op_cb85(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cb86(uint8_t *reg, uint8_t *mem)
+void op_cb86(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5088,10 +5929,12 @@ void op_cb86(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cb87(uint8_t *reg, uint8_t *mem)
+void op_cb87(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5100,10 +5943,12 @@ void op_cb87(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cb88(uint8_t *reg, uint8_t *mem)
+void op_cb88(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5112,10 +5957,12 @@ void op_cb88(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cb89(uint8_t *reg, uint8_t *mem)
+void op_cb89(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5124,10 +5971,12 @@ void op_cb89(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cb8a(uint8_t *reg, uint8_t *mem)
+void op_cb8a(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5136,10 +5985,12 @@ void op_cb8a(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cb8b(uint8_t *reg, uint8_t *mem)
+void op_cb8b(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5148,10 +5999,12 @@ void op_cb8b(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cb8c(uint8_t *reg, uint8_t *mem)
+void op_cb8c(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5160,10 +6013,12 @@ void op_cb8c(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cb8d(uint8_t *reg, uint8_t *mem)
+void op_cb8d(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5172,10 +6027,12 @@ void op_cb8d(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cb8e(uint8_t *reg, uint8_t *mem)
+void op_cb8e(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5184,10 +6041,12 @@ void op_cb8e(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cb8f(uint8_t *reg, uint8_t *mem)
+void op_cb8f(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5196,10 +6055,12 @@ void op_cb8f(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cb90(uint8_t *reg, uint8_t *mem)
+void op_cb90(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5208,10 +6069,12 @@ void op_cb90(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cb91(uint8_t *reg, uint8_t *mem)
+void op_cb91(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5220,10 +6083,12 @@ void op_cb91(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cb92(uint8_t *reg, uint8_t *mem)
+void op_cb92(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5232,10 +6097,12 @@ void op_cb92(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cb93(uint8_t *reg, uint8_t *mem)
+void op_cb93(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5244,10 +6111,12 @@ void op_cb93(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cb94(uint8_t *reg, uint8_t *mem)
+void op_cb94(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5256,10 +6125,12 @@ void op_cb94(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cb95(uint8_t *reg, uint8_t *mem)
+void op_cb95(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5268,10 +6139,12 @@ void op_cb95(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cb96(uint8_t *reg, uint8_t *mem)
+void op_cb96(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5280,10 +6153,12 @@ void op_cb96(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cb97(uint8_t *reg, uint8_t *mem)
+void op_cb97(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5292,10 +6167,12 @@ void op_cb97(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cb98(uint8_t *reg, uint8_t *mem)
+void op_cb98(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5304,10 +6181,12 @@ void op_cb98(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cb99(uint8_t *reg, uint8_t *mem)
+void op_cb99(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5316,10 +6195,12 @@ void op_cb99(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cb9a(uint8_t *reg, uint8_t *mem)
+void op_cb9a(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5328,10 +6209,12 @@ void op_cb9a(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cb9b(uint8_t *reg, uint8_t *mem)
+void op_cb9b(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5340,10 +6223,12 @@ void op_cb9b(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cb9c(uint8_t *reg, uint8_t *mem)
+void op_cb9c(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5352,10 +6237,12 @@ void op_cb9c(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cb9d(uint8_t *reg, uint8_t *mem)
+void op_cb9d(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5364,10 +6251,12 @@ void op_cb9d(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cb9e(uint8_t *reg, uint8_t *mem)
+void op_cb9e(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5376,10 +6265,12 @@ void op_cb9e(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cb9f(uint8_t *reg, uint8_t *mem)
+void op_cb9f(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5388,10 +6279,12 @@ void op_cb9f(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cba0(uint8_t *reg, uint8_t *mem)
+void op_cba0(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5400,10 +6293,12 @@ void op_cba0(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cba1(uint8_t *reg, uint8_t *mem)
+void op_cba1(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5412,10 +6307,12 @@ void op_cba1(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cba2(uint8_t *reg, uint8_t *mem)
+void op_cba2(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5424,10 +6321,12 @@ void op_cba2(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cba3(uint8_t *reg, uint8_t *mem)
+void op_cba3(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5436,10 +6335,12 @@ void op_cba3(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cba4(uint8_t *reg, uint8_t *mem)
+void op_cba4(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5448,10 +6349,12 @@ void op_cba4(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cba5(uint8_t *reg, uint8_t *mem)
+void op_cba5(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5460,10 +6363,12 @@ void op_cba5(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cba6(uint8_t *reg, uint8_t *mem)
+void op_cba6(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5472,10 +6377,12 @@ void op_cba6(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cba7(uint8_t *reg, uint8_t *mem)
+void op_cba7(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5484,10 +6391,12 @@ void op_cba7(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cba8(uint8_t *reg, uint8_t *mem)
+void op_cba8(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5496,10 +6405,12 @@ void op_cba8(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cba9(uint8_t *reg, uint8_t *mem)
+void op_cba9(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5508,10 +6419,12 @@ void op_cba9(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbaa(uint8_t *reg, uint8_t *mem)
+void op_cbaa(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5520,10 +6433,12 @@ void op_cbaa(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbab(uint8_t *reg, uint8_t *mem)
+void op_cbab(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5532,10 +6447,12 @@ void op_cbab(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbac(uint8_t *reg, uint8_t *mem)
+void op_cbac(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5544,10 +6461,12 @@ void op_cbac(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbad(uint8_t *reg, uint8_t *mem)
+void op_cbad(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5556,10 +6475,12 @@ void op_cbad(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbae(uint8_t *reg, uint8_t *mem)
+void op_cbae(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5568,10 +6489,12 @@ void op_cbae(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbaf(uint8_t *reg, uint8_t *mem)
+void op_cbaf(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5580,10 +6503,12 @@ void op_cbaf(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbb0(uint8_t *reg, uint8_t *mem)
+void op_cbb0(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5592,10 +6517,12 @@ void op_cbb0(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbb1(uint8_t *reg, uint8_t *mem)
+void op_cbb1(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5604,10 +6531,12 @@ void op_cbb1(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbb2(uint8_t *reg, uint8_t *mem)
+void op_cbb2(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5616,10 +6545,12 @@ void op_cbb2(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbb3(uint8_t *reg, uint8_t *mem)
+void op_cbb3(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5628,10 +6559,12 @@ void op_cbb3(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbb4(uint8_t *reg, uint8_t *mem)
+void op_cbb4(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5640,10 +6573,12 @@ void op_cbb4(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbb5(uint8_t *reg, uint8_t *mem)
+void op_cbb5(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5652,10 +6587,12 @@ void op_cbb5(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbb6(uint8_t *reg, uint8_t *mem)
+void op_cbb6(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5664,10 +6601,12 @@ void op_cbb6(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbb7(uint8_t *reg, uint8_t *mem)
+void op_cbb7(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5676,10 +6615,12 @@ void op_cbb7(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbb8(uint8_t *reg, uint8_t *mem)
+void op_cbb8(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5688,10 +6629,12 @@ void op_cbb8(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbb9(uint8_t *reg, uint8_t *mem)
+void op_cbb9(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5700,10 +6643,12 @@ void op_cbb9(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbba(uint8_t *reg, uint8_t *mem)
+void op_cbba(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5712,10 +6657,12 @@ void op_cbba(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbbb(uint8_t *reg, uint8_t *mem)
+void op_cbbb(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5724,10 +6671,12 @@ void op_cbbb(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbbc(uint8_t *reg, uint8_t *mem)
+void op_cbbc(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5736,10 +6685,12 @@ void op_cbbc(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbbd(uint8_t *reg, uint8_t *mem)
+void op_cbbd(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5748,10 +6699,12 @@ void op_cbbd(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbbe(uint8_t *reg, uint8_t *mem)
+void op_cbbe(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5760,10 +6713,12 @@ void op_cbbe(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbbf(uint8_t *reg, uint8_t *mem)
+void op_cbbf(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5772,10 +6727,12 @@ void op_cbbf(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbc0(uint8_t *reg, uint8_t *mem)
+void op_cbc0(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5784,10 +6741,12 @@ void op_cbc0(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbc1(uint8_t *reg, uint8_t *mem)
+void op_cbc1(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5796,10 +6755,12 @@ void op_cbc1(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbc2(uint8_t *reg, uint8_t *mem)
+void op_cbc2(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5808,10 +6769,12 @@ void op_cbc2(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbc3(uint8_t *reg, uint8_t *mem)
+void op_cbc3(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5820,10 +6783,12 @@ void op_cbc3(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbc4(uint8_t *reg, uint8_t *mem)
+void op_cbc4(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5832,10 +6797,12 @@ void op_cbc4(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbc5(uint8_t *reg, uint8_t *mem)
+void op_cbc5(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5844,10 +6811,12 @@ void op_cbc5(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbc6(uint8_t *reg, uint8_t *mem)
+void op_cbc6(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5856,10 +6825,12 @@ void op_cbc6(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbc7(uint8_t *reg, uint8_t *mem)
+void op_cbc7(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5868,10 +6839,12 @@ void op_cbc7(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbc8(uint8_t *reg, uint8_t *mem)
+void op_cbc8(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5880,10 +6853,12 @@ void op_cbc8(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbc9(uint8_t *reg, uint8_t *mem)
+void op_cbc9(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5892,10 +6867,12 @@ void op_cbc9(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbca(uint8_t *reg, uint8_t *mem)
+void op_cbca(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5904,10 +6881,12 @@ void op_cbca(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbcb(uint8_t *reg, uint8_t *mem)
+void op_cbcb(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5916,10 +6895,12 @@ void op_cbcb(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbcc(uint8_t *reg, uint8_t *mem)
+void op_cbcc(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5928,10 +6909,12 @@ void op_cbcc(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbcd(uint8_t *reg, uint8_t *mem)
+void op_cbcd(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5940,10 +6923,12 @@ void op_cbcd(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbce(uint8_t *reg, uint8_t *mem)
+void op_cbce(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5952,10 +6937,12 @@ void op_cbce(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbcf(uint8_t *reg, uint8_t *mem)
+void op_cbcf(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5964,10 +6951,12 @@ void op_cbcf(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbd0(uint8_t *reg, uint8_t *mem)
+void op_cbd0(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5976,10 +6965,12 @@ void op_cbd0(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbd1(uint8_t *reg, uint8_t *mem)
+void op_cbd1(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -5988,10 +6979,12 @@ void op_cbd1(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbd2(uint8_t *reg, uint8_t *mem)
+void op_cbd2(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -6000,10 +6993,12 @@ void op_cbd2(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbd3(uint8_t *reg, uint8_t *mem)
+void op_cbd3(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -6012,10 +7007,12 @@ void op_cbd3(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbd4(uint8_t *reg, uint8_t *mem)
+void op_cbd4(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -6024,10 +7021,12 @@ void op_cbd4(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbd5(uint8_t *reg, uint8_t *mem)
+void op_cbd5(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -6036,10 +7035,12 @@ void op_cbd5(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbd6(uint8_t *reg, uint8_t *mem)
+void op_cbd6(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -6048,10 +7049,12 @@ void op_cbd6(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbd7(uint8_t *reg, uint8_t *mem)
+void op_cbd7(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -6060,10 +7063,12 @@ void op_cbd7(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbd8(uint8_t *reg, uint8_t *mem)
+void op_cbd8(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -6072,10 +7077,12 @@ void op_cbd8(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbd9(uint8_t *reg, uint8_t *mem)
+void op_cbd9(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -6084,10 +7091,12 @@ void op_cbd9(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbda(uint8_t *reg, uint8_t *mem)
+void op_cbda(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -6096,10 +7105,12 @@ void op_cbda(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbdb(uint8_t *reg, uint8_t *mem)
+void op_cbdb(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -6108,10 +7119,12 @@ void op_cbdb(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbdc(uint8_t *reg, uint8_t *mem)
+void op_cbdc(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -6120,10 +7133,12 @@ void op_cbdc(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbdd(uint8_t *reg, uint8_t *mem)
+void op_cbdd(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -6132,10 +7147,12 @@ void op_cbdd(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbde(uint8_t *reg, uint8_t *mem)
+void op_cbde(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -6144,10 +7161,12 @@ void op_cbde(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbdf(uint8_t *reg, uint8_t *mem)
+void op_cbdf(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -6156,10 +7175,12 @@ void op_cbdf(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbe0(uint8_t *reg, uint8_t *mem)
+void op_cbe0(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -6168,10 +7189,12 @@ void op_cbe0(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbe1(uint8_t *reg, uint8_t *mem)
+void op_cbe1(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -6180,10 +7203,12 @@ void op_cbe1(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbe2(uint8_t *reg, uint8_t *mem)
+void op_cbe2(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -6192,10 +7217,12 @@ void op_cbe2(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbe3(uint8_t *reg, uint8_t *mem)
+void op_cbe3(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -6204,10 +7231,12 @@ void op_cbe3(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbe4(uint8_t *reg, uint8_t *mem)
+void op_cbe4(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -6216,10 +7245,12 @@ void op_cbe4(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbe5(uint8_t *reg, uint8_t *mem)
+void op_cbe5(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -6228,10 +7259,12 @@ void op_cbe5(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbe6(uint8_t *reg, uint8_t *mem)
+void op_cbe6(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -6240,10 +7273,12 @@ void op_cbe6(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbe7(uint8_t *reg, uint8_t *mem)
+void op_cbe7(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -6252,10 +7287,12 @@ void op_cbe7(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbe8(uint8_t *reg, uint8_t *mem)
+void op_cbe8(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -6264,10 +7301,12 @@ void op_cbe8(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbe9(uint8_t *reg, uint8_t *mem)
+void op_cbe9(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -6276,10 +7315,12 @@ void op_cbe9(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbea(uint8_t *reg, uint8_t *mem)
+void op_cbea(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -6288,10 +7329,12 @@ void op_cbea(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbeb(uint8_t *reg, uint8_t *mem)
+void op_cbeb(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -6300,10 +7343,12 @@ void op_cbeb(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbec(uint8_t *reg, uint8_t *mem)
+void op_cbec(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -6312,10 +7357,12 @@ void op_cbec(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbed(uint8_t *reg, uint8_t *mem)
+void op_cbed(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -6324,10 +7371,12 @@ void op_cbed(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbee(uint8_t *reg, uint8_t *mem)
+void op_cbee(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -6336,10 +7385,12 @@ void op_cbee(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbef(uint8_t *reg, uint8_t *mem)
+void op_cbef(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -6348,10 +7399,12 @@ void op_cbef(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbf0(uint8_t *reg, uint8_t *mem)
+void op_cbf0(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -6360,10 +7413,12 @@ void op_cbf0(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbf1(uint8_t *reg, uint8_t *mem)
+void op_cbf1(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -6372,10 +7427,12 @@ void op_cbf1(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbf2(uint8_t *reg, uint8_t *mem)
+void op_cbf2(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -6384,10 +7441,12 @@ void op_cbf2(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbf3(uint8_t *reg, uint8_t *mem)
+void op_cbf3(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -6396,10 +7455,12 @@ void op_cbf3(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbf4(uint8_t *reg, uint8_t *mem)
+void op_cbf4(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -6408,10 +7469,12 @@ void op_cbf4(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbf5(uint8_t *reg, uint8_t *mem)
+void op_cbf5(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -6420,10 +7483,12 @@ void op_cbf5(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbf6(uint8_t *reg, uint8_t *mem)
+void op_cbf6(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -6432,10 +7497,12 @@ void op_cbf6(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbf7(uint8_t *reg, uint8_t *mem)
+void op_cbf7(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -6444,10 +7511,12 @@ void op_cbf7(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbf8(uint8_t *reg, uint8_t *mem)
+void op_cbf8(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -6456,10 +7525,12 @@ void op_cbf8(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbf9(uint8_t *reg, uint8_t *mem)
+void op_cbf9(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -6468,10 +7539,12 @@ void op_cbf9(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbfa(uint8_t *reg, uint8_t *mem)
+void op_cbfa(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -6480,10 +7553,12 @@ void op_cbfa(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbfb(uint8_t *reg, uint8_t *mem)
+void op_cbfb(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -6492,10 +7567,12 @@ void op_cbfb(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbfc(uint8_t *reg, uint8_t *mem)
+void op_cbfc(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -6504,10 +7581,12 @@ void op_cbfc(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbfd(uint8_t *reg, uint8_t *mem)
+void op_cbfd(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -6516,10 +7595,12 @@ void op_cbfd(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbfe(uint8_t *reg, uint8_t *mem)
+void op_cbfe(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -6528,10 +7609,12 @@ void op_cbfe(uint8_t *reg, uint8_t *mem)
 		      cycles: 16
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
-void op_cbff(uint8_t *reg, uint8_t *mem)
+void op_cbff(void *reg, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -6540,6 +7623,8 @@ void op_cbff(uint8_t *reg, uint8_t *mem)
 		      cycles: 8
 		       flags: - - - -
 	*/
+		t_r8 *r8 = reg;
+		t_r16 *r16 = reg;
 }
 
 
