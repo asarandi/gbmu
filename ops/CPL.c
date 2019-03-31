@@ -10,5 +10,11 @@ void op_2f(void *reg, uint8_t *mem)
 		       flags: - 1 1 -
 	*/
 
+
+	t_r8  *r8  = reg;
+	t_r16 *r16 = reg;
+	r8->A = (~r8->A);
+	clear_n_flag;
+	clear_h_flag;
 }
 

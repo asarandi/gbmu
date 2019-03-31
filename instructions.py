@@ -151,7 +151,6 @@ def  gb_op_bit(instr, byte_len, cycles, flags):
     code.append('set_h_flag;')
     return format_c_code_list(code)
 
-
 def  gb_op_ccf(instr, byte_len, cycles, flags):
     code = [] + cast_void_to_reg
     code.append('is_c_flag ? clear_c_flag : set_c_flag;')
@@ -165,7 +164,6 @@ def  gb_op_scf(instr, byte_len, cycles, flags):
     code.append('clear_h_flag;')    
     code.append('set_c_flag;')
     return format_c_code_list(code)
-
 
 def  gb_op_cp(instr, byte_len, cycles, flags):
     code = [] + cast_void_to_reg
@@ -186,7 +184,12 @@ def  gb_op_cp(instr, byte_len, cycles, flags):
     code.append('r8->A < op ? set_c_flag : clear_c_flag;')
     return format_c_code_list(code)
 
-
+def  gb_op_cpl(instr, byte_len, cycles, flags):
+    code = [] + cast_void_to_reg
+    code.append('r8->A = (~r8->A);')
+    code.append('clear_n_flag;')
+    code.append('clear_h_flag;')    
+    return format_c_code_list(code)
 
 
 gb_ops = {
@@ -197,7 +200,9 @@ gb_ops = {
         'BIT': gb_op_bit,
         'CCF': gb_op_ccf,
         'SCF': gb_op_scf,
-         'CP': gb_op_cp
+         'CP': gb_op_cp,
+        'CPL': gb_op_cpl
+
         }
 
 
