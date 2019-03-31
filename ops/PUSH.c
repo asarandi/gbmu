@@ -1,3 +1,5 @@
+#include "gb.h"
+
 void op_c5(void *reg, uint8_t *mem)
 {
 	/*

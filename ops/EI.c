@@ -1,3 +1,5 @@
+#include "gb.h"
+
 void op_fb(void *reg, uint8_t *mem)
 {
 	/*

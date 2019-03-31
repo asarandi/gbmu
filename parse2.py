@@ -2,6 +2,7 @@
 
 from bs4 import BeautifulSoup
 import os, glob
+from instructions import *
 
 with open('gameboy_opcodes.html') as fp:
     soup = BeautifulSoup(fp, 'html.parser')
@@ -21,69 +22,6 @@ bgcolor = {
     '#80ffff': '8bit rotations/shifts and bit instructions'
     }
 
-
-cast_void_to_reg = [
-        't_r8  *r8  = reg;',
-        't_r16 *r16 = reg;'
-        ]
-
-eight_bit_registers = {
-        'A': 'r8->A',
-        'B': 'r8->B',
-        'C': 'r8->C',
-        'D': 'r8->D',
-        'E': 'r8->E',
-        'H': 'r8->H',
-        'L': 'r8->L'
-        }
-
-sixteen_bit_registers = {
-        'BC': 'r16->BC',
-        'DE': 'r16->DE',
-        'HL': 'r16->HL',
-        'SP': 'r16->SP'
-        }
-
-sixteen_bit_reg_addr = {        
-         '(BC)': 'mem[r16->BC]',
-         '(DE)': 'mem[r16->DE]',
-         '(HL)': 'mem[r16->HL]',
-        '(HL+)': 'mem[(r16->HL)++]',
-        '(HL-)': 'mem[(r16->HL)--]'
-        }
-
-def format_c_code_list(lst):
-    code = '\n'
-    for item in lst:
-        code += '\t' + item + '\n'
-    return code
-
-def  gb_op_adc(instr, byte_len, cycles, flags):
-    code = [] + cast_void_to_reg
-    op2 = instr.split(',')[1]
-    code.append('uint8_t op;')
-    code.append('uint32_t calc;')
-    if op2 in eight_bit_registers:
-        code.append('op = %s;' % (eight_bit_registers[op2],))
-    elif op2 in sixteen_bit_reg_addr:
-        code.append('op = %s;' % (sixteen_bit_reg_addr[op2],))
-    elif op2 == 'd8':
-        code.append('op = mem[(r16->PC)+1];')
-    else:
-        code.append('/* FIXME: ADC */')
-    code.append('calc = r8->A + op;')
-
-    code.append('(calc & 0xff) == 0 ? set_z_flag : clear_z_flag;')
-    code.append('clear_n_flag;')
-    code.append('is_c_flag + (r8->A & 0xf) + (op & 0xf) > 0xf ? set_h_flag : clear_h_flag;')
-    code.append('is_c_flag + calc > 0xff ? set_c_flag : clear_c_flag;');
-    code.append('r8->A += op;')
-    return format_c_code_list(code)
-
-
-gb_ops = {
-        'ADC': gb_op_adc
-        }
 
 cells = soup.find_all('td')
 for i in range(17*2):
@@ -128,6 +66,11 @@ for i in range(17*2):
         c += '\n'
         
         fn = 'ops/' + op + '.c'
+        if not os.path.exists(fn):
+            with open(fn, 'a+') as fp:
+                fp.write('#include "gb.h"\n\n')
+                fp.close()
+
         with open(fn, 'a+') as fp:
             fp.write(c)
             fp.close()

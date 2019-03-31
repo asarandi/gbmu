@@ -1,3 +1,5 @@
+#include "gb.h"
+
 void op_37(void *reg, uint8_t *mem)
 {
 	/*
@@ -8,5 +10,11 @@ void op_37(void *reg, uint8_t *mem)
 		       flags: - 0 0 1
 	*/
 
+
+	t_r8  *r8  = reg;
+	t_r16 *r16 = reg;
+	clear_n_flag;
+	clear_h_flag;
+	set_c_flag;
 }
 

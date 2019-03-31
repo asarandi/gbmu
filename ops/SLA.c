@@ -1,3 +1,5 @@
+#include "gb.h"
+
 void op_cb20(void *reg, uint8_t *mem)
 {
 	/*
