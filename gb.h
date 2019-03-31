@@ -25,14 +25,19 @@ typedef struct s_r8 {
     uint16_t    PC; 
 } t_r8;             
 
-#define set_z      (r8->F |= 0x80)
-#define set_n      (r8->F |= 0x40)
-#define set_h      (r8->F |= 0x20)
-#define set_c      (r8->F |= 0x10)
+#define clear_z_flag     (r8->F &= (~0x80))
+#define clear_n_flag     (r8->F &= (~0x40))
+#define clear_h_flag     (r8->F &= (~0x20))
+#define clear_c_flag     (r8->F &= (~0x10))
 
-#define clear_z    (r8->F &= (~0x80))
-#define clear_n    (r8->F &= (~0x40))
-#define clear_h    (r8->F &= (~0x20))
-#define clear_c    (r8->F &= (~0x10))
+#define set_z_flag       (r8->F |= 0x80)
+#define set_n_flag       (r8->F |= 0x40)
+#define set_h_flag       (r8->F |= 0x20)
+#define set_c_flag       (r8->F |= 0x10)
+
+#define is_z_flag        (r8->F & 0x80 ? 1:0)
+#define is_n_flag        (r8->F & 0x40 ? 1:0)
+#define is_h_flag        (r8->F & 0x20 ? 1:0)
+#define is_c_flag        (r8->F & 0x10 ? 1:0)
 
 #endif

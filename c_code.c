@@ -189,7 +189,7 @@ void op_0a(void *reg, uint8_t *mem)
 	*/
 		t_r8 *r8 = reg;
 		t_r16 *r16 = reg;
-/* FIXME: code LD */
+/* FIXME: code LD REG,d8*/
 }
 
 
@@ -423,7 +423,7 @@ void op_1a(void *reg, uint8_t *mem)
 	*/
 		t_r8 *r8 = reg;
 		t_r16 *r16 = reg;
-/* FIXME: code LD */
+/* FIXME: code LD REG,d8*/
 }
 
 
@@ -657,7 +657,7 @@ void op_2a(void *reg, uint8_t *mem)
 	*/
 		t_r8 *r8 = reg;
 		t_r16 *r16 = reg;
-/* FIXME: code LD */
+/* FIXME: code LD REG,d8*/
 }
 
 
@@ -891,7 +891,7 @@ void op_3a(void *reg, uint8_t *mem)
 	*/
 		t_r8 *r8 = reg;
 		t_r16 *r16 = reg;
-/* FIXME: code LD */
+/* FIXME: code LD REG,d8*/
 }
 
 
@@ -1070,7 +1070,7 @@ void op_46(void *reg, uint8_t *mem)
 	*/
 		t_r8 *r8 = reg;
 		t_r16 *r16 = reg;
-/* FIXME: code LD */
+/* FIXME: code LD REG,d8*/
 }
 
 
@@ -1190,7 +1190,7 @@ void op_4e(void *reg, uint8_t *mem)
 	*/
 		t_r8 *r8 = reg;
 		t_r16 *r16 = reg;
-/* FIXME: code LD */
+/* FIXME: code LD REG,d8*/
 }
 
 
@@ -1310,7 +1310,7 @@ void op_56(void *reg, uint8_t *mem)
 	*/
 		t_r8 *r8 = reg;
 		t_r16 *r16 = reg;
-/* FIXME: code LD */
+/* FIXME: code LD REG,d8*/
 }
 
 
@@ -1430,7 +1430,7 @@ void op_5e(void *reg, uint8_t *mem)
 	*/
 		t_r8 *r8 = reg;
 		t_r16 *r16 = reg;
-/* FIXME: code LD */
+/* FIXME: code LD REG,d8*/
 }
 
 
@@ -1550,7 +1550,7 @@ void op_66(void *reg, uint8_t *mem)
 	*/
 		t_r8 *r8 = reg;
 		t_r16 *r16 = reg;
-/* FIXME: code LD */
+/* FIXME: code LD REG,d8*/
 }
 
 
@@ -1670,7 +1670,7 @@ void op_6e(void *reg, uint8_t *mem)
 	*/
 		t_r8 *r8 = reg;
 		t_r16 *r16 = reg;
-/* FIXME: code LD */
+/* FIXME: code LD REG,d8*/
 }
 
 
@@ -1902,7 +1902,7 @@ void op_7e(void *reg, uint8_t *mem)
 	*/
 		t_r8 *r8 = reg;
 		t_r16 *r16 = reg;
-/* FIXME: code LD */
+/* FIXME: code LD REG,d8*/
 }
 
 
@@ -3660,7 +3660,7 @@ void op_f2(void *reg, uint8_t *mem)
 	*/
 		t_r8 *r8 = reg;
 		t_r16 *r16 = reg;
-/* FIXME: code LD */
+/* FIXME: code LD REG,d8*/
 }
 
 
@@ -3777,7 +3777,7 @@ void op_fa(void *reg, uint8_t *mem)
 	*/
 		t_r8 *r8 = reg;
 		t_r16 *r16 = reg;
-/* FIXME: code LD */
+/* FIXME: code LD REG,d8*/
 }
 
 

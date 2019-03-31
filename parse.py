@@ -122,7 +122,9 @@ for i in range(17*2):
 
         code = None
 
-        set_z_flag_if_a_is_zero = '\tr8->A == 0 ? set_z : clear_z;\n'
+        set_z_flag_if_a_is_zero     = '\tr8->A  ==   0   ? set_z : clear_z;\n'
+        set_h_flag_if_half_carry    = '\tr8->A  &    8   ? set_h : clear_h;\n'
+        set_c_flag_if_full_carry    = '\tr8->A  & 0x80   ? set_c : clear_c;\n'
 
 
         if sp[0] == 'LD':   #loads
@@ -133,7 +135,7 @@ for i in range(17*2):
                 elif ops[1] in addr:
                     code = '\tr8->%s = r8->%s; /* code LD reg */\n' % (ops[0], ops[1])
                 else:                    
-                    code = '/* FIXME: code LD */\n'
+                    code = '/* FIXME: code LD REG,d8*/\n'
                     
         elif sp[0] == 'AND':                
             if sp[1] in addr:
