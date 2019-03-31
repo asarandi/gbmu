@@ -48,13 +48,13 @@ def  gb_op_adc(instr, byte_len, cycles, flags):
         code.append('op = mem[(r16->PC)+1];')
     else:
         code.append('/* FIXME: ADC */')
-    code.append('calc = r8->A + op;')
+    code.append('calc = r8->A + op + is_c_flag;')
 
     code.append('(calc & 0xff) == 0 ? set_z_flag : clear_z_flag;')
     code.append('clear_n_flag;')
     code.append('is_c_flag + (r8->A & 0xf) + (op & 0xf) > 0xf ? set_h_flag : clear_h_flag;')
     code.append('is_c_flag + calc > 0xff ? set_c_flag : clear_c_flag;');
-    code.append('r8->A += op;')
+    code.append('r8->A = r8->A + op + is_c_flag;')
     return format_c_code_list(code)
 
 def  gb_op_add(instr, byte_len, cycles, flags):
@@ -192,6 +192,139 @@ def  gb_op_cpl(instr, byte_len, cycles, flags):
     return format_c_code_list(code)
 
 
+
+def  gb_op_dec(instr, byte_len, cycles, flags):
+    code = [] + cast_void_to_reg
+    op1 = instr.split()[1]
+    if (op1 in eight_bit_registers) or (op1 == '(HL)'):
+        if op1 in eight_bit_registers:
+            op0 = eight_bit_registers[op1]
+        else:   # (HL)
+            op0 = sixteen_bit_reg_addr[op1]
+        code.append('%s--;' % (op0,))
+        code.append('%s == 0 ? set_z_flag : clear_z_flag;' % (op0,))
+        code.append('set_n_flag;')
+        code.append('(%s & 0xf) == 0xf ? set_h_flag : clear_h_flag;' % (op0,))
+
+    elif op1 in sixteen_bit_registers:
+        code.append('%s--;' % (sixteen_bit_registers[op1],))
+    else:
+        code.append('/* FIXME: DEC */')
+    return format_c_code_list(code)
+
+
+
+def  gb_op_inc(instr, byte_len, cycles, flags):
+    code = [] + cast_void_to_reg
+    op1 = instr.split()[1]
+    if (op1 in eight_bit_registers) or (op1 == '(HL)'):
+        if op1 in eight_bit_registers:
+            op0 = eight_bit_registers[op1]
+        else:   # (HL)
+            op0 = sixteen_bit_reg_addr[op1]
+        code.append('%s++;' % (op0,))
+        code.append('%s == 0 ? set_z_flag : clear_z_flag;' % (op0,))
+        code.append('set_n_flag;')
+        code.append('(%s & 0xf) == 0x0 ? set_h_flag : clear_h_flag;' % (op0,))
+
+    elif op1 in sixteen_bit_registers:
+        code.append('%s++;' % (sixteen_bit_registers[op1],))
+    else:
+        code.append('/* FIXME: INC */')
+    return format_c_code_list(code)
+
+def  gb_op_sbc(instr, byte_len, cycles, flags):
+    code = [] + cast_void_to_reg
+    op1 = instr.split()[1].split(',')[0]
+    op2 = instr.split()[1].split(',')[1]
+    code.append('uint8_t op;')
+    if op2 in eight_bit_registers:
+        code.append('op = %s;' % (eight_bit_registers[op2],))
+    elif op2 == '(HL)':
+        code.append('op = %s;' % (sixteen_bit_reg_addr[op2],))
+    elif op2 == 'd8':
+        code.append('op = mem[(r16->PC)+1];')
+    else:
+        code.append('/* FIXME: SBC */')
+    code.append('(r8->A - (op + is_c_flag)) == 0 ? set_z_flag : clear_z_flag;')
+    code.append('set_n_flag;')
+    code.append('(r8->A & 0xf) < ((op + is_c_flag) & 0xf) ? set_h_flag : clear_h_flag;')
+    code.append('r8->A < (op + is_c_flag) ? set_c_flag : clear_c_flag;');
+    code.append('r8->A = r8->A - (op + is_c_flag);')
+    return format_c_code_list(code)
+
+def  gb_op_sub(instr, byte_len, cycles, flags):
+    code = [] + cast_void_to_reg
+    op2 = instr.split()[1]
+    code.append('uint8_t op;')
+    if op2 in eight_bit_registers:
+        code.append('op = %s;' % (eight_bit_registers[op2],))
+    elif op2 == '(HL)':
+        code.append('op = %s;' % (sixteen_bit_reg_addr[op2],))
+    elif op2 == 'd8':
+        code.append('op = mem[(r16->PC)+1];')
+    else:
+        code.append('/* FIXME: SUB */')
+    code.append('r8->A == op ? set_z_flag : clear_z_flag;')
+    code.append('set_n_flag;')
+    code.append('(r8->A & 0xf) < (op & 0xf) ? set_h_flag : clear_h_flag;')
+    code.append('r8->A < op ? set_c_flag : clear_c_flag;');
+    code.append('r8->A = r8->A - op;')
+    return format_c_code_list(code)
+
+def  gb_op_swap(instr, byte_len, cycles, flags):
+    code = [] + cast_void_to_reg
+    op2 = instr.split()[1]
+    if op2 in eight_bit_registers:
+        op0 = eight_bit_registers[op2]
+    elif op2 == '(HL)':
+        op0 = sixteen_bit_reg_addr[op2]
+    else:
+        code.append('/* FIXME: SWAP */')
+
+    code.append('%s == 0 ? set_z_flag : clear_z_flag;' % (op0,))
+    code.append('clear_n_flag;')
+    code.append('clear_h_flag;')
+    code.append('clear_c_flag;')
+    code.append('%s = ((%s & 0xf) << 4) | ((%s & 0xf0) >> 4);' % (op0,op0,op0))
+    return format_c_code_list(code)
+
+
+def  gb_op_xor(instr, byte_len, cycles, flags):
+    code = [] + cast_void_to_reg
+    op1 = instr.split()[1]
+    if op1 in eight_bit_registers:
+        op0 = eight_bit_registers[op1]
+    elif op1 == '(HL)':
+        op0 = sixteen_bit_reg_addr[op1]
+    elif op1 == 'd8':
+        op0 = 'mem[(r16->PC)+1]'
+    else:
+        code.append('/* FIXME: XOR */')
+    code.append('r8->A ^= %s;' % (op0,))
+    code.append('r8->A == 0 ? set_z_flag : clear_z_flag;')
+    code.append('clear_n_flag;')
+    code.append('clear_h_flag;')
+    code.append('clear_c_flag;')
+    return format_c_code_list(code)
+
+
+def  gb_op_res(instr, byte_len, cycles, flags):
+    code = [] + cast_void_to_reg
+    op1 = instr.split()[1].split(',')[0]    #bit
+    op2 = instr.split()[1].split(',')[1]    #reg/mem
+
+    if op2 in eight_bit_registers:
+        op0 = eight_bit_registers[op2]
+    elif op2 == '(HL)':
+        op0 = sixteen_bit_reg_addr[op2]
+    else:
+        code.append('/* FIXME: RES */')
+    code.append('%s &= ~(1 << %s);' % (op0, op1))
+    return format_c_code_list(code)
+
+
+
 gb_ops = {
         'ADC': gb_op_adc,
         'ADD': gb_op_add,
@@ -201,7 +334,14 @@ gb_ops = {
         'CCF': gb_op_ccf,
         'SCF': gb_op_scf,
          'CP': gb_op_cp,
-        'CPL': gb_op_cpl
+        'CPL': gb_op_cpl,
+        'DEC': gb_op_dec,
+        'INC': gb_op_inc,
+        'SBC': gb_op_sbc,
+        'SUB': gb_op_sub,
+       'SWAP': gb_op_swap,
+        'XOR': gb_op_xor,
+        'RES': gb_op_res
 
         }
 

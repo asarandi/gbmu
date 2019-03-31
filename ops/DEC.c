@@ -10,6 +10,13 @@ void op_05(void *reg, uint8_t *mem)
 		       flags: Z 1 H -
 	*/
 
+
+	t_r8  *r8  = reg;
+	t_r16 *r16 = reg;
+	r8->B--;
+	r8->B == 0 ? set_z_flag : clear_z_flag;
+	set_n_flag;
+	(r8->B & 0xf) == 0xf ? set_h_flag : clear_h_flag;
 }
 
 void op_0b(void *reg, uint8_t *mem)
@@ -22,6 +29,10 @@ void op_0b(void *reg, uint8_t *mem)
 		       flags: - - - -
 	*/
 
+
+	t_r8  *r8  = reg;
+	t_r16 *r16 = reg;
+	r16->BC--;
 }
 
 void op_0d(void *reg, uint8_t *mem)
@@ -34,6 +45,13 @@ void op_0d(void *reg, uint8_t *mem)
 		       flags: Z 1 H -
 	*/
 
+
+	t_r8  *r8  = reg;
+	t_r16 *r16 = reg;
+	r8->C--;
+	r8->C == 0 ? set_z_flag : clear_z_flag;
+	set_n_flag;
+	(r8->C & 0xf) == 0xf ? set_h_flag : clear_h_flag;
 }
 
 void op_15(void *reg, uint8_t *mem)
@@ -46,6 +64,13 @@ void op_15(void *reg, uint8_t *mem)
 		       flags: Z 1 H -
 	*/
 
+
+	t_r8  *r8  = reg;
+	t_r16 *r16 = reg;
+	r8->D--;
+	r8->D == 0 ? set_z_flag : clear_z_flag;
+	set_n_flag;
+	(r8->D & 0xf) == 0xf ? set_h_flag : clear_h_flag;
 }
 
 void op_1b(void *reg, uint8_t *mem)
@@ -58,6 +83,10 @@ void op_1b(void *reg, uint8_t *mem)
 		       flags: - - - -
 	*/
 
+
+	t_r8  *r8  = reg;
+	t_r16 *r16 = reg;
+	r16->DE--;
 }
 
 void op_1d(void *reg, uint8_t *mem)
@@ -70,6 +99,13 @@ void op_1d(void *reg, uint8_t *mem)
 		       flags: Z 1 H -
 	*/
 
+
+	t_r8  *r8  = reg;
+	t_r16 *r16 = reg;
+	r8->E--;
+	r8->E == 0 ? set_z_flag : clear_z_flag;
+	set_n_flag;
+	(r8->E & 0xf) == 0xf ? set_h_flag : clear_h_flag;
 }
 
 void op_25(void *reg, uint8_t *mem)
@@ -82,6 +118,13 @@ void op_25(void *reg, uint8_t *mem)
 		       flags: Z 1 H -
 	*/
 
+
+	t_r8  *r8  = reg;
+	t_r16 *r16 = reg;
+	r8->H--;
+	r8->H == 0 ? set_z_flag : clear_z_flag;
+	set_n_flag;
+	(r8->H & 0xf) == 0xf ? set_h_flag : clear_h_flag;
 }
 
 void op_2b(void *reg, uint8_t *mem)
@@ -94,6 +137,10 @@ void op_2b(void *reg, uint8_t *mem)
 		       flags: - - - -
 	*/
 
+
+	t_r8  *r8  = reg;
+	t_r16 *r16 = reg;
+	r16->HL--;
 }
 
 void op_2d(void *reg, uint8_t *mem)
@@ -106,6 +153,13 @@ void op_2d(void *reg, uint8_t *mem)
 		       flags: Z 1 H -
 	*/
 
+
+	t_r8  *r8  = reg;
+	t_r16 *r16 = reg;
+	r8->L--;
+	r8->L == 0 ? set_z_flag : clear_z_flag;
+	set_n_flag;
+	(r8->L & 0xf) == 0xf ? set_h_flag : clear_h_flag;
 }
 
 void op_35(void *reg, uint8_t *mem)
@@ -118,6 +172,13 @@ void op_35(void *reg, uint8_t *mem)
 		       flags: Z 1 H -
 	*/
 
+
+	t_r8  *r8  = reg;
+	t_r16 *r16 = reg;
+	mem[r16->HL]--;
+	mem[r16->HL] == 0 ? set_z_flag : clear_z_flag;
+	set_n_flag;
+	(mem[r16->HL] & 0xf) == 0xf ? set_h_flag : clear_h_flag;
 }
 
 void op_3b(void *reg, uint8_t *mem)
@@ -130,6 +191,10 @@ void op_3b(void *reg, uint8_t *mem)
 		       flags: - - - -
 	*/
 
+
+	t_r8  *r8  = reg;
+	t_r16 *r16 = reg;
+	r16->SP--;
 }
 
 void op_3d(void *reg, uint8_t *mem)
@@ -142,5 +207,12 @@ void op_3d(void *reg, uint8_t *mem)
 		       flags: Z 1 H -
 	*/
 
+
+	t_r8  *r8  = reg;
+	t_r16 *r16 = reg;
+	r8->A--;
+	r8->A == 0 ? set_z_flag : clear_z_flag;
+	set_n_flag;
+	(r8->A & 0xf) == 0xf ? set_h_flag : clear_h_flag;
 }
 
