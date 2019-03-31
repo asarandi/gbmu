@@ -187,11 +187,9 @@ def  gb_op_cp(instr, byte_len, cycles, flags):
 def  gb_op_cpl(instr, byte_len, cycles, flags):
     code = [] + cast_void_to_reg
     code.append('r8->A = (~r8->A);')
-    code.append('clear_n_flag;')
-    code.append('clear_h_flag;')    
+    code.append('set_n_flag;')
+    code.append('set_h_flag;')    
     return format_c_code_list(code)
-
-
 
 def  gb_op_dec(instr, byte_len, cycles, flags):
     code = [] + cast_void_to_reg
@@ -323,25 +321,40 @@ def  gb_op_res(instr, byte_len, cycles, flags):
     code.append('%s &= ~(1 << %s);' % (op0, op1))
     return format_c_code_list(code)
 
+def  gb_op_set(instr, byte_len, cycles, flags):
+    code = [] + cast_void_to_reg
+    op1 = instr.split()[1].split(',')[0]    #bit
+    op2 = instr.split()[1].split(',')[1]    #reg/mem
+
+    if op2 in eight_bit_registers:
+        op0 = eight_bit_registers[op2]
+    elif op2 == '(HL)':
+        op0 = sixteen_bit_reg_addr[op2]
+    else:
+        code.append('/* FIXME: SET */')
+    code.append('%s |= (1 << %s);' % (op0, op1))
+    return format_c_code_list(code)
+
 
 
 gb_ops = {
-        'ADC': gb_op_adc,
+        'ADC': gb_op_adc,   #add with carry
         'ADD': gb_op_add,
         'AND': gb_op_and,
          'OR': gb_op_or,
-        'BIT': gb_op_bit,
-        'CCF': gb_op_ccf,
-        'SCF': gb_op_scf,
-         'CP': gb_op_cp,
-        'CPL': gb_op_cpl,
+        'BIT': gb_op_bit,   #test bit x, set z flag if bit x is 0
+        'CCF': gb_op_ccf,   #toggle c flag
+        'SCF': gb_op_scf,   #set c flag
+         'CP': gb_op_cp,    #compare
+        'CPL': gb_op_cpl,   #complement
         'DEC': gb_op_dec,
         'INC': gb_op_inc,
-        'SBC': gb_op_sbc,
+        'SBC': gb_op_sbc,   #subtract with carry
         'SUB': gb_op_sub,
-       'SWAP': gb_op_swap,
+       'SWAP': gb_op_swap,  #swap hi/low nibbles
         'XOR': gb_op_xor,
-        'RES': gb_op_res
+        'RES': gb_op_res,   #clear bit x
+        'SET': gb_op_set    #set bit x
 
         }
 

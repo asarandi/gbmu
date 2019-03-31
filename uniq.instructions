@@ -35,7 +35,7 @@ RRCA
 RST
         --SBC
         --SCF
-SET
+        --SET
 SLA
 SRA
 SRL
