@@ -25,9 +25,9 @@ PUSH
 RET
 RETI
         --RL
-RLA
-RLC
-RLCA
+        --RLA
+        --RLC
+        --RLCA
         --RR
 RRA
 RRC

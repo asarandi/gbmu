@@ -428,6 +428,43 @@ def  gb_op_rl(instr, byte_len, cycles, flags):
     code.append('%s == 0 ? set_z_flag : clear_z_flag;' % (op0,))
     return format_c_code_list(code)
 
+def  gb_op_rla(instr, byte_len, cycles, flags):  #same like rl, but z flag always set to 0
+    code = [] + cast_void_to_reg
+    op0 = eight_bit_registers['A']  #XXX
+    code.append('uint8_t carry = is_c_flag;')
+    code.append('%s & 0x80 ? set_c_flag : clear_c_flag;' % (op0,))
+    code.append('%s = (%s << 1) | carry;' % (op0,op0))
+    code.append('clear_n_flag;')    
+    code.append('clear_h_flag;')
+    code.append('clear_z_flag;')
+    return format_c_code_list(code)
+
+def  gb_op_rlc(instr, byte_len, cycles, flags):
+    code = [] + cast_void_to_reg
+    op1 = instr.split()[1]
+    if op1 in eight_bit_registers:
+        op0 = eight_bit_registers[op1]
+    elif op1 == '(HL)':
+        op0 = sixteen_bit_reg_addr[op1]
+    else:
+        code.append('/* FIXME: RLC */')
+    code.append('%s = (%s << 1) | (%s >> 7);' % (op0,op0,op0))
+    code.append('%s == 0 ? set_z_flag : clear_z_flag;' % (op0,))
+    code.append('clear_n_flag;')    
+    code.append('clear_h_flag;')    
+    code.append('%s & 1 ? set_c_flag : clear_c_flag;' % (op0,))
+    return format_c_code_list(code)
+
+def  gb_op_rlca(instr, byte_len, cycles, flags):
+    code = [] + cast_void_to_reg
+    op0 = eight_bit_registers['A']  #XXX
+    code.append('%s = (%s << 1) | (%s >> 7);' % (op0,op0,op0))
+    code.append('clear_z_flag;')
+    code.append('clear_n_flag;')    
+    code.append('clear_h_flag;')    
+    code.append('%s & 1 ? set_c_flag : clear_c_flag;' % (op0,))
+    return format_c_code_list(code)
+
 
 gb_ops = {
         'ADC': gb_op_adc,   #add with carry
@@ -451,7 +488,11 @@ gb_ops = {
         'SRA': gb_op_sra,   #store old bit 0 in C flag, preserve bit 7, shift right by 1, set Z if needed
         'SRL': gb_op_srl,   #store old bit 0 in C flag,                 shift right by 1, set Z if needed
          'RR': gb_op_rr,
-         'RL': gb_op_rl
+         'RL': gb_op_rl,
+        'RLA': gb_op_rla,    #op cb17: RL A, op 17: RLA
+        'RLC': gb_op_rlc,
+       'RLCA': gb_op_rlca
+
 
 
 
