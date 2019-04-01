@@ -29,9 +29,9 @@ RETI
         --RLC
         --RLCA
         --RR
-RRA
-RRC
-RRCA
+        --RRA
+        --RRC
+        --RRCA
 RST
         --SBC
         --SCF
