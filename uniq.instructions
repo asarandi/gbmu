@@ -24,11 +24,11 @@ PUSH
         --RES
 RET
 RETI
-RL
+        --RL
 RLA
 RLC
 RLCA
-RR
+        --RR
 RRA
 RRC
 RRCA
@@ -36,9 +36,9 @@ RST
         --SBC
         --SCF
         --SET
-SLA
-SRA
-SRL
+        --SLA
+        --SRA
+        --SRL
 STOP
         --SUB
         --SWAP

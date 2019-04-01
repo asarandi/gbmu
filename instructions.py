@@ -344,7 +344,7 @@ def  gb_op_sla(instr, byte_len, cycles, flags):
     elif op1 == '(HL)':
         op0 = sixteen_bit_reg_addr[op1]
     else:
-        code.append('/* FIXME: SET */')
+        code.append('/* FIXME: SLA */')
 
     code.append('(%s << 1) == 0 ? set_z_flag : clear_z_flag;' % (op0,))
     code.append('clear_n_flag;')    
@@ -362,15 +362,71 @@ def  gb_op_sra(instr, byte_len, cycles, flags):
     elif op1 == '(HL)':
         op0 = sixteen_bit_reg_addr[op1]
     else:
-        code.append('/* FIXME: SET */')
+        code.append('/* FIXME: SRA */')
     code.append('clear_n_flag;')    
     code.append('clear_h_flag;')
     code.append('%s & 1 ? set_c_flag : clear_c_flag;' % (op0,))
     code.append('%s = (%s & 0x80) | (%s >> 1) ;' % (op0,op0,op0))
-    code.append('(%s == 0) ? set_z_flag : clear_z_flag;' % (op0,))
+    code.append('%s == 0 ? set_z_flag : clear_z_flag;' % (op0,))
     return format_c_code_list(code)
 
 
+def  gb_op_srl(instr, byte_len, cycles, flags):
+    code = [] + cast_void_to_reg
+    op1 = instr.split()[1]
+
+    if op1 in eight_bit_registers:
+        op0 = eight_bit_registers[op1]
+    elif op1 == '(HL)':
+        op0 = sixteen_bit_reg_addr[op1]
+    else:
+        code.append('/* FIXME: SRL */')
+
+    code.append('clear_n_flag;')    
+    code.append('clear_h_flag;')
+    code.append('%s & 1 ? set_c_flag : clear_c_flag;' % (op0,))
+    code.append('%s >>= 1;' % (op0,))
+    code.append('%s == 0 ? set_z_flag : clear_z_flag;' % (op0,))
+    return format_c_code_list(code)
+
+
+def  gb_op_rr(instr, byte_len, cycles, flags):
+    code = [] + cast_void_to_reg
+    op1 = instr.split()[1]
+
+    if op1 in eight_bit_registers:
+        op0 = eight_bit_registers[op1]
+    elif op1 == '(HL)':
+        op0 = sixteen_bit_reg_addr[op1]
+    else:
+        code.append('/* FIXME: RR */')
+
+    code.append('uint8_t carry = is_c_flag;')
+    code.append('%s & 1 ? set_c_flag : clear_c_flag;' % (op0,))
+    code.append('%s = (%s >> 1) | (carry << 7);' % (op0,op0))
+    code.append('clear_n_flag;')    
+    code.append('clear_h_flag;')
+    code.append('%s == 0 ? set_z_flag : clear_z_flag;' % (op0,))
+    return format_c_code_list(code)
+
+def  gb_op_rl(instr, byte_len, cycles, flags):
+    code = [] + cast_void_to_reg
+    op1 = instr.split()[1]
+
+    if op1 in eight_bit_registers:
+        op0 = eight_bit_registers[op1]
+    elif op1 == '(HL)':
+        op0 = sixteen_bit_reg_addr[op1]
+    else:
+        code.append('/* FIXME: RL */')
+
+    code.append('uint8_t carry = is_c_flag;')
+    code.append('%s & 0x80 ? set_c_flag : clear_c_flag;' % (op0,))
+    code.append('%s = (%s << 1) | carry;' % (op0,op0))
+    code.append('clear_n_flag;')    
+    code.append('clear_h_flag;')
+    code.append('%s == 0 ? set_z_flag : clear_z_flag;' % (op0,))
+    return format_c_code_list(code)
 
 
 gb_ops = {
@@ -392,7 +448,13 @@ gb_ops = {
         'RES': gb_op_res,   #clear bit x
         'SET': gb_op_set,   #set bit x
         'SLA': gb_op_sla,   #store old bit 7 in C flag, shift left by 1, set Z if needed
-        'SRA': gb_op_sra    #store old bit 0 in C flag, shift right by 1, set Z if needed
+        'SRA': gb_op_sra,   #store old bit 0 in C flag, preserve bit 7, shift right by 1, set Z if needed
+        'SRL': gb_op_srl,   #store old bit 0 in C flag,                 shift right by 1, set Z if needed
+         'RR': gb_op_rr,
+         'RL': gb_op_rl
+
+
+
 
 
         }
