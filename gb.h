@@ -3,7 +3,6 @@
 
 #include <stdint.h>
 
-#pragma pack(1)
 typedef struct s_r16 {
     uint16_t    AF; 
     uint16_t    BC; 
@@ -13,7 +12,6 @@ typedef struct s_r16 {
     uint16_t    PC; 
 } t_r16;            
 
-#pragma pack(1)
 typedef struct s_r8 {
     uint8_t     F;  
     uint8_t     A;  
