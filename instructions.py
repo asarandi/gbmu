@@ -10,7 +10,8 @@ eight_bit_registers = {
         'D': 'r8->D',
         'E': 'r8->E',
         'H': 'r8->H',
-        'L': 'r8->L'
+        'L': 'r8->L',
+     '(HL)': 'mem[r16->HL]'
         }
 
 sixteen_bit_registers = {
@@ -20,7 +21,8 @@ sixteen_bit_registers = {
         'SP': 'r16->SP'
         }
 
-sixteen_bit_reg_addr = {        
+sixteen_bit_reg_addr = {
+          '(C)': 'mem[(0xff00)+r8->C]',
          '(BC)': 'mem[r16->BC]',
          '(DE)': 'mem[r16->DE]',
          '(HL)': 'mem[r16->HL]',
@@ -92,6 +94,40 @@ d8
             code.append('clear_n_flag;')
             code.append('(offset & 0xf) + (r16->HL & 0xf) > 0xf ? set_h_flag : clear_h_flag;')
             code.append('(offset & 0xff) + (r16->HL & 0xff) > 0xff ? set_c_flag : clear_c_flag;')
+        else:
+            print('op1=r16', instr)
+
+    elif op1 in eight_bit_registers:
+        if op2 in eight_bit_registers:
+            code.append('%s = %s;' % (eight_bit_registers[op1], eight_bit_registers[op2]))
+        elif op2 == 'd8':
+            code.append('%s = %s;' % (eight_bit_registers[op1], 'mem[(r16->PC)+1]'))    # XXX    d8
+        elif op2 == '(a16)':
+            code.append('uint16_t a16 = mem[(r16->PC)+1];')
+            code.append('%s = %s;' % (eight_bit_registers[op1], 'mem[a16]'))            # XXX    a16
+        elif op2 in sixteen_bit_reg_addr:
+            code.append('%s = %s;' % (eight_bit_registers[op1], sixteen_bit_reg_addr[op2]))
+        else:
+            print('op1=r8', instr)
+    elif op1 == '(a16)':
+        code.append('uint16_t a16 = mem[(r16->PC)+1];')
+        if op2 == 'SP':
+            code.append('%s = %s;' % ('mem[a16]', sixteen_bit_registers[op2]))      # two byte write
+        elif op2 == 'A':
+            code.append('%s = %s;' % ('mem[a16]', eight_bit_registers[op2]))        # one byte write?
+
+        else:
+            print('op1=a16', instr)
+
+    elif op1 in sixteen_bit_reg_addr:
+        if op2 == 'A':
+            code.append('%s = %s;' % (sixteen_bit_reg_addr[op1], eight_bit_registers['A']))
+        else:
+            print('op1=ra16', instr)
+
+    else:
+        print('LD else', instr)
+            
     return format_c_code_list(code)
 
 def  gb_op_adc(instr, byte_len, cycles, flags):

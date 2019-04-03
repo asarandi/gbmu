@@ -251,6 +251,7 @@ void op_86(void *reg, uint8_t *mem)
 	t_r16 *r16 = reg;
 	uint8_t op;
 	uint32_t calc;
+	op = mem[r16->HL];
 	calc = r8->A + op;
 	(calc & 0xff) == 0 ? set_z_flag : clear_z_flag;
 	clear_n_flag;
