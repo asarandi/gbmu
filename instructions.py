@@ -37,48 +37,6 @@ def format_c_code_list(lst):
     return code
 
 def gb_op_ld(instr, byte_len, cycles, flags):
-    '''
-------------[op1]
-(BC)
-(C)
-(DE)
-(HL)
-(HL+)
-(HL-)
-(a16)
-A
-B
-BC
-C
-D
-DE
-E
-H
-HL
-L
-SP
-------------[op2]
-(BC)
-(C)
-(DE)
-(HL)
-(HL+)
-(HL-)
-(a16)
-A
-B
-C
-D
-E
-H
-HL
-L
-SP
-SP+r8
-d16
-d8
-    '''
-
     code = [] + cast_void_to_reg
     op1 = instr.split()[1].split(',')[0]    
     op2 = instr.split()[1].split(',')[1]
@@ -94,9 +52,6 @@ d8
             code.append('clear_n_flag;')
             code.append('(offset & 0xf) + (r16->HL & 0xf) > 0xf ? set_h_flag : clear_h_flag;')
             code.append('(offset & 0xff) + (r16->HL & 0xff) > 0xff ? set_c_flag : clear_c_flag;')
-        else:
-            print('op1=r16', instr)
-
     elif op1 in eight_bit_registers:
         if op2 in eight_bit_registers:
             code.append('%s = %s;' % (eight_bit_registers[op1], eight_bit_registers[op2]))
@@ -107,27 +62,26 @@ d8
             code.append('%s = %s;' % (eight_bit_registers[op1], 'mem[a16]'))            # XXX    a16
         elif op2 in sixteen_bit_reg_addr:
             code.append('%s = %s;' % (eight_bit_registers[op1], sixteen_bit_reg_addr[op2]))
-        else:
-            print('op1=r8', instr)
     elif op1 == '(a16)':
         code.append('uint16_t a16 = mem[(r16->PC)+1];')
         if op2 == 'SP':
             code.append('%s = %s;' % ('mem[a16]', sixteen_bit_registers[op2]))      # two byte write
         elif op2 == 'A':
             code.append('%s = %s;' % ('mem[a16]', eight_bit_registers[op2]))        # one byte write?
-
-        else:
-            print('op1=a16', instr)
-
     elif op1 in sixteen_bit_reg_addr:
         if op2 == 'A':
             code.append('%s = %s;' % (sixteen_bit_reg_addr[op1], eight_bit_registers['A']))
-        else:
-            print('op1=ra16', instr)
+    return format_c_code_list(code)
 
-    else:
-        print('LD else', instr)
-            
+def gb_op_ldh(instr, byte_len, cycles, flags):
+    code = [] + cast_void_to_reg
+    op1 = instr.split()[1].split(',')[0]    
+    op2 = instr.split()[1].split(',')[1]
+    code.append('uint8_t a8 = mem[(r16->PC)+1];')
+    if op1 == '(a8)' and op2 == 'A':
+        code.append('mem[0xff00 + a8] = r8->A;')
+    elif op1 == 'A' and op2 == '(a8)':
+        code.append('r8->A = mem[0xff00 + a8];')
     return format_c_code_list(code)
 
 def  gb_op_adc(instr, byte_len, cycles, flags):
@@ -629,5 +583,6 @@ gb_ops = {
         'RRC': gb_op_rrc,
        'RRCA': gb_op_rrca,
         'RRA': gb_op_rra,
-         'LD': gb_op_ld
+         'LD': gb_op_ld,         
+        'LDH': gb_op_ldh
         }

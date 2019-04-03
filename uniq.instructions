@@ -14,8 +14,8 @@ HALT
         --INC
 JP
 JR
-LD
-LDH
+        --LD
+        --LDH
 NOP
         --OR
 POP
