@@ -21,17 +21,6 @@ def  gb_op_call(instr, byte_len, cycles, flags):
 
 
 def  gb_op_jp(instr, byte_len, cycles, flags):
-#    print(instr, byte_len, cycles, flags)
-
-    '''
-    JP NZ,a16 3 16/12 - - - -
-    JP a16 3 16 - - - -
-    JP Z,a16 3 16/12 - - - -
-    JP NC,a16 3 16/12 - - - -
-    JP C,a16 3 16/12 - - - -
-    JP (HL) 1 4 - - - -
-    '''
-
     code = [] + cast_void_to_reg
     op = instr.split()[1]
 
@@ -51,6 +40,25 @@ def  gb_op_jp(instr, byte_len, cycles, flags):
         code.append('if (!is_c_flag) { r16->PC += %s; return; };' % (byte_len,))
 
     code.append('r16->PC = mem[r16->PC + 1];')   #
+    return format_c_code_list(code)
+
+def  gb_op_jr(instr, byte_len, cycles, flags):
+    code = [] + cast_void_to_reg
+    op = instr.split()[1]
+    if op == 'r8':
+        pass
+    elif op == 'NZ,r8':
+        code.append('if (!is_z_flag)')
+    elif op == 'Z,r8':
+        code.append('if (is_z_flag)')
+    elif op == 'NC,r8':
+        code.append('if (!is_c_flag)')
+    elif op == 'C,r8':
+        code.append('if (is_c_flag)')
+
+    code.append('   r16->PC += (int8_t)mem[r16->PC + 1];')  #signed XXX
+    code.append('r16->PC += %s;' % (byte_len,))
+
     return format_c_code_list(code)
 
 gb_ops = {
@@ -85,5 +93,6 @@ gb_ops = {
          'LD': gb_op_ld,         
         'LDH': gb_op_ldh,
        'CALL': gb_op_call,
-         'JP': gb_op_jp
+         'JP': gb_op_jp,
+         'JR': gb_op_jr
         }
