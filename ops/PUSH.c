@@ -10,6 +10,12 @@ void op_c5(void *reg, uint8_t *mem)
 		       flags: - - - -
 	*/
 
+
+	t_r8  *r8  = reg;
+	t_r16 *r16 = reg;
+	mem[r16->SP] = r16->BC;
+	r16->SP -= 2;
+	r16->PC += 1;
 }
 
 void op_d5(void *reg, uint8_t *mem)
@@ -22,6 +28,12 @@ void op_d5(void *reg, uint8_t *mem)
 		       flags: - - - -
 	*/
 
+
+	t_r8  *r8  = reg;
+	t_r16 *r16 = reg;
+	mem[r16->SP] = r16->DE;
+	r16->SP -= 2;
+	r16->PC += 1;
 }
 
 void op_e5(void *reg, uint8_t *mem)
@@ -34,6 +46,12 @@ void op_e5(void *reg, uint8_t *mem)
 		       flags: - - - -
 	*/
 
+
+	t_r8  *r8  = reg;
+	t_r16 *r16 = reg;
+	mem[r16->SP] = r16->HL;
+	r16->SP -= 2;
+	r16->PC += 1;
 }
 
 void op_f5(void *reg, uint8_t *mem)
@@ -46,5 +64,11 @@ void op_f5(void *reg, uint8_t *mem)
 		       flags: - - - -
 	*/
 
+
+	t_r8  *r8  = reg;
+	t_r16 *r16 = reg;
+	mem[r16->SP] = r16->AF;
+	r16->SP -= 2;
+	r16->PC += 1;
 }
 

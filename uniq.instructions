@@ -13,14 +13,14 @@ EI
 HALT
         --INC
         --JP
-JR
+        --JR
         --LD
         --LDH
 NOP
         --OR
-POP
+        --POP
 PREFIX
-PUSH
+        --PUSH
         --RES
 RET
 RETI

@@ -61,6 +61,37 @@ def  gb_op_jr(instr, byte_len, cycles, flags):
 
     return format_c_code_list(code)
 
+'''
+POP AF 1 12 Z N H C
+POP BC 1 12 - - - -
+POP DE 1 12 - - - -
+POP HL 1 12 - - - -
+PUSH AF 1 16 - - - -
+PUSH BC 1 16 - - - -
+PUSH DE 1 16 - - - -
+PUSH HL 1 16 - - - -
+'''
+
+
+def  gb_op_push(instr, byte_len, cycles, flags):
+    code = [] + cast_void_to_reg
+    op = instr.split()[1]
+
+    code.append('mem[r16->SP] = %s;' % (sixteen_bit_registers[op],))
+    code.append('r16->SP -= 2;')
+    code.append('r16->PC += %s;' % (byte_len,))
+    return format_c_code_list(code)
+
+def  gb_op_pop(instr, byte_len, cycles, flags):
+    code = [] + cast_void_to_reg
+    op = instr.split()[1]
+
+    code.append('%s = mem[r16->SP];' % (sixteen_bit_registers[op],))
+    code.append('r16->SP += 2;')
+    code.append('r16->PC += %s;' % (byte_len,))
+    return format_c_code_list(code)
+
+
 gb_ops = {
         'ADC': gb_op_adc,   #add with carry
         'ADD': gb_op_add,
@@ -94,5 +125,7 @@ gb_ops = {
         'LDH': gb_op_ldh,
        'CALL': gb_op_call,
          'JP': gb_op_jp,
-         'JR': gb_op_jr
+         'JR': gb_op_jr,
+       'PUSH': gb_op_push,
+        'POP': gb_op_pop
         }

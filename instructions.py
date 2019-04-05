@@ -17,6 +17,7 @@ eight_bit_registers = {
         }
 
 sixteen_bit_registers = {
+        'AF': 'r16->AF',
         'BC': 'r16->BC',
         'DE': 'r16->DE',
         'HL': 'r16->HL',
