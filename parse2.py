@@ -2,7 +2,7 @@
 
 from bs4 import BeautifulSoup
 import os, glob
-from instructions import *
+from calls import *
 
 with open('gameboy_opcodes.html') as fp:
     soup = BeautifulSoup(fp, 'html.parser')

@@ -2,7 +2,7 @@
         --ADD
         --AND
         --BIT
-CALL
+        --CALL
         --CCF
         --CP
         --CPL
@@ -12,7 +12,7 @@ DI
 EI
 HALT
         --INC
-JP
+        --JP
 JR
         --LD
         --LDH
