@@ -79,17 +79,6 @@ def gb_op_pop(instr, byte_len, cycles, flags):
     code.append('r16->PC += %s;' % (byte_len,))
     return format_c_code_list(code)
 
-
-'''
-RET NZ 1 20/8 - - - -
-RET Z 1 20/8 - - - -
-RET 1 16 - - - -
-RET NC 1 20/8 - - - -
-RET C 1 20/8 - - - -
-RETI 1 16 - - - -
-'''
-
-
 def gb_op_ret(instr, byte_len, cycles, flags):
     code = [] + cast_void_to_reg
     if len(instr.split()) == 1:         #unconditional ret
@@ -118,6 +107,42 @@ def gb_op_reti(instr, byte_len, cycles, flags):
     code.append('state->interrupts_enabled = true;')    
     return format_c_code_list(code)
 
+def gb_op_ei(instr, byte_len, cycles, flags):
+    code = [] + cast_void_to_reg
+    code.append('state->interrupts_enabled = true;')
+    code.append('r16->PC += %s;' % (byte_len, ))
+    return format_c_code_list(code)
+
+def gb_op_di(instr, byte_len, cycles, flags):
+    code = [] + cast_void_to_reg
+    code.append('state->interrupts_enabled = false;')
+    code.append('r16->PC += %s;' % (byte_len, ))
+    return format_c_code_list(code)
+
+def gb_op_nop(instr, byte_len, cycles, flags):
+    code = [] + cast_void_to_reg
+    code.append('r16->PC += %s;' % (byte_len, ))
+    return format_c_code_list(code)
+
+def gb_op_rst(instr, byte_len, cycles, flags):
+    code = [] + cast_void_to_reg
+    op = instr.split()[1][:-1]  #remove last 'H' character
+    code.append('r16->SP -= 2;')
+    code.append('mem[r16->SP] = r16->PC + %s;' % (byte_len, ))
+    code.append('r16->PC = 0x%s;' % (op, ))
+    return format_c_code_list(code)
+
+def gb_op_halt(instr, byte_len, cycles, flags):
+    code = [] + cast_void_to_reg
+    code.append('r16->PC += %s;' % (byte_len, ))
+    code.append('state->halt = true;')
+    return format_c_code_list(code)
+
+def gb_op_stop(instr, byte_len, cycles, flags):
+    code = [] + cast_void_to_reg
+    code.append('r16->PC += %s;' % (byte_len, ))
+    code.append('state->stop = true;')
+    return format_c_code_list(code)
 
 gb_ops = {
         'ADC': gb_op_adc,   #add with carry
@@ -156,5 +181,11 @@ gb_ops = {
        'PUSH': gb_op_push,
         'POP': gb_op_pop,
         'RET': gb_op_ret,
-       'RETI': gb_op_reti
+       'RETI': gb_op_reti,
+         'EI': gb_op_ei,
+         'DI': gb_op_di,
+        'NOP': gb_op_nop,
+        'RST': gb_op_rst,
+       'HALT': gb_op_halt,
+       'STOP': gb_op_stop
         }

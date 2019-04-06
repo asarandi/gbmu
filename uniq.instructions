@@ -8,15 +8,15 @@
         --CPL
 DAA
         --DEC
-DI
-EI
-HALT
+        --DI
+        --EI
+        --HALT
         --INC
         --JP
         --JR
         --LD
         --LDH
-NOP
+        --NOP
         --OR
         --POP
 PREFIX
@@ -32,14 +32,14 @@ PREFIX
         --RRA
         --RRC
         --RRCA
-RST
+        --RST
         --SBC
         --SCF
         --SET
         --SLA
         --SRA
         --SRL
-STOP
+        --STOP
         --SUB
         --SWAP
         --XOR
