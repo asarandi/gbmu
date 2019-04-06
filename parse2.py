@@ -74,3 +74,7 @@ for i in range(17*2):
         with open(fn, 'a+') as fp:
             fp.write(c)
             fp.close()
+
+#        print(' op_%s,' % (opcode,), end='')
+#    print()
+
