@@ -47,7 +47,7 @@ def gb_op_ld(instr, byte_len, cycles, flags):
         if op1 == 'SP' and op2 == 'HL':
             code.append('%s = %s;' % (sixteen_bit_registers[op1], sixteen_bit_registers[op2]))
         elif op2 == 'd16':            
-            code.append('%s = (uint16_t)mem[(r16->PC)+1];' % (sixteen_bit_registers[op1],))
+            code.append('%s = *(uint16_t *)&mem[(r16->PC)+1];' % (sixteen_bit_registers[op1],))
         elif op1 == 'HL' and op2 == 'SP+r8':                    #obscure
             code.append('int offset = (int8_t)mem[(r16->PC)+1];')
             code.append('r16->HL = (int)r16->SP + offset;')
@@ -61,14 +61,14 @@ def gb_op_ld(instr, byte_len, cycles, flags):
         elif op2 == 'd8':
             code.append('%s = %s;' % (eight_bit_registers[op1], 'mem[(r16->PC)+1]'))    # XXX    d8
         elif op2 == '(a16)':
-            code.append('uint16_t a16 = mem[(r16->PC)+1];')
+            code.append('uint16_t a16 = *(uint16_t *)&mem[(r16->PC)+1];')
             code.append('%s = %s;' % (eight_bit_registers[op1], 'mem[a16]'))            # XXX    a16
         elif op2 in sixteen_bit_reg_addr:
             code.append('%s = %s;' % (eight_bit_registers[op1], sixteen_bit_reg_addr[op2]))
     elif op1 == '(a16)':
-        code.append('uint16_t a16 = mem[(r16->PC)+1];')
+        code.append('uint16_t a16 = *(uint16_t *)&mem[(r16->PC)+1];')
         if op2 == 'SP':
-            code.append('%s = %s;' % ('mem[a16]', sixteen_bit_registers[op2]))      # two byte write
+            code.append('%s = %s;' % ('*(uint16_t *)&mem[a16]', sixteen_bit_registers[op2]))      # two byte write
         elif op2 == 'A':
             code.append('%s = %s;' % ('mem[a16]', eight_bit_registers[op2]))        # one byte write?
     elif op1 in sixteen_bit_reg_addr:

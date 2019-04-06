@@ -5,3 +5,5 @@ a.out
 ._*
 __pycache__
 test
+*.gb
+*.dSYM

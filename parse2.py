@@ -22,7 +22,9 @@ bgcolor = {
     '#80ffff': '8bit rotations/shifts and bit instructions'
     }
 
-
+signatures = [
+        '#include "gb.h"\n'
+        ]
 cells = soup.find_all('td')
 for i in range(17*2):
     for j in range(17):
@@ -52,7 +54,9 @@ for i in range(17*2):
         if op in gb_ops:
             code = gb_ops[op](instr, byte_len, cycles, flags)
 
-        c  = 'void op_%s(void *reg, t_state *state, uint8_t *mem)\n' % (opcode,)
+        sig= 'void op_%s(void *reg, t_state *state, uint8_t *mem);' % (opcode,)
+        signatures.append(sig)
+        c = sig[:-1] + '\n'
         c += '{\n'
         c += '\t/*\n'
         c += '\t\t    category: %s\n' % (bgcolor[bgc],)
@@ -75,6 +79,6 @@ for i in range(17*2):
             fp.write(c)
             fp.close()
 
-#        print(' op_%s,' % (opcode,), end='')
-#    print()
-
+with open('ops.h', 'w') as fp:
+    fp.write('\n'.join(signatures))
+    fp.close()
