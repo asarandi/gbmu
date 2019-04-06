@@ -52,7 +52,7 @@ for i in range(17*2):
         if op in gb_ops:
             code = gb_ops[op](instr, byte_len, cycles, flags)
 
-        c  = 'void op_%s(void *reg, uint8_t *mem)\n' % (opcode,)
+        c  = 'void op_%s(void *reg, t_state *state, uint8_t *mem)\n' % (opcode,)
         c += '{\n'
         c += '\t/*\n'
         c += '\t\t    category: %s\n' % (bgcolor[bgc],)

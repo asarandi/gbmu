@@ -2,6 +2,7 @@
 # define GB_H
 
 #include <stdint.h>
+#include <stdbool.h>
 
 typedef struct s_r16 {
     uint16_t    AF; 
@@ -28,6 +29,13 @@ typedef struct s_r8 {
     uint16_t    SP; 
     uint16_t    PC; 
 } t_r8;             
+
+
+typedef struct s_state {
+    bool    interrupts_enabled;
+} t_state;
+
+
 
 #define clear_z_flag     (r8->F &= (~0x80))
 #define clear_n_flag     (r8->F &= (~0x40))

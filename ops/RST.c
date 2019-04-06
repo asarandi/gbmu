@@ -1,6 +1,6 @@
 #include "gb.h"
 
-void op_c7(void *reg, uint8_t *mem)
+void op_c7(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -12,7 +12,7 @@ void op_c7(void *reg, uint8_t *mem)
 
 }
 
-void op_cf(void *reg, uint8_t *mem)
+void op_cf(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -24,7 +24,7 @@ void op_cf(void *reg, uint8_t *mem)
 
 }
 
-void op_d7(void *reg, uint8_t *mem)
+void op_d7(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -36,7 +36,7 @@ void op_d7(void *reg, uint8_t *mem)
 
 }
 
-void op_df(void *reg, uint8_t *mem)
+void op_df(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -48,7 +48,7 @@ void op_df(void *reg, uint8_t *mem)
 
 }
 
-void op_e7(void *reg, uint8_t *mem)
+void op_e7(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -60,7 +60,7 @@ void op_e7(void *reg, uint8_t *mem)
 
 }
 
-void op_ef(void *reg, uint8_t *mem)
+void op_ef(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -72,7 +72,7 @@ void op_ef(void *reg, uint8_t *mem)
 
 }
 
-void op_f7(void *reg, uint8_t *mem)
+void op_f7(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -84,7 +84,7 @@ void op_f7(void *reg, uint8_t *mem)
 
 }
 
-void op_ff(void *reg, uint8_t *mem)
+void op_ff(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls

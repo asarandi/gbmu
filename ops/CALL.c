@@ -1,6 +1,6 @@
 #include "gb.h"
 
-void op_c4(void *reg, uint8_t *mem)
+void op_c4(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -19,7 +19,7 @@ void op_c4(void *reg, uint8_t *mem)
 	r16->PC = mem[r16->PC + 1];
 }
 
-void op_cc(void *reg, uint8_t *mem)
+void op_cc(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -38,7 +38,7 @@ void op_cc(void *reg, uint8_t *mem)
 	r16->PC = mem[r16->PC + 1];
 }
 
-void op_cd(void *reg, uint8_t *mem)
+void op_cd(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -56,7 +56,7 @@ void op_cd(void *reg, uint8_t *mem)
 	r16->PC = mem[r16->PC + 1];
 }
 
-void op_d4(void *reg, uint8_t *mem)
+void op_d4(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -75,7 +75,7 @@ void op_d4(void *reg, uint8_t *mem)
 	r16->PC = mem[r16->PC + 1];
 }
 
-void op_dc(void *reg, uint8_t *mem)
+void op_dc(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls

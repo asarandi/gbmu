@@ -1,6 +1,6 @@
 #include "gb.h"
 
-void op_01(void *reg, uint8_t *mem)
+void op_01(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 16bit load/store/move instructions
@@ -17,7 +17,7 @@ void op_01(void *reg, uint8_t *mem)
 	r16->PC += 3;
 }
 
-void op_02(void *reg, uint8_t *mem)
+void op_02(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -34,7 +34,7 @@ void op_02(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_06(void *reg, uint8_t *mem)
+void op_06(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -51,7 +51,7 @@ void op_06(void *reg, uint8_t *mem)
 	r16->PC += 2;
 }
 
-void op_08(void *reg, uint8_t *mem)
+void op_08(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 16bit load/store/move instructions
@@ -69,7 +69,7 @@ void op_08(void *reg, uint8_t *mem)
 	r16->PC += 3;
 }
 
-void op_0a(void *reg, uint8_t *mem)
+void op_0a(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -86,7 +86,7 @@ void op_0a(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_0e(void *reg, uint8_t *mem)
+void op_0e(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -103,7 +103,7 @@ void op_0e(void *reg, uint8_t *mem)
 	r16->PC += 2;
 }
 
-void op_11(void *reg, uint8_t *mem)
+void op_11(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 16bit load/store/move instructions
@@ -120,7 +120,7 @@ void op_11(void *reg, uint8_t *mem)
 	r16->PC += 3;
 }
 
-void op_12(void *reg, uint8_t *mem)
+void op_12(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -137,7 +137,7 @@ void op_12(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_16(void *reg, uint8_t *mem)
+void op_16(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -154,7 +154,7 @@ void op_16(void *reg, uint8_t *mem)
 	r16->PC += 2;
 }
 
-void op_1a(void *reg, uint8_t *mem)
+void op_1a(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -171,7 +171,7 @@ void op_1a(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_1e(void *reg, uint8_t *mem)
+void op_1e(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -188,7 +188,7 @@ void op_1e(void *reg, uint8_t *mem)
 	r16->PC += 2;
 }
 
-void op_21(void *reg, uint8_t *mem)
+void op_21(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 16bit load/store/move instructions
@@ -205,7 +205,7 @@ void op_21(void *reg, uint8_t *mem)
 	r16->PC += 3;
 }
 
-void op_22(void *reg, uint8_t *mem)
+void op_22(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -222,7 +222,7 @@ void op_22(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_26(void *reg, uint8_t *mem)
+void op_26(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -239,7 +239,7 @@ void op_26(void *reg, uint8_t *mem)
 	r16->PC += 2;
 }
 
-void op_2a(void *reg, uint8_t *mem)
+void op_2a(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -256,7 +256,7 @@ void op_2a(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_2e(void *reg, uint8_t *mem)
+void op_2e(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -273,7 +273,7 @@ void op_2e(void *reg, uint8_t *mem)
 	r16->PC += 2;
 }
 
-void op_31(void *reg, uint8_t *mem)
+void op_31(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 16bit load/store/move instructions
@@ -290,7 +290,7 @@ void op_31(void *reg, uint8_t *mem)
 	r16->PC += 3;
 }
 
-void op_32(void *reg, uint8_t *mem)
+void op_32(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -307,7 +307,7 @@ void op_32(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_36(void *reg, uint8_t *mem)
+void op_36(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -324,7 +324,7 @@ void op_36(void *reg, uint8_t *mem)
 	r16->PC += 2;
 }
 
-void op_3a(void *reg, uint8_t *mem)
+void op_3a(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -341,7 +341,7 @@ void op_3a(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_3e(void *reg, uint8_t *mem)
+void op_3e(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -358,7 +358,7 @@ void op_3e(void *reg, uint8_t *mem)
 	r16->PC += 2;
 }
 
-void op_40(void *reg, uint8_t *mem)
+void op_40(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -375,7 +375,7 @@ void op_40(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_41(void *reg, uint8_t *mem)
+void op_41(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -392,7 +392,7 @@ void op_41(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_42(void *reg, uint8_t *mem)
+void op_42(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -409,7 +409,7 @@ void op_42(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_43(void *reg, uint8_t *mem)
+void op_43(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -426,7 +426,7 @@ void op_43(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_44(void *reg, uint8_t *mem)
+void op_44(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -443,7 +443,7 @@ void op_44(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_45(void *reg, uint8_t *mem)
+void op_45(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -460,7 +460,7 @@ void op_45(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_46(void *reg, uint8_t *mem)
+void op_46(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -477,7 +477,7 @@ void op_46(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_47(void *reg, uint8_t *mem)
+void op_47(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -494,7 +494,7 @@ void op_47(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_48(void *reg, uint8_t *mem)
+void op_48(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -511,7 +511,7 @@ void op_48(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_49(void *reg, uint8_t *mem)
+void op_49(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -528,7 +528,7 @@ void op_49(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_4a(void *reg, uint8_t *mem)
+void op_4a(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -545,7 +545,7 @@ void op_4a(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_4b(void *reg, uint8_t *mem)
+void op_4b(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -562,7 +562,7 @@ void op_4b(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_4c(void *reg, uint8_t *mem)
+void op_4c(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -579,7 +579,7 @@ void op_4c(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_4d(void *reg, uint8_t *mem)
+void op_4d(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -596,7 +596,7 @@ void op_4d(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_4e(void *reg, uint8_t *mem)
+void op_4e(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -613,7 +613,7 @@ void op_4e(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_4f(void *reg, uint8_t *mem)
+void op_4f(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -630,7 +630,7 @@ void op_4f(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_50(void *reg, uint8_t *mem)
+void op_50(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -647,7 +647,7 @@ void op_50(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_51(void *reg, uint8_t *mem)
+void op_51(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -664,7 +664,7 @@ void op_51(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_52(void *reg, uint8_t *mem)
+void op_52(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -681,7 +681,7 @@ void op_52(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_53(void *reg, uint8_t *mem)
+void op_53(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -698,7 +698,7 @@ void op_53(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_54(void *reg, uint8_t *mem)
+void op_54(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -715,7 +715,7 @@ void op_54(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_55(void *reg, uint8_t *mem)
+void op_55(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -732,7 +732,7 @@ void op_55(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_56(void *reg, uint8_t *mem)
+void op_56(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -749,7 +749,7 @@ void op_56(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_57(void *reg, uint8_t *mem)
+void op_57(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -766,7 +766,7 @@ void op_57(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_58(void *reg, uint8_t *mem)
+void op_58(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -783,7 +783,7 @@ void op_58(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_59(void *reg, uint8_t *mem)
+void op_59(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -800,7 +800,7 @@ void op_59(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_5a(void *reg, uint8_t *mem)
+void op_5a(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -817,7 +817,7 @@ void op_5a(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_5b(void *reg, uint8_t *mem)
+void op_5b(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -834,7 +834,7 @@ void op_5b(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_5c(void *reg, uint8_t *mem)
+void op_5c(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -851,7 +851,7 @@ void op_5c(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_5d(void *reg, uint8_t *mem)
+void op_5d(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -868,7 +868,7 @@ void op_5d(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_5e(void *reg, uint8_t *mem)
+void op_5e(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -885,7 +885,7 @@ void op_5e(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_5f(void *reg, uint8_t *mem)
+void op_5f(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -902,7 +902,7 @@ void op_5f(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_60(void *reg, uint8_t *mem)
+void op_60(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -919,7 +919,7 @@ void op_60(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_61(void *reg, uint8_t *mem)
+void op_61(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -936,7 +936,7 @@ void op_61(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_62(void *reg, uint8_t *mem)
+void op_62(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -953,7 +953,7 @@ void op_62(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_63(void *reg, uint8_t *mem)
+void op_63(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -970,7 +970,7 @@ void op_63(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_64(void *reg, uint8_t *mem)
+void op_64(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -987,7 +987,7 @@ void op_64(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_65(void *reg, uint8_t *mem)
+void op_65(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1004,7 +1004,7 @@ void op_65(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_66(void *reg, uint8_t *mem)
+void op_66(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1021,7 +1021,7 @@ void op_66(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_67(void *reg, uint8_t *mem)
+void op_67(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1038,7 +1038,7 @@ void op_67(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_68(void *reg, uint8_t *mem)
+void op_68(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1055,7 +1055,7 @@ void op_68(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_69(void *reg, uint8_t *mem)
+void op_69(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1072,7 +1072,7 @@ void op_69(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_6a(void *reg, uint8_t *mem)
+void op_6a(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1089,7 +1089,7 @@ void op_6a(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_6b(void *reg, uint8_t *mem)
+void op_6b(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1106,7 +1106,7 @@ void op_6b(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_6c(void *reg, uint8_t *mem)
+void op_6c(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1123,7 +1123,7 @@ void op_6c(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_6d(void *reg, uint8_t *mem)
+void op_6d(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1140,7 +1140,7 @@ void op_6d(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_6e(void *reg, uint8_t *mem)
+void op_6e(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1157,7 +1157,7 @@ void op_6e(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_6f(void *reg, uint8_t *mem)
+void op_6f(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1174,7 +1174,7 @@ void op_6f(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_70(void *reg, uint8_t *mem)
+void op_70(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1191,7 +1191,7 @@ void op_70(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_71(void *reg, uint8_t *mem)
+void op_71(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1208,7 +1208,7 @@ void op_71(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_72(void *reg, uint8_t *mem)
+void op_72(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1225,7 +1225,7 @@ void op_72(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_73(void *reg, uint8_t *mem)
+void op_73(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1242,7 +1242,7 @@ void op_73(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_74(void *reg, uint8_t *mem)
+void op_74(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1259,7 +1259,7 @@ void op_74(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_75(void *reg, uint8_t *mem)
+void op_75(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1276,7 +1276,7 @@ void op_75(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_77(void *reg, uint8_t *mem)
+void op_77(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1293,7 +1293,7 @@ void op_77(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_78(void *reg, uint8_t *mem)
+void op_78(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1310,7 +1310,7 @@ void op_78(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_79(void *reg, uint8_t *mem)
+void op_79(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1327,7 +1327,7 @@ void op_79(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_7a(void *reg, uint8_t *mem)
+void op_7a(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1344,7 +1344,7 @@ void op_7a(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_7b(void *reg, uint8_t *mem)
+void op_7b(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1361,7 +1361,7 @@ void op_7b(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_7c(void *reg, uint8_t *mem)
+void op_7c(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1378,7 +1378,7 @@ void op_7c(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_7d(void *reg, uint8_t *mem)
+void op_7d(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1395,7 +1395,7 @@ void op_7d(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_7e(void *reg, uint8_t *mem)
+void op_7e(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1412,7 +1412,7 @@ void op_7e(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_7f(void *reg, uint8_t *mem)
+void op_7f(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1429,7 +1429,7 @@ void op_7f(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_e2(void *reg, uint8_t *mem)
+void op_e2(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1446,7 +1446,7 @@ void op_e2(void *reg, uint8_t *mem)
 	r16->PC += 2;
 }
 
-void op_ea(void *reg, uint8_t *mem)
+void op_ea(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1464,7 +1464,7 @@ void op_ea(void *reg, uint8_t *mem)
 	r16->PC += 3;
 }
 
-void op_f2(void *reg, uint8_t *mem)
+void op_f2(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -1481,7 +1481,7 @@ void op_f2(void *reg, uint8_t *mem)
 	r16->PC += 2;
 }
 
-void op_f8(void *reg, uint8_t *mem)
+void op_f8(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 16bit load/store/move instructions
@@ -1503,7 +1503,7 @@ void op_f8(void *reg, uint8_t *mem)
 	r16->PC += 2;
 }
 
-void op_f9(void *reg, uint8_t *mem)
+void op_f9(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 16bit load/store/move instructions
@@ -1520,7 +1520,7 @@ void op_f9(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_fa(void *reg, uint8_t *mem)
+void op_fa(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions

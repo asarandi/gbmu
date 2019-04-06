@@ -1,6 +1,6 @@
 #include "gb.h"
 
-void op_f3(void *reg, uint8_t *mem)
+void op_f3(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: Misc/control instructions

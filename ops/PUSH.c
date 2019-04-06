@@ -1,6 +1,6 @@
 #include "gb.h"
 
-void op_c5(void *reg, uint8_t *mem)
+void op_c5(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 16bit load/store/move instructions
@@ -18,7 +18,7 @@ void op_c5(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_d5(void *reg, uint8_t *mem)
+void op_d5(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 16bit load/store/move instructions
@@ -36,7 +36,7 @@ void op_d5(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_e5(void *reg, uint8_t *mem)
+void op_e5(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 16bit load/store/move instructions
@@ -54,7 +54,7 @@ void op_e5(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_f5(void *reg, uint8_t *mem)
+void op_f5(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 16bit load/store/move instructions

@@ -1,6 +1,6 @@
 from instructions import *
 
-def  gb_op_call(instr, byte_len, cycles, flags):
+def gb_op_call(instr, byte_len, cycles, flags):
     code = [] + cast_void_to_reg
     op = instr.split()[1]
     if op == 'NZ,a16':
@@ -20,7 +20,7 @@ def  gb_op_call(instr, byte_len, cycles, flags):
     return format_c_code_list(code)
 
 
-def  gb_op_jp(instr, byte_len, cycles, flags):
+def gb_op_jp(instr, byte_len, cycles, flags):
     code = [] + cast_void_to_reg
     op = instr.split()[1]
 
@@ -42,7 +42,7 @@ def  gb_op_jp(instr, byte_len, cycles, flags):
     code.append('r16->PC = mem[r16->PC + 1];')   #
     return format_c_code_list(code)
 
-def  gb_op_jr(instr, byte_len, cycles, flags):
+def gb_op_jr(instr, byte_len, cycles, flags):
     code = [] + cast_void_to_reg
     op = instr.split()[1]
     if op == 'r8':
@@ -61,19 +61,7 @@ def  gb_op_jr(instr, byte_len, cycles, flags):
 
     return format_c_code_list(code)
 
-'''
-POP AF 1 12 Z N H C
-POP BC 1 12 - - - -
-POP DE 1 12 - - - -
-POP HL 1 12 - - - -
-PUSH AF 1 16 - - - -
-PUSH BC 1 16 - - - -
-PUSH DE 1 16 - - - -
-PUSH HL 1 16 - - - -
-'''
-
-
-def  gb_op_push(instr, byte_len, cycles, flags):
+def gb_op_push(instr, byte_len, cycles, flags):
     code = [] + cast_void_to_reg
     op = instr.split()[1]
 
@@ -82,13 +70,52 @@ def  gb_op_push(instr, byte_len, cycles, flags):
     code.append('r16->PC += %s;' % (byte_len,))
     return format_c_code_list(code)
 
-def  gb_op_pop(instr, byte_len, cycles, flags):
+def gb_op_pop(instr, byte_len, cycles, flags):
     code = [] + cast_void_to_reg
     op = instr.split()[1]
 
     code.append('%s = mem[r16->SP];' % (sixteen_bit_registers[op],))
     code.append('r16->SP += 2;')
     code.append('r16->PC += %s;' % (byte_len,))
+    return format_c_code_list(code)
+
+
+'''
+RET NZ 1 20/8 - - - -
+RET Z 1 20/8 - - - -
+RET 1 16 - - - -
+RET NC 1 20/8 - - - -
+RET C 1 20/8 - - - -
+RETI 1 16 - - - -
+'''
+
+
+def gb_op_ret(instr, byte_len, cycles, flags):
+    code = [] + cast_void_to_reg
+    if len(instr.split()) == 1:         #unconditional ret
+            code.append('r16->PC = mem[r16->SP]; r16->SP += 2; return ;')
+            return format_c_code_list(code)
+    op = instr.split()[1]
+    if op == 'NZ':
+        code.append('if (!is_z_flag)')
+    elif op == 'Z':
+        code.append('if (is_z_flag)')
+
+    elif op == 'NC':
+        code.append('if (!is_c_flag)')
+    elif op == 'C':
+        code.append('if (is_c_flag)')
+
+    code.append('{ r16->PC = mem[r16->SP]; r16->SP += 2; return ; }')
+    code.append('r16->PC += %s;' % (byte_len,))
+    return format_c_code_list(code)
+
+
+def gb_op_reti(instr, byte_len, cycles, flags):    
+    code = [] + cast_void_to_reg
+    code.append('r16->PC = mem[r16->SP];')
+    code.append('r16->SP += 2;')
+    code.append('state->interrupts_enabled = true;')    
     return format_c_code_list(code)
 
 
@@ -127,5 +154,7 @@ gb_ops = {
          'JP': gb_op_jp,
          'JR': gb_op_jr,
        'PUSH': gb_op_push,
-        'POP': gb_op_pop
+        'POP': gb_op_pop,
+        'RET': gb_op_ret,
+       'RETI': gb_op_reti
         }

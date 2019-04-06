@@ -1,6 +1,6 @@
 #include "gb.h"
 
-void op_18(void *reg, uint8_t *mem)
+void op_18(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -17,7 +17,7 @@ void op_18(void *reg, uint8_t *mem)
 	r16->PC += 2;
 }
 
-void op_20(void *reg, uint8_t *mem)
+void op_20(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -35,7 +35,7 @@ void op_20(void *reg, uint8_t *mem)
 	r16->PC += 2;
 }
 
-void op_28(void *reg, uint8_t *mem)
+void op_28(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -53,7 +53,7 @@ void op_28(void *reg, uint8_t *mem)
 	r16->PC += 2;
 }
 
-void op_30(void *reg, uint8_t *mem)
+void op_30(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -71,7 +71,7 @@ void op_30(void *reg, uint8_t *mem)
 	r16->PC += 2;
 }
 
-void op_38(void *reg, uint8_t *mem)
+void op_38(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls

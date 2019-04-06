@@ -1,6 +1,6 @@
 #include "gb.h"
 
-void op_c2(void *reg, uint8_t *mem)
+void op_c2(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -17,7 +17,7 @@ void op_c2(void *reg, uint8_t *mem)
 	r16->PC = mem[r16->PC + 1];
 }
 
-void op_c3(void *reg, uint8_t *mem)
+void op_c3(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -33,7 +33,7 @@ void op_c3(void *reg, uint8_t *mem)
 	r16->PC = mem[r16->PC + 1];
 }
 
-void op_ca(void *reg, uint8_t *mem)
+void op_ca(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -50,7 +50,7 @@ void op_ca(void *reg, uint8_t *mem)
 	r16->PC = mem[r16->PC + 1];
 }
 
-void op_d2(void *reg, uint8_t *mem)
+void op_d2(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -67,7 +67,7 @@ void op_d2(void *reg, uint8_t *mem)
 	r16->PC = mem[r16->PC + 1];
 }
 
-void op_da(void *reg, uint8_t *mem)
+void op_da(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls
@@ -84,7 +84,7 @@ void op_da(void *reg, uint8_t *mem)
 	r16->PC = mem[r16->PC + 1];
 }
 
-void op_e9(void *reg, uint8_t *mem)
+void op_e9(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: Jumps/calls

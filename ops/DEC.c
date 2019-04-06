@@ -1,6 +1,6 @@
 #include "gb.h"
 
-void op_05(void *reg, uint8_t *mem)
+void op_05(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -20,7 +20,7 @@ void op_05(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_0b(void *reg, uint8_t *mem)
+void op_0b(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 16bit arithmetic/logical instructions
@@ -37,7 +37,7 @@ void op_0b(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_0d(void *reg, uint8_t *mem)
+void op_0d(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -57,7 +57,7 @@ void op_0d(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_15(void *reg, uint8_t *mem)
+void op_15(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -77,7 +77,7 @@ void op_15(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_1b(void *reg, uint8_t *mem)
+void op_1b(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 16bit arithmetic/logical instructions
@@ -94,7 +94,7 @@ void op_1b(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_1d(void *reg, uint8_t *mem)
+void op_1d(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -114,7 +114,7 @@ void op_1d(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_25(void *reg, uint8_t *mem)
+void op_25(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -134,7 +134,7 @@ void op_25(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_2b(void *reg, uint8_t *mem)
+void op_2b(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 16bit arithmetic/logical instructions
@@ -151,7 +151,7 @@ void op_2b(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_2d(void *reg, uint8_t *mem)
+void op_2d(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -171,7 +171,7 @@ void op_2d(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_35(void *reg, uint8_t *mem)
+void op_35(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions
@@ -191,7 +191,7 @@ void op_35(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_3b(void *reg, uint8_t *mem)
+void op_3b(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 16bit arithmetic/logical instructions
@@ -208,7 +208,7 @@ void op_3b(void *reg, uint8_t *mem)
 	r16->PC += 1;
 }
 
-void op_3d(void *reg, uint8_t *mem)
+void op_3d(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit arithmetic/logical instructions

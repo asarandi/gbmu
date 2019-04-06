@@ -1,6 +1,6 @@
 #include "gb.h"
 
-void op_e0(void *reg, uint8_t *mem)
+void op_e0(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions
@@ -18,7 +18,7 @@ void op_e0(void *reg, uint8_t *mem)
 	r16->PC += 2;
 }
 
-void op_f0(void *reg, uint8_t *mem)
+void op_f0(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit load/store/move instructions

@@ -1,6 +1,6 @@
 #include "gb.h"
 
-void op_cb30(void *reg, uint8_t *mem)
+void op_cb30(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -21,7 +21,7 @@ void op_cb30(void *reg, uint8_t *mem)
 	r16->PC += 2;
 }
 
-void op_cb31(void *reg, uint8_t *mem)
+void op_cb31(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -42,7 +42,7 @@ void op_cb31(void *reg, uint8_t *mem)
 	r16->PC += 2;
 }
 
-void op_cb32(void *reg, uint8_t *mem)
+void op_cb32(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -63,7 +63,7 @@ void op_cb32(void *reg, uint8_t *mem)
 	r16->PC += 2;
 }
 
-void op_cb33(void *reg, uint8_t *mem)
+void op_cb33(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -84,7 +84,7 @@ void op_cb33(void *reg, uint8_t *mem)
 	r16->PC += 2;
 }
 
-void op_cb34(void *reg, uint8_t *mem)
+void op_cb34(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -105,7 +105,7 @@ void op_cb34(void *reg, uint8_t *mem)
 	r16->PC += 2;
 }
 
-void op_cb35(void *reg, uint8_t *mem)
+void op_cb35(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -126,7 +126,7 @@ void op_cb35(void *reg, uint8_t *mem)
 	r16->PC += 2;
 }
 
-void op_cb36(void *reg, uint8_t *mem)
+void op_cb36(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions
@@ -147,7 +147,7 @@ void op_cb36(void *reg, uint8_t *mem)
 	r16->PC += 2;
 }
 
-void op_cb37(void *reg, uint8_t *mem)
+void op_cb37(void *reg, t_state *state, uint8_t *mem)
 {
 	/*
 		    category: 8bit rotations/shifts and bit instructions

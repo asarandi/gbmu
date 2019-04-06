@@ -22,8 +22,8 @@ NOP
 PREFIX
         --PUSH
         --RES
-RET
-RETI
+        --RET
+        --RETI
         --RL
         --RLA
         --RLC
