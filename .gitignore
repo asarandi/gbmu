@@ -8,3 +8,4 @@ test
 *.gb
 *.dSYM
 *.sav
+*.dump

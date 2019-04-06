@@ -19,20 +19,20 @@ extern char* op_names1[];
 
 void dump_ram(void *ram)
 {
-    int fd = open("mem.dump", O_CREAT | O_WRONLY);
+    int fd = open("mem.dump", O_CREAT | O_WRONLY, 0644);
     write(fd, ram, 0x10000);
     close(fd);
 }
 
 void dump_registers(void *registers, void *gb_state, uint8_t *gb_mem)
 {
-    int byte_len;
-    int idx;
-    char *op_name;
-
+    int         byte_len;
+    int         idx;
+    char        *op_name;
     t_r16       *r16 = registers;
     t_r8        *r8 = registers;
-
+    uint8_t     u8;
+    uint16_t    u16;
     char z = is_z_flag ? 'Z' : '-';
     char n = is_n_flag ? 'N' : '-';
     char h = is_h_flag ? 'H' : '-';
@@ -60,7 +60,20 @@ void dump_registers(void *registers, void *gb_state, uint8_t *gb_mem)
     for (int i = 0; i < byte_len; i++) {
         printf("%02X", gb_mem[r16->PC + i]);
     }
-    printf("\t%s\n", op_name);
+
+    printf("\t");
+
+    u8 = gb_mem[r16->PC + 1];
+    u16 = *(uint16_t *)&gb_mem[r16->PC + 1];
+
+    if (strstr(op_name, "%02"))
+        printf(op_name, u8);
+    else if (strstr(op_name, "%04"))
+        printf(op_name, u16);
+    else        
+        printf("%s", op_name);
+
+    printf("\n");
 }
 
 int main(int ac, char **av)
@@ -84,7 +97,7 @@ int main(int ac, char **av)
     if (ac != 2)
         return 1;
 
-    if ((fd = open(av[1], O_RDONLY, 644)) == -1) {
+    if ((fd = open(av[1], O_RDONLY)) == -1) {
         printf("failed to open file\n");
         return 1;
     }

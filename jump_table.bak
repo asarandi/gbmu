@@ -45,10 +45,10 @@ void (*ops1[])(OP_PROTO) =
 };
 
     char* op_names0[] = {
-"nop", "ld bc,$%04X", "ld (bc),a", "inc bc", "inc b", "dec b", "ld b,$%02X", "rlca", "ld ($%04X),sp", "add hl,bc", "ld a,(bc)", "dec bc", "inc c", "dec c", "ld c,$%02X", "rrca",
-"stop 0", "ld de,$%04X", "ld (de),a", "inc de", "inc d", "dec d", "ld d,$%02X", "rla", "jr $%02X", "add hl,de", "ld a,(de)", "dec de", "inc e", "dec e", "ld e,$%02X", "rra",
-"jr nz,$%02X", "ld hl,$%04X", "ld (hl+),a", "inc hl", "inc h", "dec h", "ld h,$%02X", "daa", "jr z,$%02X", "add hl,hl", "ld a,(hl+)", "dec hl", "inc l", "dec l", "ld l,$%02X", "cpl",
-"jr nc,$%02X", "ld sp,$%04X", "ld (hl-),a", "inc sp", "inc (hl)", "dec (hl)", "ld (hl),$%02X", "scf", "jr c,$%02X", "add hl,sp", "ld a,(hl-)", "dec sp", "inc a", "dec a", "ld a,$%02X", "ccf",
+"nop", "ld bc,d16", "ld (bc),a", "inc bc", "inc b", "dec b", "ld b,d8", "rlca", "ld (a16),sp", "add hl,bc", "ld a,(bc)", "dec bc", "inc c", "dec c", "ld c,d8", "rrca",
+"stop 0", "ld de,d16", "ld (de),a", "inc de", "inc d", "dec d", "ld d,d8", "rla", "jr r8", "add hl,de", "ld a,(de)", "dec de", "inc e", "dec e", "ld e,d8", "rra",
+"jr nz,r8", "ld hl,d16", "ld (hl+),a", "inc hl", "inc h", "dec h", "ld h,d8", "daa", "jr z,r8", "add hl,hl", "ld a,(hl+)", "dec hl", "inc l", "dec l", "ld l,d8", "cpl",
+"jr nc,r8", "ld sp,d16", "ld (hl-),a", "inc sp", "inc (hl)", "dec (hl)", "ld (hl),d8", "scf", "jr c,r8", "add hl,sp", "ld a,(hl-)", "dec sp", "inc a", "dec a", "ld a,d8", "ccf",
 "ld b,b", "ld b,c", "ld b,d", "ld b,e", "ld b,h", "ld b,l", "ld b,(hl)", "ld b,a", "ld c,b", "ld c,c", "ld c,d", "ld c,e", "ld c,h", "ld c,l", "ld c,(hl)", "ld c,a",
 "ld d,b", "ld d,c", "ld d,d", "ld d,e", "ld d,h", "ld d,l", "ld d,(hl)", "ld d,a", "ld e,b", "ld e,c", "ld e,d", "ld e,e", "ld e,h", "ld e,l", "ld e,(hl)", "ld e,a",
 "ld h,b", "ld h,c", "ld h,d", "ld h,e", "ld h,h", "ld h,l", "ld h,(hl)", "ld h,a", "ld l,b", "ld l,c", "ld l,d", "ld l,e", "ld l,h", "ld l,l", "ld l,(hl)", "ld l,a",
@@ -57,10 +57,10 @@ void (*ops1[])(OP_PROTO) =
 "sub b", "sub c", "sub d", "sub e", "sub h", "sub l", "sub (hl)", "sub a", "sbc a,b", "sbc a,c", "sbc a,d", "sbc a,e", "sbc a,h", "sbc a,l", "sbc a,(hl)", "sbc a,a",
 "and b", "and c", "and d", "and e", "and h", "and l", "and (hl)", "and a", "xor b", "xor c", "xor d", "xor e", "xor h", "xor l", "xor (hl)", "xor a",
 "or b", "or c", "or d", "or e", "or h", "or l", "or (hl)", "or a", "cp b", "cp c", "cp d", "cp e", "cp h", "cp l", "cp (hl)", "cp a",
-"ret nz", "pop bc", "jp nz,$%04X", "jp $%04X", "call nz,$%04X", "push bc", "add a,$%02X", "rst 00h", "ret z", "ret", "jp z,$%04X", "prefix cb", "call z,$%04X", "call $%04X", "adc a,$%02X", "rst 08h",
-"ret nc", "pop de", "jp nc,$%04X", "undefined", "call nc,$%04X", "push de", "sub $%02X", "rst 10h", "ret c", "reti", "jp c,$%04X", "undefined", "call c,$%04X", "undefined", "sbc a,$%02X", "rst 18h",
-"ldh ($FF%02X),a", "pop hl", "ld (c),a", "undefined", "undefined", "push hl", "and $%02X", "rst 20h", "add sp,$%02X", "jp (hl)", "ld ($%04X),a", "undefined", "undefined", "undefined", "xor $%02X", "rst 28h",
-"ldh a,($FF%02X)", "pop af", "ld a,(c)", "di", "undefined", "push af", "or $%02X", "rst 30h", "ld hl,sp+$%02X", "ld sp,hl", "ld a,($%04X)", "ei", "undefined", "undefined", "cp $%02X", "rst 38h"
+"ret nz", "pop bc", "jp nz,a16", "jp a16", "call nz,a16", "push bc", "add a,d8", "rst 00h", "ret z", "ret", "jp z,a16", "prefix cb", "call z,a16", "call a16", "adc a,d8", "rst 08h",
+"ret nc", "pop de", "jp nc,a16", "undefined", "call nc,a16", "push de", "sub d8", "rst 10h", "ret c", "reti", "jp c,a16", "undefined", "call c,a16", "undefined", "sbc a,d8", "rst 18h",
+"ldh (a8),a", "pop hl", "ld (c),a", "undefined", "undefined", "push hl", "and d8", "rst 20h", "add sp,r8", "jp (hl)", "ld (a16),a", "undefined", "undefined", "undefined", "xor d8", "rst 28h",
+"ldh a,(a8)", "pop af", "ld a,(c)", "di", "undefined", "push af", "or d8", "rst 30h", "ld hl,sp+r8", "ld sp,hl", "ld a,(a16)", "ei", "undefined", "undefined", "cp d8", "rst 38h"
     };
 
 char* op_names1[] = {
