@@ -25,6 +25,8 @@ bgcolor = {
 signatures = [
         '#include "gb.h"\n'
         ]
+instr_names = []
+byte_lens = []
 cells = soup.find_all('td')
 for i in range(17*2):
     for j in range(17):
@@ -42,7 +44,10 @@ for i in range(17*2):
         if cell.has_attr('bgcolor'):
             bgc = cell['bgcolor']
 
-        instr = byte_len = cycles = flags = 'undefined'
+        byte_len = 0
+        flag = 0
+        cycles = 0
+        instr = 'undefined'
         if len(data) > 1:
             instr = data[0]
             byte_len = data[2].split()[0]
@@ -54,8 +59,12 @@ for i in range(17*2):
         if op in gb_ops:
             code = gb_ops[op](instr, byte_len, cycles, flags)
 
-        sig= 'void op_%s(void *reg, t_state *state, uint8_t *mem);' % (opcode,)
-        signatures.append(sig)
+
+        sig = 'void op_%s(void *reg, t_state *state, uint8_t *mem);' % (opcode,)
+#        signatures.append(sig)
+#        instr_names.append(instr)
+#        byte_lens.append(int(byte_len))
+
         c = sig[:-1] + '\n'
         c += '{\n'
         c += '\t/*\n'
@@ -79,6 +88,20 @@ for i in range(17*2):
             fp.write(c)
             fp.close()
 
-with open('ops.h', 'w') as fp:
-    fp.write('\n'.join(signatures))
-    fp.close()
+#
+#with open('ops.h', 'w') as fp:
+#    fp.write('\n'.join(signatures))
+#    fp.close()
+#
+#for idx, instr_name in enumerate(instr_names):
+#    if idx % 16 == 0:
+#        print()
+#    print('"%s", ' % (instr_name.lower(),), end='')
+#
+#print()
+#
+#for idx, byte_len in enumerate(byte_lens):
+#    if idx % 16 == 0:
+#        print()
+#    print('%d, ' % (byte_len,), end='')
+#
