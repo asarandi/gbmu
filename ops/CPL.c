@@ -16,5 +16,6 @@ void op_2f(void *reg, uint8_t *mem)
 	r8->A = (~r8->A);
 	set_n_flag;
 	set_h_flag;
+	r16->PC += 1;
 }
 

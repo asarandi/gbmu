@@ -18,6 +18,7 @@ void op_a8(void *reg, uint8_t *mem)
 	clear_n_flag;
 	clear_h_flag;
 	clear_c_flag;
+	r16->PC += 1;
 }
 
 void op_a9(void *reg, uint8_t *mem)
@@ -38,6 +39,7 @@ void op_a9(void *reg, uint8_t *mem)
 	clear_n_flag;
 	clear_h_flag;
 	clear_c_flag;
+	r16->PC += 1;
 }
 
 void op_aa(void *reg, uint8_t *mem)
@@ -58,6 +60,7 @@ void op_aa(void *reg, uint8_t *mem)
 	clear_n_flag;
 	clear_h_flag;
 	clear_c_flag;
+	r16->PC += 1;
 }
 
 void op_ab(void *reg, uint8_t *mem)
@@ -78,6 +81,7 @@ void op_ab(void *reg, uint8_t *mem)
 	clear_n_flag;
 	clear_h_flag;
 	clear_c_flag;
+	r16->PC += 1;
 }
 
 void op_ac(void *reg, uint8_t *mem)
@@ -98,6 +102,7 @@ void op_ac(void *reg, uint8_t *mem)
 	clear_n_flag;
 	clear_h_flag;
 	clear_c_flag;
+	r16->PC += 1;
 }
 
 void op_ad(void *reg, uint8_t *mem)
@@ -118,6 +123,7 @@ void op_ad(void *reg, uint8_t *mem)
 	clear_n_flag;
 	clear_h_flag;
 	clear_c_flag;
+	r16->PC += 1;
 }
 
 void op_ae(void *reg, uint8_t *mem)
@@ -138,6 +144,7 @@ void op_ae(void *reg, uint8_t *mem)
 	clear_n_flag;
 	clear_h_flag;
 	clear_c_flag;
+	r16->PC += 1;
 }
 
 void op_af(void *reg, uint8_t *mem)
@@ -158,6 +165,7 @@ void op_af(void *reg, uint8_t *mem)
 	clear_n_flag;
 	clear_h_flag;
 	clear_c_flag;
+	r16->PC += 1;
 }
 
 void op_ee(void *reg, uint8_t *mem)
@@ -178,5 +186,6 @@ void op_ee(void *reg, uint8_t *mem)
 	clear_n_flag;
 	clear_h_flag;
 	clear_c_flag;
+	r16->PC += 2;
 }
 

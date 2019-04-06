@@ -19,5 +19,6 @@ void op_1f(void *reg, uint8_t *mem)
 	clear_z_flag;
 	clear_n_flag;
 	clear_h_flag;
+	r16->PC += 1;
 }
 

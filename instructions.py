@@ -74,6 +74,8 @@ def gb_op_ld(instr, byte_len, cycles, flags):
     elif op1 in sixteen_bit_reg_addr:
         if op2 == 'A':
             code.append('%s = %s;' % (sixteen_bit_reg_addr[op1], eight_bit_registers['A']))
+            
+    code.append('r16->PC += %s;' % (byte_len,))
     return format_c_code_list(code)
 
 def gb_op_ldh(instr, byte_len, cycles, flags):
@@ -85,6 +87,8 @@ def gb_op_ldh(instr, byte_len, cycles, flags):
         code.append('mem[0xff00 + a8] = r8->A;')
     elif op1 == 'A' and op2 == '(a8)':
         code.append('r8->A = mem[0xff00 + a8];')
+        
+    code.append('r16->PC += %s;' % (byte_len,))
     return format_c_code_list(code)
 
 def  gb_op_adc(instr, byte_len, cycles, flags):
@@ -108,6 +112,8 @@ def  gb_op_adc(instr, byte_len, cycles, flags):
     code.append('is_c_flag + (r8->A & 0xf) + (op & 0xf) > 0xf ? set_h_flag : clear_h_flag;')
     code.append('is_c_flag + calc > 0xff ? set_c_flag : clear_c_flag;');
     code.append('r8->A = r8->A + op + is_c_flag;')
+    
+    code.append('r16->PC += %s;' % (byte_len,))
     return format_c_code_list(code)
 
 def  gb_op_add(instr, byte_len, cycles, flags):
@@ -148,6 +154,8 @@ def  gb_op_add(instr, byte_len, cycles, flags):
 
     else:
         code.append('/* FIXME: ADD */')
+        
+    code.append('r16->PC += %s;' % (byte_len,))
     return format_c_code_list(code)
 
 def  gb_op_and(instr, byte_len, cycles, flags):
@@ -167,6 +175,8 @@ def  gb_op_and(instr, byte_len, cycles, flags):
     code.append('clear_n_flag;')
     code.append('set_h_flag;')
     code.append('clear_c_flag;')
+    
+    code.append('r16->PC += %s;' % (byte_len,))
     return format_c_code_list(code)
 
 
@@ -186,6 +196,8 @@ def  gb_op_or(instr, byte_len, cycles, flags):
     code.append('clear_n_flag;')
     code.append('clear_h_flag;')
     code.append('clear_c_flag;')
+
+    code.append('r16->PC += %s;' % (byte_len,))
     return format_c_code_list(code)
 
 def  gb_op_bit(instr, byte_len, cycles, flags):
@@ -202,6 +214,8 @@ def  gb_op_bit(instr, byte_len, cycles, flags):
     code.append('%s & (1 << %s) ? clear_z_flag : set_z_flag;' % (op0, op1) )    #set Z flag if bit no set
     code.append('clear_n_flag;')
     code.append('set_h_flag;')
+    
+    code.append('r16->PC += %s;' % (byte_len,))
     return format_c_code_list(code)
 
 def  gb_op_ccf(instr, byte_len, cycles, flags):
@@ -209,6 +223,8 @@ def  gb_op_ccf(instr, byte_len, cycles, flags):
     code.append('is_c_flag ? clear_c_flag : set_c_flag;')
     code.append('clear_n_flag;')
     code.append('clear_h_flag;')
+
+    code.append('r16->PC += %s;' % (byte_len,))
     return format_c_code_list(code)
 
 def  gb_op_scf(instr, byte_len, cycles, flags):
@@ -216,6 +232,8 @@ def  gb_op_scf(instr, byte_len, cycles, flags):
     code.append('clear_n_flag;')
     code.append('clear_h_flag;')    
     code.append('set_c_flag;')
+    
+    code.append('r16->PC += %s;' % (byte_len,))
     return format_c_code_list(code)
 
 def  gb_op_cp(instr, byte_len, cycles, flags):
@@ -235,6 +253,8 @@ def  gb_op_cp(instr, byte_len, cycles, flags):
     code.append('set_n_flag;')
     code.append('(r8->A & 0xf) < (op & 0xf) ? set_h_flag : clear_h_flag;')
     code.append('r8->A < op ? set_c_flag : clear_c_flag;')
+    
+    code.append('r16->PC += %s;' % (byte_len,))
     return format_c_code_list(code)
 
 def  gb_op_cpl(instr, byte_len, cycles, flags):
@@ -242,6 +262,8 @@ def  gb_op_cpl(instr, byte_len, cycles, flags):
     code.append('r8->A = (~r8->A);')
     code.append('set_n_flag;')
     code.append('set_h_flag;')    
+    
+    code.append('r16->PC += %s;' % (byte_len,))
     return format_c_code_list(code)
 
 def  gb_op_dec(instr, byte_len, cycles, flags):
@@ -261,6 +283,8 @@ def  gb_op_dec(instr, byte_len, cycles, flags):
         code.append('%s--;' % (sixteen_bit_registers[op1],))
     else:
         code.append('/* FIXME: DEC */')
+        
+    code.append('r16->PC += %s;' % (byte_len,))
     return format_c_code_list(code)
 
 
@@ -282,6 +306,8 @@ def  gb_op_inc(instr, byte_len, cycles, flags):
         code.append('%s++;' % (sixteen_bit_registers[op1],))
     else:
         code.append('/* FIXME: INC */')
+        
+    code.append('r16->PC += %s;' % (byte_len,))
     return format_c_code_list(code)
 
 def  gb_op_sbc(instr, byte_len, cycles, flags):
@@ -302,6 +328,8 @@ def  gb_op_sbc(instr, byte_len, cycles, flags):
     code.append('(r8->A & 0xf) < ((op + is_c_flag) & 0xf) ? set_h_flag : clear_h_flag;')
     code.append('r8->A < (op + is_c_flag) ? set_c_flag : clear_c_flag;');
     code.append('r8->A = r8->A - (op + is_c_flag);')
+    
+    code.append('r16->PC += %s;' % (byte_len,))
     return format_c_code_list(code)
 
 def  gb_op_sub(instr, byte_len, cycles, flags):
@@ -321,6 +349,8 @@ def  gb_op_sub(instr, byte_len, cycles, flags):
     code.append('(r8->A & 0xf) < (op & 0xf) ? set_h_flag : clear_h_flag;')
     code.append('r8->A < op ? set_c_flag : clear_c_flag;');
     code.append('r8->A = r8->A - op;')
+    
+    code.append('r16->PC += %s;' % (byte_len,))
     return format_c_code_list(code)
 
 def  gb_op_swap(instr, byte_len, cycles, flags):
@@ -338,6 +368,8 @@ def  gb_op_swap(instr, byte_len, cycles, flags):
     code.append('clear_h_flag;')
     code.append('clear_c_flag;')
     code.append('%s = ((%s & 0xf) << 4) | ((%s & 0xf0) >> 4);' % (op0,op0,op0))
+    
+    code.append('r16->PC += %s;' % (byte_len,))
     return format_c_code_list(code)
 
 
@@ -357,6 +389,8 @@ def  gb_op_xor(instr, byte_len, cycles, flags):
     code.append('clear_n_flag;')
     code.append('clear_h_flag;')
     code.append('clear_c_flag;')
+    
+    code.append('r16->PC += %s;' % (byte_len,))
     return format_c_code_list(code)
 
 
@@ -372,6 +406,8 @@ def  gb_op_res(instr, byte_len, cycles, flags):
     else:
         code.append('/* FIXME: RES */')
     code.append('%s &= ~(1 << %s);' % (op0, op1))
+    
+    code.append('r16->PC += %s;' % (byte_len,))
     return format_c_code_list(code)
 
 def  gb_op_set(instr, byte_len, cycles, flags):
@@ -386,6 +422,8 @@ def  gb_op_set(instr, byte_len, cycles, flags):
     else:
         code.append('/* FIXME: SET */')
     code.append('%s |= (1 << %s);' % (op0, op1))
+
+    code.append('r16->PC += %s;' % (byte_len,))
     return format_c_code_list(code)
 
 def  gb_op_sla(instr, byte_len, cycles, flags):
@@ -404,6 +442,8 @@ def  gb_op_sla(instr, byte_len, cycles, flags):
     code.append('clear_h_flag;')
     code.append('%s & 0x80 ? set_c_flag : clear_c_flag;' % (op0,))
     code.append('%s <<= 1;' % (op0,))
+
+    code.append('r16->PC += %s;' % (byte_len,))
     return format_c_code_list(code)
 
 def  gb_op_sra(instr, byte_len, cycles, flags):
@@ -421,6 +461,8 @@ def  gb_op_sra(instr, byte_len, cycles, flags):
     code.append('%s & 1 ? set_c_flag : clear_c_flag;' % (op0,))
     code.append('%s = (%s & 0x80) | (%s >> 1) ;' % (op0,op0,op0))
     code.append('%s == 0 ? set_z_flag : clear_z_flag;' % (op0,))
+
+    code.append('r16->PC += %s;' % (byte_len,))
     return format_c_code_list(code)
 
 
@@ -440,6 +482,8 @@ def  gb_op_srl(instr, byte_len, cycles, flags):
     code.append('%s & 1 ? set_c_flag : clear_c_flag;' % (op0,))
     code.append('%s >>= 1;' % (op0,))
     code.append('%s == 0 ? set_z_flag : clear_z_flag;' % (op0,))
+
+    code.append('r16->PC += %s;' % (byte_len,))
     return format_c_code_list(code)
 
 
@@ -460,6 +504,8 @@ def  gb_op_rr(instr, byte_len, cycles, flags):
     code.append('clear_n_flag;')    
     code.append('clear_h_flag;')
     code.append('%s == 0 ? set_z_flag : clear_z_flag;' % (op0,))
+
+    code.append('r16->PC += %s;' % (byte_len,))
     return format_c_code_list(code)
 
 def  gb_op_rl(instr, byte_len, cycles, flags):
@@ -479,6 +525,8 @@ def  gb_op_rl(instr, byte_len, cycles, flags):
     code.append('clear_n_flag;')    
     code.append('clear_h_flag;')
     code.append('%s == 0 ? set_z_flag : clear_z_flag;' % (op0,))
+
+    code.append('r16->PC += %s;' % (byte_len,))
     return format_c_code_list(code)
 
 def  gb_op_rla(instr, byte_len, cycles, flags):  #same like rl, but z flag always set to 0
@@ -490,6 +538,8 @@ def  gb_op_rla(instr, byte_len, cycles, flags):  #same like rl, but z flag alway
     code.append('clear_n_flag;')    
     code.append('clear_h_flag;')
     code.append('clear_z_flag;')
+
+    code.append('r16->PC += %s;' % (byte_len,))
     return format_c_code_list(code)
 
 def  gb_op_rlc(instr, byte_len, cycles, flags):
@@ -506,6 +556,8 @@ def  gb_op_rlc(instr, byte_len, cycles, flags):
     code.append('clear_n_flag;')    
     code.append('clear_h_flag;')    
     code.append('%s & 1 ? set_c_flag : clear_c_flag;' % (op0,))
+
+    code.append('r16->PC += %s;' % (byte_len,))
     return format_c_code_list(code)
 
 def  gb_op_rlca(instr, byte_len, cycles, flags):
@@ -516,6 +568,8 @@ def  gb_op_rlca(instr, byte_len, cycles, flags):
     code.append('clear_n_flag;')    
     code.append('clear_h_flag;')    
     code.append('%s & 1 ? set_c_flag : clear_c_flag;' % (op0,))
+
+    code.append('r16->PC += %s;' % (byte_len,))
     return format_c_code_list(code)
 
 def  gb_op_rrc(instr, byte_len, cycles, flags):
@@ -532,6 +586,8 @@ def  gb_op_rrc(instr, byte_len, cycles, flags):
     code.append('clear_n_flag;')    
     code.append('clear_h_flag;')    
     code.append('%s & 0x80 ? set_c_flag : clear_c_flag;' % (op0,))
+
+    code.append('r16->PC += %s;' % (byte_len,))
     return format_c_code_list(code)
 
 def  gb_op_rrca(instr, byte_len, cycles, flags):
@@ -542,6 +598,8 @@ def  gb_op_rrca(instr, byte_len, cycles, flags):
     code.append('clear_n_flag;')    
     code.append('clear_h_flag;')    
     code.append('%s & 0x80 ? set_c_flag : clear_c_flag;' % (op0,))
+
+    code.append('r16->PC += %s;' % (byte_len,))
     return format_c_code_list(code)
 
 def  gb_op_rra(instr, byte_len, cycles, flags):
@@ -553,5 +611,7 @@ def  gb_op_rra(instr, byte_len, cycles, flags):
     code.append('clear_z_flag;')
     code.append('clear_n_flag;')    
     code.append('clear_h_flag;')
+
+    code.append('r16->PC += %s;' % (byte_len,))
     return format_c_code_list(code)
 

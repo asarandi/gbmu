@@ -16,5 +16,6 @@ void op_3f(void *reg, uint8_t *mem)
 	is_c_flag ? clear_c_flag : set_c_flag;
 	clear_n_flag;
 	clear_h_flag;
+	r16->PC += 1;
 }
 

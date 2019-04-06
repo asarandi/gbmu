@@ -20,6 +20,7 @@ void op_98(void *reg, uint8_t *mem)
 	(r8->A & 0xf) < ((op + is_c_flag) & 0xf) ? set_h_flag : clear_h_flag;
 	r8->A < (op + is_c_flag) ? set_c_flag : clear_c_flag;
 	r8->A = r8->A - (op + is_c_flag);
+	r16->PC += 1;
 }
 
 void op_99(void *reg, uint8_t *mem)
@@ -42,6 +43,7 @@ void op_99(void *reg, uint8_t *mem)
 	(r8->A & 0xf) < ((op + is_c_flag) & 0xf) ? set_h_flag : clear_h_flag;
 	r8->A < (op + is_c_flag) ? set_c_flag : clear_c_flag;
 	r8->A = r8->A - (op + is_c_flag);
+	r16->PC += 1;
 }
 
 void op_9a(void *reg, uint8_t *mem)
@@ -64,6 +66,7 @@ void op_9a(void *reg, uint8_t *mem)
 	(r8->A & 0xf) < ((op + is_c_flag) & 0xf) ? set_h_flag : clear_h_flag;
 	r8->A < (op + is_c_flag) ? set_c_flag : clear_c_flag;
 	r8->A = r8->A - (op + is_c_flag);
+	r16->PC += 1;
 }
 
 void op_9b(void *reg, uint8_t *mem)
@@ -86,6 +89,7 @@ void op_9b(void *reg, uint8_t *mem)
 	(r8->A & 0xf) < ((op + is_c_flag) & 0xf) ? set_h_flag : clear_h_flag;
 	r8->A < (op + is_c_flag) ? set_c_flag : clear_c_flag;
 	r8->A = r8->A - (op + is_c_flag);
+	r16->PC += 1;
 }
 
 void op_9c(void *reg, uint8_t *mem)
@@ -108,6 +112,7 @@ void op_9c(void *reg, uint8_t *mem)
 	(r8->A & 0xf) < ((op + is_c_flag) & 0xf) ? set_h_flag : clear_h_flag;
 	r8->A < (op + is_c_flag) ? set_c_flag : clear_c_flag;
 	r8->A = r8->A - (op + is_c_flag);
+	r16->PC += 1;
 }
 
 void op_9d(void *reg, uint8_t *mem)
@@ -130,6 +135,7 @@ void op_9d(void *reg, uint8_t *mem)
 	(r8->A & 0xf) < ((op + is_c_flag) & 0xf) ? set_h_flag : clear_h_flag;
 	r8->A < (op + is_c_flag) ? set_c_flag : clear_c_flag;
 	r8->A = r8->A - (op + is_c_flag);
+	r16->PC += 1;
 }
 
 void op_9e(void *reg, uint8_t *mem)
@@ -152,6 +158,7 @@ void op_9e(void *reg, uint8_t *mem)
 	(r8->A & 0xf) < ((op + is_c_flag) & 0xf) ? set_h_flag : clear_h_flag;
 	r8->A < (op + is_c_flag) ? set_c_flag : clear_c_flag;
 	r8->A = r8->A - (op + is_c_flag);
+	r16->PC += 1;
 }
 
 void op_9f(void *reg, uint8_t *mem)
@@ -174,6 +181,7 @@ void op_9f(void *reg, uint8_t *mem)
 	(r8->A & 0xf) < ((op + is_c_flag) & 0xf) ? set_h_flag : clear_h_flag;
 	r8->A < (op + is_c_flag) ? set_c_flag : clear_c_flag;
 	r8->A = r8->A - (op + is_c_flag);
+	r16->PC += 1;
 }
 
 void op_de(void *reg, uint8_t *mem)
@@ -196,5 +204,6 @@ void op_de(void *reg, uint8_t *mem)
 	(r8->A & 0xf) < ((op + is_c_flag) & 0xf) ? set_h_flag : clear_h_flag;
 	r8->A < (op + is_c_flag) ? set_c_flag : clear_c_flag;
 	r8->A = r8->A - (op + is_c_flag);
+	r16->PC += 2;
 }
 

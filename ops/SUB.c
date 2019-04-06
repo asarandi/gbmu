@@ -20,6 +20,7 @@ void op_90(void *reg, uint8_t *mem)
 	(r8->A & 0xf) < (op & 0xf) ? set_h_flag : clear_h_flag;
 	r8->A < op ? set_c_flag : clear_c_flag;
 	r8->A = r8->A - op;
+	r16->PC += 1;
 }
 
 void op_91(void *reg, uint8_t *mem)
@@ -42,6 +43,7 @@ void op_91(void *reg, uint8_t *mem)
 	(r8->A & 0xf) < (op & 0xf) ? set_h_flag : clear_h_flag;
 	r8->A < op ? set_c_flag : clear_c_flag;
 	r8->A = r8->A - op;
+	r16->PC += 1;
 }
 
 void op_92(void *reg, uint8_t *mem)
@@ -64,6 +66,7 @@ void op_92(void *reg, uint8_t *mem)
 	(r8->A & 0xf) < (op & 0xf) ? set_h_flag : clear_h_flag;
 	r8->A < op ? set_c_flag : clear_c_flag;
 	r8->A = r8->A - op;
+	r16->PC += 1;
 }
 
 void op_93(void *reg, uint8_t *mem)
@@ -86,6 +89,7 @@ void op_93(void *reg, uint8_t *mem)
 	(r8->A & 0xf) < (op & 0xf) ? set_h_flag : clear_h_flag;
 	r8->A < op ? set_c_flag : clear_c_flag;
 	r8->A = r8->A - op;
+	r16->PC += 1;
 }
 
 void op_94(void *reg, uint8_t *mem)
@@ -108,6 +112,7 @@ void op_94(void *reg, uint8_t *mem)
 	(r8->A & 0xf) < (op & 0xf) ? set_h_flag : clear_h_flag;
 	r8->A < op ? set_c_flag : clear_c_flag;
 	r8->A = r8->A - op;
+	r16->PC += 1;
 }
 
 void op_95(void *reg, uint8_t *mem)
@@ -130,6 +135,7 @@ void op_95(void *reg, uint8_t *mem)
 	(r8->A & 0xf) < (op & 0xf) ? set_h_flag : clear_h_flag;
 	r8->A < op ? set_c_flag : clear_c_flag;
 	r8->A = r8->A - op;
+	r16->PC += 1;
 }
 
 void op_96(void *reg, uint8_t *mem)
@@ -152,6 +158,7 @@ void op_96(void *reg, uint8_t *mem)
 	(r8->A & 0xf) < (op & 0xf) ? set_h_flag : clear_h_flag;
 	r8->A < op ? set_c_flag : clear_c_flag;
 	r8->A = r8->A - op;
+	r16->PC += 1;
 }
 
 void op_97(void *reg, uint8_t *mem)
@@ -174,6 +181,7 @@ void op_97(void *reg, uint8_t *mem)
 	(r8->A & 0xf) < (op & 0xf) ? set_h_flag : clear_h_flag;
 	r8->A < op ? set_c_flag : clear_c_flag;
 	r8->A = r8->A - op;
+	r16->PC += 1;
 }
 
 void op_d6(void *reg, uint8_t *mem)
@@ -196,5 +204,6 @@ void op_d6(void *reg, uint8_t *mem)
 	(r8->A & 0xf) < (op & 0xf) ? set_h_flag : clear_h_flag;
 	r8->A < op ? set_c_flag : clear_c_flag;
 	r8->A = r8->A - op;
+	r16->PC += 2;
 }
 

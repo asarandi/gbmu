@@ -18,5 +18,6 @@ void op_0f(void *reg, uint8_t *mem)
 	clear_n_flag;
 	clear_h_flag;
 	r8->A & 0x80 ? set_c_flag : clear_c_flag;
+	r16->PC += 1;
 }
 
