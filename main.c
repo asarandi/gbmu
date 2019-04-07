@@ -16,6 +16,7 @@ extern int byte_lens0[];
 extern int byte_lens1[];
 extern char* op_names0[];
 extern char* op_names1[];
+extern unsigned char DMG_ROM_bin[];
 
 void dump_ram(void *ram)
 {
@@ -73,7 +74,7 @@ void dump_registers(void *registers, void *gb_state, uint8_t *gb_mem)
     else        
         printf("%s", op_name);
 
-    printf("\n");
+    printf("\n>\n");
 }
 
 int main(int ac, char **av)
@@ -93,6 +94,7 @@ int main(int ac, char **av)
 
     struct stat stat_buf;
 
+    void (*f)(void *, t_state *, uint8_t *);
 
     if (ac != 2)
         return 1;
@@ -108,6 +110,7 @@ int main(int ac, char **av)
         return 1;
     }
 
+    
     if (stat_buf.st_size != 0x8000) {
         close(fd);
         printf("unsupported file format\n");
@@ -135,15 +138,14 @@ int main(int ac, char **av)
 
     /* default register values as per mgba debugger */
 
-    r16->AF = 0x01b0;
-    r16->BC = 0x0013;
-    r16->DE = 0x00d8;
-    r16->HL = 0x014d;
-    r16->PC = 0x0100;
-    r16->SP = 0xfffe;
+    r16->AF = 0x0000;
+    r16->BC = 0x0000;
+    r16->DE = 0x0000;
+    r16->HL = 0x0000;
+    r16->SP = 0x0000;
+    r16->PC = 0x0000;
 
-    void (*f)(void *, t_state *, uint8_t *);
-
+    (void)memcpy(mem, DMG_ROM_bin, 0x100);
     while (true)
     {
         op0 = mem[r16->PC];
@@ -153,7 +155,7 @@ int main(int ac, char **av)
             f = ops1[op1];
         dump_registers(registers, gb_state, gb_mem);
         f(registers, gb_state, gb_mem);
-        if (r16->PC == 0x237) {
+        if (r16->PC == 0x64) {
             dump_ram(mem);
             break ; }
 
