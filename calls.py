@@ -65,8 +65,8 @@ def gb_op_push(instr, byte_len, cycles, flags):
     code = [] + cast_void_to_reg
     op = instr.split()[1]
 
-    code.append('*(uint16_t *)&mem[r16->SP] = %s;' % (sixteen_bit_registers[op],))
     code.append('r16->SP -= 2;')
+    code.append('*(uint16_t *)&mem[r16->SP] = %s;' % (sixteen_bit_registers[op],))
     code.append('r16->PC += %s;' % (byte_len,))
     return format_c_code_list(code)
 

@@ -299,7 +299,7 @@ def  gb_op_inc(instr, byte_len, cycles, flags):
             op0 = sixteen_bit_reg_addr[op1]
         code.append('%s++;' % (op0,))
         code.append('%s == 0 ? set_z_flag : clear_z_flag;' % (op0,))
-        code.append('set_n_flag;')
+        code.append('clear_n_flag;')
         code.append('(%s & 0xf) == 0x0 ? set_h_flag : clear_h_flag;' % (op0,))
 
     elif op1 in sixteen_bit_registers:
