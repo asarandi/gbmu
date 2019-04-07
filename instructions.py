@@ -1,5 +1,3 @@
-from calls import *
-
 cast_void_to_reg = [
         't_r8  *r8  = reg;',
         't_r16 *r16 = reg;'

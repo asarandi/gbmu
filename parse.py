@@ -27,6 +27,7 @@ signatures = [
         ]
 instr_names = []
 byte_lens = []
+cycles_list = []
 cells = soup.find_all('td')
 for i in range(17*2):
     for j in range(17):
@@ -46,7 +47,7 @@ for i in range(17*2):
 
         byte_len = 0
         flag = 0
-        cycles = 0
+        cycles = '0'
         instr = 'undefined'
         if len(data) > 1:
             instr = data[0]
@@ -62,8 +63,9 @@ for i in range(17*2):
 
         sig = 'void op_%s(void *reg, t_state *state, uint8_t *mem);' % (opcode,)
 #        signatures.append(sig)
-#        instr_names.append(instr)
+        instr_names.append(instr)
 #        byte_lens.append(int(byte_len))
+        cycles_list.append(cycles)
 
         c = sig[:-1] + '\n'
         c += '{\n'
@@ -104,4 +106,30 @@ for i in range(17*2):
 #    if idx % 16 == 0:
 #        print()
 #    print('%d, ' % (byte_len,), end='')
+#
+
+#
+#
+#for idx, cycles in enumerate(cycles_list):
+#    if idx % 16 == 0:
+#        print()
+#    if '/' in cycles:        
+#        '''
+#        cond = instr_names[idx].split()[1].split(',')[0]
+#        if cond == 'Z':
+#            print('%s, ' % ('1',), end='')
+#        elif cond == 'NZ':
+#            print('%s, ' % ('2',), end='')
+#        elif cond == 'C':
+#            print('%s, ' % ('3',), end='')
+#        elif cond == 'NC':
+#            print('%s, ' % ('4',), end='')
+#        else:
+#            print('%s, ' % ('5',), end='')
+#        '''
+#
+#        print('%2s, ' %  (cycles_list[idx].split('/')[1],), end='')
+#
+#    else:
+#        print('%2s, ' %  (cycles_list[idx],), end='')
 #
