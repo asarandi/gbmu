@@ -35,6 +35,7 @@ typedef struct s_state {
     bool    interrupts_enabled;
     bool    halt;
     bool    stop;
+    unsigned long   cycles;
 } t_state;
 
 

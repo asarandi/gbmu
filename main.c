@@ -17,6 +17,7 @@ extern int byte_lens1[];
 extern char* op_names0[];
 extern char* op_names1[];
 extern unsigned char DMG_ROM_bin[];
+extern int get_num_cycles(void *gb_reg, void *gb_mem);
 
 void dump_ram(void *ram)
 {
@@ -88,13 +89,15 @@ int main(int ac, char **av)
     t_state     *state;
     void        *gb_mem;    
     uint8_t     *mem;
-
     uint8_t     op0;
     uint8_t     op1;
-
     struct stat stat_buf;
-
     void (*f)(void *, t_state *, uint8_t *);
+    int         op_cycles;
+
+
+
+
 
     if (ac != 2)
         return 1;
@@ -154,7 +157,13 @@ int main(int ac, char **av)
         if (op0 == 0xcb)
             f = ops1[op1];
         dump_registers(registers, gb_state, gb_mem);
+        op_cycles = get_num_cycles(registers, gb_mem);
+        printf("total cycles: %08lu, this op cycles: %02d\n", state->cycles, op_cycles);
+
         f(registers, gb_state, gb_mem);
+
+        state->cycles += op_cycles;
+
         if (r16->PC == 0x64) {
             dump_ram(mem);
             break ; }
