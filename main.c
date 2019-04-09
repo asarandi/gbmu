@@ -6,6 +6,19 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <time.h>
+
+void delay()
+{
+    struct timespec ts;
+    ts.tv_sec = 0;
+    ts.tv_nsec = 150000000;
+
+    struct timespec tz;
+    tz.tv_sec = 0;
+    tz.tv_nsec = 150000000;
+    (void)nanosleep(&ts, &tz);
+}
 
 #include "gb.h"
 
@@ -19,13 +32,57 @@ extern char* op_names1[];
 extern unsigned char DMG_ROM_bin[];
 extern int get_num_cycles(void *gb_reg, void *gb_mem);
 
+#define scroll_y    0xff42
+#define scroll_x    0xff43
+
+int get_bg_screen_pixel_yx(uint8_t *gb_mem, int y, int x)
+{
+
+
+    /* 0 >= y >= 143
+     * 0 >= x >= 159
+     */
+
+    /*
+     * function should take into account ScrollX and ScrollY
+     */
+
+    y = (y + gb_mem[scroll_y]) % 256;
+    x = (x + gb_mem[scroll_x]) % 256;
+
+    int tile_map_addr = (gb_mem[0xff40] & 8) ? 0x9c00 : 0x9800;      //lcdc bit 3
+    int tile_data_addr = (gb_mem[0xff40] & 0x10) ? 0x8000 : 0x8800;    //lcdc bit 4
+    int tile_idx_addr = ((y/8)*32)+(x/8);
+
+    int tile_idx = (uint8_t)gb_mem[tile_map_addr + tile_idx_addr];
+    if ((tile_data_addr == 0x8800) && (tile_idx > 127))
+        tile_idx = (int8_t)gb_mem[tile_map_addr + tile_idx_addr];
+    uint8_t *tile_data = &gb_mem[tile_data_addr + (tile_idx * 16)];
+    uint8_t tile_byte0 = tile_data[(y % 8) * 2];
+    uint8_t tile_byte1 = tile_data[(y % 8) * 2 + 1];
+    int pixel = ((tile_byte0 >> (7-(x%8))) & 1) | (((tile_byte1 >> (7-(x%8))) << 1) & 3);
+    return pixel;
+}
+
+void    dump_background2(uint8_t *gb_mem)
+{
+    char *s = "0123";
+    write(1, "\033c", 2);
+    for (int y=0; y<144; y++) {
+        for (int x=0;x<160; x++) {
+            int px=get_bg_screen_pixel_yx(gb_mem, y, x);
+            write(1, &s[px], 1);
+        }
+        write(1, "\n", 1);
+    }
+}
 
 void    dump_background(uint8_t *gb_mem)
 {
     char *s = "0123";
 
     uint8_t *background = malloc(0x10000);
-//    (void)memset(background,0,0x10000);
+    (void)memset(background,0,0x10000);
     uint8_t lcdc = gb_mem[0xff40];
     int bg_tile_map_idx;
     int bg_tile_data_idx;
@@ -203,20 +260,36 @@ int main(int ac, char **av)
         f = ops0[op0];
         if (op0 == 0xcb)
             f = ops1[op1];
-        dump_registers(registers, gb_state, gb_mem);
+//        dump_registers(registers, gb_state, gb_mem);
         op_cycles = get_num_cycles(registers, gb_mem);
-        printf("total cycles: %08lu, this op cycles: %02d\n", state->cycles, op_cycles);
+//        printf("total cycles: %08lu, this op cycles: %02d\n", state->cycles, op_cycles);
 
         f(registers, gb_state, gb_mem);
 
         state->cycles += op_cycles;
+        if (state->cycles % 456 == 0) {
+            mem[0xff44] = 0x90;
+        }
 
-        if (r16->PC == 0x68){
-            dump_ram(mem);
-             break ; }
+        if (r16->PC == 0x8c) {
+            dump_background2(gb_mem);           
+            
+            dump_background(gb_mem);
+            printf("%04X\n", mem[0xff40]);            
+            fflush(NULL);
+            delay();
+
+//            dump_background(gb_mem);
+//            break ;
+
+        }
+
+//        if (r16->PC == 0x68){
+//            dump_ram(mem);
+//             break ; }
     }
 
-    dump_background(gb_mem);
+//    dump_background2(gb_mem);
 
     free(gb_mem);
     free(gb_state);
