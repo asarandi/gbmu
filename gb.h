@@ -3,6 +3,9 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <pthread.h>
+
+void    *gui(void *arg);
 
 typedef struct s_r16 {
     uint16_t    AF; 

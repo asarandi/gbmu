@@ -7,21 +7,10 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <time.h>
-
-void delay()
-{
-    struct timespec ts;
-    ts.tv_sec = 0;
-    ts.tv_nsec = 150000000;
-
-    struct timespec tz;
-    tz.tv_sec = 0;
-    tz.tv_nsec = 150000000;
-    (void)nanosleep(&ts, &tz);
-}
-
 #include "gb.h"
 
+#define scroll_y    0xff42
+#define scroll_x    0xff43
 
 extern void (*ops0[])(void *, t_state *, uint8_t *);
 extern void (*ops1[])(void *, t_state *, uint8_t *);
@@ -32,21 +21,22 @@ extern char* op_names1[];
 extern unsigned char DMG_ROM_bin[];
 extern int get_num_cycles(void *gb_reg, void *gb_mem);
 
-#define scroll_y    0xff42
-#define scroll_x    0xff43
+static uint8_t screen_buf[144*160];
+
+void delay()
+{
+    struct timespec ts;
+    ts.tv_sec = 0;
+    ts.tv_nsec = 50000000;
+
+    struct timespec tz;
+    tz.tv_sec = 0;
+    tz.tv_nsec = 50000000;
+    (void)nanosleep(&ts, &tz);
+}
 
 int get_bg_screen_pixel_yx(uint8_t *gb_mem, int y, int x)
 {
-
-
-    /* 0 >= y >= 143
-     * 0 >= x >= 159
-     */
-
-    /*
-     * function should take into account ScrollX and ScrollY
-     */
-
     y = (y + gb_mem[scroll_y]) % 256;
     x = (x + gb_mem[scroll_x]) % 256;
 
@@ -70,10 +60,8 @@ void    dump_background2(uint8_t *gb_mem)
     write(1, "\033c", 2);
     for (int y=0; y<144; y++) {
         for (int x=0;x<160; x++) {
-            int px=get_bg_screen_pixel_yx(gb_mem, y, x);
-            write(1, &s[px], 1);
+            screen_buf[y*160+x] = (uint8_t)get_bg_screen_pixel_yx(gb_mem, y, x);
         }
-        write(1, "\n", 1);
     }
 }
 
@@ -197,6 +185,7 @@ int main(int ac, char **av)
     struct stat stat_buf;
     void (*f)(void *, t_state *, uint8_t *);
     int         op_cycles;
+    pthread_t   thread;
 
 
 
@@ -252,7 +241,7 @@ int main(int ac, char **av)
     r16->PC = 0x0000;
 
     (void)memcpy(mem, DMG_ROM_bin, 0x100);
-    int zum = 0;
+    pthread_create(&thread, NULL, &gui, (void *)screen_buf);
     while (true)
     {
         op0 = mem[r16->PC];
@@ -260,9 +249,9 @@ int main(int ac, char **av)
         f = ops0[op0];
         if (op0 == 0xcb)
             f = ops1[op1];
-//        dump_registers(registers, gb_state, gb_mem);
+        dump_registers(registers, gb_state, gb_mem);
         op_cycles = get_num_cycles(registers, gb_mem);
-//        printf("total cycles: %08lu, this op cycles: %02d\n", state->cycles, op_cycles);
+        printf("total cycles: %08lu, this op cycles: %02d\n", state->cycles, op_cycles);
 
         f(registers, gb_state, gb_mem);
 
@@ -274,9 +263,9 @@ int main(int ac, char **av)
         if (r16->PC == 0x8c) {
             dump_background2(gb_mem);           
             
-            dump_background(gb_mem);
-            printf("%04X\n", mem[0xff40]);            
-            fflush(NULL);
+//            dump_background(gb_mem);
+//            printf("%04X\n", mem[0xff40]);            
+//            fflush(NULL);
             delay();
 
 //            dump_background(gb_mem);
