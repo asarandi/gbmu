@@ -68,6 +68,7 @@ void op_f1(void *reg, t_state *state, uint8_t *mem)
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
 	r16->AF = *(uint16_t *)&mem[r16->SP];
+	r8->F &= 0xf0;
 	r16->SP += 2;
 	r16->PC += 1;
 }

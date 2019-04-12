@@ -10,5 +10,6 @@ void op_cb(void *reg, t_state *state, uint8_t *mem)
 		       flags: - - - -
 	*/
 
+	printf("undefined instruction i=13, j=12\n");
 }
 

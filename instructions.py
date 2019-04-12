@@ -111,8 +111,9 @@ def gb_op_push(instr, byte_len, cycles, flags):
 def gb_op_pop(instr, byte_len, cycles, flags):
     code = [] + cast_void_to_reg
     op = instr.split()[1]
-
     code.append('%s = *(uint16_t *)&mem[r16->SP];' % (sixteen_bit_registers[op],))
+    if op == 'AF':
+        code.append('r8->F &= 0xf0;')
     code.append('r16->SP += 2;')
     code.append('r16->PC += %s;' % (byte_len,))
     return format_c_code_list(code)
@@ -583,11 +584,11 @@ def  gb_op_sla(instr, byte_len, cycles, flags):
     else:
         code.append('/* FIXME: SLA */')
 
-    code.append('(%s << 1) == 0 ? set_z_flag : clear_z_flag;' % (op0,))
     code.append('clear_n_flag;')    
     code.append('clear_h_flag;')
     code.append('%s & 0x80 ? set_c_flag : clear_c_flag;' % (op0,))
     code.append('%s <<= 1;' % (op0,))
+    code.append('%s == 0 ? set_z_flag : clear_z_flag;' % (op0,))
 
     code.append('r16->PC += %s;' % (byte_len,))
     return format_c_code_list(code)

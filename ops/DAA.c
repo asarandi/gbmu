@@ -10,5 +10,6 @@ void op_27(void *reg, t_state *state, uint8_t *mem)
 		       flags: Z - 0 C
 	*/
 
+	printf("undefined instruction i=3, j=8\n");
 }
 

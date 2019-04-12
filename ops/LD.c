@@ -1469,7 +1469,7 @@ void op_f2(void *reg, t_state *state, uint8_t *mem)
 	/*
 		    category: 8bit load/store/move instructions
 		 instruction: LD A,(C)
-		   num bytes: 2
+		   num bytes: 1
 		      cycles: 8
 		       flags: - - - -
 	*/
@@ -1478,7 +1478,7 @@ void op_f2(void *reg, t_state *state, uint8_t *mem)
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
 	r8->A = mem[(0xff00)+r8->C];
-	r16->PC += 2;
+	r16->PC += 1;
 }
 
 void op_f8(void *reg, t_state *state, uint8_t *mem)

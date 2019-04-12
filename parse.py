@@ -55,7 +55,7 @@ for i in range(17*2):
             cycles = data[2].split()[1]
             flags = data[4]
 
-        code = ''
+        code = '\tprintf("undefined instruction i=%d, j=%d\\n");\n' % (i, j)
         op = instr.split()[0]
         if op in gb_ops:
             code = gb_ops[op](instr, byte_len, cycles, flags)
