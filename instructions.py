@@ -195,11 +195,11 @@ def gb_op_ld(instr, byte_len, cycles, flags):
             code.append('%s = *(uint16_t *)&mem[(r16->PC)+1];' % (sixteen_bit_registers[op1],))
         elif op1 == 'HL' and op2 == 'SP+r8':                    #obscure
             code.append('int offset = (int8_t)mem[(r16->PC)+1];')
-            code.append('r16->HL = (int)r16->SP + offset;')
+            code.append('r16->HL = r16->SP + offset;')
             code.append('clear_z_flag;')
             code.append('clear_n_flag;')
-            code.append('(offset & 0xf) + (r16->HL & 0xf) > 0xf ? set_h_flag : clear_h_flag;')
-            code.append('(offset & 0xff) + (r16->HL & 0xff) > 0xff ? set_c_flag : clear_c_flag;')
+            code.append('(offset & 0xf) + (r16->SP & 0xf) > 0xf ? set_h_flag : clear_h_flag;')
+            code.append('(offset & 0xff) + (r16->SP & 0xff) > 0xff ? set_c_flag : clear_c_flag;')
     elif op1 in eight_bit_registers:
         if op2 in eight_bit_registers:
             code.append('%s = %s;' % (eight_bit_registers[op1], eight_bit_registers[op2]))
@@ -255,8 +255,8 @@ def  gb_op_adc(instr, byte_len, cycles, flags):
     code.append('(calc & 0xff) == 0 ? set_z_flag : clear_z_flag;')
     code.append('clear_n_flag;')
     code.append('is_c_flag + (r8->A & 0xf) + (op & 0xf) > 0xf ? set_h_flag : clear_h_flag;')
-    code.append('is_c_flag + calc > 0xff ? set_c_flag : clear_c_flag;');
-    code.append('r8->A = r8->A + op + is_c_flag;')
+    code.append('is_c_flag + op + r8->A > 0xff ? set_c_flag : clear_c_flag;');
+    code.append('r8->A = calc & 0xff;')
     
     code.append('r16->PC += %s;' % (byte_len,))
     return format_c_code_list(code)
@@ -468,11 +468,12 @@ def  gb_op_sbc(instr, byte_len, cycles, flags):
         code.append('op = mem[(r16->PC)+1];')
     else:
         code.append('/* FIXME: SBC */')
-    code.append('(r8->A - (op + is_c_flag)) == 0 ? set_z_flag : clear_z_flag;')
+    code.append('uint8_t calc = r8->A - op - is_c_flag;')
+    code.append('calc == 0 ? set_z_flag : clear_z_flag;')
     code.append('set_n_flag;')
-    code.append('(r8->A & 0xf) < ((op + is_c_flag) & 0xf) ? set_h_flag : clear_h_flag;')
+    code.append('((r8->A & 0xf)-(op & 0xf)-is_c_flag)<0 ? set_h_flag : clear_h_flag;')
     code.append('r8->A < (op + is_c_flag) ? set_c_flag : clear_c_flag;');
-    code.append('r8->A = r8->A - (op + is_c_flag);')
+    code.append('r8->A = calc;')
     
     code.append('r16->PC += %s;' % (byte_len,))
     return format_c_code_list(code)

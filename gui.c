@@ -1,5 +1,6 @@
 #include <SDL2/SDL.h>
 #include <stdbool.h>
+#include "gb.h"
 
 #define WND_WIDTH   160
 #define WND_HEIGHT  144
@@ -17,7 +18,7 @@ void *gui(void *arg)
     int idx;
     uint32_t colors[] = {0xe6e6e6ff, 0xb3b3b3ff, 0x737373ff, 0x333333ff};
 
-    screen_buf = arg;
+    struct s_state *state = arg;
 
     if (SDL_Init(SDL_INIT_VIDEO) != 0)
     {
@@ -58,7 +59,7 @@ void *gui(void *arg)
         SDL_LockTexture(buffer, NULL, (void *)&pixels, &pitch);
         for (int y0=0;y0<144;y0++){
             for (int x0=0;x0<160;x0++){
-                idx = (int)screen_buf[y0*160+x0];
+                idx = (int)state->screen_buf[y0*160+x0];
                 for (int y1=y0*SCALE_FACTOR; y1<(y0+1)*SCALE_FACTOR;y1++) {
                     for (int x1=x0*SCALE_FACTOR; x1<(x0+1)*SCALE_FACTOR;x1++) {
                         pixels[y1*SCALE_FACTOR*WND_WIDTH+x1] = colors[idx];
