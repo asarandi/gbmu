@@ -166,6 +166,8 @@ def gb_op_nop(instr, byte_len, cycles, flags):
 def gb_op_rst(instr, byte_len, cycles, flags):
     code = [] + cast_void_to_reg
     op = instr.split()[1][:-1]  #remove last 'H' character
+    code.append('if (state->interrupts_enabled == false) { r16->PC += %s; return ; }' % (byte_len, ))
+    code.append('state->interrupts_enabled = false;')
     code.append('r16->SP -= 2;')
     code.append('*(uint16_t *)&mem[r16->SP] = r16->PC + %s;' % (byte_len, ))
     code.append('r16->PC = 0x%s;' % (op, ))
@@ -737,7 +739,7 @@ def  gb_op_rrc(instr, byte_len, cycles, flags):
     code.append('r16->PC += %s;' % (byte_len,))
     return format_c_code_list(code)
 
-def  gb_op_rrca(instr, byte_len, cycles, flags):
+def gb_op_rrca(instr, byte_len, cycles, flags):
     code = [] + cast_void_to_reg
     op0 = eight_bit_registers['A']  #XXX
     code.append('%s = (%s >> 1) | ((%s & 1) << 7);' % (op0,op0,op0))
@@ -749,7 +751,7 @@ def  gb_op_rrca(instr, byte_len, cycles, flags):
     code.append('r16->PC += %s;' % (byte_len,))
     return format_c_code_list(code)
 
-def  gb_op_rra(instr, byte_len, cycles, flags):
+def gb_op_rra(instr, byte_len, cycles, flags):
     code = [] + cast_void_to_reg
     op0 = eight_bit_registers['A']  #XXX
     code.append('uint8_t carry = is_c_flag;')
@@ -762,7 +764,22 @@ def  gb_op_rra(instr, byte_len, cycles, flags):
     code.append('r16->PC += %s;' % (byte_len,))
     return format_c_code_list(code)
 
+def gb_op_daa(instr, byte_len, cycles, flags):
+    code = [] + cast_void_to_reg
+    code.append('/*  https://forums.nesdev.com/viewtopic.php?f=20&t=15944  */')
+    code.append('if (!is_n_flag) {')
+    code.append('    if ((is_c_flag) || (r8->A > 0x99))              { r8->A += 0x60; set_c_flag; }')
+    code.append('    if ((is_h_flag) || ((r8->A & 0x0f) > 0x09))     { r8->A += 0x6; }')
+    code.append('} else {')
+    code.append('    if (is_c_flag)                                  { r8->A -= 0x60; }')
+    code.append('    if (is_h_flag)                                  { r8->A -= 0x6;  }     }')
+    code.append('r8->A == 0 ? set_z_flag : clear_z_flag;')
+    code.append('clear_h_flag;')
+    code.append('r16->PC += %s;' % (byte_len,))
+    return format_c_code_list(code)
+
 gb_ops = {
+        'DAA': gb_op_daa,   #decimal adjust register A 
         'ADC': gb_op_adc,   #add with carry
         'ADD': gb_op_add,
         'AND': gb_op_and,
