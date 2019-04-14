@@ -67,6 +67,7 @@ void    dump_ram(void *ram);
 void    dump_registers(void *registers, void *gb_state, uint8_t *gb_mem);
 void    *gui(void *arg);
 void    lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles);
+void    interrupts_update(uint8_t *gb_mem, t_state *state, void *registers);
 
 
 extern  void (*ops0[])(void *, t_state *, uint8_t *);

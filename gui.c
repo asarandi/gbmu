@@ -50,11 +50,11 @@ void *gui(void *arg)
                            WND_HEIGHT * SCALE_FACTOR);
     while (true)
     {
-        if (SDL_PollEvent(&event))
-        {
-            if (event.type == SDL_QUIT)
-                break;
-        }
+//        if (SDL_PollEvent(&event))
+//        {
+//            if (event.type == SDL_QUIT)
+//                break;
+//        }
 
         SDL_LockTexture(buffer, NULL, (void *)&pixels, &pitch);
         for (int y0=0;y0<144;y0++){

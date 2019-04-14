@@ -4,11 +4,11 @@ void delay()
 {
     struct timespec ts;
     ts.tv_sec = 0;
-    ts.tv_nsec = 50000000;
+    ts.tv_nsec = 10;
 
     struct timespec tz;
     tz.tv_sec = 0;
-    tz.tv_nsec = 50000000;
+    tz.tv_nsec = 10;
     (void)nanosleep(&ts, &tz);
 }
 
@@ -87,6 +87,9 @@ int main(int ac, char **av)
     pthread_create(&thread, NULL, &gui, (void *)gb_state);
     while (true)
     {
+        interrupts_update(gb_mem, state, registers);
+        lcd_update(gb_mem, gb_state, op_cycles);
+
         op0 = mem[r16->PC];
         op1 = mem[r16->PC + 1];
         f = ops0[op0];
@@ -101,10 +104,9 @@ int main(int ac, char **av)
         op_cycles = get_num_cycles(registers, gb_mem);
 //        printf("total cycles: %08lu, this op cycles: %02d\n", state->cycles, op_cycles);
 
-        lcd_update(gb_mem, gb_state, op_cycles);
         f(registers, gb_state, gb_mem);
-
         state->cycles += op_cycles;
+        (void)usleep(1);
 
 /*
 
