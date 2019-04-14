@@ -44,6 +44,7 @@ void    dump_background2(uint8_t *gb_mem, t_state *state)
 #define is_lcd_enabled          (gb_mem[0xff40] & 0x80 ? 1:0)
 #define is_window_enabled       (gb_mem[0xff40] & 0x20 ? 1:0)
 #define is_bg_wnd_enabled       (gb_mem[0xff40] & 0x01 ? 1:0)           //DMG specific XXX
+#define is_sprites_enabled      (gb_mem[0xff40] & 0x02 ? 1:0)
 
 int get_wnd_screen_pixel_yx(uint8_t *gb_mem, int y, int x)
 {
@@ -83,6 +84,36 @@ bool    is_window_pixel(uint8_t *gb_mem, int y, int x)
     return false ;
 }
 
+#define is_16px_sprites (gb_mem[0xff40] & 0x04 ? 1:0)
+#define sprite_height (gb_mem[0xff40] & 0x04 ? 16:8)
+
+bool    is_screen_yx_in_sprite(uint8_t *gb_mem, int y, int x, int sy, int sx)
+{
+    if ((y >= sy - 16) && (y <= (sy - 16 + sprite_height))) {
+        if ((x >= sx - 8) && (x <= sx)) {
+            return true ;
+        }
+    }
+    return false ;
+}
+
+int     get_obj_screen_pixel_yx(uint8_t *gb_mem, int y, int x)
+{
+    uint8_t *oam;
+
+    oam = &gb_mem[0xfe00];
+    for (int i = 0; i < 160; i += 4) {
+        if (!is_screen_yx_in_sprite(gb_mem, y, x, oam[i], oam[i+1]))
+            continue ;
+        pos_y - sprite_height;
+        pos_x - 8;
+
+    }
+    
+
+}
+
+
 void    screen_update(uint8_t *gb_mem, t_state *state)
 {
     uint8_t y, x, pixel;
@@ -90,7 +121,7 @@ void    screen_update(uint8_t *gb_mem, t_state *state)
     y = gb_mem[0xff44];
     pixel = 0;
     for (x = 0; x < 160; x++) {
-        if (is_lcd_enabled) { // && is_bg_wnd_enabled) {
+        if (is_lcd_enabled && is_bg_wnd_enabled) {
             pixel = get_bg_screen_pixel_yx(gb_mem, y, x);
         }
         if (is_window_pixel(gb_mem, y, x)) {
@@ -102,9 +133,13 @@ void    screen_update(uint8_t *gb_mem, t_state *state)
 
 void    lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles)
 {
+    printf("lcdc obj enable = %u, obj size = %u\n", gb_mem[0xff40] & 4, gb_mem[0xff40] & 2);
 
     uint64_t        lcd_cycle;
-    static bool     is_screen_update;
+    static bool     is_vblank;
+    static bool     is_hblank;
+    static bool     is_oam;
+    static bool     is_lyc;
 
     if (!is_lcd_enabled) {
         gb_mem[0xff41] = (gb_mem[0xff41] & 0xfc) | 2;           //lcd disabled, mode 2
@@ -117,30 +152,52 @@ void    lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles)
     gb_mem[0xff41] &= 0xfb;                                     //clear coincidence bit
     if (gb_mem[0xff44] == gb_mem[0xff45]) {                     //ly == lyc ?
         gb_mem[0xff41] |= 4;                                    //set coincidence bit
-        if (gb_mem[0xff41] & 0x40)
-            gb_mem[0xff0f] |= 2;                                //request lcd interrupt if coincidence bit enabled
+        if (is_lyc) {
+            is_lyc = false ;
+            if (gb_mem[0xff41] & 0x40)
+                gb_mem[0xff0f] |= 2;                            //request lcd interrupt
+        }
+    }                                                           //if coincidence bit enabled
+    else {
+        is_lyc = true;
     }
 
     if (gb_mem[0xff44] < 144) {
         if (lcd_cycle % 456 < 80) {            
             gb_mem[0xff41] &= 0xfc;
             gb_mem[0xff41] |= 2;                                //mode 2
+            if (is_oam) {
+                is_oam = false;
+                if (gb_mem[0xff41] & 0x20)
+                    gb_mem[0xff0f] |= 2;                        //request lcd
+            }
         }
         else if (lcd_cycle % 456 < 252) {
             gb_mem[0xff41] &= 0xfc;
             gb_mem[0xff41] |= 3;                                //mode 3
-            is_screen_update = true;
+            is_hblank = true;
         }
         else {
             gb_mem[0xff41] &= 0xfc;                             //mode 0
-            if (is_screen_update) {
-                is_screen_update = false ;
+            if (is_hblank) {
+                is_hblank = false;
+                if (gb_mem[0xff41] & 0x08) {
+                    gb_mem[0xff0f] |= 2;
+                }                                               //request lcd                
                 screen_update(gb_mem, state);
             }
+            is_vblank = true;
         }
     }
     else {
         gb_mem[0xff41] &= 0xfc;
-        gb_mem[0xff41] |= 1;                                    //mode 1
+        gb_mem[0xff41] |= 1;                                    //mode 1        
+        if (is_vblank) { 
+            is_vblank = false;
+            gb_mem[0xff0f] |= 1;                                //request vblank
+            if (gb_mem[0xff41] & 0x10)
+                gb_mem[0xff0f] |= 2;                            //request lcd
+        }
+        is_oam = true;
     }
 }
