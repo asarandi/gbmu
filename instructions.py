@@ -166,8 +166,8 @@ def gb_op_nop(instr, byte_len, cycles, flags):
 def gb_op_rst(instr, byte_len, cycles, flags):
     code = [] + cast_void_to_reg
     op = instr.split()[1][:-1]  #remove last 'H' character
-    code.append('if (state->interrupts_enabled == false) { r16->PC += %s; return ; }' % (byte_len, ))
-    code.append('state->interrupts_enabled = false;')
+#    code.append('if (state->interrupts_enabled == false) { r16->PC += %s; return ; }' % (byte_len, ))
+#    code.append('state->interrupts_enabled = false;')
     code.append('r16->SP -= 2;')
     code.append('*(uint16_t *)&mem[r16->SP] = r16->PC + %s;' % (byte_len, ))
     code.append('r16->PC = 0x%s;' % (op, ))
@@ -177,6 +177,10 @@ def gb_op_halt(instr, byte_len, cycles, flags):
     code = [] + cast_void_to_reg
     code.append('r16->PC += %s;' % (byte_len, ))
     code.append('state->halt = true;')
+    code.append('if (state->interrupts_enabled == false) {')
+    code.append('    if (mem[0xffff] & mem[0xff0f] & 0x1f) {')
+    code.append('        state->halt_bug = true; } }')
+    
     return format_c_code_list(code)
 
 def gb_op_stop(instr, byte_len, cycles, flags):

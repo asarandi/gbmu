@@ -30,10 +30,15 @@ void    service_interrupt(uint8_t *gb_mem, t_state *state, void *registers,
 
     state->interrupts_enabled = false;
     gb_mem[0xff0f] &= (~clear_bit);
+
+//    printf("interrupt %04x\n", r16->PC);
 }
 
 void    interrupts_update(uint8_t *gb_mem, t_state *state, void *registers)
-{   
+{
+    if (gb_mem[0xffff] & gb_mem[0xff0f] & 0x1f) {
+        state->halt = false ;
+    }
     if (!state->interrupts_enabled)
         return ;
     if (is_int40_enabled && is_int40_requested)

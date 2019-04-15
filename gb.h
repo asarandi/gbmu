@@ -37,6 +37,7 @@ typedef struct  s_r8 {
 typedef struct  s_state {
     bool        interrupts_enabled;
     bool        halt;
+    bool        halt_bug;
     bool        stop;
     uint64_t    cycles;
     uint64_t    lcd_cycle;

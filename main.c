@@ -1,15 +1,57 @@
 #include "gb.h"
 
-void delay()
+void    timers_update(uint8_t *gb_mem, t_state *state, int current_cycles)
 {
-    struct timespec ts;
-    ts.tv_sec = 0;
-    ts.tv_nsec = 10;
+    static  uint64_t    cycles;
+    static  uint8_t     div;
+    static  uint8_t     freq = 10;
 
-    struct timespec tz;
-    tz.tv_sec = 0;
-    tz.tv_nsec = 10;
-    (void)nanosleep(&ts, &tz);
+    cycles += current_cycles;
+
+    if (gb_mem[0xff04] != div) {
+        div = 0;
+        gb_mem[0xff04] = 0;
+    }
+    else {
+        div = (cycles >> 8) & 0xff;
+        gb_mem[0xff04] = div;
+    }
+
+
+    if ((gb_mem[0xff07] & 0x04) == 0) { //timer disabled
+        cycles = 0;
+        return ;
+    }
+
+    switch (gb_mem[0xff07] & 0x03) {
+        case 0: {
+            if (freq != 10) cycles = 0;
+            freq = 10;
+            break ;
+        }
+        case 1: {
+            if (freq != 4) cycles = 0;
+            freq = 4;
+            break ;
+        }
+        case 2: {
+            if (freq != 6) cycles = 0;
+            freq = 6;
+            break ;
+        }
+        case 3: {
+            if (freq != 8) cycles = 0;
+            freq = 8;
+            break ;
+        }
+    }
+
+    gb_mem[0xff05] = (cycles >> freq) & 0xff;
+
+    if ((gb_mem[0xff05] == 0) && (cycles != 0)) {
+        gb_mem[0xff05] = gb_mem[0xff06];
+        gb_mem[0xff0f] |= 4; 
+    }
 }
 
 int main(int ac, char **av)
@@ -85,10 +127,23 @@ int main(int ac, char **av)
 
     (void)memcpy(mem, DMG_ROM_bin, 0x100);
     pthread_create(&thread, NULL, &gui, (void *)gb_state);
+
+    uint8_t dma = mem[0xff46];
     while (true)
     {
+        if (mem[0xff46] != dma) {
+            printf("dma current = %02x, new = %02x\n", dma, mem[0xff46]);
+            dma = mem[0xff46];
+            uint16_t dm = dma << 8;
+            for (uint8_t dma_i=0; dma_i < 0xa0; dma_i++) {
+                mem[0xfe00+dma_i] = mem[dm + dma_i];
+            }
+            dump_ram(mem);
+        }
+
         interrupts_update(gb_mem, state, registers);
         lcd_update(gb_mem, gb_state, op_cycles);
+        timers_update(gb_mem, gb_state, op_cycles);
 
         op0 = mem[r16->PC];
         op1 = mem[r16->PC + 1];
@@ -104,9 +159,14 @@ int main(int ac, char **av)
         op_cycles = get_num_cycles(registers, gb_mem);
 //        printf("total cycles: %08lu, this op cycles: %02d\n", state->cycles, op_cycles);
 
-        f(registers, gb_state, gb_mem);
+        if (state->halt == false) {
+            f(registers, gb_state, gb_mem);
+        } else {
+            op_cycles = 4;
+        }
         state->cycles += op_cycles;
-        (void)usleep(1);
+//        delay();
+//        (void)usleep(1);
 
 /*
 
