@@ -121,11 +121,15 @@ int main(int ac, char **av)
     r16->SP = 0x0000;
     r16->PC = 0x0000;
 
+#define dmg_rom 1
+
+#ifdef dmg_rom
     uint8_t game100[0x100];
-
     (void)memcpy(game100, mem, 0x100);
-
     (void)memcpy(mem, DMG_ROM_bin, 0x100);
+#else
+    r16->PC = 0x100;
+#endif    
     pthread_create(&thread, NULL, &gui, (void *)gb_state);
 
     uint8_t dma = mem[0xff46];
@@ -150,50 +154,18 @@ int main(int ac, char **av)
         f = ops0[op0];
         if (op0 == 0xcb)
             f = ops1[op1];
-
-
+#ifdef  dmg_rom
         if (r16->PC == 0x100)
             memcpy(mem, game100, 0x100);
-//        if (r16->PC >= 0x100)
-//            dump_registers(registers, gb_state, gb_mem);
+#endif
         op_cycles = get_num_cycles(registers, gb_mem);
-//        printf("total cycles: %08lu, this op cycles: %02d\n", state->cycles, op_cycles);
-
         if (state->halt == false) {
             f(registers, gb_state, gb_mem);
         } else {
             op_cycles = 4;
         }
         state->cycles += op_cycles;
-//        delay();
-//        (void)usleep(1);
-
-/*
-
-        if (state->cycles % 456 == 0) {
-            mem[0xff44] = 0x90;
-        }
-
-        if (r16->PC == 0x8c) {
-            dump_background2(gb_mem, gb_state);           
-*/
-
-//            dump_background(gb_mem);
-//            printf("%04X\n", mem[0xff40]);            
-//            fflush(NULL);
-//            delay();
-
-//            dump_background(gb_mem);
-//            break ;
-
-
-//        if (r16->PC == 0x68){
-//            dump_ram(mem);
-//             break ; }
     }
-
-//    dump_background2(gb_mem);
-
     free(gb_mem);
     free(gb_state);
     free(registers);
