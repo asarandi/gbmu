@@ -139,7 +139,7 @@ void op_be(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	uint8_t op = mem[r16->HL];
+	uint8_t op = read_u8(r16->HL);
 	r8->A == op ? set_z_flag : clear_z_flag;
 	set_n_flag;
 	(r8->A & 0xf) < (op & 0xf) ? set_h_flag : clear_h_flag;
@@ -181,7 +181,7 @@ void op_fe(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	uint8_t op = mem[(r16->PC)+1];
+	uint8_t op = read_u8(r16->PC+1);
 	r8->A == op ? set_z_flag : clear_z_flag;
 	set_n_flag;
 	(r8->A & 0xf) < (op & 0xf) ? set_h_flag : clear_h_flag;

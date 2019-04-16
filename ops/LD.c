@@ -13,7 +13,7 @@ void op_01(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	r16->BC = *(uint16_t *)&mem[(r16->PC)+1];
+	r16->BC = read_u16(r16->PC+1);
 	r16->PC += 3;
 }
 
@@ -30,7 +30,7 @@ void op_02(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	mem[r16->BC] = r8->A;
+	write_u8(r16->BC, r8->A);
 	r16->PC += 1;
 }
 
@@ -47,7 +47,7 @@ void op_06(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	r8->B = mem[(r16->PC)+1];
+	r8->B = read_u8(r16->PC+1);
 	r16->PC += 2;
 }
 
@@ -64,8 +64,8 @@ void op_08(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	uint16_t a16 = *(uint16_t *)&mem[(r16->PC)+1];
-	*(uint16_t *)&mem[a16] = r16->SP;
+	uint16_t a16 = read_u16(r16->PC+1);
+	write_u16(a16, r16->SP);
 	r16->PC += 3;
 }
 
@@ -82,7 +82,7 @@ void op_0a(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	r8->A = mem[r16->BC];
+	r8->A = read_u8(r16->BC);
 	r16->PC += 1;
 }
 
@@ -99,7 +99,7 @@ void op_0e(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	r8->C = mem[(r16->PC)+1];
+	r8->C = read_u8(r16->PC+1);
 	r16->PC += 2;
 }
 
@@ -116,7 +116,7 @@ void op_11(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	r16->DE = *(uint16_t *)&mem[(r16->PC)+1];
+	r16->DE = read_u16(r16->PC+1);
 	r16->PC += 3;
 }
 
@@ -133,7 +133,7 @@ void op_12(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	mem[r16->DE] = r8->A;
+	write_u8(r16->DE, r8->A);
 	r16->PC += 1;
 }
 
@@ -150,7 +150,7 @@ void op_16(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	r8->D = mem[(r16->PC)+1];
+	r8->D = read_u8(r16->PC+1);
 	r16->PC += 2;
 }
 
@@ -167,7 +167,7 @@ void op_1a(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	r8->A = mem[r16->DE];
+	r8->A = read_u8(r16->DE);
 	r16->PC += 1;
 }
 
@@ -184,7 +184,7 @@ void op_1e(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	r8->E = mem[(r16->PC)+1];
+	r8->E = read_u8(r16->PC+1);
 	r16->PC += 2;
 }
 
@@ -201,7 +201,7 @@ void op_21(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	r16->HL = *(uint16_t *)&mem[(r16->PC)+1];
+	r16->HL = read_u16(r16->PC+1);
 	r16->PC += 3;
 }
 
@@ -218,7 +218,7 @@ void op_22(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	mem[(r16->HL)++] = r8->A;
+	write_u8((r16->HL)++, r8->A);
 	r16->PC += 1;
 }
 
@@ -235,7 +235,7 @@ void op_26(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	r8->H = mem[(r16->PC)+1];
+	r8->H = read_u8(r16->PC+1);
 	r16->PC += 2;
 }
 
@@ -252,7 +252,7 @@ void op_2a(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	r8->A = mem[(r16->HL)++];
+	r8->A = read_u8((r16->HL)++);
 	r16->PC += 1;
 }
 
@@ -269,7 +269,7 @@ void op_2e(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	r8->L = mem[(r16->PC)+1];
+	r8->L = read_u8(r16->PC+1);
 	r16->PC += 2;
 }
 
@@ -286,7 +286,7 @@ void op_31(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	r16->SP = *(uint16_t *)&mem[(r16->PC)+1];
+	r16->SP = read_u16(r16->PC+1);
 	r16->PC += 3;
 }
 
@@ -303,7 +303,7 @@ void op_32(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	mem[(r16->HL)--] = r8->A;
+	write_u8((r16->HL)--, r8->A);
 	r16->PC += 1;
 }
 
@@ -320,7 +320,7 @@ void op_36(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	mem[r16->HL] = mem[(r16->PC)+1];
+	read_u8(r16->HL) = read_u8(r16->PC+1);
 	r16->PC += 2;
 }
 
@@ -337,7 +337,7 @@ void op_3a(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	r8->A = mem[(r16->HL)--];
+	r8->A = read_u8((r16->HL)--);
 	r16->PC += 1;
 }
 
@@ -354,7 +354,7 @@ void op_3e(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	r8->A = mem[(r16->PC)+1];
+	r8->A = read_u8(r16->PC+1);
 	r16->PC += 2;
 }
 
@@ -473,7 +473,7 @@ void op_46(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	r8->B = mem[r16->HL];
+	r8->B = read_u8(r16->HL);
 	r16->PC += 1;
 }
 
@@ -609,7 +609,7 @@ void op_4e(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	r8->C = mem[r16->HL];
+	r8->C = read_u8(r16->HL);
 	r16->PC += 1;
 }
 
@@ -745,7 +745,7 @@ void op_56(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	r8->D = mem[r16->HL];
+	r8->D = read_u8(r16->HL);
 	r16->PC += 1;
 }
 
@@ -881,7 +881,7 @@ void op_5e(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	r8->E = mem[r16->HL];
+	r8->E = read_u8(r16->HL);
 	r16->PC += 1;
 }
 
@@ -1017,7 +1017,7 @@ void op_66(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	r8->H = mem[r16->HL];
+	r8->H = read_u8(r16->HL);
 	r16->PC += 1;
 }
 
@@ -1153,7 +1153,7 @@ void op_6e(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	r8->L = mem[r16->HL];
+	r8->L = read_u8(r16->HL);
 	r16->PC += 1;
 }
 
@@ -1187,7 +1187,7 @@ void op_70(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	mem[r16->HL] = r8->B;
+	read_u8(r16->HL) = r8->B;
 	r16->PC += 1;
 }
 
@@ -1204,7 +1204,7 @@ void op_71(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	mem[r16->HL] = r8->C;
+	read_u8(r16->HL) = r8->C;
 	r16->PC += 1;
 }
 
@@ -1221,7 +1221,7 @@ void op_72(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	mem[r16->HL] = r8->D;
+	read_u8(r16->HL) = r8->D;
 	r16->PC += 1;
 }
 
@@ -1238,7 +1238,7 @@ void op_73(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	mem[r16->HL] = r8->E;
+	read_u8(r16->HL) = r8->E;
 	r16->PC += 1;
 }
 
@@ -1255,7 +1255,7 @@ void op_74(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	mem[r16->HL] = r8->H;
+	read_u8(r16->HL) = r8->H;
 	r16->PC += 1;
 }
 
@@ -1272,7 +1272,7 @@ void op_75(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	mem[r16->HL] = r8->L;
+	read_u8(r16->HL) = r8->L;
 	r16->PC += 1;
 }
 
@@ -1289,7 +1289,7 @@ void op_77(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	mem[r16->HL] = r8->A;
+	read_u8(r16->HL) = r8->A;
 	r16->PC += 1;
 }
 
@@ -1408,7 +1408,7 @@ void op_7e(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	r8->A = mem[r16->HL];
+	r8->A = read_u8(r16->HL);
 	r16->PC += 1;
 }
 
@@ -1442,7 +1442,7 @@ void op_e2(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	mem[(0xff00)+r8->C] = r8->A;
+	write_u8(0xff00+r8->C, r8->A);
 	r16->PC += 1;
 }
 
@@ -1459,8 +1459,8 @@ void op_ea(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	uint16_t a16 = *(uint16_t *)&mem[(r16->PC)+1];
-	mem[a16] = r8->A;
+	uint16_t a16 = read_u16(r16->PC+1);
+	write_u8(a16, r8->A);
 	r16->PC += 3;
 }
 
@@ -1477,7 +1477,7 @@ void op_f2(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	r8->A = mem[(0xff00)+r8->C];
+	r8->A = read_u8(0xff00+r8->C);
 	r16->PC += 1;
 }
 
@@ -1494,7 +1494,7 @@ void op_f8(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	int offset = (int8_t)mem[(r16->PC)+1];
+	int offset = (int8_t)read_u8(r16->PC+1);
 	r16->HL = r16->SP + offset;
 	clear_z_flag;
 	clear_n_flag;
@@ -1533,8 +1533,8 @@ void op_fa(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	uint16_t a16 = *(uint16_t *)&mem[(r16->PC)+1];
-	r8->A = mem[a16];
+	uint16_t a16 = read_u16(r16->PC+1);
+	r8->A = read_u8(a16);
 	r16->PC += 3;
 }
 

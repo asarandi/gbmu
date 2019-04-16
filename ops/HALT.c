@@ -16,7 +16,7 @@ void op_76(void *reg, t_state *state, uint8_t *mem)
 	r16->PC += 1;
 	state->halt = true;
 	if (state->interrupts_enabled == false) {
-	    if (mem[0xffff] & mem[0xff0f] & 0x1f) {
+	    if (read_u8(0xffff) & read_u8(0xff0f) & 0x1f) {
 	        state->halt_bug = true; } }
 }
 

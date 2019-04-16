@@ -12,6 +12,9 @@
 #include <unistd.h>
 #include <time.h>
 
+
+
+
 typedef struct  s_r16 {
     uint16_t    AF; 
     uint16_t    BC; 
@@ -35,6 +38,8 @@ typedef struct  s_r8 {
 }               t_r8;             
 
 typedef struct  s_state {
+    void        *gameboy_memory;
+    void        *gameboy_registers;
     bool        interrupts_enabled;
     bool        halt;
     bool        halt_bug;
@@ -44,6 +49,8 @@ typedef struct  s_state {
     uint64_t    lcd_scanline;
     uint8_t     screen_buf[144*160];
 } t_state;
+
+t_state     *state;
 
 #define clear_z_flag     (r8->F &= (~0x80))
 #define clear_n_flag     (r8->F &= (~0x40))
@@ -60,23 +67,27 @@ typedef struct  s_state {
 #define is_h_flag        (r8->F & 0x20 ? 1:0)
 #define is_c_flag        (r8->F & 0x10 ? 1:0)
 
-int     get_bg_screen_pixel_yx(uint8_t *gb_mem, int y, int x);
-int     get_num_cycles(void *gb_reg, void *gb_mem);
-void    dump_background2(uint8_t *gb_mem, t_state *state);
-void    dump_background(uint8_t *gb_mem);
-void    dump_ram(void *ram);
-void    dump_registers(void *registers, void *gb_state, uint8_t *gb_mem);
-void    *gui(void *arg);
-void    lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles);
-void    interrupts_update(uint8_t *gb_mem, t_state *state, void *registers);
+int         get_bg_screen_pixel_yx(uint8_t *gb_mem, int y, int x);
+int         get_num_cycles(void *gb_reg, void *gb_mem);
+void        dump_background2(uint8_t *gb_mem, t_state *state);
+void        dump_background(uint8_t *gb_mem);
+void        dump_ram(void *ram);
+void        dump_registers(void *registers, void *gb_state, uint8_t *gb_mem);
+void        *gui(void *arg);
+void        lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles);
+void        interrupts_update(uint8_t *gb_mem, t_state *state, void *registers);
 
+uint8_t     read_u8(uint16_t addr);
+uint16_t    read_u16(uint16_t addr);
+void        write_u8(uint16_t addr, uint8_t data);
+void        write_u16(uint16_t addr, uint16_t data);
 
-extern  void (*ops0[])(void *, t_state *, uint8_t *);
-extern  void (*ops1[])(void *, t_state *, uint8_t *);
-extern  int byte_lens0[];
-extern  int byte_lens1[];
-extern  char* op_names0[];
-extern  char* op_names1[];
-extern  unsigned char DMG_ROM_bin[];
+extern      void (*ops0[])(void *, t_state *, uint8_t *);
+extern      void (*ops1[])(void *, t_state *, uint8_t *);
+extern      int byte_lens0[];
+extern      int byte_lens1[];
+extern      char* op_names0[];
+extern      char* op_names1[];
+extern      unsigned char DMG_ROM_bin[];
 
 #endif

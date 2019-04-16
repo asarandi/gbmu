@@ -13,11 +13,13 @@ void op_cb20(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
+	uint8_t op = r8->B;
 	clear_n_flag;
 	clear_h_flag;
-	r8->B & 0x80 ? set_c_flag : clear_c_flag;
-	r8->B <<= 1;
-	r8->B == 0 ? set_z_flag : clear_z_flag;
+	op & 0x80 ? set_c_flag : clear_c_flag;
+	op <<= 1;
+	op == 0 ? set_z_flag : clear_z_flag;
+	r8->B = op;
 	r16->PC += 2;
 }
 
@@ -34,11 +36,13 @@ void op_cb21(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
+	uint8_t op = r8->C;
 	clear_n_flag;
 	clear_h_flag;
-	r8->C & 0x80 ? set_c_flag : clear_c_flag;
-	r8->C <<= 1;
-	r8->C == 0 ? set_z_flag : clear_z_flag;
+	op & 0x80 ? set_c_flag : clear_c_flag;
+	op <<= 1;
+	op == 0 ? set_z_flag : clear_z_flag;
+	r8->C = op;
 	r16->PC += 2;
 }
 
@@ -55,11 +59,13 @@ void op_cb22(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
+	uint8_t op = r8->D;
 	clear_n_flag;
 	clear_h_flag;
-	r8->D & 0x80 ? set_c_flag : clear_c_flag;
-	r8->D <<= 1;
-	r8->D == 0 ? set_z_flag : clear_z_flag;
+	op & 0x80 ? set_c_flag : clear_c_flag;
+	op <<= 1;
+	op == 0 ? set_z_flag : clear_z_flag;
+	r8->D = op;
 	r16->PC += 2;
 }
 
@@ -76,11 +82,13 @@ void op_cb23(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
+	uint8_t op = r8->E;
 	clear_n_flag;
 	clear_h_flag;
-	r8->E & 0x80 ? set_c_flag : clear_c_flag;
-	r8->E <<= 1;
-	r8->E == 0 ? set_z_flag : clear_z_flag;
+	op & 0x80 ? set_c_flag : clear_c_flag;
+	op <<= 1;
+	op == 0 ? set_z_flag : clear_z_flag;
+	r8->E = op;
 	r16->PC += 2;
 }
 
@@ -97,11 +105,13 @@ void op_cb24(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
+	uint8_t op = r8->H;
 	clear_n_flag;
 	clear_h_flag;
-	r8->H & 0x80 ? set_c_flag : clear_c_flag;
-	r8->H <<= 1;
-	r8->H == 0 ? set_z_flag : clear_z_flag;
+	op & 0x80 ? set_c_flag : clear_c_flag;
+	op <<= 1;
+	op == 0 ? set_z_flag : clear_z_flag;
+	r8->H = op;
 	r16->PC += 2;
 }
 
@@ -118,11 +128,13 @@ void op_cb25(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
+	uint8_t op = r8->L;
 	clear_n_flag;
 	clear_h_flag;
-	r8->L & 0x80 ? set_c_flag : clear_c_flag;
-	r8->L <<= 1;
-	r8->L == 0 ? set_z_flag : clear_z_flag;
+	op & 0x80 ? set_c_flag : clear_c_flag;
+	op <<= 1;
+	op == 0 ? set_z_flag : clear_z_flag;
+	r8->L = op;
 	r16->PC += 2;
 }
 
@@ -139,11 +151,13 @@ void op_cb26(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
+	uint8_t op = read_u8(r16->HL);
 	clear_n_flag;
 	clear_h_flag;
-	mem[r16->HL] & 0x80 ? set_c_flag : clear_c_flag;
-	mem[r16->HL] <<= 1;
-	mem[r16->HL] == 0 ? set_z_flag : clear_z_flag;
+	op & 0x80 ? set_c_flag : clear_c_flag;
+	op <<= 1;
+	op == 0 ? set_z_flag : clear_z_flag;
+	write_u8(r16->HL, op);
 	r16->PC += 2;
 }
 
@@ -160,11 +174,13 @@ void op_cb27(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
+	uint8_t op = r8->A;
 	clear_n_flag;
 	clear_h_flag;
-	r8->A & 0x80 ? set_c_flag : clear_c_flag;
-	r8->A <<= 1;
-	r8->A == 0 ? set_z_flag : clear_z_flag;
+	op & 0x80 ? set_c_flag : clear_c_flag;
+	op <<= 1;
+	op == 0 ? set_z_flag : clear_z_flag;
+	r8->A = op;
 	r16->PC += 2;
 }
 

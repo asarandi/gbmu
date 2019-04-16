@@ -261,7 +261,7 @@ void op_86(void *reg, t_state *state, uint8_t *mem)
 	t_r16 *r16 = reg;
 	uint8_t op;
 	uint32_t calc;
-	op = mem[r16->HL];
+	op = read_u8(r16->HL);
 	calc = r8->A + op;
 	(calc & 0xff) == 0 ? set_z_flag : clear_z_flag;
 	clear_n_flag;
@@ -311,7 +311,7 @@ void op_c6(void *reg, t_state *state, uint8_t *mem)
 	t_r16 *r16 = reg;
 	uint8_t op;
 	uint32_t calc;
-	op = mem[(r16->PC)+1];
+	op = read_u8(r16->PC+1);
 	calc = r8->A + op;
 	(calc & 0xff) == 0 ? set_z_flag : clear_z_flag;
 	clear_n_flag;
@@ -336,7 +336,7 @@ void op_e8(void *reg, t_state *state, uint8_t *mem)
 	t_r16 *r16 = reg;
 	clear_z_flag;
 	clear_n_flag;
-	int16_t op = (int8_t)mem[(r16->PC)+1];
+	int16_t op = (int8_t)read_u8(r16->PC+1);
 	(r16->SP & 0xf) + (op & 0xf) > 0xf ? set_h_flag : clear_h_flag;
 	(r16->SP & 0xff) + (op & 0xff) > 0xff ? set_c_flag : clear_c_flag;
 	r16->SP += op;

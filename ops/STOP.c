@@ -15,5 +15,6 @@ void op_10(void *reg, t_state *state, uint8_t *mem)
 	t_r16 *r16 = reg;
 	r16->PC += 2;
 	state->stop = true;
+	state->interrupts_enabled = false;
 }
 

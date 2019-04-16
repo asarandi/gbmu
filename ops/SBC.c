@@ -158,7 +158,7 @@ void op_9e(void *reg, t_state *state, uint8_t *mem)
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
 	uint8_t op;
-	op = mem[r16->HL];
+	op = read_u8(r16->HL);
 	uint8_t calc = r8->A - op - is_c_flag;
 	calc == 0 ? set_z_flag : clear_z_flag;
 	set_n_flag;
@@ -206,7 +206,7 @@ void op_de(void *reg, t_state *state, uint8_t *mem)
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
 	uint8_t op;
-	op = mem[(r16->PC)+1];
+	op = read_u8(r16->PC+1);
 	uint8_t calc = r8->A - op - is_c_flag;
 	calc == 0 ? set_z_flag : clear_z_flag;
 	set_n_flag;

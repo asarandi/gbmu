@@ -139,7 +139,7 @@ void op_b6(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	r8->A |= mem[r16->HL];
+	r8->A |= read_u8(r16->HL);
 	r8->A == 0 ? set_z_flag : clear_z_flag;
 	clear_n_flag;
 	clear_h_flag;
@@ -181,7 +181,7 @@ void op_f6(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	r8->A |= mem[(r16->PC)+1];
+	r8->A |= read_u8(r16->PC+1);
 	r8->A == 0 ? set_z_flag : clear_z_flag;
 	clear_n_flag;
 	clear_h_flag;

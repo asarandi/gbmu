@@ -7,6 +7,7 @@ void    timers_update(uint8_t *gb_mem, t_state *state, int current_cycles)
     static  uint8_t     freq = 10;
 
     cycles += current_cycles;
+    cycles %= 4194304;
 
     if (gb_mem[0xff04] != div) {
         div = 0;
@@ -62,7 +63,6 @@ int main(int ac, char **av)
     t_r16       *r16;
     t_r8        *r8;
     void        *gb_state;
-    t_state     *state;
     void        *gb_mem;    
     uint8_t     *mem;
     uint8_t     op0;
@@ -106,13 +106,17 @@ int main(int ac, char **av)
     (void)memset(gb_mem, 0, 0x10000);
     mem = gb_mem;
 
+    state->gameboy_memory = gb_mem;
+    state->gameboy_registers = registers;
 
     if (read(fd, gb_mem, 0x8000) != 0x8000) {
         printf("read() failed\n");
     }
     close(fd);
 
-    /* default register values as per mgba debugger */
+#define dmg_rom 1
+
+#ifdef dmg_rom
 
     r16->AF = 0x0000;
     r16->BC = 0x0000;
@@ -121,18 +125,36 @@ int main(int ac, char **av)
     r16->SP = 0x0000;
     r16->PC = 0x0000;
 
-#define dmg_rom 1
-
-#ifdef dmg_rom
     uint8_t game100[0x100];
     (void)memcpy(game100, mem, 0x100);
     (void)memcpy(mem, DMG_ROM_bin, 0x100);
+
 #else
-    r16->PC = 0x100;
+
+    r16->AF = 0x01B0;
+    r16->BC = 0x0013;
+    r16->DE = 0x00D8;
+    r16->HL = 0x014D;
+    r16->SP = 0xFFFE;
+    r16->PC = 0x0100;
+
+    r16->AF = 0x1180;
+    r16->BC = 0x0000;
+    r16->DE = 0x0008;
+    r16->HL = 0x007c;
+
+    r16->AF = 0x0000;
+    r16->BC = 0x0000;
+    r16->DE = 0x0000;
+    r16->HL = 0x0000;
+    r16->SP = 0x0000;
+    r16->PC = 0x0000;
+
 #endif    
     pthread_create(&thread, NULL, &gui, (void *)gb_state);
 
     uint8_t dma = mem[0xff46];
+    bool debug = false;
     while (true)
     {
         if (mem[0xff46] != dma) {
@@ -165,6 +187,11 @@ int main(int ac, char **av)
             op_cycles = 4;
         }
         state->cycles += op_cycles;
+        if (r16->PC == 0xe0) debug = true;
+        if (debug) {
+            dump_registers(registers, state, mem);
+            uint8_t tmp; read(0, &tmp, 1);
+        }
     }
     free(gb_mem);
     free(gb_state);
