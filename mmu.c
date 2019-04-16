@@ -8,6 +8,16 @@
 
 uint8_t read_u8(uint16_t addr) {
     uint8_t *mem = state->gameboy_memory;
+    if (addr > 0xff00) { 
+//        if (addr != 0xff44) { printf("reading from 0x%04x, value = %02x\n",addr,mem[addr]); }
+    }
+
+    if (addr == 0xff00) { return 0x0f; } /* joypad no buttons pressed */
+
+    if (addr == 0xff04) { printf("reading DIV  0xff04, value = %02x\n",mem[0xff04]); }
+    if (addr == 0xff05) { printf("reading TIMA 0xff05, value = %02x\n",mem[0xff05]); }
+    if (addr == 0xff06) { printf("reading TMA  0xff06, value = %02x\n",mem[0xff06]); }
+    if (addr == 0xff07) { printf("reading TAC  0xff07, value = %02x\n",mem[0xff07]); }
     return mem[addr];
 }
 
@@ -16,9 +26,41 @@ uint16_t read_u16(uint16_t addr) {
     return ((read_u8(addr+1) << 8) | read_u8(addr));
 }
 
-void    write_u8(uint16_t addr, uint8_t data) {    
+void    write_u8(uint16_t addr, uint8_t data) {
+    t_r8    *r8 = state->gameboy_registers;
+    t_r8    *r16 = state->gameboy_registers;
     uint8_t *mem = state->gameboy_memory;
-    mem[addr] = data;    
+    uint8_t byte;
+
+    if (addr == 0xff46) {
+        printf("r16->PC = %04x, dma current = %02x, new = %02x\n", r16->PC, mem[0xff46], data);
+        uint16_t dma = mem[0xff46] << 8;
+        for (uint8_t i=0; i<0xa0; i++) {
+            mem[0xfe00+i] = mem[dma + i];
+        }
+        dump_ram(mem);
+    }
+
+    if (addr == 0xff04) { data = 0; }   /*reset DIV if written to*/
+
+//    if (addr > 0xff00) { printf("writing to   0x%04x, old value = %02x, new value = %02x\n",addr,mem[addr],data); }
+    if (addr < 0x8000)
+        return ;
+    if (addr == 0xff41) { data &= 0xf8; data |= (mem[0xff41] & 7); }         /*lcd stat bottom 3 bits read only*/
+    if (addr == 0xff26) { data &= 0xf0; data |= (mem[0xff26] & 15); }       /*sound on/off bottom 4 bits read only*/    
+    if (addr == 0xff00) { data &= 0xf0; data |= (mem[0xff00] & 15); }       /*joypad bottom 4 bits read only*/
+    if (addr == 0xff76) return ; /*read only as per pandocs*/
+    if (addr == 0xff77) return ; /*read only as per pandocs*/
+
+//    if (addr == 0xff80) return ;
+
+
+    if (addr == 0xff04) { printf("writing DIV  0xff04, old value = %02x, new value = %02x\n",mem[0xff04],data); }
+    if (addr == 0xff05) { printf("writing TIMA 0xff05, old value = %02x, new value = %02x\n",mem[0xff05],data); }
+    if (addr == 0xff06) { printf("writing TMA  0xff06, old value = %02x, new value = %02x\n",mem[0xff06],data); }
+    if (addr == 0xff07) { printf("writing TAC  0xff07, old value = %02x, new value = %02x\n",mem[0xff07],data); data &= 7; }
+
+    mem[addr] = data;
 }
 
 void    write_u16(uint16_t addr, uint16_t data) {    

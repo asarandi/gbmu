@@ -218,7 +218,7 @@ void op_22(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	write_u8((r16->HL)++, r8->A);
+	write_u8(r16->HL++, r8->A);
 	r16->PC += 1;
 }
 
@@ -252,7 +252,7 @@ void op_2a(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	r8->A = read_u8((r16->HL)++);
+	r8->A = read_u8(r16->HL++);
 	r16->PC += 1;
 }
 
@@ -303,7 +303,7 @@ void op_32(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	write_u8((r16->HL)--, r8->A);
+	write_u8(r16->HL--, r8->A);
 	r16->PC += 1;
 }
 
@@ -337,7 +337,7 @@ void op_3a(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	r8->A = read_u8((r16->HL)--);
+	r8->A = read_u8(r16->HL--);
 	r16->PC += 1;
 }
 

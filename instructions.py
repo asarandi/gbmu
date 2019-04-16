@@ -27,8 +27,8 @@ sixteen_bit_reg_addr = {
          '(BC)': 'r16->BC',
          '(DE)': 'r16->DE',
          '(HL)': 'r16->HL',
-        '(HL+)': '(r16->HL)++',
-        '(HL-)': '(r16->HL)--'
+        '(HL+)': 'r16->HL++',
+        '(HL-)': 'r16->HL--'
         }
 
 def format_c_code_list(lst):
@@ -179,15 +179,15 @@ def gb_op_halt(instr, byte_len, cycles, flags):
     code.append('state->halt = true;')
     code.append('if (state->interrupts_enabled == false) {')
     code.append('    if (read_u8(0xffff) & read_u8(0xff0f) & 0x1f) {')
-    code.append('        state->halt_bug = true; } }')
-    
+    code.append('        state->halt_bug = true; } }')    
+#    code.append('state->interrupts_enabled = false;')
     return format_c_code_list(code)
 
 def gb_op_stop(instr, byte_len, cycles, flags):
     code = [] + cast_void_to_reg
     code.append('r16->PC += %s;' % (byte_len, ))
     code.append('state->stop = true;')
-    code.append('state->interrupts_enabled = false;')
+#    code.append('state->interrupts_enabled = false;')
     return format_c_code_list(code)
 
 ###############################################################################

@@ -2,22 +2,14 @@
 
 void    timers_update(uint8_t *gb_mem, t_state *state, int current_cycles)
 {
+    static  uint16_t    div;
     static  uint64_t    cycles;
-    static  uint8_t     div;
-    static  uint8_t     freq = 10;
+    static  uint64_t    freq = 1024;
 
-    cycles += current_cycles;
-    cycles %= 4194304;
-
-    if (gb_mem[0xff04] != div) {
-        div = 0;
-        gb_mem[0xff04] = 0;
-    }
-    else {
-        div = (cycles >> 8) & 0xff;
-        gb_mem[0xff04] = div;
-    }
-
+    div = (gb_mem[0xff04] << 8) | gb_mem[0xff03];
+    div += current_cycles;
+    gb_mem[0xff04] = div >> 8;
+    gb_mem[0xff03] = div & 0xff;
 
     if ((gb_mem[0xff07] & 0x04) == 0) { //timer disabled
         cycles = 0;
@@ -26,33 +18,39 @@ void    timers_update(uint8_t *gb_mem, t_state *state, int current_cycles)
 
     switch (gb_mem[0xff07] & 0x03) {
         case 0: {
-            if (freq != 10) cycles = 0;
-            freq = 10;
+            if (freq != 1024) cycles = 0;
+            freq = 1024;
             break ;
         }
         case 1: {
-            if (freq != 4) cycles = 0;
-            freq = 4;
+            if (freq != 16) cycles = 0;
+            freq = 16;
             break ;
         }
         case 2: {
-            if (freq != 6) cycles = 0;
-            freq = 6;
+            if (freq != 64) cycles = 0;
+            freq = 64;
             break ;
         }
         case 3: {
-            if (freq != 8) cycles = 0;
-            freq = 8;
+            if (freq != 256) cycles = 0;
+            freq = 256;
             break ;
         }
     }
 
-    gb_mem[0xff05] = (cycles >> freq) & 0xff;
 
-    if ((gb_mem[0xff05] == 0) && (cycles != 0)) {
+    if (gb_mem[0xff05] == 0) {
         gb_mem[0xff05] = gb_mem[0xff06];
         gb_mem[0xff0f] |= 4; 
     }
+
+    cycles += current_cycles;
+    if (cycles > freq) {
+        cycles %= freq;
+        gb_mem[0xff05]++;
+    }
+
 }
 
 int main(int ac, char **av)
@@ -138,38 +136,14 @@ int main(int ac, char **av)
     r16->SP = 0xFFFE;
     r16->PC = 0x0100;
 
-    r16->AF = 0x1180;
-    r16->BC = 0x0000;
-    r16->DE = 0x0008;
-    r16->HL = 0x007c;
-
-    r16->AF = 0x0000;
-    r16->BC = 0x0000;
-    r16->DE = 0x0000;
-    r16->HL = 0x0000;
-    r16->SP = 0x0000;
-    r16->PC = 0x0000;
-
 #endif    
     pthread_create(&thread, NULL, &gui, (void *)gb_state);
 
-    uint8_t dma = mem[0xff46];
     bool debug = false;
     while (true)
     {
-        if (mem[0xff46] != dma) {
-            printf("dma current = %02x, new = %02x\n", dma, mem[0xff46]);
-            dma = mem[0xff46];
-            uint16_t dm = dma << 8;
-            for (uint8_t dma_i=0; dma_i < 0xa0; dma_i++) {
-                mem[0xfe00+dma_i] = mem[dm + dma_i];
-            }
-            dump_ram(mem);
-        }
-
         interrupts_update(gb_mem, state, registers);
         lcd_update(gb_mem, gb_state, op_cycles);
-        timers_update(gb_mem, gb_state, op_cycles);
 
         op0 = mem[r16->PC];
         op1 = mem[r16->PC + 1];
@@ -187,7 +161,11 @@ int main(int ac, char **av)
             op_cycles = 4;
         }
         state->cycles += op_cycles;
-        if (r16->PC == 0xe0) debug = false;
+
+
+        timers_update(gb_mem, gb_state, op_cycles);
+
+//        if (r16->PC == 0x286) debug = true;
         if (debug) {
             dump_registers(registers, state, mem);
             uint8_t tmp; read(0, &tmp, 1);
