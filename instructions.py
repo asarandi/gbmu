@@ -11,7 +11,7 @@ eight_bit_registers = {
         'E': 'r8->E',
         'H': 'r8->H',
         'L': 'r8->L'
-#     '(HL)': 'read_u8(r16->HL)'
+#        '(HL)': 'read_u8(r16->HL)'
         }
 
 sixteen_bit_registers = {
@@ -225,8 +225,10 @@ def gb_op_ld(instr, byte_len, cycles, flags):
         elif op2 == 'A':
             code.append('write_u8(a16, %s);' % (eight_bit_registers[op2],))        # one byte write?
     elif op1 in sixteen_bit_reg_addr:
-        if op2 == 'A':
-            code.append('write_u8(%s, %s);' % (sixteen_bit_reg_addr[op1], eight_bit_registers['A']))
+        if op2 in eight_bit_registers:
+            code.append('write_u8(%s, %s);' % (sixteen_bit_reg_addr[op1], eight_bit_registers[op2]))
+        elif op2 == 'd8':
+            code.append('write_u8(%s, read_u8(r16->PC+1));' % (sixteen_bit_reg_addr[op1],))
             
     code.append('r16->PC += %s;' % (byte_len,))
     return format_c_code_list(code)
@@ -274,10 +276,12 @@ def  gb_op_add(instr, byte_len, cycles, flags):
     op1 = instr.split()[1].split(',')[0]
     op2 = instr.split()[1].split(',')[1]
 
-    if op1 in eight_bit_registers:
+    if op1 == 'A':
         code.append('uint8_t op;')
         code.append('uint32_t calc;')
-        if op2 in eight_bit_registers:
+        if op2 == '(HL)':
+            code.append('op = read_u8(r16->HL);')
+        elif op2 in eight_bit_registers:
             code.append('op = %s;' % (eight_bit_registers[op2],))
         elif op2 == 'd8':
             code.append('op = read_u8(r16->PC+1);')

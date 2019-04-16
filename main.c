@@ -187,7 +187,7 @@ int main(int ac, char **av)
             op_cycles = 4;
         }
         state->cycles += op_cycles;
-        if (r16->PC == 0xe0) debug = true;
+        if (r16->PC == 0xe0) debug = false;
         if (debug) {
             dump_registers(registers, state, mem);
             uint8_t tmp; read(0, &tmp, 1);
