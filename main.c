@@ -112,7 +112,7 @@ int main(int ac, char **av)
     }
     close(fd);
 
-#define dmg_rom 1
+//#define dmg_rom 1
 
 #ifdef dmg_rom
 
@@ -142,8 +142,10 @@ int main(int ac, char **av)
     bool debug = false;
     while (true)
     {
-        interrupts_update(gb_mem, state, registers);
+
+        timers_update(gb_mem, gb_state, op_cycles);
         lcd_update(gb_mem, gb_state, op_cycles);
+        interrupts_update(gb_mem, state, registers);
 
         op0 = mem[r16->PC];
         op1 = mem[r16->PC + 1];
@@ -161,9 +163,6 @@ int main(int ac, char **av)
             op_cycles = 4;
         }
         state->cycles += op_cycles;
-
-
-        timers_update(gb_mem, gb_state, op_cycles);
 
 //        if (r16->PC == 0x286) debug = true;
         if (debug) {

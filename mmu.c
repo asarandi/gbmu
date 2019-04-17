@@ -6,8 +6,19 @@
     tetris is stuck at copyright screen because it tries to write to 0xff80
 */
 
+#define is_lcd_mode_2   ((mem[0xff41] & 3) == 2 ? 1:0)
+#define is_lcd_mode_3   ((mem[0xff41] & 3) == 3 ? 1:0)
+
 uint8_t read_u8(uint16_t addr) {
     uint8_t *mem = state->gameboy_memory;
+
+//    if ((addr >= 0xfe00) && (addr <= 0xfe9f)) { //OAM
+//        if ((is_lcd_mode_2) || (is_lcd_mode_3)) {            
+//            return 0xff; } }
+//    if ((addr >= 0x8000) && (addr <= 0x9ffff)) { //VRAM
+//        if (is_lcd_mode_3) {
+//            return 0xff; } }
+//    if (addr >= 0xfea0 && addr < 0xff00) return 0;
     if (addr > 0xff00) { 
 //        if (addr != 0xff44) { printf("reading from 0x%04x, value = %02x\n",addr,mem[addr]); }
     }
@@ -18,6 +29,7 @@ uint8_t read_u8(uint16_t addr) {
     if (addr == 0xff05) { printf("reading TIMA 0xff05, value = %02x\n",mem[0xff05]); }
     if (addr == 0xff06) { printf("reading TMA  0xff06, value = %02x\n",mem[0xff06]); }
     if (addr == 0xff07) { printf("reading TAC  0xff07, value = %02x\n",mem[0xff07]); }
+    if (addr == 0xff0f) { return ((mem[0xff0f] & 0x1f) | 0xe0); } /*upper 3 bits of IF register always 1*/
     return mem[addr];
 }
 
@@ -32,8 +44,10 @@ void    write_u8(uint16_t addr, uint8_t data) {
     uint8_t *mem = state->gameboy_memory;
     uint8_t byte;
 
+    if (addr >= 0xfea0 && addr < 0xff00) return ;
+
     if (addr == 0xff46) {
-        printf("r16->PC = %04x, dma current = %02x, new = %02x\n", r16->PC, mem[0xff46], data);
+//        printf("r16->PC = %04x, dma current = %02x, new = %02x\n", r16->PC, mem[0xff46], data);
         uint16_t dma = mem[0xff46] << 8;
         for (uint8_t i=0; i<0xa0; i++) {
             mem[0xfe00+i] = mem[dma + i];

@@ -67,7 +67,6 @@ t_state     *state;
 #define is_h_flag        (r8->F & 0x20 ? 1:0)
 #define is_c_flag        (r8->F & 0x10 ? 1:0)
 
-int         get_bg_screen_pixel_yx(uint8_t *gb_mem, int y, int x);
 int         get_num_cycles(void *gb_reg, void *gb_mem);
 void        dump_background2(uint8_t *gb_mem, t_state *state);
 void        dump_background(uint8_t *gb_mem);
