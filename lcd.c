@@ -21,28 +21,20 @@ void delay()
     (void)nanosleep(&ts, &tz);
 }
 
-uint8_t    get_bg_screen_pixel_yx(uint8_t *gb_mem, int y, int x)
+uint8_t    get_bg_screen_pixel_yx(uint8_t *gb_mem, uint8_t y, uint8_t x)
 {
-    static uint8_t scy, scx;
-    if (scy != gb_mem[0xff42]) {
-        scy = gb_mem[0xff42];
-        printf("scoll_y = %02x, scroll_x = %02x\n", scy, scx);
+    y += gb_mem[0xff42];
+    x += gb_mem[0xff43];
+    uint16_t tile_map_addr = (gb_mem[0xff40] & 0x08) ? 0x9c00 : 0x9800;                 //lcdc bit 3
+    uint16_t tile_data_addr = (gb_mem[0xff40] & 0x10) ? 0x8000 : 0x8800;             //lcdc bit 4
+    uint16_t tile_idx_addr = ((y>>3)<<5)+(x>>3);
+    uint8_t tile_idx = gb_mem[tile_map_addr + tile_idx_addr];
+    uint8_t *tile_data = &gb_mem[tile_data_addr + (tile_idx << 4)];
+    if (tile_data_addr == 0x8800)
+    {
+        int8_t idxi = (int8_t)gb_mem[tile_map_addr + tile_idx_addr];
+        tile_data = &gb_mem[0x9000 + (idxi << 4)];
     }
-
-    if (scx != gb_mem[0xff42]) {
-        scx = gb_mem[0xff43];
-        printf("scoll_y = %02x, scroll_x = %02x\n", scy, scx);
-    }
-
-    y = (y + gb_mem[0xff42]) % 256;                                             //scroll_y
-    x = (x + gb_mem[0xff43]) % 256;                                             //scroll_x
-    int tile_map_addr = (gb_mem[0xff40] & 8) ? 0x9c00 : 0x9800;                 //lcdc bit 3
-    int tile_data_addr = (gb_mem[0xff40] & 0x10) ? 0x8000 : 0x8800;             //lcdc bit 4
-    int tile_idx_addr = ((y/8)*32)+(x/8);
-    int tile_idx = (uint8_t)gb_mem[tile_map_addr + tile_idx_addr];
-    if ((tile_data_addr == 0x8800) && (tile_idx > 127))
-        tile_idx = (int8_t)gb_mem[tile_map_addr + tile_idx_addr];
-    uint8_t *tile_data = &gb_mem[tile_data_addr + (tile_idx * 16)];
     uint8_t tile_byte0 = tile_data[(y % 8) * 2];
     uint8_t tile_byte1 = tile_data[(y % 8) * 2 + 1];
     uint8_t pixel = ((tile_byte0 >> (7-(x%8))) & 1) | (((tile_byte1 >> (7-(x%8))) << 1) & 3);
@@ -62,11 +54,14 @@ uint8_t get_wnd_screen_pixel_yx(uint8_t *gb_mem, int y, int x)
 {
     int tile_map_addr = (gb_mem[0xff40] & 0x40) ? 0x9c00 : 0x9800;              //bit 6
     int tile_data_addr = (gb_mem[0xff40] & 0x10) ? 0x8000 : 0x8800;             //lcdc bit 4
-    int tile_idx_addr = ((y/8)*32)+(x/8);
-    int tile_idx = (uint8_t)gb_mem[tile_map_addr + tile_idx_addr];
-    if ((tile_data_addr == 0x8800) && (tile_idx > 127))
-        tile_idx = (int8_t)gb_mem[tile_map_addr + tile_idx_addr];
-    uint8_t *tile_data = &gb_mem[tile_data_addr + (tile_idx * 16)];
+    uint16_t tile_idx_addr = ((y>>3)<<5)+(x>>3);
+    uint8_t tile_idx = gb_mem[tile_map_addr + tile_idx_addr];
+    uint8_t *tile_data = &gb_mem[tile_data_addr + (tile_idx << 4)];
+    if (tile_data_addr == 0x8800)
+    {
+        int8_t idxi = (int8_t)gb_mem[tile_map_addr + tile_idx_addr];
+        tile_data = &gb_mem[0x9000 + (idxi << 4)];
+    }
     uint8_t tile_byte0 = tile_data[(y % 8) * 2];
     uint8_t tile_byte1 = tile_data[(y % 8) * 2 + 1];
     uint8_t pixel = ((tile_byte0 >> (7-(x%8))) & 1) | (((tile_byte1 >> (7-(x%8))) << 1) & 3);
@@ -184,7 +179,6 @@ void    screen_update(uint8_t *gb_mem, t_state *state)
         state->screen_buf[y * 160 + x] = (bg_pal >> ((bg_pixel & 3) << 1)) & 3;
         if (wnd_pixel != 0xff) {
             state->screen_buf[y * 160 + x] = (bg_pal >> ((wnd_pixel & 3) << 1)) & 3;
-            printf("window\n");
         }
         uint8_t current_pixel = state->screen_buf[y * 160 + x];
         if ((obj_pixel != 0xff) && (obj_pixel & 3)) {
