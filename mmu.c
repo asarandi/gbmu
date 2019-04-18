@@ -24,11 +24,12 @@ uint8_t read_u8(uint16_t addr) {
     }
 
     if (addr == 0xff00) { return 0x0f; } /* joypad no buttons pressed */
-
+/*
     if (addr == 0xff04) { printf("reading DIV  0xff04, value = %02x\n",mem[0xff04]); }
     if (addr == 0xff05) { printf("reading TIMA 0xff05, value = %02x\n",mem[0xff05]); }
     if (addr == 0xff06) { printf("reading TMA  0xff06, value = %02x\n",mem[0xff06]); }
     if (addr == 0xff07) { printf("reading TAC  0xff07, value = %02x\n",mem[0xff07]); }
+*/
     if (addr == 0xff0f) { return ((mem[0xff0f] & 0x1f) | 0xe0); } /*upper 3 bits of IF register always 1*/
     return mem[addr];
 }
@@ -68,11 +69,12 @@ void    write_u8(uint16_t addr, uint8_t data) {
 
 //    if (addr == 0xff80) return ;
 
-
+/*
     if (addr == 0xff04) { printf("writing DIV  0xff04, old value = %02x, new value = %02x\n",mem[0xff04],data); }
     if (addr == 0xff05) { printf("writing TIMA 0xff05, old value = %02x, new value = %02x\n",mem[0xff05],data); }
     if (addr == 0xff06) { printf("writing TMA  0xff06, old value = %02x, new value = %02x\n",mem[0xff06],data); }
     if (addr == 0xff07) { printf("writing TAC  0xff07, old value = %02x, new value = %02x\n",mem[0xff07],data); data &= 7; }
+*/
 
     mem[addr] = data;
 }

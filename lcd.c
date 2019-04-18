@@ -23,6 +23,17 @@ void delay()
 
 uint8_t    get_bg_screen_pixel_yx(uint8_t *gb_mem, int y, int x)
 {
+    static uint8_t scy, scx;
+    if (scy != gb_mem[0xff42]) {
+        scy = gb_mem[0xff42];
+        printf("scoll_y = %02x, scroll_x = %02x\n", scy, scx);
+    }
+
+    if (scx != gb_mem[0xff42]) {
+        scx = gb_mem[0xff43];
+        printf("scoll_y = %02x, scroll_x = %02x\n", scy, scx);
+    }
+
     y = (y + gb_mem[0xff42]) % 256;                                             //scroll_y
     x = (x + gb_mem[0xff43]) % 256;                                             //scroll_x
     int tile_map_addr = (gb_mem[0xff40] & 8) ? 0x9c00 : 0x9800;                 //lcdc bit 3
@@ -88,8 +99,8 @@ bool    is_screen_yx_in_sprite(uint8_t *gb_mem, int y, int x, int obj_y, int obj
         return false;
     if ((obj_y <= 8) && (obj_height == 8))
         return false;
-    if ((y >= obj_y + 16) && (y < (obj_y + 16 + obj_height))) {
-        if ((x >= obj_x + 8) && (x < obj_x + 16))
+    if ((y+16 >= obj_y) && (y+16 < obj_y+obj_height)) {
+        if ((x+8 >= obj_x) && (x < obj_x))
             return true ;
     }
     return false ;
@@ -97,52 +108,57 @@ bool    is_screen_yx_in_sprite(uint8_t *gb_mem, int y, int x, int obj_y, int obj
 
 uint8_t     get_obj_screen_pixel_yx(uint8_t *gb_mem, int y, int x)
 {
-    static  uint8_t index;
     static  uint8_t num_sprites;
     static  uint8_t last_sprite;
 
-    if (x == 0) {
-        index = 0;
-        num_sprites = 0;
-        last_sprite = 0;
-    }
+    if ((!is_sprites_enabled) || (num_sprites >= 10))
+        return 0xff;
 
-    if (!(gb_mem[0xff40] & 2))
-        return 0xff;
-    if (num_sprites >= 10)
-        return 0xff;
+    if (x == 0) { num_sprites = 0; last_sprite = 0; }
 
     uint8_t *oam = &gb_mem[0xfe00];
     uint8_t obj_height = (gb_mem[0xff40] & 4) ? 16 : 8;
-    for (uint8_t i = index; i < 160; i += 4) {
+
+    uint8_t candidate_idx = 0xff;
+    uint8_t candidate_x_pos = 0xff;
+    uint8_t i;
+
+    for (i = 0; i < 160; i += 4) {
         if (!is_screen_yx_in_sprite(gb_mem, y, x, oam[i], oam[i+1]))
             continue ;
-        uint8_t coord_y = (y - (oam[i] + 16)) % obj_height;
-        uint8_t coord_x = (x - (oam[i+1] + 8)) % 8;
-        uint8_t obj_num = oam[i+2];
-        uint8_t obj_attr = oam[i+3];
-        if (coord_y > 7)
-            printf("sprite height 16px?, coord_y = %d\n", coord_y);             /*FIXME debug 16px sprites*/
-        if (obj_height == 16)
-            obj_num & 0xfe;
-        if (is_obj_y_flip)
-            coord_y = (obj_height-1) - coord_y;
-        if (is_obj_x_flip)
-            coord_x = 7 - coord_x;
-        uint8_t *tile_data = &gb_mem[0x8000 + (obj_num * 16)];
-        uint8_t tile_byte0 = tile_data[coord_y * 2];
-        uint8_t tile_byte1 = tile_data[coord_y * 2 + 1];
-        uint8_t pixel = ((tile_byte0 >> (7-(coord_x))) & 1) | (((tile_byte1 >> (7-(coord_x))) << 1) & 3);
-
-        index = i;
-        if ((obj_num != last_sprite) || (num_sprites == 0)) {
-            num_sprites++;
-            last_sprite = obj_num;
-        }
-        return (pixel | (obj_attr & 0xf0));
+        if (oam[i + 1] >= candidate_x_pos)
+            continue ;
+        candidate_x_pos = oam[i+1];
+        candidate_idx = i;
     }
-    return 0xff;
+    if ((candidate_idx == 0xff) && (candidate_x_pos == 0xff))
+        return 0xff;
+    i = candidate_idx;
+
+    uint8_t coord_y = (y+16 - oam[i]) % obj_height;
+    uint8_t coord_x = (x+8 - oam[i+1]) % 8;
+    uint8_t obj_num = oam[i+2];
+    uint8_t obj_attr = oam[i+3];
+    if (coord_y > 7)
+        printf("sprite height 16px?, coord_y = %d\n", coord_y);             /*FIXME debug 16px sprites*/
+    if (obj_height == 16)
+        obj_num &= 0xfe;
+    if (is_obj_y_flip)
+        coord_y = (obj_height-1) - coord_y;
+    if (is_obj_x_flip)
+        coord_x = 7 - coord_x;
+    uint8_t *tile_data = &gb_mem[0x8000 + (obj_num * 16)];
+    uint8_t tile_byte0 = tile_data[coord_y * 2];
+    uint8_t tile_byte1 = tile_data[coord_y * 2 + 1];
+    uint8_t pixel = ((tile_byte0 >> (7-(coord_x))) & 1) | (((tile_byte1 >> (7-(coord_x))) << 1) & 3);
+    if ((obj_num != last_sprite) || (num_sprites == 0)) {
+        num_sprites++;
+        last_sprite = obj_num;
+    }
+    return (pixel | (obj_attr & 0xf0));
 }
+
+#
 
 void    screen_update(uint8_t *gb_mem, t_state *state)
 {
@@ -150,28 +166,34 @@ void    screen_update(uint8_t *gb_mem, t_state *state)
     uint8_t     bg_pixel, wnd_pixel, obj_pixel;
     uint8_t     bg_pal, obj_pal;
 
-//    for (y = 0; y < 144; y++) {
-        y = gb_mem[0xff44]; //ly
-        for (x = 0; x < 160; x++) {
-            bg_pixel = 0xff;
-            if (is_lcd_enabled && is_bg_enabled)    bg_pixel = get_bg_screen_pixel_yx(gb_mem, y, x);
-            wnd_pixel = 0xff;
-            if (is_window_pixel(gb_mem, y, x))      wnd_pixel = get_wnd_screen_pixel_yx(gb_mem, y, x);
-            obj_pixel = 0xff;
-            if (is_sprites_enabled)                 obj_pixel = get_obj_screen_pixel_yx(gb_mem, y, x);
+    y = gb_mem[0xff44];
+    if (y > 143)
+        return;
+    for (x = 0; x < 160; x++) {
+        bg_pixel = 0xff;
+        if (is_lcd_enabled && is_bg_enabled)    
+            bg_pixel = get_bg_screen_pixel_yx(gb_mem, y, x);
+        wnd_pixel = 0xff;
+        if (is_window_pixel(gb_mem, y, x))      
+            wnd_pixel = get_wnd_screen_pixel_yx(gb_mem, y, x);
+        obj_pixel = 0xff;
+        if (is_sprites_enabled)                 
+            obj_pixel = get_obj_screen_pixel_yx(gb_mem, y, x);
 
-            bg_pal = gb_mem[0xff47]; 
-            state->screen_buf[y * 160 + x] = (bg_pal >> ((bg_pixel & 3) << 1)) & 3;
-            if (wnd_pixel != 0xff)
-                state->screen_buf[y * 160 + x] = wnd_pixel & 3;
-            if (obj_pixel != 0xff) {
-                if ((obj_pixel ^ 0x80) || ((obj_pixel == 0) && (wnd_pixel == 0))) {
-                    obj_pal = (obj_pixel & 0x10) ? gb_mem[0xff48] : gb_mem[0xff49];
-                    state->screen_buf[y * 160 + x] = (obj_pal >> ((obj_pixel & 3) << 1)) & 3;
-                }
+        bg_pal = gb_mem[0xff47]; 
+        state->screen_buf[y * 160 + x] = (bg_pal >> ((bg_pixel & 3) << 1)) & 3;
+        if (wnd_pixel != 0xff) {
+            state->screen_buf[y * 160 + x] = (bg_pal >> ((wnd_pixel & 3) << 1)) & 3;
+            printf("window\n");
+        }
+        uint8_t current_pixel = state->screen_buf[y * 160 + x];
+        if ((obj_pixel != 0xff) && (obj_pixel & 3)) {
+            if ((!(obj_pixel & 0x80)) || ((obj_pixel & 0x80) && (bg_pixel==0))) {
+                obj_pal = (obj_pixel & 0x10) ? gb_mem[0xff49] : gb_mem[0xff48];
+                state->screen_buf[y * 160 + x] = (obj_pal >> ((obj_pixel & 3) << 1)) & 3;
             }
         }
-//    }
+    }
 }
 
 void    lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles)
@@ -182,10 +204,10 @@ void    lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles)
     static bool     is_hblank;
     static bool     is_oam;
     static bool     is_lyc;
-    static bool     is_render;
 
     if (!is_lcd_enabled) {
-        gb_mem[0xff41] = (gb_mem[0xff41] & 0xfc) | 1;                           //lcd disabled, mode 1
+        gb_mem[0xff41] = (gb_mem[0xff41] & 0xfc) | 1;                //lcd disabled, mode 1
+        gb_mem[0xff44] = 0;
         lcd_cycle = 0;
         return ;
     }
@@ -195,15 +217,15 @@ void    lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles)
 
     gb_mem[0xff44] = lcd_cycle / 456;
 
-    gb_mem[0xff41] &= 0xfb;                                                     //clear coincidence bit
-    if (gb_mem[0xff44] == gb_mem[0xff45]) {                                     //ly == lyc ?
-        gb_mem[0xff41] |= 4;                                                    //set coincidence bit
+    gb_mem[0xff41] &= 0xfb;                                          //clear coincidence bit
+    if (gb_mem[0xff44] == gb_mem[0xff45]) {                          //ly == lyc ?
+        gb_mem[0xff41] |= 4;                                         //set coincidence bit
         if (is_lyc) {
             is_lyc = false ;
             if (gb_mem[0xff41] & 0x40)
-                gb_mem[0xff0f] |= 2;                                            //request lcd interrupt
+                gb_mem[0xff0f] |= 2;                                 //request lcd interrupt
         }
-    }                                                                           //if coincidence bit enabled
+    }                                                                //if coincidence bit enabled
     else {
         is_lyc = true;
     }
@@ -211,42 +233,38 @@ void    lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles)
     if (gb_mem[0xff44] < 144) {
         if (lcd_cycle % 456 < 80) {            
             gb_mem[0xff41] &= 0xfc;
-            gb_mem[0xff41] |= 2;                                                //mode 2
+            gb_mem[0xff41] |= 2;                                     //mode 2
             if (is_oam) {                
                 is_oam = false;
                 if (gb_mem[0xff41] & 0x20)
-                    gb_mem[0xff0f] |= 2;                                        //request lcd
+                    gb_mem[0xff0f] |= 2;                             //request lcd
             }
-            is_render = true;
         }
         else if (lcd_cycle % 456 < 252) {
-            if (is_render) {
-                is_render = false;
-                screen_update(gb_mem, state);
-            }
             gb_mem[0xff41] &= 0xfc;
-            gb_mem[0xff41] |= 3;                                                //mode 3
+            gb_mem[0xff41] |= 3;                                     //mode 3
             is_hblank = true;
         }
         else {
-            gb_mem[0xff41] &= 0xfc;                                             //mode 0
-            if (is_hblank) {                
-                is_hblank = false;
+            gb_mem[0xff41] &= 0xfc;                                  //mode 0            
+            if (is_hblank) {
+                screen_update(gb_mem, state);                        //blit
+                is_hblank = false;                
                 if (gb_mem[0xff41] & 0x08) {
                     gb_mem[0xff0f] |= 2;
-                }                                                               //request lcd                
+                }
             }
             is_vblank = true;
         }
     }
     else {
         gb_mem[0xff41] &= 0xfc;
-        gb_mem[0xff41] |= 1;                                                    //mode 1        
-        if (is_vblank) {            
+        gb_mem[0xff41] |= 1;                                         //mode 1        
+        if (is_vblank) {                        
             is_vblank = false;
-            gb_mem[0xff0f] |= 1;                                                //request vblank
+            gb_mem[0xff0f] |= 1;                                     //request vblank
             if (gb_mem[0xff41] & 0x10)
-                gb_mem[0xff0f] |= 2;                                            //request lcd
+                gb_mem[0xff0f] |= 2;                                 //request lcd
             delay();
         }
         is_oam = true;

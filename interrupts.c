@@ -6,7 +6,6 @@
 #define is_int58_enabled   (gb_mem[0xffff] &  8 ? 1:0)      //serial
 #define is_int60_enabled   (gb_mem[0xffff] & 16 ? 1:0)      //joypad
 
-
 #define is_int40_requested (gb_mem[0xff0f] &  1 ? 1:0)
 #define is_int48_requested (gb_mem[0xff0f] &  2 ? 1:0)
 #define is_int50_requested (gb_mem[0xff0f] &  4 ? 1:0)
@@ -39,8 +38,8 @@ void    interrupts_update(uint8_t *gb_mem, t_state *state, void *registers)
     if (gb_mem[0xffff] & gb_mem[0xff0f] & 0x1f) {
         state->halt = false ;
     }
-    if (!state->interrupts_enabled)
-        return ;
+//    if (!state->interrupts_enabled)
+//        return ;
     if (is_int40_enabled && is_int40_requested)
         return service_interrupt(gb_mem, state, registers, 0x40,  1);
     if (is_int48_enabled && is_int48_requested)
