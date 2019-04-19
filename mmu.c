@@ -48,6 +48,12 @@ void    write_u8(uint16_t addr, uint8_t data) {
     if (addr < 0x8000)
         (void)mbc(addr, data);
 
+    if ((addr >= 0xa000) && (addr < 0xbfff)) {
+        printf("ram addressing, state=%d, addr=%04x\n", state->ram_enabled, addr);
+        if (!state->ram_enabled)
+            return ;
+    }
+
     if (addr >= 0xfea0 && addr < 0xff00) return ;
 
     if (addr == 0xff46) {

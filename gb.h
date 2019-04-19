@@ -41,6 +41,7 @@ typedef struct  s_state {
     bool        halt;
     bool        halt_bug;
     bool        stop;
+    bool        ram_enabled;
     uint64_t    cycles;
     uint64_t    lcd_cycle;
     uint64_t    lcd_scanline;

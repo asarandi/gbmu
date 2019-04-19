@@ -68,6 +68,8 @@ t_cartridge cartridge_types[] = {
 
 #define ROM_ADDRESS 0x4000
 #define ROM_SIZE    0x4000
+#define RAM_ADDRESS 0xa000
+#define RAM_SIZE    0x2000
 
 void    mbc1_handler(uint16_t addr, uint8_t data)
 {
@@ -78,11 +80,13 @@ void    mbc1_handler(uint16_t addr, uint8_t data)
 */
     static  uint8_t banking_mode    = 0;
     static  uint8_t rom_number      = 1;
-    static  bool    ram_enabled     = false;
     uint8_t *gb_mem                 = state->gameboy_memory;
 
+    static  uint8_t ram_banks[4][RAM_SIZE];
+    static  uint8_t ram_bank_number = 0;
+
     if (addr <= 0x1fff) {
-        ram_enabled = ((data & 0x0f) == 0x0a) ? true : false;
+        state->ram_enabled = ((data & 0x0f) == 0x0a) ? true : false;
     }
 
     if ((addr >= 0x2000) && (addr <= 0x3fff))       //rom bank number
@@ -100,8 +104,24 @@ void    mbc1_handler(uint16_t addr, uint8_t data)
 
     if ((addr >= 0x4000) && (addr <= 0x5fff))       //ram bank number or rom idx upper bits (bits 5,6)
     {
-        if (banking_mode == 0)
-            rom_number |= (data & 3)<<5;
+        data &= 3;
+        if (banking_mode == 0) {
+            rom_number |= data<<5;            //call self with addr 0x2000 and updated rom_number ? XXX
+            return ;
+        }
+
+        printf("ram banking enabled=%d, current=%d, new=%d\n", state->ram_enabled, ram_bank_number, data);
+
+        if (!state->ram_enabled)                    // needed ?
+            return ;
+
+        if (ram_bank_number != data) {
+            (void)memcpy(&ram_banks[ram_bank_number], &gb_mem[RAM_ADDRESS], RAM_SIZE);
+        }
+
+        ram_bank_number = data;
+        (void)memcpy(&gb_mem[RAM_ADDRESS], &ram_banks[ram_bank_number], RAM_SIZE);
+        
     }
 
 
@@ -119,6 +139,8 @@ void    mbc(uint16_t addr, uint8_t data)
     uint8_t *gb_mem = state->gameboy_memory;
 
     if (IS_MBC1)
+        (void)mbc1_handler(addr, data);
+    if (IS_MBC1_RAM)
         (void)mbc1_handler(addr, data);
     if (IS_MBC1_RAM_BATTERY)
         (void)mbc1_handler(addr, data);
