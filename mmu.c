@@ -52,6 +52,12 @@ void    write_u8(uint16_t addr, uint8_t data) {
 
     if (addr < 0x8000)
         (void)mbc(addr, data);
+    if (addr < 0x8000)
+        return ;
+
+    if ((addr >= 0xc000) && (addr <= 0xddff))
+        mem[addr+0x2000] = data;
+
 
     if ((addr >= 0xa000) && (addr < 0xbfff)) {
 //        printf("ram write, state=%d, addr=%04x\n", state->ram_enabled, addr);

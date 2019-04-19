@@ -10,6 +10,8 @@ void op_cb(void *reg, t_state *state, uint8_t *mem)
 		       flags: - - - -
 	*/
 
-	printf("undefined instruction i=13, j=12\n");
+	printf("undefined instruction 0xcb\n");
+	printf("state->cycles = %lu\n", state->cycles);
+	exit(1);
 }
 

@@ -10,7 +10,9 @@ void op_d3(void *reg, t_state *state, uint8_t *mem)
 		       flags: - - - -
 	*/
 
-	printf("undefined instruction i=14, j=4\n");
+	printf("undefined instruction 0xd3\n");
+	printf("state->cycles = %lu\n", state->cycles);
+	exit(1);
 }
 
 void op_db(void *reg, t_state *state, uint8_t *mem)
@@ -23,7 +25,9 @@ void op_db(void *reg, t_state *state, uint8_t *mem)
 		       flags: - - - -
 	*/
 
-	printf("undefined instruction i=14, j=12\n");
+	printf("undefined instruction 0xdb\n");
+	printf("state->cycles = %lu\n", state->cycles);
+	exit(1);
 }
 
 void op_dd(void *reg, t_state *state, uint8_t *mem)
@@ -36,7 +40,9 @@ void op_dd(void *reg, t_state *state, uint8_t *mem)
 		       flags: - - - -
 	*/
 
-	printf("undefined instruction i=14, j=14\n");
+	printf("undefined instruction 0xdd\n");
+	printf("state->cycles = %lu\n", state->cycles);
+	exit(1);
 }
 
 void op_e3(void *reg, t_state *state, uint8_t *mem)
@@ -49,7 +55,9 @@ void op_e3(void *reg, t_state *state, uint8_t *mem)
 		       flags: - - - -
 	*/
 
-	printf("undefined instruction i=15, j=4\n");
+	printf("undefined instruction 0xe3\n");
+	printf("state->cycles = %lu\n", state->cycles);
+	exit(1);
 }
 
 void op_e4(void *reg, t_state *state, uint8_t *mem)
@@ -62,7 +70,9 @@ void op_e4(void *reg, t_state *state, uint8_t *mem)
 		       flags: - - - -
 	*/
 
-	printf("undefined instruction i=15, j=5\n");
+	printf("undefined instruction 0xe4\n");
+	printf("state->cycles = %lu\n", state->cycles);
+	exit(1);
 }
 
 void op_eb(void *reg, t_state *state, uint8_t *mem)
@@ -75,7 +85,9 @@ void op_eb(void *reg, t_state *state, uint8_t *mem)
 		       flags: - - - -
 	*/
 
-	printf("undefined instruction i=15, j=12\n");
+	printf("undefined instruction 0xeb\n");
+	printf("state->cycles = %lu\n", state->cycles);
+	exit(1);
 }
 
 void op_ec(void *reg, t_state *state, uint8_t *mem)
@@ -88,7 +100,9 @@ void op_ec(void *reg, t_state *state, uint8_t *mem)
 		       flags: - - - -
 	*/
 
-	printf("undefined instruction i=15, j=13\n");
+	printf("undefined instruction 0xec\n");
+	printf("state->cycles = %lu\n", state->cycles);
+	exit(1);
 }
 
 void op_ed(void *reg, t_state *state, uint8_t *mem)
@@ -101,7 +115,9 @@ void op_ed(void *reg, t_state *state, uint8_t *mem)
 		       flags: - - - -
 	*/
 
-	printf("undefined instruction i=15, j=14\n");
+	printf("undefined instruction 0xed\n");
+	printf("state->cycles = %lu\n", state->cycles);
+	exit(1);
 }
 
 void op_f4(void *reg, t_state *state, uint8_t *mem)
@@ -114,7 +130,9 @@ void op_f4(void *reg, t_state *state, uint8_t *mem)
 		       flags: - - - -
 	*/
 
-	printf("undefined instruction i=16, j=5\n");
+	printf("undefined instruction 0xf4\n");
+	printf("state->cycles = %lu\n", state->cycles);
+	exit(1);
 }
 
 void op_fc(void *reg, t_state *state, uint8_t *mem)
@@ -127,7 +145,9 @@ void op_fc(void *reg, t_state *state, uint8_t *mem)
 		       flags: - - - -
 	*/
 
-	printf("undefined instruction i=16, j=13\n");
+	printf("undefined instruction 0xfc\n");
+	printf("state->cycles = %lu\n", state->cycles);
+	exit(1);
 }
 
 void op_fd(void *reg, t_state *state, uint8_t *mem)
@@ -140,6 +160,8 @@ void op_fd(void *reg, t_state *state, uint8_t *mem)
 		       flags: - - - -
 	*/
 
-	printf("undefined instruction i=16, j=14\n");
+	printf("undefined instruction 0xfd\n");
+	printf("state->cycles = %lu\n", state->cycles);
+	exit(1);
 }
 

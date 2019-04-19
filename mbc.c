@@ -120,7 +120,7 @@ void    mbc1_handler(uint16_t addr, uint8_t data)
     if ((addr >= 0x6000) && (addr <= 0x7fff))       //banking mode select
     {
         banking_mode = data & 1;
-        printf("setting banking mode to %d\n", banking_mode);
+//        printf("setting banking mode to %d\n", banking_mode);
     }
 
 

@@ -116,7 +116,7 @@ int main(int ac, char **av)
     close(fd);
     (void)memcpy(state->gameboy_memory, state->file_contents, 0x8000);
 
-//#define dmg_rom 1
+#define dmg_rom 1
 
 #ifdef dmg_rom
 
@@ -142,8 +142,7 @@ int main(int ac, char **av)
 
 #endif    
     pthread_create(&thread, NULL, &gui, (void *)gb_state);
-
-    bool debug = false;
+    state->debug = false;
     while (true)
     {
 
@@ -168,10 +167,19 @@ int main(int ac, char **av)
         }
         state->cycles += op_cycles;
 
-//        if (r16->PC == 0x286) debug = true;
-        if (debug) {
+//        if (state->cycles > 24296700) debug = true;
+//        if (r16->PC == 0x2b79) { debug = true; }
+//        if (r16->PC == 0x401d) { debug = true; }
+//        if (r16->PC == 0x03ca) { state->debug = true; }
+        if (state->debug && 1 == 2)
+        {
+            printf("state->cycles = %lu\n", state->cycles);
             dump_registers(registers, state, mem);
             uint8_t tmp; read(0, &tmp, 1);
+            if (tmp == 'c') {
+                state->cycles = 0;
+                state->debug = false;
+            }
         }
     }
     free(gb_mem);
