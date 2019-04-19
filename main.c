@@ -84,13 +84,15 @@ int main(int ac, char **av)
         return 1;
     }
 
-/*    
-    if (stat_buf.st_size != 0x8000) {
+    
+    if ((stat_buf.st_size < 0x8000) || 
+            (stat_buf.st_size > 0x800000) || 
+            (stat_buf.st_size & 0x7fff)) {
         close(fd);
-        printf("unsupported file format\n");
+        printf("invalid file\n");
         return 1;
     }
-*/
+
     registers = malloc(sizeof(t_r8));
     (void)memset(registers, 0, sizeof(t_r8));
     r16 = registers;
@@ -106,11 +108,13 @@ int main(int ac, char **av)
 
     state->gameboy_memory = gb_mem;
     state->gameboy_registers = registers;
+    state->file_contents = malloc(stat_buf.st_size);
 
-    if (read(fd, gb_mem, 0x8000) != 0x8000) {
+    if (read(fd, state->file_contents, stat_buf.st_size) != stat_buf.st_size) {
         printf("read() failed\n");
     }
     close(fd);
+    (void)memcpy(state->gameboy_memory, state->file_contents, 0x8000);
 
 //#define dmg_rom 1
 

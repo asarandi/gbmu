@@ -13,11 +13,11 @@ void delay()
 {
     struct timespec ts;
     ts.tv_sec = 0;
-    ts.tv_nsec = 1000000000L / 240;
+    ts.tv_nsec = 1000000000L / 260;
 
     struct timespec tz;
     tz.tv_sec = 0;
-    tz.tv_nsec = 1000000000L / 240;
+    tz.tv_nsec = 1000000000L / 260;
     (void)nanosleep(&ts, &tz);
 }
 
@@ -134,8 +134,6 @@ uint8_t     get_obj_screen_pixel_yx(uint8_t *gb_mem, int y, int x)
     uint8_t coord_x = (x+8 - oam[i+1]) % 8;
     uint8_t obj_num = oam[i+2];
     uint8_t obj_attr = oam[i+3];
-    if (coord_y > 7)
-        printf("sprite height 16px?, coord_y = %d\n", coord_y);             /*FIXME debug 16px sprites*/
     if (obj_height == 16)
         obj_num &= 0xfe;
     if (is_obj_y_flip)

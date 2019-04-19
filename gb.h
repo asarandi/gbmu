@@ -12,9 +12,6 @@
 #include <unistd.h>
 #include <time.h>
 
-
-
-
 typedef struct  s_r16 {
     uint16_t    AF; 
     uint16_t    BC; 
@@ -48,6 +45,7 @@ typedef struct  s_state {
     uint64_t    lcd_cycle;
     uint64_t    lcd_scanline;
     uint8_t     screen_buf[144*160];
+    uint8_t     *file_contents;
 } t_state;
 
 t_state     *state;
@@ -80,6 +78,7 @@ uint8_t     read_u8(uint16_t addr);
 uint16_t    read_u16(uint16_t addr);
 void        write_u8(uint16_t addr, uint8_t data);
 void        write_u16(uint16_t addr, uint16_t data);
+void        mbc(uint16_t addr, uint8_t data);
 
 extern      void (*ops0[])(void *, t_state *, uint8_t *);
 extern      void (*ops1[])(void *, t_state *, uint8_t *);

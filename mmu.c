@@ -45,6 +45,9 @@ void    write_u8(uint16_t addr, uint8_t data) {
     uint8_t *mem = state->gameboy_memory;
     uint8_t byte;
 
+    if (addr < 0x8000)
+        (void)mbc(addr, data);
+
     if (addr >= 0xfea0 && addr < 0xff00) return ;
 
     if (addr == 0xff46) {
@@ -59,8 +62,6 @@ void    write_u8(uint16_t addr, uint8_t data) {
     if (addr == 0xff04) { data = 0; }   /*reset DIV if written to*/
 
 //    if (addr > 0xff00) { printf("writing to   0x%04x, old value = %02x, new value = %02x\n",addr,mem[addr],data); }
-    if (addr < 0x8000)
-        return ;
     if (addr == 0xff41) { data &= 0xf8; data |= (mem[0xff41] & 7); }         /*lcd stat bottom 3 bits read only*/
     if (addr == 0xff26) { data &= 0xf0; data |= (mem[0xff26] & 15); }       /*sound on/off bottom 4 bits read only*/    
     if (addr == 0xff00) { data &= 0xf0; data |= (mem[0xff00] & 15); }       /*joypad bottom 4 bits read only*/
