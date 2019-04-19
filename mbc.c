@@ -106,22 +106,14 @@ void    mbc1_handler(uint16_t addr, uint8_t data)
     {
         data &= 3;
         if (banking_mode == 0) {
-            rom_number |= data<<5;            //call self with addr 0x2000 and updated rom_number ? XXX
-            return ;
+            data = (data << 5) | (rom_number & 0x1f);     //call self with addr 0x2000 and updated rom_number ? XXX
+            return mbc1_handler(0x2000, data);
         }
-
-        printf("ram banking enabled=%d, current=%d, new=%d\n", state->ram_enabled, ram_bank_number, data);
-
-        if (!state->ram_enabled)                    // needed ?
-            return ;
-
         if (ram_bank_number != data) {
             (void)memcpy(&ram_banks[ram_bank_number], &gb_mem[RAM_ADDRESS], RAM_SIZE);
         }
-
         ram_bank_number = data;
         (void)memcpy(&gb_mem[RAM_ADDRESS], &ram_banks[ram_bank_number], RAM_SIZE);
-        
     }
 
 

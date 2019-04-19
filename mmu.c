@@ -12,6 +12,11 @@
 uint8_t read_u8(uint16_t addr) {
     uint8_t *mem = state->gameboy_memory;
 
+    if ((addr >= 0xa000) && (addr < 0xbfff)) {
+        if (!state->ram_enabled)
+            return 0xff;
+    }
+
 //    if ((addr >= 0xfe00) && (addr <= 0xfe9f)) { //OAM
 //        if ((is_lcd_mode_2) || (is_lcd_mode_3)) {            
 //            return 0xff; } }
@@ -49,7 +54,7 @@ void    write_u8(uint16_t addr, uint8_t data) {
         (void)mbc(addr, data);
 
     if ((addr >= 0xa000) && (addr < 0xbfff)) {
-        printf("ram addressing, state=%d, addr=%04x\n", state->ram_enabled, addr);
+//        printf("ram write, state=%d, addr=%04x\n", state->ram_enabled, addr);
         if (!state->ram_enabled)
             return ;
     }
