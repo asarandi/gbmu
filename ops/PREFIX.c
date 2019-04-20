@@ -11,7 +11,7 @@ void op_cb(void *reg, t_state *state, uint8_t *mem)
 	*/
 
 	printf("undefined instruction 0xcb\n");
-	printf("state->cycles = %lu\n", state->cycles);
+	printf("state->cycles = %llu\n", state->cycles);
 	exit(1);
 }
 

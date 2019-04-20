@@ -9,17 +9,6 @@
 #define is_obj_y_flip           (obj_attr & 0x40 ? 1:0)
 #define is_obj_x_flip           (obj_attr & 0x20 ? 1:0)
 
-void delay()
-{
-    struct timespec ts;
-    ts.tv_sec = 0;
-    ts.tv_nsec = 1000000000L / 260;
-
-    struct timespec tz;
-    tz.tv_sec = 0;
-    tz.tv_nsec = 1000000000L / 260;
-    (void)nanosleep(&ts, &tz);
-}
 
 uint8_t    get_bg_screen_pixel_yx(uint8_t *gb_mem, uint8_t y, uint8_t x)
 {
@@ -87,7 +76,7 @@ bool    is_window_pixel(uint8_t *gb_mem, int y, int x)
 bool    is_screen_yx_in_sprite(uint8_t *gb_mem, int y, int x, int obj_y, int obj_x)
 {
     uint8_t obj_height = (gb_mem[0xff40] & 4) ? 16 : 8;
-    if ((obj_y == 0) || (obj_y >= 160))
+    if ((obj_y == 0) || (obj_y > 160))
         return false;
     if ((obj_y <= 8) && (obj_height == 8))
         return false;
@@ -165,13 +154,11 @@ void    screen_update(uint8_t *gb_mem, t_state *state)
             state->screen_buf[y * 160 + x] = (bg_pal >> ((wnd_pixel & 3) << 1)) & 3;
 
         if ((obj_pixel != 0xff) && (obj_pixel & 3)) {
-            if ((!(obj_pixel & 0x80)) || (((obj_pixel&0x80)==1) && (bg_pixel==0)) ) {
+//            if ((!(obj_pixel & 0x80)) || (bg_pixel==0) ) {
                 obj_pal = (obj_pixel & 0x10) ? gb_mem[0xff49] : gb_mem[0xff48];
                 state->screen_buf[y * 160 + x] = (obj_pal >> ((obj_pixel & 3) << 1)) & 3;
-            }
-        }
-        
-
+//            }
+        }        
     }
 }
 
@@ -244,7 +231,7 @@ void    lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles)
             gb_mem[0xff0f] |= 1;                                     //request vblank
             if (gb_mem[0xff41] & 0x10)
                 gb_mem[0xff0f] |= 2;                                 //request lcd
-            delay();
+//            delay();
         }
         is_oam = true;
     }
