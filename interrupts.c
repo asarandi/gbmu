@@ -36,9 +36,9 @@ void    service_interrupt(uint8_t *gb_mem, t_state *state, void *registers,
 void    interrupts_update(uint8_t *gb_mem, t_state *state, void *registers)
 {
     if (gb_mem[0xffff] & gb_mem[0xff0f] & 0x1f) {
-        if (state->halt)
-            state->debug = true ;
-        state->halt = false ;
+        state->halt = false;
+//        if (state->halt)
+//            state->debug = true ;
     }
     if (!state->interrupts_enabled)
         return ;

@@ -154,12 +154,11 @@ void    screen_update(uint8_t *gb_mem, t_state *state)
             state->screen_buf[y * 160 + x] = (bg_pal >> ((wnd_pixel & 3) << 1)) & 3;
 
         if ((obj_pixel != 0xff) && (obj_pixel & 3)) {
-//            if ((!(obj_pixel & 0x80)) || (bg_pixel==0) ) {
+            if ((!(obj_pixel & 0x80)) || ((obj_pixel & 0x80) && (bg_pixel==0))) {
                 obj_pal = (obj_pixel & 0x10) ? gb_mem[0xff49] : gb_mem[0xff48];
                 uint8_t pixel = (obj_pal >> ((obj_pixel & 3) << 1)) & 3;
-                if (pixel != 0)
-                    state->screen_buf[y * 160 + x] = pixel;
-//            }
+                state->screen_buf[y * 160 + x] = pixel;
+            }
         }        
     }
 }

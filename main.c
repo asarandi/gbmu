@@ -102,7 +102,7 @@ int main(int ac, char **av)
         if (state->cycles / 70224 != frame_counter) {
             frame_counter = state->cycles / 70224;
             gui_update();
-            usleep(1000000 / 60);
+            SDL_Delay(15);
         }
 
         interrupts_update(gb_mem, state, registers);

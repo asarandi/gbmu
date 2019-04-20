@@ -1,1 +1,10 @@
-implement DAA instruction
+-re-read 42 pdf
+-fix sprite priorities
+-look into dmg/gbc difference
+-implement oam and halt bug
+-more blargg, mooneye test compatibility
+-look into save files
+-add more mbc's
+-look into sound
+-look into serial; over tcp?
+-bonus: save/restore gbmu states from file
