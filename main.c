@@ -89,13 +89,6 @@ int main(int ac, char **av)
 
 #endif
 
-/*
-    (void)tui_init();    
-    pthread_create(&thread, NULL, &tui_show, NULL);   
-    pthread_create(&thread, NULL, &tui_input, NULL);
-    state->debug = false;
-*/  
-
     if (!gui_init())
         state->done = true;
 
@@ -109,6 +102,7 @@ int main(int ac, char **av)
         if (state->cycles / 70224 != frame_counter) {
             frame_counter = state->cycles / 70224;
             gui_update();
+            usleep(1000000 / 60);
         }
 
         interrupts_update(gb_mem, state, registers);
@@ -134,7 +128,7 @@ int main(int ac, char **av)
 //        if (r16->PC == 0x2b79) { debug = true; }
 //        if (r16->PC == 0x401d) { debug = true; }
 //        if (r16->PC == 0x03ca) { state->debug = true; }
-        if (state->debug && 1 == 2)
+        if (state->debug)
         {
             printf("state->cycles = %lu\n", state->cycles);
             dump_registers(registers, state, mem);

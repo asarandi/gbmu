@@ -16,7 +16,7 @@ SDL_Texture     *gui_buffer;
  Bit 0 - P10 Input Right or Button A (0=Pressed) (Read Only)
 */
 
-uint32_t        game_controls[]     = {SDLK_DOWN, SDLK_UP, SDLK_LEFT, SDLK_RIGHT, SDLK_RETURN, SDLK_LSHIFT, SDLK_x, SDLK_z};
+uint32_t        game_controls[]     = {SDLK_DOWN, SDLK_UP, SDLK_LEFT, SDLK_RIGHT, SDLK_RETURN, SDLK_RSHIFT, SDLK_x, SDLK_z};
 uint32_t        num_game_controls   = sizeof(game_controls) / sizeof(uint32_t);
 uint32_t        gui_colors[]        = {0xffffffff, 0xaaaaaaff, 0x555555ff, 0x000000ff};        /*classic*/
 //uint32_t        gui_colors[] = {0xe6e6e6ff, 0xb3b3b3ff, 0x737373ff, 0x333333ff};        /*shades of grey*/
@@ -80,11 +80,11 @@ gui_render() {
 void
 gui_set_button_states(uint32_t key, uint8_t value) {
     for (int i=0; i < num_game_controls; i++) {
-        printf("%d ", state->buttons[i]);
-        if (game_controls[i] == key)
+        if (game_controls[i] == key) {
             state->buttons[i] = value;
+            joypad_request_interrupt();
+        }
     }
-    printf("\n");
 }
 
 void
@@ -99,6 +99,8 @@ gui_update() {
                 break ;
             case SDL_KEYDOWN:
                 gui_set_button_states(event.key.keysym.sym, 1);
+                if (event.key.keysym.sym == SDLK_ESCAPE)
+                    state->done = true;
                 break ;
             case SDL_KEYUP:
                 gui_set_button_states(event.key.keysym.sym, 0);

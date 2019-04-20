@@ -24,11 +24,8 @@ uint8_t read_u8(uint16_t addr) {
 //        if (is_lcd_mode_3) {
 //            return 0xff; } }
 //    if (addr >= 0xfea0 && addr < 0xff00) return 0;
-    if (addr > 0xff00) { 
-//        if (addr != 0xff44) { printf("reading from 0x%04x, value = %02x\n",addr,mem[addr]); }
-    }
 
-    if (addr == 0xff00) { return 0x0f; } /* joypad no buttons pressed */
+    if (addr == 0xff00) { return joypad_read(); } /* joypad no buttons pressed */
 /*
     if (addr == 0xff04) { printf("reading DIV  0xff04, value = %02x\n",mem[0xff04]); }
     if (addr == 0xff05) { printf("reading TIMA 0xff05, value = %02x\n",mem[0xff05]); }
