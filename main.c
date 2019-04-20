@@ -1,152 +1,4 @@
 #include "gb.h"
-#include <ncurses.h>
-
-void    *tui_input()
-{
-    int rv, flags;   
-    int key_delays[8] = {0};
-    int ncurses_keys[8] = {KEY_DOWN, KEY_UP, KEY_LEFT, KEY_RIGHT, 'n', 'm', 'z', 'x'};    
-    char key;
-
-    flags = fcntl(STDIN_FILENO, F_GETFL, 0);
-
-    while (true)
-    {
-        key = 0;
-        fcntl(STDIN_FILENO, F_SETFL, flags | O_NONBLOCK);
-        read(0, &key, 1);
-        fcntl(STDIN_FILENO, F_SETFL, flags);
-
-        for (int i=0; i<8; i++) {
-            if (key == ncurses_keys[i]) {
-                state->buttons[i] = 1;
-                key_delays[i] = 0;
-            }
-            key_delays[i]++;
-            if (key_delays[i] > 20) {   //delay duration
-                key_delays[i] = 0;
-                state->buttons[i] = 0;
-            }
-        }
-        if (key != 0) continue ;
-        usleep(1000);
-    }
-    return NULL;
-}
-
-void    tui_input_print()
-{
-    addch('\n');
-    for (int i=0; i<8; i++) {
-        if (state->buttons[i] == 1)
-            addch('1');
-        else
-            addch('0');
-    }    
-}
-
-void    *tui_show(void *arg)
-{
-    char    *pixels = "o*. ";
-    char    buf[144*161];
-    int     key;
-
-    (void)arg;
-    while (true) {
-        for (int y=0;y<144;y++) {
-            for (int x=0;x<161;x++) {
-                int idx = state->screen_buf[y*160+x];
-                buf[y*161+x] = pixels[idx];
-                if (x == 160) buf[y*161+x] = '\n';                   
-            }
-        }
-        clear();
-        addnstr(buf,144*161);
-        tui_input_print();
-        refresh();
-        usleep(1000000 / 30);
-    }
-    return NULL;
-}
-
-
-void    tui_init()
-{
-    int flags;
-
-    initscr();
-    raw();
-//    cbreak();
-    keypad(stdscr, TRUE);
-    noecho();
-}
- 
-void    timers_update(uint8_t *gb_mem, t_state *state, int current_cycles)
-{
-    static  uint16_t    div;
-    static  uint64_t    cycles;
-    static  uint64_t    freq = 1024;
-
-    div = (gb_mem[0xff04] << 8) | gb_mem[0xff03];
-    div += current_cycles;
-    gb_mem[0xff04] = div >> 8;
-    gb_mem[0xff03] = div & 0xff;
-
-    if ((gb_mem[0xff07] & 0x04) == 0) { //timer disabled
-        cycles = 0;
-        return ;
-    }
-
-    switch (gb_mem[0xff07] & 0x03) {
-        case 0: {
-            if (freq != 1024) cycles = 0;
-            freq = 1024;
-            break ;
-        }
-        case 1: {
-            if (freq != 16) cycles = 0;
-            freq = 16;
-            break ;
-        }
-        case 2: {
-            if (freq != 64) cycles = 0;
-            freq = 64;
-            break ;
-        }
-        case 3: {
-            if (freq != 256) cycles = 0;
-            freq = 256;
-            break ;
-        }
-    }
-
-
-    if (gb_mem[0xff05] == 0) {
-        gb_mem[0xff05] = gb_mem[0xff06];
-        gb_mem[0xff0f] |= 4; 
-    }
-
-    cycles += current_cycles;
-    if (cycles > freq) {
-        cycles %= freq;
-        gb_mem[0xff05]++;
-    }
-
-}
-
-
-void delay()
-{
-    struct timespec ts;
-    ts.tv_sec = 0;
-    ts.tv_nsec = 1000000000L / 30;
-
-    struct timespec tz;
-    tz.tv_sec = 0;
-    tz.tv_nsec = 1000000000L / 30;
-    (void)nanosleep(&ts, &tz);
-}
-
 
 int main(int ac, char **av)
 {
@@ -235,16 +87,30 @@ int main(int ac, char **av)
     r16->SP = 0xFFFE;
     r16->PC = 0x0100;
 
-#endif    
+#endif
+
+/*
     (void)tui_init();    
     pthread_create(&thread, NULL, &tui_show, NULL);   
     pthread_create(&thread, NULL, &tui_input, NULL);
     state->debug = false;
-    while (true)
+*/  
+
+    if (!gui_init())
+        state->done = true;
+
+    uint64_t    frame_counter = 0;        
+    while (!state->done)
     {
 
         timers_update(gb_mem, gb_state, op_cycles);
         lcd_update(gb_mem, gb_state, op_cycles);
+
+        if (state->cycles / 70224 != frame_counter) {
+            frame_counter = state->cycles / 70224;
+            gui_update();
+        }
+
         interrupts_update(gb_mem, state, registers);
 
         op0 = mem[r16->PC];
@@ -270,7 +136,7 @@ int main(int ac, char **av)
 //        if (r16->PC == 0x03ca) { state->debug = true; }
         if (state->debug && 1 == 2)
         {
-            printf("state->cycles = %llu\n", state->cycles);
+            printf("state->cycles = %lu\n", state->cycles);
             dump_registers(registers, state, mem);
             uint8_t tmp; read(0, &tmp, 1);
             if (tmp == 'c') {
@@ -279,6 +145,7 @@ int main(int ac, char **av)
             }
         }
     }
+    gui_cleanup();
     free(gb_mem);
     free(gb_state);
     free(registers);

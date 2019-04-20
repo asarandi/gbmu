@@ -34,18 +34,6 @@ typedef struct  s_r8 {
     uint16_t    PC; 
 }               t_r8;             
 
-/*
- Bit 3 - P13 Input Down  or Start    (0=Pressed) (Read Only)
- Bit 2 - P12 Input Up    or Select   (0=Pressed) (Read Only)
- Bit 1 - P11 Input Left  or Button B (0=Pressed) (Read Only)
- Bit 0 - P10 Input Right or Button A (0=Pressed) (Read Only)
-*/
-/*
-    d   u   l   r   st  se  b   a
-    [0] [1] [2] [3] [4] [5] [6] [7]
-    d   u   l   r   n   m   z   x
-*/
-
 typedef struct  s_state {
     void        *gameboy_memory;
     void        *gameboy_registers;
@@ -55,6 +43,7 @@ typedef struct  s_state {
     bool        stop;
     bool        ram_enabled;
     bool        debug;
+    bool        done;
     uint64_t    cycles;
     uint64_t    lcd_cycle;
     uint64_t    lcd_scanline;
@@ -88,6 +77,12 @@ void        dump_registers(void *registers, void *gb_state, uint8_t *gb_mem);
 void        *gui(void *arg);
 void        lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles);
 void        interrupts_update(uint8_t *gb_mem, t_state *state, void *registers);
+void        timers_update(uint8_t *gb_mem, t_state *state, int current_cycles);
+void        delay();
+
+bool        gui_init();
+void        gui_cleanup();
+void        gui_update();
 
 uint8_t     read_u8(uint16_t addr);
 uint16_t    read_u16(uint16_t addr);
