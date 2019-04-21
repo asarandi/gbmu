@@ -1,7 +1,8 @@
 #!/bin/bash
 rm -f *.o a.out test
 gcc \
-	-O1 \
+	-g \
+    -fsanitize=undefined \
     -Wno-format \
 	mbc.c \
 	mmu.c \

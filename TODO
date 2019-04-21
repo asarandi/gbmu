@@ -8,4 +8,4 @@
 -look into sound
 -look into serial; over tcp?
 -bonus: save/restore gbmu states from file
--idea: implement a tracking of last 100 PC register values; display on crash
+-idea: on crash display last last 100 PC register values

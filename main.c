@@ -66,7 +66,7 @@ int main(int ac, char **av)
     if (!gui_init())
         state->done = true;
 
-    state->bootrom_enabled = true;
+    state->bootrom_enabled = BOOTROM_ENABLED;
     gameboy_init();
 
     uint64_t    frame_counter = 0;        
