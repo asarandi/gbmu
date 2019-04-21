@@ -2,8 +2,6 @@
 
 /* http://gbdev.gg8.se/wiki/articles/Power_Up_Sequence */
 
-#define boot_dmg_rom    false
-
 unsigned char DMG_ROM_bin[] = {
   0x31, 0xfe, 0xff, 0xaf, 0x21, 0xff, 0x9f, 0x32, 0xcb, 0x7c, 0x20, 0xfb,
   0x21, 0x26, 0xff, 0x0e, 0x11, 0x3e, 0x80, 0x32, 0xe2, 0x0c, 0x3e, 0xf3,
@@ -28,6 +26,7 @@ unsigned char DMG_ROM_bin[] = {
   0xf5, 0x06, 0x19, 0x78, 0x86, 0x23, 0x05, 0x20, 0xfb, 0x86, 0x20, 0xfe,
   0x3e, 0x01, 0xe0, 0x50
 };
+
 unsigned int DMG_ROM_bin_len = 256;
 
 void    set_initial_register_values()
@@ -73,4 +72,13 @@ void    set_initial_register_values()
     gb_mem[0xFF4A] = 0x00;  //   ; WY
     gb_mem[0xFF4B] = 0x00;  //   ; WX
     gb_mem[0xFFFF] = 0x00;  //   ; IE
+}
+
+void    gameboy_init()
+{
+    uint8_t *gb_mem = state->gameboy_memory;
+    if (state->bootrom_enabled)
+        (void)memcpy(gb_mem, DMG_ROM_bin, DMG_ROM_bin_len);
+    else
+        set_initial_register_values();
 }

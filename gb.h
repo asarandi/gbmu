@@ -42,6 +42,7 @@ typedef struct  s_state {
     bool        halt_bug;
     bool        stop;
     bool        ram_enabled;
+    bool        bootrom_enabled;
     bool        debug;
     bool        done;
     uint64_t    cycles;
@@ -86,6 +87,8 @@ void        gui_update();
 
 uint8_t     joypad_read();
 void        joypad_request_interrupt();
+
+void        gameboy_init();
 
 uint8_t     read_u8(uint16_t addr);
 uint16_t    read_u16(uint16_t addr);

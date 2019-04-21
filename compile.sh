@@ -13,6 +13,7 @@ gcc \
 	cycles.c \
 	timers.c \
 	joypad.c \
+    init.c \
 	main.c \
 	ops/*.c \
 	-I. \

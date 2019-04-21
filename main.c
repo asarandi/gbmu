@@ -63,34 +63,11 @@ int main(int ac, char **av)
     close(fd);
     (void)memcpy(state->gameboy_memory, state->file_contents, 0x8000);
 
-//#define dmg_rom 0
-
-#ifdef dmg_rom
-
-    r16->AF = 0x0000;
-    r16->BC = 0x0000;
-    r16->DE = 0x0000;
-    r16->HL = 0x0000;
-    r16->SP = 0x0000;
-    r16->PC = 0x0000;
-
-    uint8_t game100[0x100];
-    (void)memcpy(game100, mem, 0x100);
-    (void)memcpy(mem, DMG_ROM_bin, 0x100);
-
-#else
-
-    r16->AF = 0x01B0;
-    r16->BC = 0x0013;
-    r16->DE = 0x00D8;
-    r16->HL = 0x014D;
-    r16->SP = 0xFFFE;
-    r16->PC = 0x0100;
-
-#endif
-
     if (!gui_init())
         state->done = true;
+
+    state->bootrom_enabled = true;
+    gameboy_init();
 
     uint64_t    frame_counter = 0;        
     while (!state->done)
@@ -111,10 +88,12 @@ int main(int ac, char **av)
         f = ops0[op0];
         if (op0 == 0xcb)
             f = ops1[op1];
-#ifdef  dmg_rom
-        if (r16->PC == 0x100)
-            memcpy(mem, game100, 0x100);
-#endif
+
+        if (r16->PC == 0x100 && state->bootrom_enabled) {
+            (void)memcpy(state->gameboy_memory, state->file_contents, 0x100);
+            state->bootrom_enabled = false;
+        }
+
         op_cycles = get_num_cycles(registers, gb_mem);
         if (state->halt == false) {
             f(registers, gb_state, gb_mem);
