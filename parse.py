@@ -56,8 +56,9 @@ for i in range(17*2):
             flags = data[4]
 
         code = '\tprintf("undefined instruction 0x%02x\\n");\n' % ((i-1)*16+(j-1))
-        code += ('\tprintf("state->cycles = %lu\\n", state->cycles);\n')
-        code += ('\texit(1);\n')
+        code += '\tprintf("state->cycles = %lu\\n", state->cycles);\n'
+        code += '\tdump_registers(reg, state, mem);\n'
+        code += ('\tstate->done = true;\n')
 
         op = instr.split()[0]
         if op in gb_ops:

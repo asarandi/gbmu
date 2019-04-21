@@ -63,7 +63,7 @@ int main(int ac, char **av)
     close(fd);
     (void)memcpy(state->gameboy_memory, state->file_contents, 0x8000);
 
-#define dmg_rom 1
+//#define dmg_rom 0
 
 #ifdef dmg_rom
 
@@ -102,7 +102,6 @@ int main(int ac, char **av)
         if (state->cycles / 70224 != frame_counter) {
             frame_counter = state->cycles / 70224;
             gui_update();
-            SDL_Delay(15);
         }
 
         interrupts_update(gb_mem, state, registers);

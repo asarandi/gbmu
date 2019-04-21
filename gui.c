@@ -5,6 +5,11 @@
 #define WND_HEIGHT  144
 #define SCALE_FACTOR 3
 
+/*
+ * delay in milliseconds
+*/
+#define GUI_DELAY_DURATION	15
+
 SDL_Window      *gui_window;
 SDL_Renderer    *gui_renderer;
 SDL_Texture     *gui_buffer;
@@ -58,7 +63,7 @@ gui_cleanup() {
 void
 gui_render() {
     uint32_t    *pixels;
-    uint32_t     pitch, idx;
+    int         pitch, idx;
 
     if (SDL_LockTexture(gui_buffer, NULL, (void *)&pixels, &pitch) < 0) {
         SDL_Log("Couldn't lock texture: %s\n", SDL_GetError());
@@ -110,4 +115,5 @@ gui_update() {
     SDL_RenderClear(gui_renderer);
     SDL_RenderCopy(gui_renderer, gui_buffer, NULL, NULL);
     SDL_RenderPresent(gui_renderer);
+    SDL_Delay(GUI_DELAY_DURATION);
 }
