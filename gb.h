@@ -99,6 +99,5 @@ extern      int byte_lens0[];
 extern      int byte_lens1[];
 extern      char* op_names0[];
 extern      char* op_names1[];
-extern      unsigned char DMG_ROM_bin[];
 
 #endif
