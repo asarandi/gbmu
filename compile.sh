@@ -2,7 +2,6 @@
 rm -f *.o a.out test
 gcc \
 	-g \
-    -fsanitize=undefined \
     -Wno-format \
 	mbc.c \
 	mmu.c \
