@@ -37,7 +37,7 @@ gui_init() {
         SDL_Log("Could not create a renderer: %s", SDL_GetError());
         return false;
     }
-    if ((gui_buffer = SDL_CreateTexture(gui_renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING, WND_WIDTH * GUI_SCALE_FACTOR, WND_HEIGHT * GUI_SCALE_FACTOR)) == NULL) {
+    if ((gui_buffer = SDL_CreateTexture(gui_renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, WND_WIDTH * GUI_SCALE_FACTOR, WND_HEIGHT * GUI_SCALE_FACTOR)) == NULL) {
         SDL_Log("Could not create a texture: %s", SDL_GetError());
         return false;
     }

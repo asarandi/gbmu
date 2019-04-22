@@ -15,7 +15,7 @@
 #define BOOTROM_ENABLED     false
 #define GUI_SCALE_FACTOR    3
 #define GUI_DELAY_DURATION	10
-#define GUI_RENDER_COLORS   0xffffffff, 0xaaaaaaff, 0x555555ff, 0x000000ff, 0xff0000ff
+#define GUI_RENDER_COLORS   0x00ffffff, 0x00aaaaaa, 0x00555555, 0x00000000, 0x00ff0000
 
 typedef struct  s_r16 {
     uint16_t    AF; 

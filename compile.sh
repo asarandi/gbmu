@@ -1,7 +1,7 @@
 #!/bin/bash
 rm -f *.o a.out test
 gcc \
-    -g \
+    -O1 \
     -Wno-format \
     mbc.c \
     mmu.c \
