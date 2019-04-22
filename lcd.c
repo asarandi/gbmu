@@ -41,7 +41,11 @@ void    dump_background2(uint8_t *gb_mem, t_state *state)
 
 uint8_t get_wnd_screen_pixel_yx(uint8_t *gb_mem, uint8_t y, uint8_t x)
 {
-    x -= 7;
+
+    y -= gb_mem[0xff4a];
+    x -= gb_mem[0xff4b];
+    x += 7;
+
     int tile_map_addr = (gb_mem[0xff40] & 0x40) ? 0x9c00 : 0x9800;              //bit 6
     int tile_data_addr = (gb_mem[0xff40] & 0x10) ? 0x8000 : 0x8800;             //lcdc bit 4
     uint16_t tile_idx_addr = ((y>>3)<<5)+(x>>3);
@@ -68,7 +72,7 @@ bool    is_window_pixel(uint8_t *gb_mem, int y, int x)
         return false ;
     if ((wy > 143) || (wx > 166))
         return false ;
-    if ((y >= wy) && (x+7 >= wx))                                                 // current pixel is in window region
+    if ((y >= wy) && ((int)x  >= (int)wx-7))                                                 // current pixel is in window region
         return true ;
     return false ;
 }
@@ -155,7 +159,7 @@ uint8_t     get_sprite_pixel(uint8_t *gb_mem, int idx, int y, int x)
 int sprites_compare(const void *alpha, const void *beta)
 {
     uint8_t *gb_mem = state->gameboy_memory;
-	return (gb_mem[0xfe00 + *(uint8_t*)alpha + 1] - gb_mem[0xfe00 + *(uint8_t*)beta + 1]);  /* dmg priority */
+//	return (gb_mem[0xfe00 + *(uint8_t*)alpha + 1] - gb_mem[0xfe00 + *(uint8_t*)beta + 1]);  /* dmg priority */
 	return (int)(*(uint8_t*)alpha - *(uint8_t*)beta);   /* cgb priority */
 }
 
@@ -228,9 +232,16 @@ void    screen_update(uint8_t *gb_mem, t_state *state)
                             state->screen_buf[y * 160 + x] = obj_render;
                     }
                     else {
+                        wnd_pixel = get_wnd_screen_pixel_yx(gb_mem, y, x);            
                         bg_pixel = get_bg_screen_pixel_yx(gb_mem, y, x);
-                        if (bg_pixel == 0)
+
+                        if (is_window_pixel(gb_mem, y, x)) {                            
+                            if (wnd_pixel == 0)
+                                state->screen_buf[y * 160 + x] = obj_render;
+
+                        } else if (bg_pixel == 0) {
                             state->screen_buf[y * 160 + x] = obj_render;
+                        }
                     }
                 }
             }
@@ -239,17 +250,18 @@ void    screen_update(uint8_t *gb_mem, t_state *state)
 
     for (x = 0; x < 160; x++) {
 
-        bg_pixel = get_bg_screen_pixel_yx(gb_mem, y, x);
-        bg_render = (bg_pal >> ((bg_pixel & 3) << 1)) & 3;
-
-        if (is_window_pixel(gb_mem, y, x)) {
-            wnd_pixel = get_wnd_screen_pixel_yx(gb_mem, y, x);            
-            wnd_render = (bg_pal >> ((wnd_pixel & 3) << 1)) & 3;
-            state->screen_buf[y * 160 + x] = wnd_render ;
-            continue ;
-        }       
-        if (state->screen_buf[y * 160 + x] == 0xff)
-            state->screen_buf[y * 160 + x] = bg_render ;
+        if (state->screen_buf[y * 160 + x] == 0xff) {
+            bg_pixel = get_bg_screen_pixel_yx(gb_mem, y, x);
+            bg_render = (bg_pal >> ((bg_pixel & 3) << 1)) & 3;
+            if (is_window_pixel(gb_mem, y, x)) {
+                wnd_pixel = get_wnd_screen_pixel_yx(gb_mem, y, x);            
+                wnd_render = (bg_pal >> ((wnd_pixel & 3) << 1)) & 3;
+                state->screen_buf[y * 160 + x] = wnd_render ;
+            } else if (is_bg_enabled)
+                state->screen_buf[y * 160 + x] = bg_render ;
+            else
+                state->screen_buf[y * 160 + x] = 0;
+        }
     }
 }
 
