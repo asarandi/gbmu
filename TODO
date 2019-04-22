@@ -1,5 +1,5 @@
 -re-read 42 pdf
--fix sprite priorities
+DONE---fix sprite priorities
 -look into dmg/gbc difference
 -implement oam and halt bug
 -more blargg, mooneye test compatibility

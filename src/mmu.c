@@ -37,15 +37,11 @@ uint8_t read_u8(uint16_t addr) {
 }
 
 uint16_t read_u16(uint16_t addr) {    
-    uint8_t *mem = state->gameboy_memory;
     return ((read_u8(addr+1) << 8) | read_u8(addr));
 }
 
 void    write_u8(uint16_t addr, uint8_t data) {
-    t_r8    *r8 = state->gameboy_registers;
-    t_r8    *r16 = state->gameboy_registers;
     uint8_t *mem = state->gameboy_memory;
-    uint8_t byte;
 
     if (addr < 0x8000)
         (void)mbc(addr, data);
@@ -95,7 +91,6 @@ void    write_u8(uint16_t addr, uint8_t data) {
 }
 
 void    write_u16(uint16_t addr, uint16_t data) {    
-    uint8_t *mem = state->gameboy_memory;
     (void)write_u8(addr, (uint8_t) data & 0xff);
     (void)write_u8(addr + 1, (uint8_t) (data >> 8));
 }

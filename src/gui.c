@@ -78,7 +78,7 @@ gui_render() {
 
 void
 gui_set_button_states(uint32_t key, uint8_t value) {
-    for (int i=0; i < num_game_controls; i++) {
+    for (uint32_t i=0; i < num_game_controls; i++) {
         if (game_controls[i] == key) {
             state->buttons[i] = value;
             joypad_request_interrupt();

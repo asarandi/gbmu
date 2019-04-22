@@ -15,13 +15,8 @@
 void    service_interrupt(uint8_t *gb_mem, t_state *state, void *registers,
         uint16_t interrupt_address, uint8_t clear_bit)
 {
-    t_r16       *r16;
-    t_r8        *r8;
-
-    r16 = registers;
-    r8 = registers;
-
-    r16->SP -= 2 ;
+    t_r16   *r16    = registers;
+    r16->SP         -= 2 ;
 
     gb_mem[r16->SP] = (uint8_t) r16->PC & 0xff ;
     gb_mem[r16->SP + 1] = (uint8_t) (r16->PC >> 8) & 0xff ;

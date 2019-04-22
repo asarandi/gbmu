@@ -6,7 +6,6 @@ int main(int ac, char **av)
     int         fd;
     void        *registers;
     t_r16       *r16;
-    t_r8        *r8;
     void        *gb_state;
     void        *gb_mem;    
     uint8_t     *mem;
@@ -14,8 +13,8 @@ int main(int ac, char **av)
     uint8_t     op1;
     struct stat stat_buf;
     void (*f)(void *, t_state *, uint8_t *);
-    int         op_cycles;
-    pthread_t   thread;
+    int         op_cycles = 0;
+    uint64_t    frame_counter = 0;        
 
     if (ac != 2)
         return 1;
@@ -43,7 +42,6 @@ int main(int ac, char **av)
     registers = malloc(sizeof(t_r8));
     (void)memset(registers, 0, sizeof(t_r8));
     r16 = registers;
-    r8 = registers;
 
     gb_state = malloc(sizeof(t_state));
     (void)memset(gb_state, 0, sizeof(t_state));    
@@ -69,7 +67,6 @@ int main(int ac, char **av)
     state->bootrom_enabled = BOOTROM_ENABLED;
     gameboy_init();
 
-    uint64_t    frame_counter = 0;        
     while (!state->done)
     {
 
@@ -94,11 +91,10 @@ int main(int ac, char **av)
             state->bootrom_enabled = false;
         }
 
-        op_cycles = get_num_cycles(registers, gb_mem);
+        op_cycles = 4;
         if (state->halt == false) {
             f(registers, gb_state, gb_mem);
-        } else {
-            op_cycles = 4;
+            op_cycles = get_num_cycles(registers, gb_mem);
         }
         state->cycles += op_cycles;
 

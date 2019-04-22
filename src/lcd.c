@@ -92,45 +92,6 @@ bool    is_sprite_candidate(uint8_t *gb_mem, int y, int x, int obj_y, int obj_x)
     return false ;
 }
 
-uint8_t get_priority_sprite_idx(uint8_t *gb_mem, uint8_t *sprites, uint8_t lcd_x)
-{
-    uint8_t obj_x, obj_y;
-    uint8_t oam_idx;
-    uint8_t *oam = &gb_mem[0xfe00];
-    uint8_t candidate_x_pos = 0xff;
-    uint8_t candidate_idx = 0xff;
-
-    uint8_t obj_height = (gb_mem[0xff40] & 4) ? 16 : 8;
-
-
-    for (uint8_t i = 0; i < 160; i += 4) {
-
-
-        uint8_t lcd_y = gb_mem[0xff44];
-        obj_y = oam[i];
-        obj_x = oam[i + 1];
-
-            
-        if ((obj_y == 0) || (obj_y > 160))
-            continue ;
-        if ((obj_y <= 8) && (obj_height == 8))
-            continue ;
-
-        if (obj_x >= candidate_x_pos)
-            continue ;
-
-        if (!((lcd_y + 16 >= obj_y) && (lcd_y + 16 < obj_y + obj_height)))
-            continue ;
-
-        if ((lcd_x + 8 >= obj_x) && (lcd_x < obj_x)) {
-            candidate_x_pos = obj_x;
-            candidate_idx = i;
-        }
-
-    }
-    return candidate_idx;
-}
-
 uint8_t     get_sprite_pixel(uint8_t *gb_mem, int idx, int y, int x)
 {
     if (idx == 0xff)
@@ -158,7 +119,7 @@ uint8_t     get_sprite_pixel(uint8_t *gb_mem, int idx, int y, int x)
 
 int sprites_compare(const void *alpha, const void *beta)
 {
-    uint8_t *gb_mem = state->gameboy_memory;
+//    uint8_t *gb_mem = state->gameboy_memory;
 //	return (gb_mem[0xfe00 + *(uint8_t*)alpha + 1] - gb_mem[0xfe00 + *(uint8_t*)beta + 1]);  /* dmg priority */
 	return (int)(*(uint8_t*)alpha - *(uint8_t*)beta);   /* cgb priority */
 }
@@ -193,11 +154,11 @@ void    screen_update(uint8_t *gb_mem, t_state *state)
 {
     uint8_t        sprites[10] = {0xff};
 
-    uint32_t    y, x, object;
+    uint32_t    y, x;
     uint8_t     bg_pixel, wnd_pixel, obj_pixel;
     uint8_t     bg_pal, obj_pal;
     uint8_t     bg_render, wnd_render, obj_render;
-    uint8_t obj_y, obj_x, obj_num, obj_attr, oam_idx;
+    uint8_t     oam_idx;
 
     uint8_t     *oam = &gb_mem[0xfe00];
 
@@ -268,7 +229,6 @@ void    screen_update(uint8_t *gb_mem, t_state *state)
 void    lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles)
 {
     static uint64_t lcd_cycle;
-    static uint8_t  scanline;
     static bool     is_vblank;
     static bool     is_hblank;
     static bool     is_oam;

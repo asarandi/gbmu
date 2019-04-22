@@ -63,6 +63,8 @@ void dump_registers(void *registers, void *gb_state, uint8_t *gb_mem)
     char h = is_h_flag ? 'H' : '-';
     char c = is_c_flag ? 'C' : '-';
 
+    (void)gb_state;
+
     printf("A: %02X  F: %02X  (AF: %04X)\n", r8->A, r8->F, r16->AF);
     printf("B: %02X  C: %02X  (BC: %04X)\n", r8->B, r8->C, r16->BC);
     printf("D: %02X  E: %02X  (DE: %04X)\n", r8->D, r8->E, r16->DE);

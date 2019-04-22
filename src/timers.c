@@ -6,6 +6,8 @@ void    timers_update(uint8_t *gb_mem, t_state *state, int current_cycles)
     static  uint64_t    cycles;
     static  uint64_t    freq = 1024;
 
+    (void)state;
+
     div = (gb_mem[0xff04] << 8) | gb_mem[0xff03];
     div += current_cycles;
     gb_mem[0xff04] = div >> 8;
