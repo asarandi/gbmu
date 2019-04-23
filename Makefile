@@ -6,7 +6,7 @@ src = $(wildcard src/*.c)
 src += $(wildcard src/ops/*.c)
 
 gbmu: $(src:.c=.o) 
-	$(CC) $(CFLAGS) $(src) $(LDFLAGS) -o gbmu
+	$(CC) $(CFLAGS) $^ $(LDFLAGS) -o gbmu
 
 clean:
 	rm -f $(src:.c=.o)
