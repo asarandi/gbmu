@@ -41,15 +41,15 @@ void    timers_update(uint8_t *gb_mem, t_state *state, int current_cycles)
         }
     }
 
-    if (gb_mem[0xff05] == 0) {
-        gb_mem[0xff05] = gb_mem[0xff06];
-        gb_mem[0xff0f] |= 4; 
-    }
-
     cycles += current_cycles;
     if (cycles > freq) {
         cycles %= freq;
         gb_mem[0xff05]++;
+        
+        if (gb_mem[0xff05] == 0) {
+            gb_mem[0xff05] = gb_mem[0xff06];
+            gb_mem[0xff0f] |= 4; 
+        }
     }
 }
 

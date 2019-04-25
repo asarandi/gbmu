@@ -1,5 +1,5 @@
 CFLAGS  += -O1 -Wall -Werror -Wextra -I include
-CFLAGS  += -Wno-unused-parameter -Wno-unused-variable -Wno-unused-result
+CFLAGS  += -Wno-format -Wno-unused-parameter -Wno-unused-variable -Wno-unused-result
 LDFLAGS += -lSDL2
 
 src = $(wildcard src/*.c)
