@@ -67,6 +67,11 @@ int main(int ac, char **av)
     state->bootrom_enabled = BOOTROM_ENABLED;
     gameboy_init();
 
+    uint16_t    pc_history[100] = {0};
+    int         pc_idx = 0;
+    bool        show_pc_history = false;
+
+
     while (!state->done)
     {
 
@@ -91,13 +96,6 @@ int main(int ac, char **av)
             state->bootrom_enabled = false;
         }
 
-        op_cycles = 4;
-        if (state->halt == false) {
-            f(registers, gb_state, gb_mem);
-            op_cycles = get_num_cycles(registers, gb_mem);
-        }
-        state->cycles += op_cycles;
-
 //        if (state->cycles > 24296700) debug = true;
 //        if (r16->PC == 0x2b79) { debug = true; }
 //        if (r16->PC == 0x401d) { debug = true; }
@@ -112,7 +110,24 @@ int main(int ac, char **av)
                 state->debug = false;
             }
         }
+        pc_history[pc_idx++] = r16->PC;
+        pc_idx %= 100;
+
+        
+        op_cycles = 4;
+        if (state->halt == false) {
+            f(registers, gb_state, gb_mem);
+            op_cycles = get_num_cycles(registers, gb_mem);
+        }
+        state->cycles += op_cycles;
+
     }
+    if (show_pc_history) {
+        for (int i=pc_idx; i<100; i++) { printf("PC %02d: %04x\n", i, pc_history[i]); };
+        for (int i=0; i<pc_idx; i++) { printf("PC %02d: %04x\n", i, pc_history[i]); };
+    }
+
+
     gui_cleanup();
     free(gb_mem);
     free(gb_state);

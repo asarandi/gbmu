@@ -12,8 +12,11 @@
 uint8_t read_u8(uint16_t addr) {
     uint8_t *mem = state->gameboy_memory;
 
-    if ((addr >= 0xa000) && (addr < 0xbfff)) {
-        if (!state->ram_enabled)
+    if ((addr >= 0xa000) && (addr < 0xbfff))            //RAM
+    {
+        if (state->ram_read_u8)
+            return state->ram_read_u8(addr);
+        else
             return 0xff;
     }
 
@@ -52,9 +55,11 @@ void    write_u8(uint16_t addr, uint8_t data) {
         mem[addr+0x2000] = data;
 
 
-    if ((addr >= 0xa000) && (addr < 0xbfff)) {
-//        printf("ram write, state=%d, addr=%04x\n", state->ram_enabled, addr);
-        if (!state->ram_enabled)
+    if ((addr >= 0xa000) && (addr < 0xbfff))            //RAM
+    {
+        if (state->ram_write_u8)
+            return state->ram_write_u8(addr, data);
+        else
             return ;
     }
 
