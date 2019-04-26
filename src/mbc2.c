@@ -10,9 +10,11 @@ uint8_t mbc2_ram_read_u8(uint16_t addr)
     uint8_t *gb_mem = state->gameboy_memory;
 
     if (state->ram_enabled)
-        return gb_mem[addr];
-    else
-        return 0xff;
+    {
+        if ((addr >= 0xa000) && (addr <= 0xa1ff))
+            return ((gb_mem[addr] & 0x0f) | 0xf0);
+    }
+     return 0xff;
 }
 
 void    mbc2_ram_write_u8(uint16_t addr, uint8_t data)
@@ -32,9 +34,6 @@ void    mbc2_handler(uint16_t addr, uint8_t data)
 {
     uint8_t *gb_mem                 = state->gameboy_memory;    
     static  uint8_t rom_number      = 1;
-
-    static  uint8_t ram_bank[RAM_SIZE] = {0xff};
-    static  uint8_t ram_bank_number = 0;
 
     state->ram_read_u8 = &mbc2_ram_read_u8;
     state->ram_write_u8 = &mbc2_ram_write_u8;
