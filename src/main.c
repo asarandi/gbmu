@@ -74,7 +74,6 @@ int main(int ac, char **av)
 
     while (!state->done)
     {
-
         timers_update(gb_mem, gb_state, op_cycles);
         lcd_update(gb_mem, gb_state, op_cycles);
         interrupts_update(gb_mem, state, registers);

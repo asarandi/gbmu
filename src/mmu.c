@@ -62,6 +62,18 @@ void    write_u8(uint16_t addr, uint8_t data) {
             return ;
     }
 
+    if (addr == 0xff02) {
+        if (data == 0x81) {
+//            printf("serial send: %02x\n", mem[0xff01]);
+            mem[0xff01] = 0xff;
+            mem[0xff02] = 1;
+            mem[0xff0f] |= 8;   //irq
+            return ;
+        } else {
+            printf("SC value: %02x, SB value %02x\n", mem[0xff02], mem[0xff01]);
+        }
+    }
+
     /* ignore writes to oam in lcd-mode-2 and lcd-mode-3 */
     if ((addr >= 0xfe00) && (addr <= 0xfe9f) && ((is_lcd_mode_2) || (is_lcd_mode_3)))   return ;
 
@@ -74,6 +86,13 @@ void    write_u8(uint16_t addr, uint8_t data) {
     if (addr == 0xff04) { data = 0; }   /*reset DIV if written to*/
 
 //    if (addr > 0xff00) { printf("writing to   0x%04x, old value = %02x, new value = %02x\n",addr,mem[addr],data); }
+    if (addr == 0xff41) {
+        t_r16   *r16 = state->gameboy_registers;
+        printf("writing to STAT 0xff41, data: %02x, r16->PC = %04x\n", data, r16->PC);
+        printf("current LY 0xff44: %02x, current LYC 0xff45: %02x\n", mem[0xff44], mem[0xff45]);
+
+    }
+
     if (addr == 0xff41) { data &= 0xf8; data |= (mem[0xff41] & 7); }         /*lcd stat bottom 3 bits read only*/
     if (addr == 0xff26) { data &= 0xf0; data |= (mem[0xff26] & 15); }       /*sound on/off bottom 4 bits read only*/    
     if (addr == 0xff00) { data &= 0xf0; data |= (mem[0xff00] & 15); }       /*joypad bottom 4 bits read only*/
