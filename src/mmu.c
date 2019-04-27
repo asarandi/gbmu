@@ -20,12 +20,11 @@ uint8_t read_u8(uint16_t addr) {
             return 0xff;
     }
 
-//    if ((addr >= 0xfe00) && (addr <= 0xfe9f)) { //OAM
-//        if ((is_lcd_mode_2) || (is_lcd_mode_3)) {            
-//            return 0xff; } }
-//    if ((addr >= 0x8000) && (addr <= 0x9ffff)) { //VRAM
-//        if (is_lcd_mode_3) {
-//            return 0xff; } }
+    /* ignore reads from oam in lcd-mode-2 and lcd-mode-3 */
+    if ((addr >= 0xfe00) && (addr <= 0xfe9f) && ((is_lcd_mode_2) || (is_lcd_mode_3)))   return 0xff;
+    /* ignore reads from vram in lcd-mode-3 */
+    if ((addr >= 0x8000) && (addr <= 0x9fff) && (is_lcd_mode_3))                        return 0xff;
+
 //    if (addr >= 0xfea0 && addr < 0xff00) return 0;
 
     if (addr == 0xff00) { return joypad_read(); } /* joypad no buttons pressed */
@@ -63,17 +62,15 @@ void    write_u8(uint16_t addr, uint8_t data) {
             return ;
     }
 
+    /* ignore writes to oam in lcd-mode-2 and lcd-mode-3 */
+    if ((addr >= 0xfe00) && (addr <= 0xfe9f) && ((is_lcd_mode_2) || (is_lcd_mode_3)))   return ;
+
+    /* ignore writes to vram in lcd-mode-3 */
+    if ((addr >= 0x8000) && (addr <= 0x9fff) && (is_lcd_mode_3))                        return ;
+
+
     if (addr >= 0xfea0 && addr < 0xff00) return ;
-
-    if (addr == 0xff46) {
-//        printf("r16->PC = %04x, dma current = %02x, new = %02x\n", r16->PC, mem[0xff46], data);
-        uint16_t dma = mem[0xff46] << 8;
-        for (uint8_t i=0; i<0xa0; i++) {
-            mem[0xfe00+i] = mem[dma + i];
-        }
-        dump_ram(mem);
-    }
-
+    if (addr == 0xff46) { state->dma_update = true; }
     if (addr == 0xff04) { data = 0; }   /*reset DIV if written to*/
 
 //    if (addr > 0xff00) { printf("writing to   0x%04x, old value = %02x, new value = %02x\n",addr,mem[addr],data); }
@@ -82,6 +79,7 @@ void    write_u8(uint16_t addr, uint8_t data) {
     if (addr == 0xff00) { data &= 0xf0; data |= (mem[0xff00] & 15); }       /*joypad bottom 4 bits read only*/
     if (addr == 0xff76) return ; /*read only as per pandocs*/
     if (addr == 0xff77) return ; /*read only as per pandocs*/
+//    if (addr == 0xff44) return ;    /* ly, ignore */
 
 //    if (addr == 0xff80) return ;
 
