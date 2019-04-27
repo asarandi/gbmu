@@ -77,12 +77,6 @@ int main(int ac, char **av)
 
         timers_update(gb_mem, gb_state, op_cycles);
         lcd_update(gb_mem, gb_state, op_cycles);
-
-        if (state->cycles / 70224 != frame_counter) {
-            frame_counter = state->cycles / 70224;
-            gui_update();
-        }
-
         interrupts_update(gb_mem, state, registers);
 
         op0 = mem[r16->PC];
@@ -96,9 +90,6 @@ int main(int ac, char **av)
             state->bootrom_enabled = false;
         }
 
-//        if (state->cycles > 24296700) debug = true;
-//        if (r16->PC == 0x2b79) { debug = true; }
-//        if (r16->PC == 0x401d) { debug = true; }
 //        if (r16->PC == 0x03ca) { state->debug = true; }
         if (state->debug)
         {
@@ -126,7 +117,6 @@ int main(int ac, char **av)
         for (int i=pc_idx; i<100; i++) { printf("PC %02d: %04x\n", i, pc_history[i]); };
         for (int i=0; i<pc_idx; i++) { printf("PC %02d: %04x\n", i, pc_history[i]); };
     }
-
 
     gui_cleanup();
     free(gb_mem);
