@@ -1,6 +1,7 @@
 CFLAGS  += -O1 -Wall -Werror -Wextra -I include
 CFLAGS  += -Wno-format -Wno-unused-parameter -Wno-unused-variable -Wno-unused-result
-LDFLAGS += -lSDL2
+CFLAGS  += $(shell sdl2-config --cflags)
+LDFLAGS += $(shell sdl2-config --libs)
 
 src = $(wildcard src/*.c)
 src += $(wildcard src/ops/*.c)
