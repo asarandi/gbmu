@@ -69,7 +69,7 @@ bool    is_window_pixel(uint8_t *gb_mem, uint8_t y, uint8_t x)
 
 uint8_t     get_sprite_pixel(uint8_t *gb_mem, uint8_t idx, uint8_t y, uint8_t x)
 {
-    if (idx == 0xff)
+    if ((idx == 0xff) || (!is_sprites_enabled))
         return 0;
     uint8_t *oam = &gb_mem[0xfe00];
     uint8_t obj_height = (gb_mem[0xff40] & 4) ? 16 : 8;
@@ -107,6 +107,7 @@ void    get_sprites(uint8_t *gb_mem, uint8_t lcd_y, uint8_t *sprites)
     uint8_t     obj_height = (gb_mem[0xff40] & 4) ? 16 : 8;
 
     (void)memset(sprites, 0xff, 10);
+    if (!is_sprites_enabled) return ;
 
     idx = 0;
     sprites_idx = 0;
