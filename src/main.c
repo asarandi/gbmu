@@ -63,6 +63,7 @@ int main(int ac, char **av)
 
     if (!gui_init())
         state->done = true;
+    (void)apu_init();
 
     state->bootrom_enabled = BOOTROM_ENABLED;
     gameboy_init();
@@ -76,6 +77,7 @@ int main(int ac, char **av)
     {
         timers_update(gb_mem, gb_state, op_cycles);
         lcd_update(gb_mem, gb_state, op_cycles);
+        apu_update(gb_mem, gb_state, op_cycles);
         interrupts_update(gb_mem, state, registers);
 
         op0 = mem[r16->PC];
@@ -117,6 +119,7 @@ int main(int ac, char **av)
         for (int i=0; i<pc_idx; i++) { printf("PC %02d: %04x\n", i, pc_history[i]); };
     }
 
+    apu_cleanup();
     gui_cleanup();
     free(gb_mem);
     free(gb_state);

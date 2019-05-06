@@ -64,13 +64,10 @@ void    write_u8(uint16_t addr, uint8_t data) {
 
     if (addr == 0xff02) {
         if (data == 0x81) {
-//            printf("serial send: %02x\n", mem[0xff01]);
             mem[0xff01] = 0xff;
             mem[0xff02] = 1;
-            mem[0xff0f] |= 8;   //irq
+            mem[0xff0f] |= 8;
             return ;
-        } else {
-            printf("SC value: %02x, SB value %02x\n", mem[0xff02], mem[0xff01]);
         }
     }
 
