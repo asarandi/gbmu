@@ -86,6 +86,11 @@ void        *gui(void *arg);
 void        lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles);
 void        interrupts_update(uint8_t *gb_mem, t_state *state, void *registers);
 void        timers_update(uint8_t *gb_mem, t_state *state, int current_cycles);
+
+void        apu_init();
+void        apu_cleanup();
+void        apu_update(uint8_t *gb_mem, t_state *state, int current_cycles);
+
 void        delay();
 
 bool        gui_init();
