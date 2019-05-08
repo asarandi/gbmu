@@ -72,26 +72,58 @@ int16_t SquareWave(double time, double freq, double amp, double duty) {
 #define nr2_freq   (131072 / (2048 - (((gb_mem[0xff19] & 7) << 8) | gb_mem[0xff18])))
 #define nr2_vol    ((gb_mem[0xff17] >> 4) & 15)
 
-static uint8_t  sound_2_buffer[channel_buf_size];
-
+static uint8_t      sound_2_buffer[channel_buf_size];
 
 void    sound_2_update(int current_cycles)
 {
-    static  uint64_t    cycles;
-    static  uint8_t    nr24;
+    uint8_t *gb_mem = state->gameboy_memory;
+    uint64_t envelope_step;
+    uint8_t  envelope_volume, envelope_direction;
+    static uint64_t     sound_2_cycles, sound_2_prev_cycles;
 
 
+    if (!(gb_mem[0xff19] & 0x80))
+    {
+        sound_2_cycles = 0;
+        sound_2_prev_cycles = 0;
+        return ;
+    }
 
+    sound_2_cycles += current_cycles;
 
+    envelope_step = (gb_mem[0xff17] & 3) * (4194304 / 64);
+
+    if (envelope_step)
+    {
+        envelope_volume = (gb_mem[0xff17] >> 4) & 15;
+        envelope_direction = (gb_mem[0xff17] >> 3) & 1;
+
+        if ((sound_2_cycles / envelope_step) > ((sound_2_prev_cycles) / envelope_step))
+        {
+            if ((envelope_volume) && (!envelope_direction))
+            {
+                envelope_volume--;
+                gb_mem[0xff17] = ((envelope_volume & 15) << 4) | (gb_mem[0xff17] & 15);
+            }
+
+            if ((envelope_volume < 15) && (envelope_direction))
+            {
+                envelope_volume++;
+                gb_mem[0xff17] = ((envelope_volume & 15) << 4) | (gb_mem[0xff17] & 15);
+            }
+        }
+    }
+
+    sound_2_prev_cycles = sound_2_cycles;
 
 }
 
 void    sound_2_fill_buffer()
 {
 
-    static  uint64_t    ticks_left, ticks_right;
     uint8_t             *gb_mem = state->gameboy_memory;
     double              duty, freq, vol_left, vol_right;
+    static  uint64_t    ticks;
 
     (void)memset(sound_2_buffer, 0, sizeof(sound_2_buffer));
 
@@ -107,10 +139,12 @@ void    sound_2_fill_buffer()
     for (int i = 0; i < num_samples; i++)
     {
         if (is_sound_2_left_enabled)
-            *(int16_t *)&sound_2_buffer[i * 4] = SquareWave(ticks_left++, freq, vol_left, duty);
+            *(int16_t *)&sound_2_buffer[i * 4] = SquareWave(ticks, freq, vol_left, duty);
 
         if (is_sound_2_right_enabled)
-            *(int16_t *)&sound_2_buffer[i * 4 + 2] = SquareWave(ticks_right++, freq, vol_right, duty);
+            *(int16_t *)&sound_2_buffer[i * 4 + 2] = SquareWave(ticks, freq, vol_right, duty);
+
+        ticks++;
     }
 
 }
@@ -120,8 +154,9 @@ void    apu_update(uint8_t *gb_mem, t_state *state, int current_cycles)
     static uint64_t cycles;
 
     cycles += current_cycles;
+    (void)sound_2_update(current_cycles);
 
-//    (void)print_channel_2(gb_mem);
+    (void)print_channel_2(gb_mem);
 
     if (!dev)
         return ;
