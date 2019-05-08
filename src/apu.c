@@ -69,6 +69,82 @@ int16_t SquareWave(double time, double freq, double amp, double duty) {
 }
 
 #define nr1_freq   (131072 / (2048 - (((gb_mem[0xff14] & 7) << 8) | gb_mem[0xff13])))
+#define nr1_vol    ((gb_mem[0xff12] >> 4) & 15)
+static uint8_t      sound_1_buffer[channel_buf_size];
+
+void    sound_1_update(int current_cycles)
+{
+    uint8_t *gb_mem = state->gameboy_memory;
+    uint64_t envelope_step;
+    uint8_t  envelope_volume, envelope_direction;
+    static uint64_t     sound_1_cycles, sound_1_prev_cycles;
+
+
+    if (!(gb_mem[0xff14] & 0x80))
+    {
+        sound_1_cycles = 0;
+        sound_1_prev_cycles = 0;
+        return ;
+    }
+
+    sound_1_cycles += current_cycles;
+
+    envelope_step = (gb_mem[0xff12] & 3) * (4194304 / 64);
+
+    if (envelope_step)
+    {
+        envelope_volume = (gb_mem[0xff12] >> 4) & 15;
+        envelope_direction = (gb_mem[0xff12] >> 3) & 1;
+
+        if ((sound_1_cycles / envelope_step) > ((sound_1_prev_cycles) / envelope_step))
+        {
+            if ((envelope_volume) && (!envelope_direction))
+            {
+                envelope_volume--;
+                gb_mem[0xff12] = ((envelope_volume & 15) << 4) | (gb_mem[0xff12] & 15);
+            }
+
+            if ((envelope_volume < 15) && (envelope_direction))
+            {
+                envelope_volume++;
+                gb_mem[0xff12] = ((envelope_volume & 15) << 4) | (gb_mem[0xff12] & 15);
+            }
+        }
+    }
+
+    sound_1_prev_cycles = sound_1_cycles;
+}
+
+void    sound_1_fill_buffer()
+{
+
+    uint8_t             *gb_mem = state->gameboy_memory;
+    double              duty, freq, vol_left, vol_right;
+    static  uint64_t    ticks;
+
+    (void)memset(sound_1_buffer, 0, sizeof(sound_1_buffer));
+
+    if (!is_sound_enabled)
+        return ;
+
+    duty = get_duty_cycles(gb_mem[0xff11]);
+
+    freq = nr1_freq;
+    vol_left = (((1.0 / 7) * master_volume_left) / 15) * nr1_vol;
+    vol_right = (((1.0 / 7) * master_volume_right) / 15) * nr1_vol;
+
+    for (int i = 0; i < num_samples; i++)
+    {
+        if (is_sound_1_left_enabled)
+            *(int16_t *)&sound_1_buffer[i * 4] = SquareWave(ticks, freq, vol_left, duty);
+
+        if (is_sound_1_right_enabled)
+            *(int16_t *)&sound_1_buffer[i * 4 + 2] = SquareWave(ticks, freq, vol_right, duty);
+
+        ticks++;
+    }
+}
+
 #define nr2_freq   (131072 / (2048 - (((gb_mem[0xff19] & 7) << 8) | gb_mem[0xff18])))
 #define nr2_vol    ((gb_mem[0xff17] >> 4) & 15)
 
@@ -115,7 +191,6 @@ void    sound_2_update(int current_cycles)
     }
 
     sound_2_prev_cycles = sound_2_cycles;
-
 }
 
 void    sound_2_fill_buffer()
@@ -146,7 +221,6 @@ void    sound_2_fill_buffer()
 
         ticks++;
     }
-
 }
 
 void    apu_update(uint8_t *gb_mem, t_state *state, int current_cycles)
@@ -154,9 +228,10 @@ void    apu_update(uint8_t *gb_mem, t_state *state, int current_cycles)
     static uint64_t cycles;
 
     cycles += current_cycles;
-    (void)sound_2_update(current_cycles);
+    (void)sound_1_update(current_cycles);
+//    (void)sound_2_update(current_cycles);
 
-    (void)print_channel_2(gb_mem);
+//    (void)print_channel_2(gb_mem);
 
     if (!dev)
         return ;
@@ -164,14 +239,28 @@ void    apu_update(uint8_t *gb_mem, t_state *state, int current_cycles)
 
 void MyAudioCallback(void *userdata, Uint8 *stream, int len)
 {
+    uint64_t    calc_left, calc_right;
+
     (void)userdata;
     (void)memset(stream, 0, len);
 
+    sound_1_fill_buffer();
     sound_2_fill_buffer();
 
-    for (int i = 0; i < channel_buf_size; i++)
+    for (int i = 0; i < num_samples; i++)
     {
-        stream[i] = sound_2_buffer[i];
+        int j = i * (num_channels * sample_size);
+
+        calc_left = 0;
+        calc_left += *(int16_t *)&sound_1_buffer[j];
+        calc_left += *(int16_t *)&sound_2_buffer[j];
+
+        calc_right = 0;
+        calc_right += *(int16_t *)&sound_1_buffer[j + sample_size];
+        calc_right += *(int16_t *)&sound_2_buffer[j + sample_size];
+
+        *(int16_t *)&stream[j] = (int16_t)calc_left >> 1;
+        *(int16_t *)&stream[j + sample_size] = (int16_t)calc_right >> 1;
     }
 }
 
