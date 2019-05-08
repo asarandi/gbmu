@@ -10,21 +10,25 @@ static  SDL_AudioDeviceID       dev = 0;
 #define sample_size         2   //sizeof(int16_t)
 #define channel_buf_size    (num_samples * sample_size * num_channels)
 
-#define master_volume_right     (gb_mem[0xff24] & 0x03)
-#define master_volume_left      ((gb_mem[0xff24] >> 4) & 0x03)
+#define master_volume_right        (gb_mem[0xff24] & 0x03)
+#define master_volume_left         ((gb_mem[0xff24] >> 4) & 0x03)
 
-#define is_sound_enabled        (gb_mem[0xff26] & 0x80 ? true : false)
+#define is_sound_enabled           (gb_mem[0xff26] & 0x80 ? true : false)
 
-#define is_snd1_right_enabled   (gb_mem[0xff25] & 0x01 ? true : false)
-#define is_snd2_right_enabled   (gb_mem[0xff25] & 0x02 ? true : false)
-#define is_snd3_right_enabled   (gb_mem[0xff25] & 0x04 ? true : false)
-#define is_snd4_right_enabled   (gb_mem[0xff25] & 0x08 ? true : false)
+#define is_sound_1_enabled         (gb_mem[0xff26] & 0x01 ? true : false)
+#define is_sound_2_enabled         (gb_mem[0xff26] & 0x02 ? true : false)
+#define is_sound_3_enabled         (gb_mem[0xff26] & 0x04 ? true : false)
+#define is_sound_4_enabled         (gb_mem[0xff26] & 0x08 ? true : false)
 
-#define is_snd1_left_enabled    (gb_mem[0xff25] & 0x10 ? true : false)
-#define is_snd2_left_enabled    (gb_mem[0xff25] & 0x20 ? true : false)
-#define is_snd3_left_enabled    (gb_mem[0xff25] & 0x40 ? true : false)
-#define is_snd4_left_enabled    (gb_mem[0xff25] & 0x80 ? true : false)
+#define is_sound_1_right_enabled   (gb_mem[0xff25] & 0x01 ? true : false)
+#define is_sound_2_right_enabled   (gb_mem[0xff25] & 0x02 ? true : false)
+#define is_sound_3_right_enabled   (gb_mem[0xff25] & 0x04 ? true : false)
+#define is_sound_4_right_enabled   (gb_mem[0xff25] & 0x08 ? true : false)
 
+#define is_sound_1_left_enabled    (gb_mem[0xff25] & 0x10 ? true : false)
+#define is_sound_2_left_enabled    (gb_mem[0xff25] & 0x20 ? true : false)
+#define is_sound_3_left_enabled    (gb_mem[0xff25] & 0x40 ? true : false)
+#define is_sound_4_left_enabled    (gb_mem[0xff25] & 0x80 ? true : false)
 
 void    print_channel_2(uint8_t *gb_mem)
 {
@@ -68,15 +72,28 @@ int16_t SquareWave(double time, double freq, double amp, double duty) {
 #define nr2_freq   (131072 / (2048 - (((gb_mem[0xff19] & 7) << 8) | gb_mem[0xff18])))
 #define nr2_vol    ((gb_mem[0xff17] >> 4) & 15)
 
-static uint8_t  channel2_buf[channel_buf_size];
+static uint8_t  sound_2_buffer[channel_buf_size];
 
-void    get_channel2_data()
-{    
+
+void    sound_2_update(int current_cycles)
+{
+    static  uint64_t    cycles;
+    static  uint8_t    nr24;
+
+
+
+
+
+}
+
+void    sound_2_fill_buffer()
+{
+
     static  uint64_t    ticks_left, ticks_right;
     uint8_t             *gb_mem = state->gameboy_memory;
     double              duty, freq, vol_left, vol_right;
 
-    (void)memset(channel2_buf, 0, sizeof(channel2_buf));
+    (void)memset(sound_2_buffer, 0, sizeof(sound_2_buffer));
 
     if (!is_sound_enabled)
         return ;
@@ -89,11 +106,11 @@ void    get_channel2_data()
 
     for (int i = 0; i < num_samples; i++)
     {
-        if (is_snd2_left_enabled)
-            *(int16_t *)&channel2_buf[i * 4] = SquareWave(ticks_left++, freq, vol_left, duty);
+        if (is_sound_2_left_enabled)
+            *(int16_t *)&sound_2_buffer[i * 4] = SquareWave(ticks_left++, freq, vol_left, duty);
 
-        if (is_snd2_right_enabled)
-            *(int16_t *)&channel2_buf[i * 4 + 2] = SquareWave(ticks_right++, freq, vol_right, duty);
+        if (is_sound_2_right_enabled)
+            *(int16_t *)&sound_2_buffer[i * 4 + 2] = SquareWave(ticks_right++, freq, vol_right, duty);
     }
 
 }
@@ -106,7 +123,6 @@ void    apu_update(uint8_t *gb_mem, t_state *state, int current_cycles)
 
     (void)print_channel_2(gb_mem);
 
-
     if (!dev)
         return ;
 }
@@ -116,11 +132,11 @@ void MyAudioCallback(void *userdata, Uint8 *stream, int len)
     (void)userdata;
     (void)memset(stream, 0, len);
 
+    sound_2_fill_buffer();
 
-    get_channel2_data();
     for (int i = 0; i < channel_buf_size; i++)
     {
-        stream[i] = channel2_buf[i];
+        stream[i] = sound_2_buffer[i];
     }
 }
 
