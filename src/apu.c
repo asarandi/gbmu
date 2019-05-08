@@ -121,7 +121,7 @@ void    apu_update(uint8_t *gb_mem, t_state *state, int current_cycles)
 
     cycles += current_cycles;
 
-    (void)print_channel_2(gb_mem);
+//    (void)print_channel_2(gb_mem);
 
     if (!dev)
         return ;
