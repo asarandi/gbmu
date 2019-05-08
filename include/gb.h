@@ -91,8 +91,6 @@ void        apu_init();
 void        apu_cleanup();
 void        apu_update(uint8_t *gb_mem, t_state *state, int current_cycles);
 
-void        delay();
-
 bool        gui_init();
 void        gui_cleanup();
 void        gui_update();
@@ -101,6 +99,7 @@ uint8_t     joypad_read();
 void        joypad_request_interrupt();
 
 void        gameboy_init();
+void        gb_throttle();
 
 uint8_t     read_u8(uint16_t addr);
 uint16_t    read_u16(uint16_t addr);
