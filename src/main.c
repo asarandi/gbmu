@@ -112,6 +112,7 @@ int main(int ac, char **av)
             op_cycles = get_num_cycles(registers, gb_mem);
         }
         state->cycles += op_cycles;
+        gb_throttle();
 
     }
     if (show_pc_history) {

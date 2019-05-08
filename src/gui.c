@@ -109,5 +109,5 @@ gui_update() {
     SDL_RenderClear(gui_renderer);
     SDL_RenderCopy(gui_renderer, gui_buffer, NULL, NULL);
     SDL_RenderPresent(gui_renderer);
-    SDL_Delay(GUI_DELAY_DURATION);
+//    SDL_Delay(GUI_DELAY_DURATION);
 }
