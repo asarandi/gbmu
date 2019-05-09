@@ -59,6 +59,7 @@ void    apu_update(uint8_t *gb_mem, t_state *state, int current_cycles)
 //    (void)print_channel_2(gb_mem);
     (void)sound_1_update(current_cycles);
     (void)sound_2_update(current_cycles);
+    (void)sound_3_update(current_cycles);
 }
 
 void MyAudioCallback(void *userdata, Uint8 *stream, int len)
@@ -71,8 +72,9 @@ void MyAudioCallback(void *userdata, Uint8 *stream, int len)
     if (!sdl_audio_device)
         return ;
 
-    sound_1_fill_buffer();
-    sound_2_fill_buffer();
+//    sound_1_fill_buffer();
+//    sound_2_fill_buffer();
+    sound_3_fill_buffer();
 
     for (int i = 0; i < num_samples; i++)
     {
@@ -81,13 +83,22 @@ void MyAudioCallback(void *userdata, Uint8 *stream, int len)
         calc_left = 0;
         calc_left += *(int16_t *)&sound_1_buffer[j];
         calc_left += *(int16_t *)&sound_2_buffer[j];
+        calc_left += *(int16_t *)&sound_3_buffer[j];
 
         calc_right = 0;
         calc_right += *(int16_t *)&sound_1_buffer[j + sample_size];
         calc_right += *(int16_t *)&sound_2_buffer[j + sample_size];
+        calc_right += *(int16_t *)&sound_3_buffer[j + sample_size];
 
-        *(int16_t *)&stream[j] = (int16_t)calc_left >> 1;
-        *(int16_t *)&stream[j + sample_size] = (int16_t)calc_right >> 1;
+        while (calc_left > INT16_MAX) calc_left >>= 1;
+        *(int16_t *)&stream[j] = (int16_t)calc_left;
+
+        while (calc_right > INT16_MAX) calc_right >>= 1;
+        *(int16_t *)&stream[j + sample_size] = (int16_t)calc_right;
+
+
+//        *(int16_t *)&stream[j] = (int16_t)(calc_left >> 2);
+//        *(int16_t *)&stream[j + sample_size] = (int16_t)(calc_right >> 2);
     }
 }
 
