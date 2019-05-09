@@ -35,7 +35,7 @@
 #define nr2_freq                    (131072 / (2048 - (((gb_mem[0xff19] & 7) << 8) | gb_mem[0xff18])))
 #define nr2_vol                     ((gb_mem[0xff17] >> 4) & 15)
 
-#define nr3_freq                    (131072 / (2048 - (((gb_mem[0xff1e] & 7) << 8) | gb_mem[0xff1d])))
+#define nr3_freq                    (65536 / (2048 - (((gb_mem[0xff1e] & 7) << 8) | gb_mem[0xff1d])))
 
 #define nr4_vol                     ((gb_mem[0xff21] >> 4) & 15)
 
@@ -44,6 +44,9 @@ void                                sound_1_fill_buffer();
 
 void                                sound_2_update(int current_cycles);
 void                                sound_2_fill_buffer();
+
+void                                sound_3_update(int current_cycles);
+void                                sound_3_fill_buffer();
 
 int16_t                             SquareWave(double time, double freq, double amp, double duty);
 double                              get_duty_cycles(uint8_t reg);
