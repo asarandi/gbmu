@@ -76,7 +76,7 @@ void    sound_1_update(int current_cycles)
 {
     uint8_t *gb_mem = state->gameboy_memory;
     uint64_t envelope_step, sweep_step, sweep_freq, sweep_calc;
-    uint8_t  envelope_volume, envelope_direction, sweep_shift;
+    uint8_t  envelope_volume, envelope_direction, sweep_shift, length_calc;
     static uint64_t     sound_1_cycles, sound_1_prev_cycles;
 
 
@@ -86,6 +86,7 @@ void    sound_1_update(int current_cycles)
         sound_1_prev_cycles = 0;
         return ;
     }
+
 
     sound_1_cycles += current_cycles;
 
@@ -97,7 +98,7 @@ void    sound_1_update(int current_cycles)
         {
             sweep_freq = ((gb_mem[0xff14] & 7) << 8) | gb_mem[0xff13];
             sweep_calc = sweep_freq >> sweep_shift;
-            if (gb_mem[0xff10] & 0x8)
+            if (gb_mem[0xff10] & 0x08)
                 sweep_freq -= sweep_calc;
             else
                 sweep_freq += sweep_calc;
@@ -109,6 +110,18 @@ void    sound_1_update(int current_cycles)
 
 //                printf("sweep shift %s\n", (gb_mem[0xff10] & 8) ? "down" : "up");
             }
+        }
+    }
+
+    if ((sound_1_cycles / (4194304 / 256)) > (sound_1_prev_cycles / (4194304 / 256)))
+    {
+        length_calc = gb_mem[0xff11] & 0x3f;
+        if (length_calc)
+        {
+            length_calc--;
+            gb_mem[0xff11] = (gb_mem[0xff11] & 0xc0) | (length_calc & 0x3f);
+            if ((gb_mem[0xff14] & 0x40) && (!length_calc))
+                gb_mem[0xff12] &= 0x0f;
         }
     }
 
@@ -176,7 +189,7 @@ void    sound_2_update(int current_cycles)
 {
     uint8_t *gb_mem = state->gameboy_memory;
     uint64_t envelope_step;
-    uint8_t  envelope_volume, envelope_direction;
+    uint8_t  envelope_volume, envelope_direction, length_calc;
     static uint64_t     sound_2_cycles, sound_2_prev_cycles;
 
 
@@ -189,8 +202,19 @@ void    sound_2_update(int current_cycles)
 
     sound_2_cycles += current_cycles;
 
-    envelope_step = (gb_mem[0xff17] & 7) * (4194304 / 64);
+    if ((sound_2_cycles / (4194304 / 256)) > (sound_2_prev_cycles / (4194304 / 256)))
+    {
+        length_calc = gb_mem[0xff16] & 0x3f;
+        if (length_calc)
+        {
+            length_calc--;
+            gb_mem[0xff16] = (gb_mem[0xff16] & 0xc0) | (length_calc & 0x3f);
+            if ((gb_mem[0xff19] & 0x40) && (!length_calc))
+                gb_mem[0xff17] &= 0x0f;     //set volume to 0
+        }
+    }
 
+    envelope_step = (gb_mem[0xff17] & 7) * (4194304 / 64);
     if (envelope_step)
     {
         envelope_volume = (gb_mem[0xff17] >> 4) & 15;
