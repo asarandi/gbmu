@@ -75,8 +75,8 @@ static uint8_t      sound_1_buffer[channel_buf_size];
 void    sound_1_update(int current_cycles)
 {
     uint8_t *gb_mem = state->gameboy_memory;
-    uint64_t envelope_step;
-    uint8_t  envelope_volume, envelope_direction;
+    uint64_t envelope_step, sweep_step, sweep_freq, sweep_calc;
+    uint8_t  envelope_volume, envelope_direction, sweep_shift;
     static uint64_t     sound_1_cycles, sound_1_prev_cycles;
 
 
@@ -89,14 +89,36 @@ void    sound_1_update(int current_cycles)
 
     sound_1_cycles += current_cycles;
 
-    envelope_step = (gb_mem[0xff12] & 3) * (4194304 / 64);
+    sweep_step = ((gb_mem[0xff10] >> 4) & 7) * (4194304 / 128);
+    sweep_shift = gb_mem[0xff10] & 7;
+    if ((sweep_step) && (sweep_shift))
+    {
+        if ((sound_1_cycles / sweep_step) > (sound_1_prev_cycles / sweep_step))
+        {
+            sweep_freq = ((gb_mem[0xff14] & 7) << 8) | gb_mem[0xff13];
+            sweep_calc = sweep_freq >> sweep_shift;
+            if (gb_mem[0xff10] & 0x8)
+                sweep_freq -= sweep_calc;
+            else
+                sweep_freq += sweep_calc;
 
+            if (sweep_freq < 2048)
+            {
+                gb_mem[0xff14] = (gb_mem[0xff14] & 0xf8) | ((sweep_freq >> 8) & 7);
+                gb_mem[0xff13] = sweep_freq & 0xff;
+
+//                printf("sweep shift %s\n", (gb_mem[0xff10] & 8) ? "down" : "up");
+            }
+        }
+    }
+
+    envelope_step = (gb_mem[0xff12] & 7) * (4194304 / 64);
     if (envelope_step)
     {
         envelope_volume = (gb_mem[0xff12] >> 4) & 15;
         envelope_direction = (gb_mem[0xff12] >> 3) & 1;
 
-        if ((sound_1_cycles / envelope_step) > ((sound_1_prev_cycles) / envelope_step))
+        if ((sound_1_cycles / envelope_step) > (sound_1_prev_cycles / envelope_step))
         {
             if ((envelope_volume) && (!envelope_direction))
             {
@@ -167,14 +189,14 @@ void    sound_2_update(int current_cycles)
 
     sound_2_cycles += current_cycles;
 
-    envelope_step = (gb_mem[0xff17] & 3) * (4194304 / 64);
+    envelope_step = (gb_mem[0xff17] & 7) * (4194304 / 64);
 
     if (envelope_step)
     {
         envelope_volume = (gb_mem[0xff17] >> 4) & 15;
         envelope_direction = (gb_mem[0xff17] >> 3) & 1;
 
-        if ((sound_2_cycles / envelope_step) > ((sound_2_prev_cycles) / envelope_step))
+        if ((sound_2_cycles / envelope_step) > (sound_2_prev_cycles / envelope_step))
         {
             if ((envelope_volume) && (!envelope_direction))
             {
@@ -229,7 +251,7 @@ void    apu_update(uint8_t *gb_mem, t_state *state, int current_cycles)
 
     cycles += current_cycles;
     (void)sound_1_update(current_cycles);
-//    (void)sound_2_update(current_cycles);
+    (void)sound_2_update(current_cycles);
 
 //    (void)print_channel_2(gb_mem);
 
