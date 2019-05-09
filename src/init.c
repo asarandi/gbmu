@@ -44,6 +44,7 @@ void    set_initial_register_values()
     gb_mem[0xFF05] = 0x00;  //   ; TIMA
     gb_mem[0xFF06] = 0x00;  //   ; TMA
     gb_mem[0xFF07] = 0x00;  //   ; TAC
+/*
     gb_mem[0xFF10] = 0x80;  //   ; NR10
     gb_mem[0xFF11] = 0xBF;  //   ; NR11
     gb_mem[0xFF12] = 0xF3;  //   ; NR12
@@ -62,6 +63,7 @@ void    set_initial_register_values()
     gb_mem[0xFF24] = 0x77;  //   ; NR50
     gb_mem[0xFF25] = 0xF3;  //   ; NR51
     gb_mem[0xFF26] = 0xF1;  //-GB, 0xF0-SGB ; NR52
+*/
     gb_mem[0xFF40] = 0x91;  //   ; LCDC
     gb_mem[0xFF42] = 0x00;  //   ; SCY
     gb_mem[0xFF43] = 0x00;  //   ; SCX
