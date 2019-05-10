@@ -28,25 +28,6 @@ void    print_channel_2(uint8_t *gb_mem)
         printf("nr21: %02x,  nr22: %02x,  nr23: %02x,  nr24: %02x\n", nr21, nr22, nr23, nr24);
 }
 
-double  get_duty_cycles(uint8_t reg)    /* nr11, nr21 */
-{
-    double cycles[] = {0.125, 0.25, 0.5, 0.75};
-    return cycles[(reg >> 6) & 3];
-}
-
-int16_t SquareWave(double time, double freq, double amp, double duty) {
-//    printf("SquareWave() %f, %f, %f, %f\n", time, freq, amp, duty);
-    int16_t result = 0;
-    double tpc = sampling_frequency / freq; // ticks per cycle
-    double cyclepart = fmod(time,tpc);
-    double halfcycle = tpc * duty;
-    int16_t amplitude = INT16_MAX * amp;
-    if (cyclepart < halfcycle) {
-        result = amplitude;
-    }
-    return result ;
-}
-
 void    apu_update(uint8_t *gb_mem, t_state *state, int current_cycles)
 {
     static uint64_t cycles;
