@@ -40,15 +40,15 @@ void    sound_3_update(int current_cycles)
     sound_3_prev_cycles = sound_3_cycles;
 }
 
-int16_t sound_3_wave(uint64_t time, double freq, double amp) {
+int16_t sound_3_wave(uint64_t time, int freq) {
     uint8_t *gb_mem = state->gameboy_memory;
-    int16_t result = 0;
-    double tpc = sampling_frequency / freq;
-    double cyclepart = fmod(time, tpc);
-    uint8_t idx = round(cyclepart) / 32;
+    int tpc = sampling_frequency / freq;
+    int cyclepart = time % tpc;
+    int idx = cyclepart >> 5;
     uint8_t nibble = gb_mem[0xff30 + (idx >> 1)];
     if (!(idx & 1))
         nibble >>= 4;
+
     nibble &= 7;
 
     int16_t amplitude = nibble * 0x888;
@@ -61,34 +61,27 @@ int16_t sound_3_wave(uint64_t time, double freq, double amp) {
         case 3: amplitude >>= 2; break;
     }
 
-    result = amplitude;
-    return result ;
+    return amplitude;
 }
 
 void    sound_3_fill_buffer()
 {
 
     uint8_t             *gb_mem = state->gameboy_memory;
-    double              vol_left, vol_right;
-    uint16_t            freq;
+    int16_t             sample;
 
     (void)memset(sound_3_buffer, 0, sizeof(sound_3_buffer));
 
     if (!is_sound_enabled)
         return ;
 
-    freq = nr3_freq;
-    vol_left = 1.0;
-    vol_right = 1.0;
-
     for (int i = 0; i < num_samples; i++)
     {
+        sample = sound_3_wave(ticks, nr3_freq);
         if (is_sound_3_left_enabled)
-            *(int16_t *)&sound_3_buffer[i * 4] = sound_3_wave(ticks, freq, vol_left);
-
+            *(int16_t *)&sound_3_buffer[i * 4] = sample;
         if (is_sound_3_right_enabled)
-            *(int16_t *)&sound_3_buffer[i * 4 + 2] = sound_3_wave(ticks, freq, vol_right);
-
+            *(int16_t *)&sound_3_buffer[i * 4 + 2] = sample;
         ticks++;
     }
 }
