@@ -18,7 +18,7 @@ void    sound_3_update(int current_cycles)
         ticks = 0;
         return ;
     }
-    gb_mem[0xff26] |= 4;
+//    gb_mem[0xff26] |= 4;
 
     sound_3_cycles += current_cycles;
 
@@ -31,7 +31,7 @@ void    sound_3_update(int current_cycles)
             gb_mem[0xff1b] = length_calc;
             if ((gb_mem[0xff1e] & 0x40) && (!length_calc))
             {
-                gb_mem[0xff1c] &= ~0x60;    //set output level to 0
+//                gb_mem[0xff1c] &= ~0x60;    //set output level to 0
                 gb_mem[0xff26] &= ~4;       //clear nr52 flag for channel 3
             }
         }

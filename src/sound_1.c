@@ -17,7 +17,7 @@ void    sound_1_update(int current_cycles)
         sound_1_prev_cycles = 0;
         return ;
     }
-    gb_mem[0xff26] |= 1;
+//    gb_mem[0xff26] |= 1;
 
     sound_1_cycles += current_cycles;
 
@@ -38,8 +38,11 @@ void    sound_1_update(int current_cycles)
             {
                 gb_mem[0xff14] = (gb_mem[0xff14] & 0xf8) | ((sweep_freq >> 8) & 7);
                 gb_mem[0xff13] = sweep_freq & 0xff;
-
-//                printf("sweep shift %s\n", (gb_mem[0xff10] & 8) ? "down" : "up");
+            }
+            else
+            {
+                gb_mem[0xff14] &= ~0x80;
+                sweep_freq = 0;
             }
         }
     }
