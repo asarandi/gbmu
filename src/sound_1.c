@@ -87,32 +87,52 @@ void    sound_1_update(int current_cycles)
     sound_1_prev_cycles = sound_1_cycles;
 }
 
+double  get_duty_cycles(uint8_t reg)    /* nr11, nr21 */
+{
+    double cycles[] = {0.125, 0.25, 0.5, 0.75};
+    return cycles[(reg >> 6) & 3];
+}
+
+int16_t SquareWave(int time, int freq, int vol, int duty)
+{
+    uint8_t patterns[4][8] = {
+        {0,0,0,0,0,0,0,1},
+        {0,0,0,0,0,0,1,1},
+        {0,0,0,0,1,1,1,1},
+        {0,0,1,1,1,1,1,1}};
+
+    if ((!freq) || (!vol))
+        return 0;
+
+    int tpc0 = sampling_frequency / freq;
+    int tpc1 = (sampling_frequency / freq) >> 3;
+    int idx;
+    if (tpc1)
+        idx = (time % tpc0) / tpc1;
+    else
+        idx = 0;
+    int16_t result = (INT16_MAX / 15) * vol * patterns[duty][idx % 8];
+    return result ;
+}
+
 void    sound_1_fill_buffer()
 {
 
     uint8_t             *gb_mem = state->gameboy_memory;
-    double              duty, freq, vol_left, vol_right;
-    static  uint64_t    ticks;
+    static  int         ticks;
+    int16_t             sample;
 
     (void)memset(sound_1_buffer, 0, sizeof(sound_1_buffer));
 
     if (!is_sound_enabled)
         return ;
 
-    duty = get_duty_cycles(gb_mem[0xff11]);
-
-    freq = nr1_freq;
-    vol_left = (1.0 / 15) * nr1_vol;
-    vol_right = (1.0 / 15) * nr1_vol;
-
     for (int i = 0; i < num_samples; i++)
     {
+        sample = SquareWave(ticks++, nr1_freq, nr1_vol, nr1_duty);
         if (is_sound_1_left_enabled)
-            *(int16_t *)&sound_1_buffer[i * 4] = SquareWave(ticks, freq, vol_left, duty);
-
+            *(int16_t *)&sound_1_buffer[i * 4] = sample;
         if (is_sound_1_right_enabled)
-            *(int16_t *)&sound_1_buffer[i * 4 + 2] = SquareWave(ticks, freq, vol_right, duty);
-
-        ticks++;
+            *(int16_t *)&sound_1_buffer[i * 4 + 2] = sample;
     }
 }
