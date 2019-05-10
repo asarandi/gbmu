@@ -98,7 +98,7 @@ void MyAudioCallback(void *userdata, Uint8 *stream, int len)
         fcalc = fcalc * ((1.0 / 7) * master_volume_right);
         right = (uint64_t)fcalc;
 
-        while (((int16_t)left > INT16_MAX) || ((int16_t)right > INT16_MAX))
+        while ((left > UINT16_MAX) || (right > UINT16_MAX))
         {
             left >>= 1;
             right >>= 1;
