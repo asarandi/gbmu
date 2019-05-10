@@ -64,8 +64,9 @@ void    apu_update(uint8_t *gb_mem, t_state *state, int current_cycles)
 
 void MyAudioCallback(void *userdata, Uint8 *stream, int len)
 {
-    uint64_t    calc_left, calc_right;
     uint8_t     *gb_mem = state->gameboy_memory;
+    double      fcalc;
+    uint64_t    left, right;
 
     (void)userdata;
     (void)memset(stream, 0, len);
@@ -81,28 +82,30 @@ void MyAudioCallback(void *userdata, Uint8 *stream, int len)
     {
         int j = i * (num_channels * sample_size);
 
-        calc_left = 0;
-        calc_left += *(int16_t *)&sound_1_buffer[j];
-        calc_left += *(int16_t *)&sound_2_buffer[j];
-        calc_left += *(int16_t *)&sound_3_buffer[j];
-        calc_left = (calc_left >> 3) * master_volume_left;
+        fcalc = 0;
+        fcalc += *(int16_t *)&sound_1_buffer[j];
+        fcalc += *(int16_t *)&sound_2_buffer[j];
+        fcalc += *(int16_t *)&sound_3_buffer[j];
+        fcalc += *(int16_t *)&sound_4_buffer[j];
+        fcalc = fcalc * ((1.0 / 7) * master_volume_left);
+        left = (uint64_t)fcalc;
 
-        calc_right = 0;
-        calc_right += *(int16_t *)&sound_1_buffer[j + sample_size];
-        calc_right += *(int16_t *)&sound_2_buffer[j + sample_size];
-        calc_right += *(int16_t *)&sound_3_buffer[j + sample_size];
-        calc_right = (calc_right >> 3) * master_volume_right;
+        fcalc = 0;
+        fcalc += *(int16_t *)&sound_1_buffer[j + sample_size];
+        fcalc += *(int16_t *)&sound_2_buffer[j + sample_size];
+        fcalc += *(int16_t *)&sound_3_buffer[j + sample_size];
+        fcalc += *(int16_t *)&sound_4_buffer[j + sample_size];
+        fcalc = fcalc * ((1.0 / 7) * master_volume_right);
+        right = (uint64_t)fcalc;
 
+        while (((int16_t)left > INT16_MAX) || ((int16_t)right > INT16_MAX))
+        {
+            left >>= 1;
+            right >>= 1;
+        }
 
-        while (calc_left > INT16_MAX) calc_left >>= 1;
-        *(int16_t *)&stream[j] = (int16_t)calc_left;
-
-        while (calc_right > INT16_MAX) calc_right >>= 1;
-        *(int16_t *)&stream[j + sample_size] = (int16_t)calc_right;
-
-
-//        *(int16_t *)&stream[j] = (int16_t)(calc_left >> 2);
-//        *(int16_t *)&stream[j + sample_size] = (int16_t)(calc_right >> 2);
+        *(int16_t *)&stream[j] = (int16_t)left;
+        *(int16_t *)&stream[j + sample_size] = (int16_t)right;
     }
 }
 
