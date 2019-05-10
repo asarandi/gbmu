@@ -49,9 +49,9 @@ int16_t sound_3_wave(uint64_t time, double freq, double amp) {
     uint8_t nibble = gb_mem[0xff30 + (idx >> 1)];
     if (!(idx & 1))
         nibble >>= 4;
-    nibble &= 15;
-    amp = (1.0 / 15) * nibble;  /* FIXME */
-    int16_t amplitude = INT16_MAX * amp;
+    nibble &= 7;
+
+    int16_t amplitude = nibble * 0x888;
 
     uint8_t volume = (gb_mem[0xff1c] >> 5) & 3;
     switch (volume)

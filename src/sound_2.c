@@ -65,28 +65,20 @@ void    sound_2_fill_buffer()
 {
 
     uint8_t             *gb_mem = state->gameboy_memory;
-    double              duty, freq, vol_left, vol_right;
-    static  uint64_t    ticks;
+    static  int         ticks;
+    int16_t             sample;
 
     (void)memset(sound_2_buffer, 0, sizeof(sound_2_buffer));
 
     if (!is_sound_enabled)
         return ;
 
-    duty = get_duty_cycles(gb_mem[0xff16]);
-
-    freq = nr2_freq;
-    vol_left = (1.0 / 15) * nr2_vol;
-    vol_right = (1.0 / 15) * nr2_vol;
-
     for (int i = 0; i < num_samples; i++)
     {
+        sample = SquareWave(ticks++, nr2_freq, nr2_vol, nr2_duty);
         if (is_sound_2_left_enabled)
-            *(int16_t *)&sound_2_buffer[i * 4] = SquareWave(ticks, freq, vol_left, duty);
-
+            *(int16_t *)&sound_2_buffer[i * 4] = sample;
         if (is_sound_2_right_enabled)
-            *(int16_t *)&sound_2_buffer[i * 4 + 2] = SquareWave(ticks, freq, vol_right, duty);
-
-        ticks++;
+            *(int16_t *)&sound_2_buffer[i * 4 + 2] = sample;
     }
 }
