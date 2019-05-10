@@ -17,7 +17,7 @@ void    sound_2_update(int current_cycles)
         sound_2_prev_cycles = 0;
         return ;
     }
-    gb_mem[0xff26] |= 2;
+//    gb_mem[0xff26] |= 2;
 
     sound_2_cycles += current_cycles;
 
