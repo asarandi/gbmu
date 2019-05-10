@@ -30,7 +30,7 @@ void    sound_2_update(int current_cycles)
             gb_mem[0xff16] = (gb_mem[0xff16] & 0xc0) | (length_calc & 0x3f);
             if ((gb_mem[0xff19] & 0x40) && (!length_calc))
             {
-                gb_mem[0xff17] &= 0x0f;     //set volume to 0
+//                gb_mem[0xff17] &= 0x0f;     //set volume to 0
                 gb_mem[0xff26] &= ~2;   //nr52
             }
         }
@@ -70,14 +70,14 @@ void    sound_2_fill_buffer()
 
     (void)memset(sound_2_buffer, 0, sizeof(sound_2_buffer));
 
-    if ((!is_sound_enabled) || (!is_sound_2_enabled))
+    if (!is_sound_enabled)
         return ;
 
     duty = get_duty_cycles(gb_mem[0xff16]);
 
     freq = nr2_freq;
-    vol_left = (((1.0 / 7) * master_volume_left) / 15) * nr2_vol;
-    vol_right = (((1.0 / 7) * master_volume_right) / 15) * nr2_vol;
+    vol_left = (1.0 / 15) * nr2_vol;
+    vol_right = (1.0 / 15) * nr2_vol;
 
     for (int i = 0; i < num_samples; i++)
     {

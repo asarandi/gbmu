@@ -43,9 +43,9 @@ void    sound_3_update(int current_cycles)
 int16_t sound_3_wave(uint64_t time, double freq, double amp) {
     uint8_t *gb_mem = state->gameboy_memory;
     int16_t result = 0;
-    uint64_t tpc = sampling_frequency / freq;
-    uint64_t cyclepart = time % tpc;
-    uint8_t idx = cyclepart / 32;
+    double tpc = sampling_frequency / freq;
+    double cyclepart = fmod(time, tpc);
+    uint8_t idx = round(cyclepart) / 32;
     uint8_t nibble = gb_mem[0xff30 + (idx >> 1)];
     if (!(idx & 1))
         nibble >>= 4;
@@ -74,12 +74,12 @@ void    sound_3_fill_buffer()
 
     (void)memset(sound_3_buffer, 0, sizeof(sound_3_buffer));
 
-    if ((!is_sound_enabled) || (!(gb_mem[0xff1a] & 0x80)))
+    if (!is_sound_enabled)
         return ;
 
     freq = nr3_freq;
-    vol_left = (1.0 / 7) * master_volume_left;
-    vol_right = (1.0 / 7) * master_volume_right;
+    vol_left = 1.0;
+    vol_right = 1.0;
 
     for (int i = 0; i < num_samples; i++)
     {
