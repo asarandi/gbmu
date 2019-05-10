@@ -83,14 +83,7 @@ void    sound_1_update(int current_cycles)
             }
         }
     }
-
     sound_1_prev_cycles = sound_1_cycles;
-}
-
-double  get_duty_cycles(uint8_t reg)    /* nr11, nr21 */
-{
-    double cycles[] = {0.125, 0.25, 0.5, 0.75};
-    return cycles[(reg >> 6) & 3];
 }
 
 int16_t SquareWave(int time, int freq, int vol, int duty)

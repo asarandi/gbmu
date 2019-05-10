@@ -46,7 +46,6 @@ void    apu_update(uint8_t *gb_mem, t_state *state, int current_cycles)
 void MyAudioCallback(void *userdata, Uint8 *stream, int len)
 {
     uint8_t     *gb_mem = state->gameboy_memory;
-    double      fcalc;
     uint64_t    left, right;
 
     (void)userdata;
@@ -63,21 +62,19 @@ void MyAudioCallback(void *userdata, Uint8 *stream, int len)
     {
         int j = i * (num_channels * sample_size);
 
-        fcalc = 0;
-        fcalc += *(int16_t *)&sound_1_buffer[j];
-        fcalc += *(int16_t *)&sound_2_buffer[j];
-        fcalc += *(int16_t *)&sound_3_buffer[j];
-        fcalc += *(int16_t *)&sound_4_buffer[j];
-        fcalc = fcalc * ((1.0 / 7) * master_volume_left);
-        left = (uint64_t)fcalc;
+        left = 0;
+        left += *(int16_t *)&sound_1_buffer[j];
+        left += *(int16_t *)&sound_2_buffer[j];
+        left += *(int16_t *)&sound_3_buffer[j];
+        left += *(int16_t *)&sound_4_buffer[j];
+        left = (left / 7) * master_volume_left;
 
-        fcalc = 0;
-        fcalc += *(int16_t *)&sound_1_buffer[j + sample_size];
-        fcalc += *(int16_t *)&sound_2_buffer[j + sample_size];
-        fcalc += *(int16_t *)&sound_3_buffer[j + sample_size];
-        fcalc += *(int16_t *)&sound_4_buffer[j + sample_size];
-        fcalc = fcalc * ((1.0 / 7) * master_volume_right);
-        right = (uint64_t)fcalc;
+        right = 0;
+        right += *(int16_t *)&sound_1_buffer[j + sample_size];
+        right += *(int16_t *)&sound_2_buffer[j + sample_size];
+        right += *(int16_t *)&sound_3_buffer[j + sample_size];
+        right += *(int16_t *)&sound_4_buffer[j + sample_size];
+        right = (right / 7) * master_volume_right;
 
         while ((left > UINT16_MAX) || (right > UINT16_MAX))
         {
