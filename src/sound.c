@@ -5,8 +5,6 @@
 /* http://gbdev.gg8.se/wiki/articles/Gameboy_sound_hardware */
 /* https://ia801906.us.archive.org/19/items/GameBoyProgManVer1.1/GameBoyProgManVer1.1.pdf */
 
-uint8_t *gb_mem;
-
 #define VOLUME_CLOCK     (4194304 /  64)
 #define SWEEP_CLOCK      (4194304 / 128)
 #define LENGTH_CLOCK     (4194304 / 256)
@@ -131,18 +129,22 @@ t_sound   s4;
 
 void    sound_nr10_update(uint8_t data)
 {
+    uint8_t     *gb_mem = state->gameboy_memory;
+
     NR10 = data;
     s1.sweep_time           = (NR10 >> 4)   & 0x07;         //set when nr10 written to
 }
 
 void    sound_nr11_update(uint8_t data)
 {
+    uint8_t     *gb_mem = state->gameboy_memory;
     NR11 = data;
-    s1.sound_length         = NR11          & 0x3f;         //set when nr11 written to
+    s1.sound_length         = 64 - (NR11          & 0x3f);         //set when nr11 written to
 }
 
 void    sound_nr12_update(uint8_t data)
 {
+    uint8_t     *gb_mem = state->gameboy_memory;
     NR12 = data;
     s1.sound_volume         = (NR12 >> 4)   & 0x0f;         //set when nr12 written to
     s1.is_volume_increase   = (NR12 >> 3)   & 0x01;         //set when nr12 written to
@@ -151,14 +153,16 @@ void    sound_nr12_update(uint8_t data)
 
 void    sound_nr13_update(uint8_t data)
 {
+    uint8_t     *gb_mem = state->gameboy_memory;
     NR13 = data;
     s1.frequency            = ((NR14 & 0x07) << 8) | NR13;  //set when nr13 or nr14 written to
 }
 
 void    sound_1_init()
-{    
+{
+    uint8_t     *gb_mem = state->gameboy_memory;
     sound_nr12_update(NR12);                                //set volume
-    sound_nr13_update(NR13);                                //set frequency    
+    sound_nr13_update(NR13);                                //set frequency
     s1.volume_counter = 0;
     s1.sweep_counter = 0;
     s1.length_counter = 0;
@@ -167,6 +171,7 @@ void    sound_1_init()
 
 void    sound_nr14_update(uint8_t data)
 {
+    uint8_t     *gb_mem = state->gameboy_memory;
     NR14 = data;
     s1.frequency            = ((NR14 & 0x07) << 8) | NR13;  //set when nr13 or nr14 written to
     s1.is_enabled           = (NR14 >> 7)   & 0x01;         //set when nr14 written to, bit 7 set
@@ -175,12 +180,14 @@ void    sound_nr14_update(uint8_t data)
 
 void    sound_nr21_update(uint8_t data)
 {
+    uint8_t     *gb_mem = state->gameboy_memory;
     NR21 = data;
-    s2.sound_length         = NR21          & 0x3f;         //set when nr21 written to
+    s2.sound_length         = 64 - (NR21          & 0x3f);         //set when nr21 written to
 }
 
 void    sound_nr22_update(uint8_t data)
 {
+    uint8_t     *gb_mem = state->gameboy_memory;
     NR22 = data;
     s2.sound_volume         = (NR22 >> 4)   & 0x0f;         //set when nr22 written to
     s2.is_volume_increase   = (NR22 >> 3)   & 0x01;         //set when nr22 written to
@@ -189,30 +196,48 @@ void    sound_nr22_update(uint8_t data)
 
 void    sound_nr23_update(uint8_t data)
 {
+    uint8_t     *gb_mem = state->gameboy_memory;
     NR23 = data;
     s2.frequency            = ((NR24 & 0x07) << 8) | NR23;  //set when nr23 or nr24 written to
 }
 
 void    sound_2_init()
-{    
-    sound_nr22_update(NR22);                                //set volume    
-    sound_nr23_update(NR23);                                //set frequency    
+{
+    uint8_t     *gb_mem = state->gameboy_memory;
+    sound_nr22_update(NR22);                                //set volume
+    sound_nr23_update(NR23);                                //set frequency
     s2.volume_counter = 0;
-    s2.length_counter = 0;    
+    s2.length_counter = 0;
     s2.sample_counter = 0;
 }
 
 void    sound_nr24_update(uint8_t data)
 {
+    uint8_t     *gb_mem = state->gameboy_memory;
     NR24 = data;
     s2.frequency            = ((NR24 & 0x07) << 8) | NR23;  //set when nr23 or nr24 written to
     s2.is_enabled           = (NR24 >> 7)   & 0x01;         //set when nr24 written to, bit 7 set
     if (s2.is_enabled)      sound_2_init();
 }
 
-void    sound_nr30_update(uint8_t data) { NR30 |= data & 0x80; if (!(NR30 & 0x80)) s3.is_enabled = false;}    //nr30 only bit 7 is writable
-void    sound_nr31_update(uint8_t data) { NR31 = data; s3.sound_length = NR31; }
-void    sound_nr32_update(uint8_t data) { NR32 = data; }
+void    sound_nr30_update(uint8_t data)
+{
+    uint8_t     *gb_mem = state->gameboy_memory;
+    NR30 |= data & 0x80; if (!(NR30 & 0x80)) s3.is_enabled = false;
+}    //nr30 only bit 7 is writable
+
+void    sound_nr31_update(uint8_t data)
+{
+    uint8_t     *gb_mem = state->gameboy_memory;
+    NR31 = data;
+    s3.sound_length = 256 - NR31;
+}
+
+void    sound_nr32_update(uint8_t data)
+{
+    uint8_t     *gb_mem = state->gameboy_memory;
+    NR32 = data;
+}
 
 void    sound_3_init()
 {
@@ -222,45 +247,72 @@ void    sound_3_init()
 
 void    sound_nr33_update(uint8_t data)
 {
+    uint8_t     *gb_mem = state->gameboy_memory;
     NR33 = data;
     s3.frequency            = ((NR34 & 0x07) << 8) | NR33;
 }
 
 void    sound_nr34_update(uint8_t data)
 {
+    uint8_t     *gb_mem = state->gameboy_memory;
     NR34 = data;
     s3.frequency            = ((NR34 & 0x07) << 8) | NR33;
     s3.is_enabled           = (NR34 >> 7)   & 0x01;
-    if (s3.is_enabled)      sound_3_init();    
+    if (s3.is_enabled)      sound_3_init();
 }
 
-void    sound_nr41_update(uint8_t data) { NR41 = data; s4.sound_length = NR41 & 0x3f; }
+void    sound_nr41_update(uint8_t data)
+{
+    uint8_t     *gb_mem = state->gameboy_memory;
+    NR41 = data;
+    s4.sound_length = 64 - (NR41 & 0x3f);
+}
+
 void    sound_nr42_update(uint8_t data)
 {
+    uint8_t     *gb_mem = state->gameboy_memory;
     NR42 = data;
     s4.sound_volume         = (NR42 >> 4)   & 0x0f;         //set when nr42 written to
     s4.is_volume_increase   = (NR42 >> 3)   & 0x01;         //set when nr42 written to
     s4.envelope_length      = NR42          & 0x07;         //set when nr42 written to
 }
 
-void    sound_nr43_update(uint8_t data) {NR43 = data;}      // FIXME lfsr
+void    sound_nr43_update(uint8_t data)
+{
+    uint8_t     *gb_mem = state->gameboy_memory;
+    NR43 = data;
+}      // FIXME lfsr
+
 void    sound_4_init()
 {
+    uint8_t     *gb_mem = state->gameboy_memory;
     s4.volume_counter = 0;
     s4.length_counter = 0;
     s4.sample_counter = 0;
 }
 void    sound_nr44_update(uint8_t data)
 {
+    uint8_t     *gb_mem = state->gameboy_memory;
     NR44 = data;
     s4.is_enabled           = (NR44 >> 7) & 0x01;
     if (s4.is_enabled)      sound_4_init();
 }
 
-void    sound_nr50_update(uint8_t data) { NR50 = data; }
-void    sound_nr51_update(uint8_t data) { NR51 = data; }
+void    sound_nr50_update(uint8_t data)
+{
+    uint8_t     *gb_mem = state->gameboy_memory;
+    NR50 = data;
+}
+
+void    sound_nr51_update(uint8_t data)
+{
+    uint8_t     *gb_mem = state->gameboy_memory;
+    NR51 = data;
+}
+
 void    sound_nr52_update(uint8_t data)
 {
+    uint8_t     *gb_mem = state->gameboy_memory;
     NR52 |= data & 0x80;
     if (NR52 & 0x80) return ;
     memset(&s1, 0, sizeof(s1));
@@ -272,6 +324,7 @@ void    sound_nr52_update(uint8_t data)
 
 void    sound_write_u8(uint16_t addr, uint8_t data)
 {
+    uint8_t     *gb_mem = state->gameboy_memory;
     if ((addr != ADDR_NR52) && (!(NR52 & 0x80)) )  return ;      //ignore all writes when sound off
 
     if (addr == ADDR_NR10) { sound_nr10_update(data); return; }
@@ -303,22 +356,27 @@ void    sound_write_u8(uint16_t addr, uint8_t data)
 
 void    channel_volume_tick(t_sound *s0)
 {
-    if (s0->is_enabled)
+    if ((s0->is_enabled) && (s0->envelope_length))
     {
         s0->volume_counter++;
         if (s0->volume_counter >= s0->envelope_length)
         {
             s0->volume_counter = 0;  //counter - envelope_length
-            if ((s0->is_volume_increase) && (s0->sound_volume < 15))
-                s0->sound_volume++;
-            if ((!s0->is_volume_increase) && (s0->sound_volume > 0))
-                s0->sound_volume--;
+            if (s0->is_volume_increase)
+            {
+                if (s0->sound_volume < 15) s0->sound_volume++;
+            }
+            else
+            {
+                if (s0->sound_volume >  0) s0->sound_volume--;
+            }
         }
     }
 }
 
 void    apu_volume_tick()
 {
+    uint8_t     *gb_mem = state->gameboy_memory;
     channel_volume_tick(&s1);
     channel_volume_tick(&s2);
     channel_volume_tick(&s4);
@@ -326,6 +384,7 @@ void    apu_volume_tick()
 
 void    apu_sweep_tick()
 {
+    uint8_t     *gb_mem = state->gameboy_memory;
     uint16_t    shadow_freq;
 
     if ((!s1.is_enabled) || (!s1.sweep_time))
@@ -349,21 +408,20 @@ void    apu_sweep_tick()
     NR14 = (NR14 & 0xf8) | (shadow_freq >> 8);
 }
 
-void    channel_length_tick(t_sound *s0, uint8_t nrx4)
+void    channel_length_tick(t_sound *s0, uint8_t reg)
 {
-    if (s0->is_enabled)
+    uint8_t     *gb_mem = state->gameboy_memory;
+    if ((s0->is_enabled) && (s0->sound_length))
     {
         s0->length_counter++;
-        if ((s0->length_counter >= s0->sound_length) && (nrx4 & 0x40))
-        {
-            s0->is_enabled = false ;
-            s0->length_counter = 0;
-        }
+        if ((s0->length_counter >= s0->sound_length) && (reg & 0x40))
+            s0->is_enabled = false;
     }
 }
 
 void    apu_length_tick()
 {
+    uint8_t     *gb_mem = state->gameboy_memory;
     channel_length_tick(&s1, NR14);
     channel_length_tick(&s2, NR24);
     channel_length_tick(&s3, NR34);
@@ -375,16 +433,16 @@ void    apu_update(uint8_t *gb_mem, t_state *state, int current_cycles)
     static uint64_t     cycles, prev_cycles;
 
     cycles += current_cycles;
-
     if ((cycles / VOLUME_CLOCK) > (prev_cycles / VOLUME_CLOCK))   apu_volume_tick();
     if ((cycles / SWEEP_CLOCK ) > (prev_cycles / SWEEP_CLOCK))    apu_sweep_tick();
     if ((cycles / LENGTH_CLOCK) > (prev_cycles / LENGTH_CLOCK))   apu_length_tick();
-
     prev_cycles = cycles;
+    NR52 = (NR52 & 0x80) | (s1.is_enabled<<0) | (s2.is_enabled<<1) | (s3.is_enabled<<2) | (s4.is_enabled<<3);
 }
 
 int16_t SquareWave(int time, int freq, int vol, int duty)
 {
+    uint8_t     *gb_mem = state->gameboy_memory;
     freq = 131072 / (2048 - freq);
 
     uint8_t patterns[4][8] = {
@@ -409,11 +467,14 @@ int16_t SquareWave(int time, int freq, int vol, int duty)
 
 void    sound_1_fill_buffer()
 {
+    uint8_t     *gb_mem = state->gameboy_memory;
     int16_t             sample;
 
     (void)memset(sound_1_buffer, 0, sizeof(sound_1_buffer));
 
     if ((!IS_SOUND_ENABLED) || (!s1.is_enabled))
+        return ;
+    if ((!s1.frequency) || (!s1.sound_length))
         return ;
 
     for (int i = 0; i < NUM_SAMPLES; i++)
@@ -428,11 +489,14 @@ void    sound_1_fill_buffer()
 
 void    sound_2_fill_buffer()
 {
+    uint8_t     *gb_mem = state->gameboy_memory;
     int16_t             sample;
 
     (void)memset(sound_2_buffer, 0, sizeof(sound_2_buffer));
 
     if ((!IS_SOUND_ENABLED) || (!s2.is_enabled))
+        return ;
+    if ((!s2.frequency) || (!s2.sound_length))
         return ;
 
     for (int i = 0; i < NUM_SAMPLES; i++)
@@ -446,6 +510,7 @@ void    sound_2_fill_buffer()
 }
 
 int16_t sound_3_wave(uint64_t time, int freq) {
+    uint8_t     *gb_mem = state->gameboy_memory;
     freq = 65536 / (2048 - freq);
     if (!freq) return 0;
     int tpc = SAMPLING_FREQUENCY / freq;
@@ -472,6 +537,7 @@ int16_t sound_3_wave(uint64_t time, int freq) {
 
 void    sound_3_fill_buffer()
 {
+    uint8_t     *gb_mem = state->gameboy_memory;
     int16_t             sample;
 
     (void)memset(sound_3_buffer, 0, sizeof(sound_3_buffer));
@@ -491,6 +557,7 @@ void    sound_3_fill_buffer()
 
 void MyAudioCallback(void *userdata, Uint8 *stream, int len)
 {
+    uint8_t     *gb_mem = state->gameboy_memory;
     uint64_t    left, right;
 
     (void)userdata;
@@ -535,7 +602,7 @@ void MyAudioCallback(void *userdata, Uint8 *stream, int len)
 /* gui_init() must be called first because it calls SDL_Init() */
 void    apu_init()
 {
-    gb_mem = state->gameboy_memory;
+    uint8_t     *gb_mem = state->gameboy_memory;
 
     SDL_memset(&sdl_wanted_spec, 0, sizeof(sdl_wanted_spec));
     sdl_wanted_spec.freq     = SAMPLING_FREQUENCY;
