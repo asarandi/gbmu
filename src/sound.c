@@ -211,27 +211,7 @@ void    sound_2_init()
     s2.sample_counter = 0;
     s2.is_enabled = true ;
 }
-/*
-void    print_channel_2()
-{
-    uint8_t     *gb_mem = state->gameboy_memory;
-    static  uint8_t nr21, nr22, nr23, nr24;
-    bool print = false;
 
-    if (gb_mem[0xff16] != nr21) print = true;
-    if (gb_mem[0xff17] != nr22) print = true;
-    if (gb_mem[0xff18] != nr23) print = true;
-    if (gb_mem[0xff19] != nr24) print = true;
-
-    nr21 = gb_mem[0xff16];
-    nr22 = gb_mem[0xff17];
-    nr23 = gb_mem[0xff18];
-    nr24 = gb_mem[0xff19];
-
-    if (print)
-        printf("nr21: %02x,  nr22: %02x,  nr23: %02x,  nr24: %02x\n", nr21, nr22, nr23, nr24);
-}
-*/
 void    sound_nr24_update(uint8_t data)
 {
     uint8_t     *gb_mem = state->gameboy_memory;
@@ -244,7 +224,8 @@ void    sound_nr24_update(uint8_t data)
 void    sound_nr30_update(uint8_t data)
 {
     uint8_t     *gb_mem = state->gameboy_memory;
-    NR30 |= data & 0x80; if (!(NR30 & 0x80)) s3.is_enabled = false;
+    NR30 = data;
+    s3.is_enabled = ((NR30) >> 7) & 1;
 }    //nr30 only bit 7 is writable
 
 void    sound_nr31_update(uint8_t data)
@@ -262,9 +243,10 @@ void    sound_nr32_update(uint8_t data)
 
 void    sound_3_init()
 {
+    uint8_t     *gb_mem = state->gameboy_memory;
     s3.length_counter = 0;
     s3.sample_counter = 0;
-    s3.is_enabled = true;
+    s3.is_enabled = ((NR30 & 0x80) >> 7) & 1;
 }
 
 void    sound_nr33_update(uint8_t data)
@@ -451,6 +433,77 @@ void    apu_length_tick()
     channel_length_tick(&s3, NR34);
     channel_length_tick(&s4, NR44);
 }
+
+/*
+void    print_channel_2()
+{
+    uint8_t     *gb_mem = state->gameboy_memory;
+    static  uint8_t nr21, nr22, nr23, nr24;
+    bool print = false;
+
+    if (gb_mem[0xff16] != nr21) print = true;
+    if (gb_mem[0xff17] != nr22) print = true;
+    if (gb_mem[0xff18] != nr23) print = true;
+    if (gb_mem[0xff19] != nr24) print = true;
+
+    nr21 = gb_mem[0xff16];
+    nr22 = gb_mem[0xff17];
+    nr23 = gb_mem[0xff18];
+    nr24 = gb_mem[0xff19];
+
+    if (print)
+        printf("nr21: %02x,  nr22: %02x,  nr23: %02x,  nr24: %02x\n", nr21, nr22, nr23, nr24);
+}
+*/
+
+/*
+void    print_controls()
+{
+    uint8_t     *gb_mem = state->gameboy_memory;
+    static  uint8_t nr50, nr51, nr52;
+    bool print = false;
+
+    if (NR50 != nr50) print = true;
+    if (NR51 != nr51) print = true;
+    if (NR52 != nr52) print = true;
+
+    nr50 = NR50;
+    nr51 = NR51;
+    nr52 = NR52;
+
+    if (print)
+        printf("nr50: %02x, nr51: %02x,  nr52: %02x\n", nr50, nr51, nr52);
+}
+*/
+
+/*
+void    print_channel_3()
+{
+    uint8_t     *gb_mem = state->gameboy_memory;
+    static  uint8_t nr30, nr31, nr32, nr33, nr34;
+    bool print = false;
+
+    if (NR30 != nr30) print = true;
+    if (NR31 != nr31) print = true;
+    if (NR32 != nr32) print = true;
+    if (NR33 != nr33) print = true;
+    if (NR34 != nr34) print = true;
+
+    nr30 = NR30;
+    nr31 = NR31;
+    nr32 = NR32;
+    nr33 = NR33;
+    nr34 = NR34;
+
+    if (print)
+    {
+        printf("nr30: %02x, nr31: %02x,  nr32: %02x,  nr33: %02x,  nr34: %02x\n", nr30, nr31, nr32, nr33, nr34);
+        for (int i = 0; i < 16; i++) printf("%02x ", gb_mem[0xff30 + i]);
+        printf("\n\n");
+    }
+}
+*/
+
 
 void    apu_update(uint8_t *gb_mem, t_state *state, int current_cycles)
 {
