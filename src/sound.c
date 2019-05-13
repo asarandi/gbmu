@@ -9,7 +9,7 @@
 #define SWEEP_CLOCK      (4194304 / 128)
 #define LENGTH_CLOCK     (4194304 / 256)
 
-#define SAMPLING_FREQUENCY          44100
+#define SAMPLING_FREQUENCY          96000
 #define NUM_SAMPLES                 32
 #define NUM_CHANNELS                2
 #define SAMPLE_SIZE                 2
@@ -524,18 +524,16 @@ int16_t SquareWave(int time, int freq, int vol, int duty)
 
     uint8_t patterns[4][8] = {
         {0,0,0,0,0,0,0,1},
-        {0,0,0,0,0,0,1,1},
-        {0,0,0,0,1,1,1,1},
-        {0,0,1,1,1,1,1,1}};
+        {1,0,0,0,0,0,0,1},
+        {1,0,0,0,0,1,1,1},
+        {0,1,1,1,1,1,1,0}};
 
-    int tpc0 = SAMPLING_FREQUENCY / freq;
-    int tpc1 = (SAMPLING_FREQUENCY / freq) >> 3;
-    int idx;
-    if (tpc1)
-        idx = (time % tpc0) / tpc1;
-    else
-        idx = 0;
-    int16_t result = 0x7ff * vol * patterns[duty][idx % 8];
+    if (freq > SAMPLING_FREQUENCY) freq = SAMPLING_FREQUENCY;
+    int tpc = SAMPLING_FREQUENCY / freq;
+    int cyclepart = time % tpc;
+    if (tpc < 8) tpc |= 8;
+    int idx = cyclepart / (tpc >> 3);
+    int16_t result = (INT16_MAX/15) * vol * patterns[duty][idx & 7];
     return result ;
 }
 
@@ -579,29 +577,24 @@ void    sound_2_fill_buffer()
     }
 }
 
-int16_t sound_3_wave(uint64_t time, int freq) {
+int16_t sound_3_wave(int time, int freq) {
     uint8_t     *gb_mem = state->gameboy_memory;
     freq = 65536 / (2048 - freq);
-    
     int tpc = SAMPLING_FREQUENCY / freq;
     int cyclepart = time % tpc;
-    int idx = cyclepart >> 5;
+    if (tpc < 32) tpc |= 32;
+    int idx = (cyclepart / (tpc >> 5)) & 31;
     uint8_t nibble = gb_mem[0xff30 + (idx >> 1)];
     if (!(idx & 1))
         nibble >>= 4;
-
-    nibble &= 7;
-
-    int16_t amplitude = nibble * 0x7ff;
-
-    uint8_t volume = (NR32 >> 5) & 3;
-    switch (volume)
+    nibble &= 15;
+    switch ((NR32 >> 5) & 3)
     {
-        case 0: amplitude = 0; break;
-        case 2: amplitude >>= 1; break;
-        case 3: amplitude >>= 2; break;
+        case 0: nibble = 0; break;
+        case 2: nibble >>= 1; break;
+        case 3: nibble >>= 2; break;
     }
-
+    int16_t amplitude = nibble * (INT16_MAX/15);
     return amplitude;
 }
 
