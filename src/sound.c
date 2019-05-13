@@ -8,6 +8,7 @@
 #define VOLUME_CLOCK     (4194304 /  64)
 #define SWEEP_CLOCK      (4194304 / 128)
 #define LENGTH_CLOCK     (4194304 / 256)
+#define FREQUENCY_CLOCK  (4194304 / 512)
 
 #define SAMPLING_FREQUENCY          96000
 #define NUM_SAMPLES                 32
@@ -110,6 +111,7 @@ typedef struct  s_sound
     int   sweep_counter;
     int   length_counter;
     int   sample_counter;
+    int   frequency_counter;
 
 }               t_sound;
 
@@ -293,6 +295,7 @@ void    sound_4_init()
     s4.volume_counter = 0;
     s4.length_counter = 0;
     s4.sample_counter = 0;
+    s4.frequency_counter = 0;
     s4.is_enabled = true;
 }
 void    sound_nr44_update(uint8_t data)
@@ -362,22 +365,16 @@ void    sound_write_u8(uint16_t addr, uint8_t data)
 
 void    channel_volume_tick(t_sound *s0)
 {
-    if ((s0->is_enabled) && (s0->envelope_length))
-    {
-        s0->volume_counter++;
-        if (s0->volume_counter >= s0->envelope_length)
-        {
-            s0->volume_counter = 0;  //counter - envelope_length
-            if (s0->is_volume_increase)
-            {
-                if (s0->sound_volume < 15) s0->sound_volume++;
-            }
-            else
-            {
-                if (s0->sound_volume >  0) s0->sound_volume--;
-            }
-        }
-    }
+    if ((!(s0->is_enabled)) || (!(s0->envelope_length)))
+        return ;
+    s0->volume_counter++;
+    if (s0->volume_counter < s0->envelope_length)
+        return ;
+    s0->volume_counter = 0; //counter - envelope_length;
+    if ((s0->is_volume_increase) && (s0->sound_volume < 15))
+        s0->sound_volume++;
+    if ((!(s0->is_volume_increase)) && (s0->sound_volume > 0))
+        s0->sound_volume--;
 }
 
 void    apu_volume_tick()
@@ -401,9 +398,9 @@ void    apu_sweep_tick()
     s1.sweep_counter = 0;       //counter - sweep_time
     shadow_freq = s1.frequency;
     if (S1_IS_SWEEP_DECREASE)
-        shadow_freq -= shadow_freq >> S1_SWEEP_SHIFT_NUMBER;
+        shadow_freq -= (shadow_freq >> S1_SWEEP_SHIFT_NUMBER);
     else
-        shadow_freq += shadow_freq >> S1_SWEEP_SHIFT_NUMBER;
+        shadow_freq += (shadow_freq >> S1_SWEEP_SHIFT_NUMBER);
     if (shadow_freq > 2047)
     {
         s1.is_enabled = false;
@@ -504,15 +501,39 @@ void    print_channel_3()
 }
 */
 
+void    apu_frequency_tick()
+{
+    uint8_t *gb_mem = state->gameboy_memory;
+
+    if (!(s4.is_enabled))
+        return ;
+    s4.frequency_counter++;
+    int divisor = (NR43 & 7) << 4;
+    if (!divisor) divisor = 8;
+    if (s4.frequency_counter < divisor)
+        return ;
+    s4.frequency_counter = 0;
+    int new_data = (((NR43 >> 4) & 1) ^ ((NR43 >> 5) & 1)) << 7;
+    new_data |= ((NR43 & 0xe0) >> 1);
+    new_data |= (NR43 & 0x0f);
+    if (NR43 & 8)
+    {
+        new_data &= 0xbf;
+        new_data |= (((NR43 >> 4) & 1) ^ ((NR43 >> 5) & 1)) << 6;
+    }
+//    printf("NR43 %02x, %02x\n", gb_mem[0xff22], new_data);
+    NR43 = new_data;
+}
 
 void    apu_update(uint8_t *gb_mem, t_state *state, int current_cycles)
 {
     static uint64_t     cycles, prev_cycles;
 
     cycles += current_cycles;
-    if ((cycles / VOLUME_CLOCK) > (prev_cycles / VOLUME_CLOCK))   apu_volume_tick();
-    if ((cycles / SWEEP_CLOCK ) > (prev_cycles / SWEEP_CLOCK))    apu_sweep_tick();
-    if ((cycles / LENGTH_CLOCK) > (prev_cycles / LENGTH_CLOCK))   apu_length_tick();
+    if ((cycles / VOLUME_CLOCK)    > (prev_cycles / VOLUME_CLOCK))      apu_volume_tick();
+    if ((cycles / SWEEP_CLOCK)     > (prev_cycles / SWEEP_CLOCK))       apu_sweep_tick();
+    if ((cycles / LENGTH_CLOCK)    > (prev_cycles / LENGTH_CLOCK))      apu_length_tick();
+//    if ((cycles / FREQUENCY_CLOCK) > (prev_cycles / FREQUENCY_CLOCK))   apu_frequency_tick();
     prev_cycles = cycles;
     NR52 = (NR52 & 0x80) | (s1.is_enabled<<0) | (s2.is_enabled<<1) | (s3.is_enabled<<2) | (s4.is_enabled<<3);
 }
@@ -618,6 +639,29 @@ void    sound_3_fill_buffer()
     }
 }
 
+void    sound_4_fill_buffer()
+{
+    uint8_t     *gb_mem = state->gameboy_memory;
+    int16_t     sample;
+
+
+    (void)memset(sound_4_buffer, 0, sizeof(sound_4_buffer));
+
+    if ((!s4.is_enabled) || (!s4.sound_volume) || (!s4.sound_length))
+        return ;
+
+    sample = rand() & 1; //~((NR43 >> 4) & 1);
+    sample *= ((INT16_MAX/15) * s4.sound_volume);
+
+    for (int i = 0; i < NUM_SAMPLES; i++)
+    {
+        if (IS_SOUND_4_LEFT_ENABLED)
+            *(int16_t *)&sound_4_buffer[i * 4] = sample;
+        if (IS_SOUND_4_RIGHT_ENABLED)
+            *(int16_t *)&sound_4_buffer[i * 4 + 2] = sample;
+    }
+}
+
 void MyAudioCallback(void *userdata, Uint8 *stream, int len)
 {
     uint8_t     *gb_mem = state->gameboy_memory;
@@ -632,6 +676,7 @@ void MyAudioCallback(void *userdata, Uint8 *stream, int len)
     sound_1_fill_buffer();
     sound_2_fill_buffer();
     sound_3_fill_buffer();
+    sound_4_fill_buffer();
 
     for (int i = 0; i < NUM_SAMPLES; i++)
     {
