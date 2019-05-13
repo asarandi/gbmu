@@ -8,8 +8,9 @@
 #define VOLUME_CLOCK     (4194304 /  64)
 #define SWEEP_CLOCK      (4194304 / 128)
 #define LENGTH_CLOCK     (4194304 / 256)
+#define FREQUENCY_CLOCK  (4194304 / 512)
 
-#define SAMPLING_FREQUENCY          44100
+#define SAMPLING_FREQUENCY          96000
 #define NUM_SAMPLES                 32
 #define NUM_CHANNELS                2
 #define SAMPLE_SIZE                 2
@@ -110,6 +111,7 @@ typedef struct  s_sound
     int   sweep_counter;
     int   length_counter;
     int   sample_counter;
+    int   frequency_counter;
 
 }               t_sound;
 
@@ -211,27 +213,7 @@ void    sound_2_init()
     s2.sample_counter = 0;
     s2.is_enabled = true ;
 }
-/*
-void    print_channel_2()
-{
-    uint8_t     *gb_mem = state->gameboy_memory;
-    static  uint8_t nr21, nr22, nr23, nr24;
-    bool print = false;
 
-    if (gb_mem[0xff16] != nr21) print = true;
-    if (gb_mem[0xff17] != nr22) print = true;
-    if (gb_mem[0xff18] != nr23) print = true;
-    if (gb_mem[0xff19] != nr24) print = true;
-
-    nr21 = gb_mem[0xff16];
-    nr22 = gb_mem[0xff17];
-    nr23 = gb_mem[0xff18];
-    nr24 = gb_mem[0xff19];
-
-    if (print)
-        printf("nr21: %02x,  nr22: %02x,  nr23: %02x,  nr24: %02x\n", nr21, nr22, nr23, nr24);
-}
-*/
 void    sound_nr24_update(uint8_t data)
 {
     uint8_t     *gb_mem = state->gameboy_memory;
@@ -244,7 +226,8 @@ void    sound_nr24_update(uint8_t data)
 void    sound_nr30_update(uint8_t data)
 {
     uint8_t     *gb_mem = state->gameboy_memory;
-    NR30 |= data & 0x80; if (!(NR30 & 0x80)) s3.is_enabled = false;
+    NR30 = data;
+    s3.is_enabled = ((NR30) >> 7) & 1;
 }    //nr30 only bit 7 is writable
 
 void    sound_nr31_update(uint8_t data)
@@ -262,9 +245,10 @@ void    sound_nr32_update(uint8_t data)
 
 void    sound_3_init()
 {
+    uint8_t     *gb_mem = state->gameboy_memory;
     s3.length_counter = 0;
     s3.sample_counter = 0;
-    s3.is_enabled = true;
+    s3.is_enabled = ((NR30 & 0x80) >> 7) & 1;
 }
 
 void    sound_nr33_update(uint8_t data)
@@ -311,6 +295,7 @@ void    sound_4_init()
     s4.volume_counter = 0;
     s4.length_counter = 0;
     s4.sample_counter = 0;
+    s4.frequency_counter = 0;
     s4.is_enabled = true;
 }
 void    sound_nr44_update(uint8_t data)
@@ -380,22 +365,16 @@ void    sound_write_u8(uint16_t addr, uint8_t data)
 
 void    channel_volume_tick(t_sound *s0)
 {
-    if ((s0->is_enabled) && (s0->envelope_length))
-    {
-        s0->volume_counter++;
-        if (s0->volume_counter >= s0->envelope_length)
-        {
-            s0->volume_counter = 0;  //counter - envelope_length
-            if (s0->is_volume_increase)
-            {
-                if (s0->sound_volume < 15) s0->sound_volume++;
-            }
-            else
-            {
-                if (s0->sound_volume >  0) s0->sound_volume--;
-            }
-        }
-    }
+    if ((!(s0->is_enabled)) || (!(s0->envelope_length)))
+        return ;
+    s0->volume_counter++;
+    if (s0->volume_counter < s0->envelope_length)
+        return ;
+    s0->volume_counter = 0; //counter - envelope_length;
+    if ((s0->is_volume_increase) && (s0->sound_volume < 15))
+        s0->sound_volume++;
+    if ((!(s0->is_volume_increase)) && (s0->sound_volume > 0))
+        s0->sound_volume--;
 }
 
 void    apu_volume_tick()
@@ -419,9 +398,9 @@ void    apu_sweep_tick()
     s1.sweep_counter = 0;       //counter - sweep_time
     shadow_freq = s1.frequency;
     if (S1_IS_SWEEP_DECREASE)
-        shadow_freq -= shadow_freq >> S1_SWEEP_SHIFT_NUMBER;
+        shadow_freq -= (shadow_freq >> S1_SWEEP_SHIFT_NUMBER);
     else
-        shadow_freq += shadow_freq >> S1_SWEEP_SHIFT_NUMBER;
+        shadow_freq += (shadow_freq >> S1_SWEEP_SHIFT_NUMBER);
     if (shadow_freq > 2047)
     {
         s1.is_enabled = false;
@@ -452,14 +431,109 @@ void    apu_length_tick()
     channel_length_tick(&s4, NR44);
 }
 
+/*
+void    print_channel_2()
+{
+    uint8_t     *gb_mem = state->gameboy_memory;
+    static  uint8_t nr21, nr22, nr23, nr24;
+    bool print = false;
+
+    if (gb_mem[0xff16] != nr21) print = true;
+    if (gb_mem[0xff17] != nr22) print = true;
+    if (gb_mem[0xff18] != nr23) print = true;
+    if (gb_mem[0xff19] != nr24) print = true;
+
+    nr21 = gb_mem[0xff16];
+    nr22 = gb_mem[0xff17];
+    nr23 = gb_mem[0xff18];
+    nr24 = gb_mem[0xff19];
+
+    if (print)
+        printf("nr21: %02x,  nr22: %02x,  nr23: %02x,  nr24: %02x\n", nr21, nr22, nr23, nr24);
+}
+*/
+
+/*
+void    print_controls()
+{
+    uint8_t     *gb_mem = state->gameboy_memory;
+    static  uint8_t nr50, nr51, nr52;
+    bool print = false;
+
+    if (NR50 != nr50) print = true;
+    if (NR51 != nr51) print = true;
+    if (NR52 != nr52) print = true;
+
+    nr50 = NR50;
+    nr51 = NR51;
+    nr52 = NR52;
+
+    if (print)
+        printf("nr50: %02x, nr51: %02x,  nr52: %02x\n", nr50, nr51, nr52);
+}
+*/
+
+/*
+void    print_channel_3()
+{
+    uint8_t     *gb_mem = state->gameboy_memory;
+    static  uint8_t nr30, nr31, nr32, nr33, nr34;
+    bool print = false;
+
+    if (NR30 != nr30) print = true;
+    if (NR31 != nr31) print = true;
+    if (NR32 != nr32) print = true;
+    if (NR33 != nr33) print = true;
+    if (NR34 != nr34) print = true;
+
+    nr30 = NR30;
+    nr31 = NR31;
+    nr32 = NR32;
+    nr33 = NR33;
+    nr34 = NR34;
+
+    if (print)
+    {
+        printf("nr30: %02x, nr31: %02x,  nr32: %02x,  nr33: %02x,  nr34: %02x\n", nr30, nr31, nr32, nr33, nr34);
+        for (int i = 0; i < 16; i++) printf("%02x ", gb_mem[0xff30 + i]);
+        printf("\n\n");
+    }
+}
+*/
+
+void    apu_frequency_tick()
+{
+    uint8_t *gb_mem = state->gameboy_memory;
+
+    if (!(s4.is_enabled))
+        return ;
+    s4.frequency_counter++;
+    int divisor = (NR43 & 7) << 4;
+    if (!divisor) divisor = 8;
+    if (s4.frequency_counter < divisor)
+        return ;
+    s4.frequency_counter = 0;
+    int new_data = (((NR43 >> 4) & 1) ^ ((NR43 >> 5) & 1)) << 7;
+    new_data |= ((NR43 & 0xe0) >> 1);
+    new_data |= (NR43 & 0x0f);
+    if (NR43 & 8)
+    {
+        new_data &= 0xbf;
+        new_data |= (((NR43 >> 4) & 1) ^ ((NR43 >> 5) & 1)) << 6;
+    }
+//    printf("NR43 %02x, %02x\n", gb_mem[0xff22], new_data);
+    NR43 = new_data;
+}
+
 void    apu_update(uint8_t *gb_mem, t_state *state, int current_cycles)
 {
     static uint64_t     cycles, prev_cycles;
 
     cycles += current_cycles;
-    if ((cycles / VOLUME_CLOCK) > (prev_cycles / VOLUME_CLOCK))   apu_volume_tick();
-    if ((cycles / SWEEP_CLOCK ) > (prev_cycles / SWEEP_CLOCK))    apu_sweep_tick();
-    if ((cycles / LENGTH_CLOCK) > (prev_cycles / LENGTH_CLOCK))   apu_length_tick();
+    if ((cycles / VOLUME_CLOCK)    > (prev_cycles / VOLUME_CLOCK))      apu_volume_tick();
+    if ((cycles / SWEEP_CLOCK)     > (prev_cycles / SWEEP_CLOCK))       apu_sweep_tick();
+    if ((cycles / LENGTH_CLOCK)    > (prev_cycles / LENGTH_CLOCK))      apu_length_tick();
+//    if ((cycles / FREQUENCY_CLOCK) > (prev_cycles / FREQUENCY_CLOCK))   apu_frequency_tick();
     prev_cycles = cycles;
     NR52 = (NR52 & 0x80) | (s1.is_enabled<<0) | (s2.is_enabled<<1) | (s3.is_enabled<<2) | (s4.is_enabled<<3);
 }
@@ -471,18 +545,16 @@ int16_t SquareWave(int time, int freq, int vol, int duty)
 
     uint8_t patterns[4][8] = {
         {0,0,0,0,0,0,0,1},
-        {0,0,0,0,0,0,1,1},
-        {0,0,0,0,1,1,1,1},
-        {0,0,1,1,1,1,1,1}};
+        {1,0,0,0,0,0,0,1},
+        {1,0,0,0,0,1,1,1},
+        {0,1,1,1,1,1,1,0}};
 
-    int tpc0 = SAMPLING_FREQUENCY / freq;
-    int tpc1 = (SAMPLING_FREQUENCY / freq) >> 3;
-    int idx;
-    if (tpc1)
-        idx = (time % tpc0) / tpc1;
-    else
-        idx = 0;
-    int16_t result = 0x7ff * vol * patterns[duty][idx % 8];
+    if (freq > SAMPLING_FREQUENCY) freq = SAMPLING_FREQUENCY;
+    int tpc = SAMPLING_FREQUENCY / freq;
+    int cyclepart = time % tpc;
+    if (tpc < 8) tpc |= 8;
+    int idx = cyclepart / (tpc >> 3);
+    int16_t result = (INT16_MAX/15) * vol * patterns[duty][idx & 7];
     return result ;
 }
 
@@ -526,29 +598,24 @@ void    sound_2_fill_buffer()
     }
 }
 
-int16_t sound_3_wave(uint64_t time, int freq) {
+int16_t sound_3_wave(int time, int freq) {
     uint8_t     *gb_mem = state->gameboy_memory;
     freq = 65536 / (2048 - freq);
-    
     int tpc = SAMPLING_FREQUENCY / freq;
     int cyclepart = time % tpc;
-    int idx = cyclepart >> 5;
+    if (tpc < 32) tpc |= 32;
+    int idx = (cyclepart / (tpc >> 5)) & 31;
     uint8_t nibble = gb_mem[0xff30 + (idx >> 1)];
     if (!(idx & 1))
         nibble >>= 4;
-
-    nibble &= 7;
-
-    int16_t amplitude = nibble * 0x7ff;
-
-    uint8_t volume = (NR32 >> 5) & 3;
-    switch (volume)
+    nibble &= 15;
+    switch ((NR32 >> 5) & 3)
     {
-        case 0: amplitude = 0; break;
-        case 2: amplitude >>= 1; break;
-        case 3: amplitude >>= 2; break;
+        case 0: nibble = 0; break;
+        case 2: nibble >>= 1; break;
+        case 3: nibble >>= 2; break;
     }
-
+    int16_t amplitude = nibble * (INT16_MAX/15);
     return amplitude;
 }
 
@@ -572,6 +639,29 @@ void    sound_3_fill_buffer()
     }
 }
 
+void    sound_4_fill_buffer()
+{
+    uint8_t     *gb_mem = state->gameboy_memory;
+    int16_t     sample;
+
+
+    (void)memset(sound_4_buffer, 0, sizeof(sound_4_buffer));
+
+    if ((!s4.is_enabled) || (!s4.sound_volume) || (!s4.sound_length))
+        return ;
+
+    sample = rand() & 1; //~((NR43 >> 4) & 1);
+    sample *= ((INT16_MAX/15) * s4.sound_volume);
+
+    for (int i = 0; i < NUM_SAMPLES; i++)
+    {
+        if (IS_SOUND_4_LEFT_ENABLED)
+            *(int16_t *)&sound_4_buffer[i * 4] = sample;
+        if (IS_SOUND_4_RIGHT_ENABLED)
+            *(int16_t *)&sound_4_buffer[i * 4 + 2] = sample;
+    }
+}
+
 void MyAudioCallback(void *userdata, Uint8 *stream, int len)
 {
     uint8_t     *gb_mem = state->gameboy_memory;
@@ -586,6 +676,7 @@ void MyAudioCallback(void *userdata, Uint8 *stream, int len)
     sound_1_fill_buffer();
     sound_2_fill_buffer();
     sound_3_fill_buffer();
+    sound_4_fill_buffer();
 
     for (int i = 0; i < NUM_SAMPLES; i++)
     {
