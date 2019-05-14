@@ -647,7 +647,7 @@ void    sound_4_fill_buffer()
 
     (void)memset(sound_4_buffer, 0, sizeof(sound_4_buffer));
 
-    if ((!s4.is_enabled) || (!s4.sound_volume) || (!s4.sound_length))
+    if (!s4.is_enabled)
         return ;
 
     sample = rand() & 1; //~((NR43 >> 4) & 1);
