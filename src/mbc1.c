@@ -60,11 +60,6 @@ void    ramfile_save()
         printf("%s: open() failed\n", __func__);
         return ;
     }
-    if (lseek(fd, ram_bank_number * RAM_SIZE, SEEK_SET) == -1) {
-        printf("%s: lseek() failed\n", __func__);
-        close(fd);
-        return ;
-    }
     if (write(fd, ram_banks, RAM_SIZE * 4) == -1) {
         printf("%s: write() failed\n", __func__);
     }
