@@ -52,21 +52,24 @@ void    savefile_read(char *rom_file)
     (void)memcpy(&gb_mem[RAM_ADDRESS], ram_banks, RAM_SIZE);
     printf("ramfile loaded\n");
 }
-
 void    savefile_write()
 {
-    int fd;    
+    int fd, size;
     uint8_t *gb_mem = state->gameboy_memory;
 
     if (!is_savefile_enabled())
         return ;
-
     (void)memcpy(&ram_banks[ram_bank_number], &gb_mem[RAM_ADDRESS], RAM_SIZE);
+    size = (RAM_SIZE*4)-1;
+    while ((size >= 0) && (!ram_banks[0][size]))
+        size--;
+    size++;
+    if (!size) return ; //game did not use ram?
     if ((fd = open(ramfile_name, O_CREAT | O_WRONLY, 0644)) == -1) {
         printf("%s: open() failed\n", __func__);
         return ;
     }
-    if (write(fd, ram_banks, RAM_SIZE * 4) == -1) {
+    if (write(fd, ram_banks, size) == -1) {
         printf("%s: write() failed\n", __func__);
     }
     close(fd);
