@@ -24,8 +24,8 @@
 #define     IS_MBC5_RUMBLE_RAM_BATTERY               (gb_mem[0x0147] == 0x1E ? 1:0)
 #define     IS_MBC6                                  (gb_mem[0x0147] == 0x20 ? 1:0)
 #define     IS_MBC7_SENSOR_RUMBLE_RAM_BATTERY        (gb_mem[0x0147] == 0x22 ? 1:0)
-#define     IS_POCKET CAMERA                         (gb_mem[0x0147] == 0xFC ? 1:0)
-#define     IS_BANDAI TAMA5                          (gb_mem[0x0147] == 0xFD ? 1:0)
+#define     IS_POCKET_CAMERA                         (gb_mem[0x0147] == 0xFC ? 1:0)
+#define     IS_BANDAI_TAMA5                          (gb_mem[0x0147] == 0xFD ? 1:0)
 #define     IS_HuC3                                  (gb_mem[0x0147] == 0xFE ? 1:0)
 #define     IS_HuC1_RAM_BATTERY                      (gb_mem[0x0147] == 0xFF ? 1:0)
 
@@ -65,6 +65,23 @@ t_cartridge cartridge_types[] = {
     {0xFF, "HuC1+RAM+BATTERY"}
 };
 
+bool    is_savefile_enabled()
+{
+    uint8_t *gb_mem = state->gameboy_memory;
+
+    if (IS_MBC1_RAM_BATTERY)                return true;
+    if (IS_MBC2_BATTERY)                    return true;
+    if (IS_ROM_RAM_BATTERY)                 return true;
+    if (IS_MMM01_RAM_BATTERY)               return true;
+    if (IS_MBC3_TIMER_BATTERY)              return true;
+    if (IS_MBC3_TIMER_RAM_BATTERY)          return true;
+    if (IS_MBC3_RAM_BATTERY)                return true;
+    if (IS_MBC5_RAM_BATTERY)                return true;
+    if (IS_MBC5_RUMBLE_RAM_BATTERY)         return true;
+    if (IS_MBC7_SENSOR_RUMBLE_RAM_BATTERY)  return true;
+    if (IS_HuC1_RAM_BATTERY)                return true;
+    return false;
+}
 
 void    mbc(uint16_t addr, uint8_t data)
 {

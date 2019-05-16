@@ -19,10 +19,13 @@ uint8_t mbc1_ram_read_u8(uint16_t addr)
         return 0xff;
 }
 
-void    ramfile_load(char *rom_file)
+void    savefile_read(char *rom_file)
 {
     int len, offset, fd;
     uint8_t *gb_mem = state->gameboy_memory;
+
+    if (!is_savefile_enabled())
+        return ;
 
     len = strlen(rom_file);
     ramfile_name = malloc(len + 5);
@@ -50,10 +53,13 @@ void    ramfile_load(char *rom_file)
     printf("ramfile loaded\n");
 }
 
-void    ramfile_save()
+void    savefile_write()
 {
     int fd;    
     uint8_t *gb_mem = state->gameboy_memory;
+
+    if (!is_savefile_enabled())
+        return ;
 
     (void)memcpy(&ram_banks[ram_bank_number], &gb_mem[RAM_ADDRESS], RAM_SIZE);
     if ((fd = open(ramfile_name, O_CREAT | O_WRONLY, 0644)) == -1) {

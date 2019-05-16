@@ -72,7 +72,7 @@ int main(int ac, char **av)
     int         pc_idx = 0;
     bool        show_pc_history = false;
 
-    (void)ramfile_load(av[1]);
+    savefile_read(av[1]);
 
     while (!state->done)
     {
@@ -121,7 +121,7 @@ int main(int ac, char **av)
         for (int i=0; i<pc_idx; i++) { printf("PC %02d: %04x\n", i, pc_history[i]); };
     }
 
-    ramfile_save();
+    savefile_write();
     apu_cleanup();
     gui_cleanup();
     free(gb_mem);
