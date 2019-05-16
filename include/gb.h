@@ -110,8 +110,9 @@ void        mbc(uint16_t addr, uint8_t data);
 void        mbc1_handler(uint16_t addr, uint8_t data);
 void        mbc2_handler(uint16_t addr, uint8_t data);
 
-void        ramfile_load(char *rom_file);
-void        ramfile_save();
+bool        is_savefile_enabled();
+void        savefile_read(char *rom_file);
+void        savefile_write();
 
 extern      void (*ops0[])(void *, t_state *, uint8_t *);
 extern      void (*ops1[])(void *, t_state *, uint8_t *);
