@@ -25,56 +25,32 @@ void gb_throttle()
     SDL_Delay(1);
 }
 
-
 void    timers_update(uint8_t *gb_mem, t_state *state, int current_cycles)
 {
-    static  uint16_t    div;
-    static  uint64_t    cycles;
-    static  uint64_t    freq = 1024;
+    static  uint64_t    div_cycles;
+    static  uint64_t    tac_cycles;
+    static  uint64_t    f;
+    uint8_t shifts[] = {10, 4, 6, 8};
+
 
     (void)state;
 
-    div = (gb_mem[0xff04] << 8) | gb_mem[0xff03];
-    div += current_cycles;
-    gb_mem[0xff04] = div >> 8;
-    gb_mem[0xff03] = div & 0xff;
+    if (state->cycles >> 8 != div_cycles)
+    {
+        div_cycles = state->cycles >> 8;
+        gb_mem[0xff04]++;
+    }
 
-    if ((gb_mem[0xff07] & 0x04) == 0) { //timer disabled
-        cycles = 0;
+    if (!(gb_mem[0xff07] & 4))
         return ;
-    }
-
-    switch (gb_mem[0xff07] & 0x03) {
-        case 0: {
-            if (freq != 1024) cycles = 0;
-            freq = 1024;
-            break ;
-        }
-        case 1: {
-            if (freq != 16) cycles = 0;
-            freq = 16;
-            break ;
-        }
-        case 2: {
-            if (freq != 64) cycles = 0;
-            freq = 64;
-            break ;
-        }
-        case 3: {
-            if (freq != 256) cycles = 0;
-            freq = 256;
-            break ;
-        }
-    }
-
-    cycles += current_cycles;
-    if (cycles > freq) {
-        cycles %= freq;
-        gb_mem[0xff05]++;
-        
-        if (gb_mem[0xff05] == 0) {
-            gb_mem[0xff05] = gb_mem[0xff06];
-            gb_mem[0xff0f] |= 4; 
-        }
-    }
+    if (f != (gb_mem[0xff07] & 3))
+        f = gb_mem[0xff07] & 3;
+    if (state->cycles >> shifts[f] == tac_cycles)
+        return ;
+    tac_cycles = state->cycles >> shifts[f];
+    gb_mem[0xff05]++;
+    if (gb_mem[0xff05])
+        return ;
+    gb_mem[0xff05] = gb_mem[0xff06];
+    gb_mem[0xff0f] |= 4;
 }
