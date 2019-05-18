@@ -108,7 +108,7 @@ int main(int ac, char **av)
 
         
         static int instr_cycles;
-        if (state->halt == false) {
+        if ((!state->halt) && (!state->interrupt_cycles)) {
             if (!instr_cycles)
                 instr_cycles = get_num_cycles(registers, gb_mem);
             if (instr_cycles)
