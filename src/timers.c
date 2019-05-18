@@ -42,16 +42,16 @@ void    timers_update(uint8_t *gb_mem, t_state *state, int current_cycles)
 
     if (overflow) {
         counter++;
-        if ((tima != gb_mem[0xff05]) && (counter < 2))
+        if ((tima != gb_mem[0xff05]) && (counter==1))
             overflow = false ;
     }
 
     if (overflow) {
         gb_mem[0xff05] = gb_mem[0xff06];
-        if (counter >= 2) {
-            overflow = false;
+        if (counter==1)
             gb_mem[0xff0f] |= 4;
-        }
+        if (counter>1)
+            overflow = false;
     }
 
     if (!current && prev) {
