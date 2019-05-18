@@ -13,10 +13,9 @@
 #include <time.h>
 
 #define BOOTROM_ENABLED     false
-#define GUI_SCALE_FACTOR    3
-#define GUI_DELAY_DURATION	10
-//#define GUI_RENDER_COLORS   0x00ffffff, 0x00aaaaaa, 0x00555555, 0x00000000
-#define GUI_RENDER_COLORS   0x00ebdd77, 0x00a1bc00, 0x000d8833, 0x00004333, 0x00ff0000
+#define GUI_SCALE_FACTOR    2
+#define GUI_RENDER_COLORS   0x00ffffff, 0x00aaaaaa, 0x00555555, 0x00000000
+//#define GUI_RENDER_COLORS   0x00ebdd77, 0x00a1bc00, 0x000d8833, 0x00004333, 0x00ff0000
 
 typedef struct  s_r16 {
     uint16_t    AF; 
@@ -52,6 +51,7 @@ typedef struct  s_state {
     bool        debug;
     bool        done;
     bool        dma_update;
+    uint64_t    div_cycles;
     uint64_t    cycles;
     uint8_t     screen_buf[144*160];
     uint8_t     *file_contents;    

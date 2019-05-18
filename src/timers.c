@@ -27,30 +27,40 @@ void gb_throttle()
 
 void    timers_update(uint8_t *gb_mem, t_state *state, int current_cycles)
 {
-    static  uint64_t    div_cycles;
-    static  uint64_t    tac_cycles;
+    static  uint8_t    tima, counter;
     static  uint64_t    f;
-    uint8_t shifts[] = {10, 4, 6, 8};
+    static bool current, prev, overflow;
+    uint8_t shifts[] = {9, 3, 5, 7};
 
+    state->div_cycles += current_cycles;
+    state->div_cycles &= 0xffff;
+    gb_mem[0xff04] = state->div_cycles >> 8;
 
-    (void)state;
+    f = gb_mem[0xff07] & 3;
+    current = (state->div_cycles >> shifts[f]) & 1;
+    current &= (gb_mem[0xff07] >> 2) & 1;
 
-    if (state->cycles >> 8 != div_cycles)
-    {
-        div_cycles = state->cycles >> 8;
-        gb_mem[0xff04]++;
+    if (overflow) {
+        counter++;
+        if ((tima != gb_mem[0xff05]) && (counter < 2))
+            overflow = false ;
     }
 
-    if (!(gb_mem[0xff07] & 4))
-        return ;
-    if (f != (gb_mem[0xff07] & 3))
-        f = gb_mem[0xff07] & 3;
-    if (state->cycles >> shifts[f] == tac_cycles)
-        return ;
-    tac_cycles = state->cycles >> shifts[f];
-    gb_mem[0xff05]++;
-    if (gb_mem[0xff05])
-        return ;
-    gb_mem[0xff05] = gb_mem[0xff06];
-    gb_mem[0xff0f] |= 4;
+    if (overflow) {
+        gb_mem[0xff05] = gb_mem[0xff06];
+        if (counter >= 2) {
+            overflow = false;
+            gb_mem[0xff0f] |= 4;
+        }
+    }
+
+    if (!current && prev) {
+        gb_mem[0xff05]++;
+        if (!gb_mem[0xff05]) {
+            overflow = true;
+            counter = 0;
+        }
+    }
+    prev = current;
+    tima = gb_mem[0xff05];
 }
