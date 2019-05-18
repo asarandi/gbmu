@@ -51,6 +51,7 @@ typedef struct  s_state {
     bool        debug;
     bool        done;
     bool        dma_update;
+    uint64_t    interrupt_cycles;
     uint64_t    div_cycles;
     uint64_t    cycles;
     uint8_t     screen_buf[144*160];

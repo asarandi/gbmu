@@ -23,16 +23,19 @@ void    service_interrupt(uint8_t *gb_mem, t_state *state, void *registers,
 
     r16->PC = interrupt_address;
 
-    state->cycles += 20;
-
     state->interrupts_enabled = false;
     gb_mem[0xff0f] &= (~clear_bit);
 
+    state->interrupt_cycles = 20;
 //    printf("interrupt %04x\n", r16->PC);
 }
 
 void    interrupts_update(uint8_t *gb_mem, t_state *state, void *registers)
 {
+    if (state->interrupt_cycles) {
+        state->interrupt_cycles -= 4;
+        return ;
+    }
     if (gb_mem[0xffff] & gb_mem[0xff0f] & 0x1f) {
         state->halt = false;
 //        if (state->halt)
