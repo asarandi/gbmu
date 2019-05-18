@@ -79,7 +79,9 @@ void    write_u8(uint16_t addr, uint8_t data) {
 
     if (addr >= 0xfea0 && addr < 0xff00) return ;
     if (addr == 0xff46) { state->dma_update = true; }
-    if (addr == 0xff04) { data = 0; }   /*reset DIV if written to*/
+    if (addr == 0xff04) { state->div_cycles = 0; data = 0; }    /*reset DIV if written to*/
+    if (addr == 0xff07) { data = 0xf8 | (data & 7); }           /* TAC bottom 3 bits only */
+
 
     if ((addr >= 0xff10) && (addr <= 0xff26))
         return sound_write_u8(addr, data);

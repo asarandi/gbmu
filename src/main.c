@@ -107,11 +107,17 @@ int main(int ac, char **av)
         pc_idx %= 100;
 
         
-        op_cycles = 4;
+        static int instr_cycles;
         if (state->halt == false) {
-            f(registers, gb_state, gb_mem);
-            op_cycles = get_num_cycles(registers, gb_mem);
+            if (!instr_cycles)
+                instr_cycles = get_num_cycles(registers, gb_mem);
+            if (instr_cycles)
+                instr_cycles -= 4;
+            if (!instr_cycles)
+                f(registers, gb_state, gb_mem);
         }
+
+        op_cycles = 4;
         state->cycles += op_cycles;
         gb_throttle();
 
