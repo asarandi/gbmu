@@ -13,9 +13,9 @@
 #include <time.h>
 
 #define BOOTROM_ENABLED     false
-#define GUI_SCALE_FACTOR    2
-#define GUI_RENDER_COLORS   0x00ffffff, 0x00aaaaaa, 0x00555555, 0x00000000
-//#define GUI_RENDER_COLORS   0x00ebdd77, 0x00a1bc00, 0x000d8833, 0x00004333, 0x00ff0000
+#define GUI_SCALE_FACTOR    3
+//#define GUI_RENDER_COLORS   0x00ffffff, 0x00aaaaaa, 0x00555555, 0x00000000
+#define GUI_RENDER_COLORS   0x00ebdd77, 0x00a1bc00, 0x000d8833, 0x00004333, 0x00ff0000
 
 typedef struct  s_r16 {
     uint16_t    AF; 
@@ -55,7 +55,8 @@ typedef struct  s_state {
     uint64_t    div_cycles;
     uint64_t    cycles;
     uint8_t     screen_buf[144*160];
-    uint8_t     *file_contents;    
+    uint8_t     *file_contents;
+	size_t		file_size;
     uint8_t     buttons[8];
     uint8_t     (*ram_read_u8)(uint16_t);
     void        (*ram_write_u8)(uint16_t, uint8_t);
@@ -110,6 +111,7 @@ void        write_u16(uint16_t addr, uint16_t data);
 void        mbc(uint16_t addr, uint8_t data);
 void        mbc1_handler(uint16_t addr, uint8_t data);
 void        mbc2_handler(uint16_t addr, uint8_t data);
+uint8_t     mbc1_rom_read_u8(uint16_t addr);
 
 bool        is_savefile_enabled();
 void        savefile_read(char *rom_file);
