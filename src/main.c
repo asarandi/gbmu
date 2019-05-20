@@ -54,6 +54,7 @@ int main(int ac, char **av)
     state->gameboy_memory = gb_mem;
     state->gameboy_registers = registers;
     state->file_contents = malloc(stat_buf.st_size);
+	state->file_size = stat_buf.st_size;
 
     if (read(fd, state->file_contents, stat_buf.st_size) != stat_buf.st_size) {
         printf("read() failed\n");
