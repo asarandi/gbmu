@@ -112,6 +112,7 @@ void        mbc(uint16_t addr, uint8_t data);
 void        mbc1_handler(uint16_t addr, uint8_t data);
 void        mbc2_handler(uint16_t addr, uint8_t data);
 uint8_t     mbc1_rom_read_u8(uint16_t addr);
+uint8_t     mbc1_ram_read_u8(uint16_t addr);
 
 bool        is_savefile_enabled();
 void        savefile_read(char *rom_file);
