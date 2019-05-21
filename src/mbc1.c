@@ -5,8 +5,7 @@
 #define RAM_ADDRESS 0xa000
 #define RAM_SIZE    0x2000
 
-uint8_t ramg, bank1 = 1, bank2, mode;
-
+static uint8_t ramg, bank1 = 1, bank2, mode;
 static  char    *ramfile_name;
 static  uint8_t ram_banks[RAM_SIZE * 4];
 
@@ -90,22 +89,22 @@ uint8_t mbc1_ram_read_u8(uint16_t addr)
 
 uint8_t     mbc1_rom_read_u8(uint16_t addr)
 {
-    uint8_t *f = state->file_contents;
-	size_t	idx;
+    uint8_t     *f = state->file_contents;
+    int         idx;
 
     if (addr <= 0x3fff) {
         if (mode == 0)  return f[addr];
         if (mode == 1) {
-			idx = (bank2 << 19) + addr;
-			idx &= state->file_size - 1;
-			return f[idx];
-		}
+            idx = (bank2 << 19) + addr;
+            idx &= state->file_size - 1;
+            return f[idx];
+        }
     }
     if ((addr >= 0x4000) && (addr <= 0x7fff)) {
-		idx = (((bank2 << 5) | bank1) << 14 ) | (addr & 0x3fff);
-		idx &= state->file_size - 1;
+        idx = (((bank2 << 5) | bank1) << 14 ) | (addr & 0x3fff);
+        idx &= state->file_size - 1;
         return f[idx];
-	}
+    }
     return 0xff;
 }
 
@@ -121,7 +120,7 @@ void        mbc1_handler(uint16_t addr, uint8_t data)
     if ((addr >= 0x2000) && (addr <= 0x3fff)) {
         bank1 = data & 0x1f;
         if (bank1 == 0)
-			bank1 = 1;
+            bank1 = 1;
     }
     if ((addr >= 0x4000) && (addr <= 0x5fff))
         bank2 = data & 3;

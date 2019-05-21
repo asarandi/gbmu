@@ -82,8 +82,8 @@ int main(int ac, char **av)
         apu_update(gb_mem, gb_state, op_cycles);
         interrupts_update(gb_mem, state, registers);
 
-        op0 = mem[r16->PC];
-        op1 = mem[r16->PC + 1];
+        op0 = read_u8(r16->PC);
+        op1 = read_u8(r16->PC + 1);
         f = ops0[op0];
         if (op0 == 0xcb)
             f = ops1[op1];
