@@ -75,23 +75,23 @@ void dump_registers(void *registers, void *gb_state, uint8_t *gb_mem)
 
     printf("%02X:%04X:  ", 0, r16->PC);
 
-    idx = gb_mem[r16->PC];
+    idx = read_u8(r16->PC);
     byte_len = byte_lens0[idx];
     op_name = op_names0[idx];
 
     if (idx == 0xcb) {
-        idx = gb_mem[r16->PC + 1];
+        idx = read_u8(r16->PC + 1);
         byte_len = byte_lens1[idx];
         op_name = op_names1[idx];
     }
     for (int i = 0; i < byte_len; i++) {
-        printf("%02X", gb_mem[r16->PC + i]);
+        printf("%02X", read_u8(r16->PC + i));
     }
 
     printf("\t");
 
-    u8 = gb_mem[r16->PC + 1];
-    u16 = *(uint16_t *)&gb_mem[r16->PC + 1];
+    u8 = read_u8(r16->PC + 1);
+    u16 = read_u16(r16->PC + 1);
 
     if (strstr(op_name, "%02"))
         printf(op_name, u8);

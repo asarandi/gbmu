@@ -119,16 +119,14 @@ int get_num_cycles(void *gb_reg, void *gb_mem)
 {
     t_r16       *r16;
     t_r8        *r8;
-    uint8_t     *mem;
     int         idx;
 
     r16 = gb_reg;
     r8 = gb_reg;
-    mem = gb_mem;
 
-    idx = mem[r16->PC];
+    idx = read_u8(r16->PC);
     if (idx == 0xcb)
-        idx = 256 + mem[r16->PC + 1];
+        idx = 256 + read_u8(r16->PC + 1);
 
     switch (is_conditional_num_cycles[idx])
     {

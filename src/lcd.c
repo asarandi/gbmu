@@ -262,6 +262,6 @@ void    lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles)
         state->dma_update = false ;
         uint16_t dma_source = gb_mem[0xff46] << 8;
         for (uint8_t i = 0; i < 0xa0; i++)
-            gb_mem[0xfe00 + i] = gb_mem[dma_source + i];
+            gb_mem[0xfe00 + i] = read_u8(dma_source + i);
     }
 }
