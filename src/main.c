@@ -55,6 +55,7 @@ int main(int ac, char **av)
     state->gameboy_registers = registers;
     state->file_contents = malloc(stat_buf.st_size);
 	state->file_size = stat_buf.st_size;
+    state->rom_file = av[1];
 
     if (read(fd, state->file_contents, stat_buf.st_size) != stat_buf.st_size) {
         printf("read() failed\n");
@@ -68,6 +69,7 @@ int main(int ac, char **av)
 
     state->bootrom_enabled = BOOTROM_ENABLED;
     gameboy_init();
+    cartridge_init();
 
     uint16_t    pc_history[100] = {0};
     int         pc_idx = 0;
