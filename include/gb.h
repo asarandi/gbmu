@@ -59,7 +59,7 @@ typedef struct  s_state {
     char        *ram_file;    
 	size_t		file_size;    
     uint8_t     *file_contents;
-    uint8_t     ram_banks[RAM_SIZE * 4];
+    uint8_t     ram_banks[RAM_SIZE * 16];
     uint64_t    interrupt_cycles;
     uint64_t    div_cycles;
     uint64_t    cycles;
@@ -130,6 +130,10 @@ void        mbc2_ram_write_u8(uint16_t addr, uint8_t data);
 uint8_t     mbc2_rom_read_u8(uint16_t addr);
 void        mbc2_rom_write_u8(uint16_t addr, uint8_t data);
 
+uint8_t     mbc5_ram_read_u8(uint16_t addr);
+void        mbc5_ram_write_u8(uint16_t addr, uint8_t data);
+uint8_t     mbc5_rom_read_u8(uint16_t addr);
+void        mbc5_rom_write_u8(uint16_t addr, uint8_t data);
 
 bool        is_savefile_enabled();
 void        savefile_read(char *rom_file);
