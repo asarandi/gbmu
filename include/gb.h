@@ -16,6 +16,10 @@
 #define GUI_SCALE_FACTOR    3
 //#define GUI_RENDER_COLORS   0x00ffffff, 0x00aaaaaa, 0x00555555, 0x00000000
 #define GUI_RENDER_COLORS   0x00ebdd77, 0x00a1bc00, 0x000d8833, 0x00004333, 0x00ff0000
+#define ROM_ADDRESS 0x4000
+#define ROM_SIZE    0x4000
+#define RAM_ADDRESS 0xa000
+#define RAM_SIZE    0x2000
 
 typedef struct  s_r16 {
     uint16_t    AF; 
@@ -51,15 +55,20 @@ typedef struct  s_state {
     bool        debug;
     bool        done;
     bool        dma_update;
+    char        *rom_file;
+    char        *ram_file;    
+	size_t		file_size;    
+    uint8_t     *file_contents;
+    uint8_t     ram_banks[RAM_SIZE * 4];
     uint64_t    interrupt_cycles;
     uint64_t    div_cycles;
     uint64_t    cycles;
     uint8_t     screen_buf[144*160];
-    uint8_t     *file_contents;
-	size_t		file_size;
     uint8_t     buttons[8];
     uint8_t     (*ram_read_u8)(uint16_t);
     void        (*ram_write_u8)(uint16_t, uint8_t);
+    uint8_t     (*rom_read_u8)(uint16_t);
+    void        (*rom_write_u8)(uint16_t, uint8_t);
 } t_state;
 
 t_state     *state;
@@ -108,11 +117,19 @@ uint8_t     read_u8(uint16_t addr);
 uint16_t    read_u16(uint16_t addr);
 void        write_u8(uint16_t addr, uint8_t data);
 void        write_u16(uint16_t addr, uint16_t data);
-void        mbc(uint16_t addr, uint8_t data);
-void        mbc1_handler(uint16_t addr, uint8_t data);
-void        mbc2_handler(uint16_t addr, uint8_t data);
-uint8_t     mbc1_rom_read_u8(uint16_t addr);
+
+void        cartridge_init();
+
 uint8_t     mbc1_ram_read_u8(uint16_t addr);
+void        mbc1_ram_write_u8(uint16_t addr, uint8_t data);
+uint8_t     mbc1_rom_read_u8(uint16_t addr);
+void        mbc1_rom_write_u8(uint16_t addr, uint8_t data);
+
+uint8_t     mbc2_ram_read_u8(uint16_t addr);
+void        mbc2_ram_write_u8(uint16_t addr, uint8_t data);
+uint8_t     mbc2_rom_read_u8(uint16_t addr);
+void        mbc2_rom_write_u8(uint16_t addr, uint8_t data);
+
 
 bool        is_savefile_enabled();
 void        savefile_read(char *rom_file);

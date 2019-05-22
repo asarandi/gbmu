@@ -83,13 +83,89 @@ bool    is_savefile_enabled()
     return false;
 }
 
-void    mbc(uint16_t addr, uint8_t data)
+void    savefile_read()
+{
+    int len, offset, fd;
+    uint8_t *gb_mem = state->gameboy_memory;
+
+    if (!is_savefile_enabled())
+        return ;
+
+    len = strlen(state->rom_file);
+    state->ram_file = malloc(len + 5);
+    strncpy(state->ram_file, state->rom_file, len);
+    bzero(&state->ram_file[len], 5);
+    offset = 0;
+    if (!strcmp(&state->ram_file[len - 3], ".gb"))
+        offset = 3;
+    if (!strcmp(&state->ram_file[len - 4], ".gbc"))
+        offset = 4;
+    strncpy(&state->ram_file[len - offset], ".sav", 4);
+    printf("ramfile: %s\n", state->ram_file);
+
+    if ((fd = open(state->ram_file, O_RDONLY)) == -1) {
+        printf("%s: open() failed\n", __func__);
+        return ;
+    }
+    if ((read(fd, state->ram_banks, RAM_SIZE * 4)) == -1) {
+        close(fd);        
+        printf("%s: read() failed\n", __func__);
+        return ;
+    }
+    close(fd);
+    printf("ramfile loaded\n");
+}
+
+void    savefile_write()
+{
+    int fd, size;
+    uint8_t *gb_mem = state->gameboy_memory;
+
+    if (!is_savefile_enabled())
+        return ;
+    size = (RAM_SIZE*4)-1;
+    while ((size >= 0) && (!state->ram_banks[size]))
+        size--;
+    size++;
+    if (!size) return ; //game did not use ram?
+    if ((fd = open(state->ram_file, O_CREAT | O_WRONLY, 0644)) == -1) {
+        printf("%s: open() failed\n", __func__);
+        return ;
+    }
+    if (write(fd, state->ram_banks, size) == -1) {
+        printf("%s: write() failed\n", __func__);
+    }
+    close(fd);
+    printf("ramfile saved\n");
+}
+
+void    default_ram_write_u8(uint16_t addr, uint8_t data)   { return ; }
+uint8_t default_ram_read_u8(uint16_t addr)                  { return 0xff ; }
+uint8_t default_rom_read_u8(uint16_t addr)                  { return state->file_contents[addr & 0x7fff]; }
+void    default_rom_write_u8(uint16_t addr, uint8_t data)   { return ; }
+
+void    cartridge_init()
 {
     uint8_t *gb_mem = state->gameboy_memory;
 
+    state->ram_read_u8  = &default_ram_read_u8;
+    state->ram_write_u8 = &default_ram_write_u8;
+    state->rom_read_u8  = &default_rom_read_u8;
+    state->rom_write_u8 = &default_rom_write_u8;
+
     if ((IS_MBC1) || (IS_MBC1_RAM) || (IS_MBC1_RAM_BATTERY))
-        (void)mbc1_handler(addr, data);
+    {       
+        state->ram_read_u8  = &mbc1_ram_read_u8;
+        state->ram_write_u8 = &mbc1_ram_write_u8;
+        state->rom_read_u8  = &mbc1_rom_read_u8;
+        state->rom_write_u8 = &mbc1_rom_write_u8;
+    }
     
     if ((IS_MBC2) || (IS_MBC2_BATTERY))
-        (void)mbc2_handler(addr, data);
+    {
+        state->ram_read_u8  = &mbc2_ram_read_u8;
+        state->ram_write_u8 = &mbc2_ram_write_u8;
+        state->rom_read_u8  = &mbc2_rom_read_u8;
+        state->rom_write_u8 = &mbc2_rom_write_u8;
+    }
 }
