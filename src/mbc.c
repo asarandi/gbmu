@@ -169,6 +169,14 @@ void    cartridge_init()
         state->rom_write_u8 = &mbc2_rom_write_u8;
     }
 
+    if ((IS_MBC3_TIMER_BATTERY) || (IS_MBC3_TIMER_RAM_BATTERY) || (IS_MBC3) || (IS_MBC3_RAM) || (IS_MBC3_RAM_BATTERY))
+    {
+        state->ram_read_u8  = &mbc3_ram_read_u8;
+        state->ram_write_u8 = &mbc3_ram_write_u8;
+        state->rom_read_u8  = &mbc3_rom_read_u8;
+        state->rom_write_u8 = &mbc3_rom_write_u8;
+    }
+
     if ((IS_MBC5) || (IS_MBC5_RAM) || (IS_MBC5_RAM_BATTERY) || (IS_MBC5_RUMBLE) || (IS_MBC5_RUMBLE_RAM) || (IS_MBC5_RUMBLE_RAM_BATTERY))
     {
         state->ram_read_u8  = &mbc5_ram_read_u8;
