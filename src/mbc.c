@@ -107,7 +107,7 @@ void    savefile_read()
         printf("%s: open() failed\n", __func__);
         return ;
     }
-    if ((read(fd, state->ram_banks, RAM_SIZE * 4)) == -1) {
+    if ((read(fd, state->ram_banks, RAM_SIZE * 16)) == -1) {
         close(fd);        
         printf("%s: read() failed\n", __func__);
         return ;
@@ -123,7 +123,7 @@ void    savefile_write()
 
     if (!is_savefile_enabled())
         return ;
-    size = (RAM_SIZE*4)-1;
+    size = (RAM_SIZE * 16)-1;
     while ((size >= 0) && (!state->ram_banks[size]))
         size--;
     size++;
@@ -167,5 +167,13 @@ void    cartridge_init()
         state->ram_write_u8 = &mbc2_ram_write_u8;
         state->rom_read_u8  = &mbc2_rom_read_u8;
         state->rom_write_u8 = &mbc2_rom_write_u8;
+    }
+
+    if ((IS_MBC5) || (IS_MBC5_RAM) || (IS_MBC5_RAM_BATTERY) || (IS_MBC5_RUMBLE) || (IS_MBC5_RUMBLE_RAM) || (IS_MBC5_RUMBLE_RAM_BATTERY))
+    {
+        state->ram_read_u8  = &mbc5_ram_read_u8;
+        state->ram_write_u8 = &mbc5_ram_write_u8;
+        state->rom_read_u8  = &mbc5_rom_read_u8;
+        state->rom_write_u8 = &mbc5_rom_write_u8;
     }
 }
