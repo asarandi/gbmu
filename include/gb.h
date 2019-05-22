@@ -136,7 +136,7 @@ uint8_t     mbc5_rom_read_u8(uint16_t addr);
 void        mbc5_rom_write_u8(uint16_t addr, uint8_t data);
 
 bool        is_savefile_enabled();
-void        savefile_read(char *rom_file);
+void        savefile_read();
 void        savefile_write();
 
 extern      void (*ops0[])(void *, t_state *, uint8_t *);
