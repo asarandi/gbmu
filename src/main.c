@@ -97,7 +97,7 @@ int main(int ac, char **av)
 //        if (r16->PC == 0x03ca) { state->debug = true; }
         if (state->debug)
         {
-            printf("state->cycles = %lu\n", state->cycles);
+            printf("state->cycles = %llu\n", state->cycles);
             dump_registers(registers, state, mem);
             uint8_t tmp; read(0, &tmp, 1);
             if (tmp == 'c') {
