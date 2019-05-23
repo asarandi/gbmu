@@ -14,7 +14,6 @@ int main(int ac, char **av)
     struct stat stat_buf;
     void (*f)(void *, t_state *, uint8_t *);
     int         op_cycles = 0;
-    uint64_t    frame_counter = 0;        
 
     if (ac != 2)
         return 1;

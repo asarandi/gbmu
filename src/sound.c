@@ -128,7 +128,6 @@ t_sound   s2;
 t_sound   s3;
 t_sound   s4;
 
-
 void    sound_nr10_update(uint8_t data)
 {
     uint8_t     *gb_mem = state->gameboy_memory;
@@ -291,7 +290,6 @@ void    sound_nr43_update(uint8_t data)
 
 void    sound_4_init()
 {
-    uint8_t     *gb_mem = state->gameboy_memory;
     s4.volume_counter = 0;
     s4.length_counter = 0;
     s4.sample_counter = 0;
@@ -379,7 +377,6 @@ void    channel_volume_tick(t_sound *s0)
 
 void    apu_volume_tick()
 {
-    uint8_t     *gb_mem = state->gameboy_memory;
     channel_volume_tick(&s1);
     channel_volume_tick(&s2);
     channel_volume_tick(&s4);
@@ -413,7 +410,6 @@ void    apu_sweep_tick()
 
 void    channel_length_tick(t_sound *s0, uint8_t reg)
 {
-    uint8_t     *gb_mem = state->gameboy_memory;
     if ((s0->is_enabled) && (s0->sound_length))
     {
         s0->length_counter++;
@@ -529,6 +525,7 @@ void    apu_update(uint8_t *gb_mem, t_state *state, int current_cycles)
 {
     static uint64_t     cycles, prev_cycles;
 
+    (void)state;
     cycles += current_cycles;
     if ((cycles / VOLUME_CLOCK)    > (prev_cycles / VOLUME_CLOCK))      apu_volume_tick();
     if ((cycles / SWEEP_CLOCK)     > (prev_cycles / SWEEP_CLOCK))       apu_sweep_tick();
@@ -540,7 +537,6 @@ void    apu_update(uint8_t *gb_mem, t_state *state, int current_cycles)
 
 int16_t SquareWave(int time, int freq, int vol, int duty)
 {
-    uint8_t     *gb_mem = state->gameboy_memory;
     freq = 131072 / (2048 - freq);
 
     uint8_t patterns[4][8] = {
@@ -709,8 +705,6 @@ void MyAudioCallback(void *userdata, Uint8 *stream, int len)
 /* gui_init() must be called first because it calls SDL_Init() */
 void    apu_init()
 {
-    uint8_t     *gb_mem = state->gameboy_memory;
-
     SDL_memset(&sdl_wanted_spec, 0, sizeof(sdl_wanted_spec));
     sdl_wanted_spec.freq     = SAMPLING_FREQUENCY;
     sdl_wanted_spec.format   = AUDIO_S16;

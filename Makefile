@@ -1,12 +1,19 @@
 CFLAGS  += -g -Wall -Werror -Wextra -I include
-CFLAGS  += -Wno-format -Wno-unused-parameter -Wno-unused-variable -Wno-unused-result
-CFLAGS  += $(shell sdl2-config --cflags)
 LDFLAGS += $(shell sdl2-config --static-libs)
 
 src = $(wildcard src/*.c)
 
 gbmu: $(src:.c=.o) 
 	$(CC) $(CFLAGS) $^ $(LDFLAGS) -o gbmu
+
+src/ops.o:
+	$(CC) $(CFLAGS) -Wno-unused-variable -Wno-unused-parameter -c src/ops.c -o $@
+
+src/sound.o:
+	$(CC) $(CFLAGS) $(shell sdl2-config --cflags) -c src/sound.c -o $@
+
+src/gui.o:
+	$(CC) $(CFLAGS) $(shell sdl2-config --cflags) -c src/gui.c -o $@
 
 clean:
 	rm -f $(src:.c=.o)

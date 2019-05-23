@@ -2,7 +2,6 @@
 # define GB_H
 
 #include <stdbool.h>
-#include <pthread.h>
 #include <stdio.h>
 #include <fcntl.h>
 #include <stdlib.h>

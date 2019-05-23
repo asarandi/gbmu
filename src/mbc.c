@@ -86,7 +86,6 @@ bool    is_savefile_enabled()
 void    savefile_read()
 {
     int len, offset, fd;
-    uint8_t *gb_mem = state->gameboy_memory;
 
     if (!is_savefile_enabled())
         return ;
@@ -119,7 +118,6 @@ void    savefile_read()
 void    savefile_write()
 {
     int fd, size;
-    uint8_t *gb_mem = state->gameboy_memory;
 
     if (!is_savefile_enabled())
         return ;
@@ -139,10 +137,31 @@ void    savefile_write()
     printf("ramfile saved\n");
 }
 
-void    default_ram_write_u8(uint16_t addr, uint8_t data)   { return ; }
-uint8_t default_ram_read_u8(uint16_t addr)                  { return 0xff ; }
-uint8_t default_rom_read_u8(uint16_t addr)                  { return state->file_contents[addr & 0x7fff]; }
-void    default_rom_write_u8(uint16_t addr, uint8_t data)   { return ; }
+void    default_ram_write_u8(uint16_t addr, uint8_t data)
+{
+    (void)addr;
+    (void)data;
+    return ;
+}
+
+uint8_t default_ram_read_u8(uint16_t addr)
+{
+    (void)addr;
+    return 0xff ;
+}
+
+uint8_t default_rom_read_u8(uint16_t addr)
+{
+    (void)addr;
+    return state->file_contents[addr & 0x7fff];
+}
+
+void    default_rom_write_u8(uint16_t addr, uint8_t data)
+{
+    (void)addr;
+    (void)data;
+    return ;
+}
 
 void    cartridge_init()
 {

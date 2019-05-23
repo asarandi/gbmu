@@ -121,6 +121,7 @@ int get_num_cycles(void *gb_reg, void *gb_mem)
     t_r8        *r8;
     int         idx;
 
+    (void)gb_mem;
     r16 = gb_reg;
     r8 = gb_reg;
 
