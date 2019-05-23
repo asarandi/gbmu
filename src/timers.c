@@ -1,29 +1,4 @@
 #include "gb.h"
-#include <SDL.h>
-
-void gb_throttle()
-{
-    static struct timespec tp, last_tp;
-    static uint64_t clock_cycles, current_ms, last_ms;
-
-    if (clock_gettime(CLOCK_REALTIME, &tp))
-        return ;
-
-    if (tp.tv_sec > last_tp.tv_sec)
-        last_ms = 0;
-
-    current_ms = tp.tv_nsec / 1000000;
-    if (current_ms <= last_ms)
-        return ;
-
-    if ((state->cycles - clock_cycles) <= (current_ms - last_ms) * (4194304 / 1000))
-        return ;
-
-    last_ms = current_ms;
-    memcpy(&last_tp, &tp, sizeof(struct timespec));
-    clock_cycles = state->cycles;
-    SDL_Delay(1);
-}
 
 void    timers_update(uint8_t *gb_mem, t_state *state, int current_cycles)
 {
