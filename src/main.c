@@ -13,12 +13,12 @@ int main(int ac, char **av)
     uint8_t     op1;
     struct stat stat_buf;
     void (*f)(void *, t_state *, uint8_t *);
-    int         op_cycles = 0;
+    int         op_cycles = 4;
 
-    if (ac != 2)
+    if (ac < 2)
         return 1;
 
-    if ((fd = open(av[1], O_RDONLY)) == -1) {
+    if ((fd = open(av[ac - 1], O_RDONLY)) == -1) {
         printf("failed to open file\n");
         return 1;
     }
@@ -54,7 +54,11 @@ int main(int ac, char **av)
     state->gameboy_registers = registers;
     state->file_contents = malloc(stat_buf.st_size);
 	state->file_size = stat_buf.st_size;
-    state->rom_file = av[1];
+    state->rom_file = av[ac - 1];
+
+    if ((ac == 3) && (strcmp(av[1], "--server") == 0)) state->is_server = true ;
+    if ((ac == 3) && (strcmp(av[1], "--client") == 0)) state->is_client = true ;
+    state->serial_data = 0xff;
 
     if (read(fd, state->file_contents, stat_buf.st_size) != stat_buf.st_size) {
         printf("read() failed\n");
@@ -78,6 +82,7 @@ int main(int ac, char **av)
 
     while (!state->done)
     {
+        serial(op_cycles);
         timers_update(gb_mem, gb_state, op_cycles);
         lcd_update(gb_mem, gb_state, op_cycles);
         apu_update(gb_mem, gb_state, op_cycles);
@@ -129,6 +134,7 @@ int main(int ac, char **av)
         for (int i=0; i<pc_idx; i++) { printf("PC %02d: %04x\n", i, pc_history[i]); };
     }
 
+    serial_cleanup();
     savefile_write();
     apu_cleanup();
     gui_cleanup();
