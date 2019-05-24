@@ -5032,7 +5032,7 @@ void op_cb(void *reg, t_state *state, uint8_t *mem)
 	*/
 
 	printf("undefined instruction 0xcb\n");
-	printf("state->cycles = %llu\n", state->cycles);
+	printf("state->cycles = %u\n", state->cycles);
 	dump_registers(reg, state, mem);
 	state->done = true;
 }
@@ -9826,7 +9826,7 @@ void op_d3(void *reg, t_state *state, uint8_t *mem)
 	*/
 
 	printf("undefined instruction 0xd3\n");
-	printf("state->cycles = %llu\n", state->cycles);
+	printf("state->cycles = %u\n", state->cycles);
 	dump_registers(reg, state, mem);
 	state->done = true;
 }
@@ -9842,7 +9842,7 @@ void op_db(void *reg, t_state *state, uint8_t *mem)
 	*/
 
 	printf("undefined instruction 0xdb\n");
-	printf("state->cycles = %llu\n", state->cycles);
+	printf("state->cycles = %u\n", state->cycles);
 	dump_registers(reg, state, mem);
 	state->done = true;
 }
@@ -9858,7 +9858,7 @@ void op_dd(void *reg, t_state *state, uint8_t *mem)
 	*/
 
 	printf("undefined instruction 0xdd\n");
-	printf("state->cycles = %llu\n", state->cycles);
+	printf("state->cycles = %u\n", state->cycles);
 	dump_registers(reg, state, mem);
 	state->done = true;
 }
@@ -9874,7 +9874,7 @@ void op_e3(void *reg, t_state *state, uint8_t *mem)
 	*/
 
 	printf("undefined instruction 0xe3\n");
-	printf("state->cycles = %llu\n", state->cycles);
+	printf("state->cycles = %u\n", state->cycles);
 	dump_registers(reg, state, mem);
 	state->done = true;
 }
@@ -9890,7 +9890,7 @@ void op_e4(void *reg, t_state *state, uint8_t *mem)
 	*/
 
 	printf("undefined instruction 0xe4\n");
-	printf("state->cycles = %llu\n", state->cycles);
+	printf("state->cycles = %u\n", state->cycles);
 	dump_registers(reg, state, mem);
 	state->done = true;
 }
@@ -9906,7 +9906,7 @@ void op_eb(void *reg, t_state *state, uint8_t *mem)
 	*/
 
 	printf("undefined instruction 0xeb\n");
-	printf("state->cycles = %llu\n", state->cycles);
+	printf("state->cycles = %u\n", state->cycles);
 	dump_registers(reg, state, mem);
 	state->done = true;
 }
@@ -9922,7 +9922,7 @@ void op_ec(void *reg, t_state *state, uint8_t *mem)
 	*/
 
 	printf("undefined instruction 0xec\n");
-	printf("state->cycles = %llu\n", state->cycles);
+	printf("state->cycles = %u\n", state->cycles);
 	dump_registers(reg, state, mem);
 	state->done = true;
 }
@@ -9938,7 +9938,7 @@ void op_ed(void *reg, t_state *state, uint8_t *mem)
 	*/
 
 	printf("undefined instruction 0xed\n");
-	printf("state->cycles = %llu\n", state->cycles);
+	printf("state->cycles = %u\n", state->cycles);
 	dump_registers(reg, state, mem);
 	state->done = true;
 }
@@ -9954,7 +9954,7 @@ void op_f4(void *reg, t_state *state, uint8_t *mem)
 	*/
 
 	printf("undefined instruction 0xf4\n");
-	printf("state->cycles = %llu\n", state->cycles);
+	printf("state->cycles = %u\n", state->cycles);
 	dump_registers(reg, state, mem);
 	state->done = true;
 }
@@ -9970,7 +9970,7 @@ void op_fc(void *reg, t_state *state, uint8_t *mem)
 	*/
 
 	printf("undefined instruction 0xfc\n");
-	printf("state->cycles = %llu\n", state->cycles);
+	printf("state->cycles = %u\n", state->cycles);
 	dump_registers(reg, state, mem);
 	state->done = true;
 }
@@ -9986,7 +9986,7 @@ void op_fd(void *reg, t_state *state, uint8_t *mem)
 	*/
 
 	printf("undefined instruction 0xfd\n");
-	printf("state->cycles = %llu\n", state->cycles);
+	printf("state->cycles = %u\n", state->cycles);
 	dump_registers(reg, state, mem);
 	state->done = true;
 }
