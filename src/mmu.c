@@ -48,6 +48,12 @@ void    write_u8(uint16_t addr, uint8_t data) {
         return state->ram_write_u8(addr, data);
     if ((addr >= 0xc000) && (addr <= 0xddff))           //ECHO
         mem[addr+0x2000] = data;
+
+    if (addr == 0xff01)
+        return serial_data(data);
+
+    if (addr == 0xff02)
+        return serial_control(data);
     
     if (addr == 0xff02) {
         if (data == 0x81) {
