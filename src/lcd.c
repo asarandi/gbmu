@@ -188,7 +188,7 @@ void    screen_update(uint8_t *gb_mem, t_state *state, uint8_t *sprites)
 
 void    lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles)
 {
-    static uint64_t lcd_cycle;
+    static int      lcd_cycle;
     static bool     is_vblank;
     static bool     is_hblank;
     static bool     is_oam;

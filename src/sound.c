@@ -523,7 +523,7 @@ void    apu_frequency_tick()
 
 void    apu_update(uint8_t *gb_mem, t_state *state, int current_cycles)
 {
-    static uint64_t     cycles, prev_cycles;
+    static unsigned int     cycles, prev_cycles;
 
     (void)state;
     cycles += current_cycles;
@@ -661,7 +661,7 @@ void    sound_4_fill_buffer()
 void MyAudioCallback(void *userdata, Uint8 *stream, int len)
 {
     uint8_t     *gb_mem = state->gameboy_memory;
-    uint64_t    left, right;
+    int32_t     left, right;
 
     (void)userdata;
     (void)memset(stream, 0, len);

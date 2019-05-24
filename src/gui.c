@@ -115,7 +115,7 @@ gui_update() {
 void gb_throttle()
 {
     static struct timespec tp, last_tp;
-    static uint64_t clock_cycles, current_ms, last_ms;
+    static unsigned int clock_cycles, current_ms, last_ms;
 
     if (clock_gettime(CLOCK_REALTIME, &tp))
         return ;
