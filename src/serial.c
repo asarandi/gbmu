@@ -129,9 +129,10 @@ void    bit_transfer_ok(uint8_t octet_recv)
     gb_mem[0xff01] = (gb_mem[0xff01] << 1) | (octet_recv & 1);
     current_bit++;
     if (current_bit <= 8) return ;
-    printf("new SB: 0x%02x\n", gb_mem[0xff01]);
+//    printf("new SB: 0x%02x\n", gb_mem[0xff01]);
     current_bit = 1;
     gb_mem[0xff0f] |= 8;
+	gb_mem[0xff02] &= 1;
     state->is_transfer = false ;
     state->serial_cycles = 0;
     serial_init = false;    
@@ -149,7 +150,7 @@ void    master_offline()
 }
 void    master_init()
 {
-    uint8_t *gb_mem = state->gameboy_memory;
+//    uint8_t *gb_mem = state->gameboy_memory;
     uint8_t octet_send, octet_recv;
 
     set_blocking();
@@ -158,17 +159,18 @@ void    master_init()
     octet_recv = 0x00;
     if (!socket_receive(&octet_recv)) return master_offline();
     if (octet_recv != 0xfc) {printf("master missed recv: %02x\n", octet_recv); return master_offline();}
-    printf("master SC: 0x%02x, SB: 0x%02x, ", gb_mem[0xff02], gb_mem[0xff01]);
+//    printf("master SC: 0x%02x, SB: 0x%02x, ", gb_mem[0xff02], gb_mem[0xff01]);
     state->is_transfer = true;
     current_bit = 1;
     serial_init = true;
     is_master = true ;
     is_slave = false ;
+    state->serial_cycles = 512;
 }
 
 void    slave_init()
 {
-    uint8_t *gb_mem = state->gameboy_memory;
+//    uint8_t *gb_mem = state->gameboy_memory;
     uint8_t octet_send, octet_recv;
 
     set_nonblocking();
@@ -178,12 +180,10 @@ void    slave_init()
     octet_send = 0xfc;
     if (!socket_send(&octet_send))    return ;
     if (octet_recv != 0xfe) {printf("slave missed recv: %02x\n", octet_recv); return ;}
-    printf(" slave SC: 0x%02x, SB: 0x%02x, ", gb_mem[0xff02], gb_mem[0xff01]);
-    gb_mem[0xff02] = 0x80;
+//    printf(" slave SC: 0x%02x, SB: 0x%02x, ", gb_mem[0xff02], gb_mem[0xff01]);
     state->is_transfer = true;
     current_bit = 1;
-    serial_init = true;
-    
+    serial_init = true;    
     is_master = false ;
     is_slave = true ;
 }
@@ -227,27 +227,24 @@ void    serial(uint8_t current_cycles)
 
     serial_connect();
 
-    if (!state->is_transfer)
-        return ;
 
     if (!serial_init)
     {
-        current_bit = 1;
-        state->serial_cycles = 0;
-        if ((gb_mem[0xff02] & 0x81) != 0x81)
+        if ((gb_mem[0xff02] & 0x81) == 0x80)
             slave_init();   //listen for incoming
         if ((gb_mem[0xff02] & 0x81) == 0x81)
             master_init();  //start transfer
         return ;
     }
 
+    if (!state->is_transfer)
+        return ;
+
     state->serial_cycles += current_cycles;
     if ((state->serial_cycles >> 10) < current_bit)
         return ;
-//    if ((gb_mem[0xff02] & 0x81) == 0x80)
     if (is_slave)
         slave_bit_transfer();
-//    if ((gb_mem[0xff02] & 0x81) == 0x81)
     if (is_master)
         master_bit_transfer();
 }
@@ -255,24 +252,21 @@ void    serial(uint8_t current_cycles)
 void    serial_data(uint8_t data)
 {
     uint8_t *gb_mem = state->gameboy_memory;
-    if (state->is_transfer) {
-        printf("writing serial data during transfer: current = %02x, new = %02x\n", gb_mem[0xff01], data);
-    }
+    if (state->is_transfer)
+        printf("writing to SB during transfer: current = %02x, new = %02x\n", gb_mem[0xff01], data);
     gb_mem[0xff01] = data;
 }
-
 
 void    serial_control(uint8_t data)
 {
     uint8_t *gb_mem = state->gameboy_memory;
 
-    if (state->is_transfer)
-        return ;
-
     gb_mem[0xff02] = data & 0x81;
-    printf("serial control: %02x\n", gb_mem[0xff02]);
+    if (state->is_transfer)
+        printf("writing to SC during transfer");
 
-    if ((gb_mem[0xff02] & 0x81) == 0x81)
+//    printf("serial control: %02x\n", gb_mem[0xff02]);
+    if ((!state->is_transfer) && ((gb_mem[0xff02] & 0x81) == 0x81))
     {
         if (!is_online())
             return master_offline();
