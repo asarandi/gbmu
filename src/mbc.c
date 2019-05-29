@@ -99,7 +99,7 @@ void    savefile_read()
         offset = 3;
     if (!strcmp(&state->ram_file[len - 4], ".gbc"))
         offset = 4;
-    strncpy(&state->ram_file[len - offset], ".sav", 4);
+    strncpy(&state->ram_file[len - offset], ".sav", 5);
     printf("ramfile: %s\n", state->ram_file);
 
     if ((fd = open(state->ram_file, O_RDONLY)) == -1) {
