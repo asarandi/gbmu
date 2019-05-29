@@ -560,14 +560,14 @@ int16_t SquareWave(int time, int freq, int vol, int duty)
 void    sound_1_fill_buffer()
 {
     uint8_t     *gb_mem = state->gameboy_memory;
-    int16_t             sample;
+    int16_t             sample, i;
 
     (void)memset(sound_1_buffer, 0, sizeof(sound_1_buffer));
 
     if (!s1.is_enabled)
         return ;
 
-    for (int i = 0; i < NUM_SAMPLES; i++)
+    for (i = 0; i < NUM_SAMPLES; i++)
     {
         sample = SquareWave(s1.sample_counter++, s1.frequency, s1.sound_volume, S1_DUTY_CYCLE);
         if (IS_SOUND_1_LEFT_ENABLED)
@@ -580,14 +580,14 @@ void    sound_1_fill_buffer()
 void    sound_2_fill_buffer()
 {
     uint8_t     *gb_mem = state->gameboy_memory;
-    int16_t             sample;
+    int16_t             sample, i;
 
     (void)memset(sound_2_buffer, 0, sizeof(sound_2_buffer));
 
     if (!s2.is_enabled)
         return ;
 
-    for (int i = 0; i < NUM_SAMPLES; i++)
+    for (i = 0; i < NUM_SAMPLES; i++)
     {
         sample = SquareWave(s2.sample_counter++, s2.frequency, s2.sound_volume, S2_DUTY_CYCLE);
         if (IS_SOUND_2_LEFT_ENABLED)
@@ -621,14 +621,14 @@ int16_t sound_3_wave(int time, int freq) {
 void    sound_3_fill_buffer()
 {
     uint8_t     *gb_mem = state->gameboy_memory;
-    int16_t             sample;
+    int16_t             sample, i;
 
     (void)memset(sound_3_buffer, 0, sizeof(sound_3_buffer));
 
     if (!s3.is_enabled)
         return ;
 
-    for (int i = 0; i < NUM_SAMPLES; i++)
+    for (i = 0; i < NUM_SAMPLES; i++)
     {
         sample = sound_3_wave(s3.sample_counter++, s3.frequency);
         if (IS_SOUND_3_LEFT_ENABLED)
@@ -641,7 +641,7 @@ void    sound_3_fill_buffer()
 void    sound_4_fill_buffer()
 {
     uint8_t     *gb_mem = state->gameboy_memory;
-    int16_t     sample;
+    int16_t     sample, i;
 
 
     (void)memset(sound_4_buffer, 0, sizeof(sound_4_buffer));
@@ -652,7 +652,7 @@ void    sound_4_fill_buffer()
     sample = rand() & 1; //~((NR43 >> 4) & 1);
     sample *= ((INT16_MAX/15) * s4.sound_volume);
 
-    for (int i = 0; i < NUM_SAMPLES; i++)
+    for (i = 0; i < NUM_SAMPLES; i++)
     {
         if (IS_SOUND_4_LEFT_ENABLED)
             *(int16_t *)&sound_4_buffer[i * 4] = sample;
@@ -664,7 +664,7 @@ void    sound_4_fill_buffer()
 void MyAudioCallback(void *userdata, Uint8 *stream, int len)
 {
     uint8_t     *gb_mem = state->gameboy_memory;
-    int32_t     left, right;
+    int32_t     left, right, i, j;
 
     (void)userdata;
     (void)memset(stream, 0, len);
@@ -677,9 +677,9 @@ void MyAudioCallback(void *userdata, Uint8 *stream, int len)
     sound_3_fill_buffer();
     sound_4_fill_buffer();
 
-    for (int i = 0; i < NUM_SAMPLES; i++)
+    for (i = 0; i < NUM_SAMPLES; i++)
     {
-        int j = i * (NUM_CHANNELS * SAMPLE_SIZE);
+        j = i * (NUM_CHANNELS * SAMPLE_SIZE);
 
         left = 0;
         left += *(int16_t *)&sound_1_buffer[j];
