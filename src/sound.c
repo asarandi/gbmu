@@ -525,6 +525,9 @@ void    apu_update(uint8_t *gb_mem, t_state *state, int current_cycles)
 {
     static unsigned int     cycles, prev_cycles;
 
+    if (!sdl_audio_device)
+        return ;
+
     (void)state;
     cycles += current_cycles;
     if ((cycles / VOLUME_CLOCK)    > (prev_cycles / VOLUME_CLOCK))      apu_volume_tick();

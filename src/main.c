@@ -1,5 +1,14 @@
 #include "gb.h"
 
+bool is_argument(int ac, char **av, char *s)
+{
+    for (int i = 1; i < ac; i++) {
+        if (!strcmp(av[i], s))
+            return true ;
+    }
+    return false;
+}
+
 int main(int ac, char **av)
 {
 
@@ -56,8 +65,11 @@ int main(int ac, char **av)
 	state->file_size = stat_buf.st_size;
     state->rom_file = av[ac - 1];
 
-    if ((ac == 3) && (strcmp(av[1], "--server") == 0)) state->is_server = true ;
-    if ((ac == 3) && (strcmp(av[1], "--client") == 0)) state->is_client = true ;
+    if (is_argument(ac, av, "--server"))
+        state->is_server = true ;
+    if (is_argument(ac, av, "--client"))
+        state->is_client = true ;
+
     state->serial_data = 0xff;
 
     if (read(fd, state->file_contents, stat_buf.st_size) != stat_buf.st_size) {
@@ -68,7 +80,9 @@ int main(int ac, char **av)
 
     if (!gui_init())
         state->done = true;
-    (void)apu_init();
+
+    if (!is_argument(ac, av, "--nosound"))
+        (void)apu_init();
 
     state->bootrom_enabled = BOOTROM_ENABLED;
     gameboy_init();
