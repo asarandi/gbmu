@@ -115,6 +115,7 @@ typedef struct  s_sound
 
 }               t_sound;
 
+SDL_AudioSpec                sdl_received_spec;
 SDL_AudioSpec                sdl_wanted_spec;
 SDL_AudioDeviceID            sdl_audio_device = 0;
 
@@ -548,8 +549,8 @@ int16_t SquareWave(int time, int freq, int vol, int duty)
         {1,0,0,0,0,1,1,1},
         {0,1,1,1,1,1,1,0}};
 
-    if (freq > SAMPLING_FREQUENCY) freq = SAMPLING_FREQUENCY;
-    int tpc = SAMPLING_FREQUENCY / freq;
+    if (freq > sdl_received_spec.freq) freq = sdl_received_spec.freq;
+    int tpc = sdl_received_spec.freq / freq;
     int cyclepart = time % tpc;
     if (tpc < 8) tpc |= 8;
     int idx = cyclepart / (tpc >> 3);
@@ -567,7 +568,7 @@ void    sound_1_fill_buffer()
     if (!s1.is_enabled)
         return ;
 
-    for (i = 0; i < NUM_SAMPLES; i++)
+    for (i = 0; i < sdl_received_spec.samples; i++)
     {
         sample = SquareWave(s1.sample_counter++, s1.frequency, s1.sound_volume, S1_DUTY_CYCLE);
         if (IS_SOUND_1_LEFT_ENABLED)
@@ -587,7 +588,7 @@ void    sound_2_fill_buffer()
     if (!s2.is_enabled)
         return ;
 
-    for (i = 0; i < NUM_SAMPLES; i++)
+    for (i = 0; i < sdl_received_spec.samples; i++)
     {
         sample = SquareWave(s2.sample_counter++, s2.frequency, s2.sound_volume, S2_DUTY_CYCLE);
         if (IS_SOUND_2_LEFT_ENABLED)
@@ -600,7 +601,7 @@ void    sound_2_fill_buffer()
 int16_t sound_3_wave(int time, int freq) {
     uint8_t     *gb_mem = state->gameboy_memory;
     freq = 65536 / (2048 - freq);
-    int tpc = SAMPLING_FREQUENCY / freq;
+    int tpc = sdl_received_spec.freq / freq;
     int cyclepart = time % tpc;
     if (tpc < 32) tpc |= 32;
     int idx = (cyclepart / (tpc >> 5)) & 31;
@@ -628,7 +629,7 @@ void    sound_3_fill_buffer()
     if (!s3.is_enabled)
         return ;
 
-    for (i = 0; i < NUM_SAMPLES; i++)
+    for (i = 0; i < sdl_received_spec.samples; i++)
     {
         sample = sound_3_wave(s3.sample_counter++, s3.frequency);
         if (IS_SOUND_3_LEFT_ENABLED)
@@ -652,7 +653,7 @@ void    sound_4_fill_buffer()
     sample = rand() & 1; //~((NR43 >> 4) & 1);
     sample *= ((INT16_MAX/15) * s4.sound_volume);
 
-    for (i = 0; i < NUM_SAMPLES; i++)
+    for (i = 0; i < sdl_received_spec.samples; i++)
     {
         if (IS_SOUND_4_LEFT_ENABLED)
             *(int16_t *)&sound_4_buffer[i * 4] = sample;
@@ -677,9 +678,9 @@ void MyAudioCallback(void *userdata, Uint8 *stream, int len)
     sound_3_fill_buffer();
     sound_4_fill_buffer();
 
-    for (i = 0; i < NUM_SAMPLES; i++)
+    for (i = 0; i < sdl_received_spec.samples; i++)
     {
-        j = i * (NUM_CHANNELS * SAMPLE_SIZE);
+        j = i * (sdl_received_spec.channels * SAMPLE_SIZE);
 
         left = 0;
         left += *(int16_t *)&sound_1_buffer[j];
@@ -708,16 +709,27 @@ void MyAudioCallback(void *userdata, Uint8 *stream, int len)
 /* gui_init() must be called first because it calls SDL_Init() */
 void    apu_init()
 {
-    SDL_memset(&sdl_wanted_spec, 0, sizeof(sdl_wanted_spec));
+
+    SDL_memset(&sdl_received_spec, 0, sizeof(SDL_AudioSpec));
+    SDL_memset(&sdl_wanted_spec, 0, sizeof(SDL_AudioSpec));
     sdl_wanted_spec.freq     = SAMPLING_FREQUENCY;
     sdl_wanted_spec.format   = AUDIO_S16;
     sdl_wanted_spec.channels = NUM_CHANNELS;
     sdl_wanted_spec.samples  = NUM_SAMPLES;
     sdl_wanted_spec.callback = MyAudioCallback;
+    sdl_audio_device = SDL_OpenAudioDevice(NULL, 0, &sdl_wanted_spec, &sdl_received_spec, 0);
 
-    sdl_audio_device = SDL_OpenAudioDevice(NULL, 0, &sdl_wanted_spec, NULL, 0);
     if (!sdl_audio_device)
         return ;
+
+    if (memcmp(&sdl_wanted_spec.freq, &sdl_received_spec, sizeof(SDL_AudioSpec)))
+    {
+        printf("    sound freq: wanted = %d, received = %d\n", sdl_wanted_spec.freq,     sdl_received_spec.freq);
+        printf("  sound format: wanted = %d, received = %d\n", sdl_wanted_spec.format,   sdl_received_spec.format);
+        printf("sound channels: wanted = %d, received = %d\n", sdl_wanted_spec.channels, sdl_received_spec.channels);
+        printf(" sound samples: wanted = %d, received = %d\n", sdl_wanted_spec.samples,  sdl_received_spec.samples);
+    }
+
     SDL_PauseAudioDevice(sdl_audio_device, 0);
     return ;
 }
