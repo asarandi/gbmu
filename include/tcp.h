@@ -15,7 +15,7 @@
 #define                     server_listen_address   "0.0.0.0"
 #define                     server_listen_port      42424
 
-static bool                 socket_debug = true;
+#define                     SOCKET_DEBUG    0
 
 #define sock_created        1
 #define sock_connected      2
