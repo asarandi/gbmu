@@ -47,8 +47,8 @@ bool    server_create()
     }
 
     server.server_address.sin_family = AF_INET;
-    server.server_address.sin_addr.s_addr = inet_addr(server_listen_address);
-    server.server_address.sin_port = htons(server_listen_port);
+    server.server_address.sin_addr.s_addr = inet_addr(NETWORK_ADDRESS);
+    server.server_address.sin_port = htons(NETWORK_PORT);
 /*    server.server_address.sin_len = sizeof(server.server_address); */
 
 	if (bind(server.server_sock, (struct sockaddr *)&server.server_address, (socklen_t)sizeof(server.server_address)) == -1)

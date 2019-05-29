@@ -7,11 +7,21 @@
 work in progress; gameboy emulator in c;
 
 
-#### building:
+
+#### building on linux:
 
 `apt install libsdl2-dev`
 
 `make`
+
+
+
+#### building on macOS:
+
+`brew install sdl2`
+
+`make`
+
 
 
 #### usage:
@@ -19,15 +29,27 @@ work in progress; gameboy emulator in c;
 `./gbmu <gameboy_rom_file.gb>`
 
 
+
+#### netplay:
+
+run server instance `./gbmu --server <gameboy_rom_file.gb>`
+
+run client instance `./gbmu --client <gameboy_rom_file.gb>`
+
+to play over LAN edit the `include/tcp.h` and update `NETWORK_ADDRESS` value, to recompile run `make clean && make`
+
+
+
 #### controls:
 
 |gameboy|gbmu|
 |-|-|
 |directional pad|arrow keys|
-|a|z|
-|b|x|
+|b|z|
+|a|x|
 |start|return|
 |select|right shift|
+
 
 
 #### screenshots

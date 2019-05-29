@@ -11,9 +11,9 @@
 #include <arpa/inet.h>
 #include <sys/errno.h>
 
-//#define                     server_listen_address   "10.113.100.235"
-#define                     server_listen_address   "0.0.0.0"
-#define                     server_listen_port      42424
+//#define                     NETWORK_ADDRESS   "10.113.100.235"
+#define                     NETWORK_ADDRESS   "0.0.0.0"
+#define                     NETWORK_PORT      42424
 
 #define                     SOCKET_DEBUG    0
 
