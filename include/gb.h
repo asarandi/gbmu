@@ -16,7 +16,6 @@
 
 //#define GUI_RENDER_COLORS    0xffffff, 0xaaaaaa, 0x555555, 0x000000      /* classic black and white */
 //#define GUI_RENDER_COLORS    0xebdd77, 0xa1bc00, 0x0d8833, 0x004333
-//#define GUI_RENDER_COLORS    0xd0d058, 0xa0a840, 0x708028, 0x405010      /* lospec.com nostalgia */
 //#define GUI_RENDER_COLORS    0x9bbc0f, 0x8bac0f, 0x306230, 0x0f380f      /* wikipedia */
 //#define GUI_RENDER_COLORS    0xf8e3c4, 0xcc3495, 0x6b1fb1, 0x0b0630      /* lospec.com: spacehaze */
 //#define GUI_RENDER_COLORS    0xeefded, 0x9a7bbc, 0x2d757e, 0x001b2e      /* lospec.com: purpledawn */

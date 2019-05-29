@@ -154,6 +154,7 @@ int main(int ac, char **av)
     savefile_write();
     apu_cleanup();
     gui_cleanup();
+    free(state->file_contents);
     free(gb_mem);
     free(gb_state);
     free(registers);
