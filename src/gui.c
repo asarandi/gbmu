@@ -15,7 +15,7 @@ SDL_Texture     *gui_buffer;
  Bit 0 - P10 Input Right or Button A (0=Pressed) (Read Only)
 */
 
-uint32_t        game_controls[]     = {SDLK_DOWN, SDLK_UP, SDLK_LEFT, SDLK_RIGHT, SDLK_RETURN, SDLK_RSHIFT, SDLK_x, SDLK_z};
+uint32_t        game_controls[]     = {SDLK_DOWN, SDLK_UP, SDLK_LEFT, SDLK_RIGHT, SDLK_RETURN, SDLK_RSHIFT, SDLK_z, SDLK_x};
 uint32_t        num_game_controls   = sizeof(game_controls) / sizeof(uint32_t);
 uint32_t        gui_colors[]        = {GUI_RENDER_COLORS};        /*classic*/
 //uint32_t        gui_colors[] = {0xe6e6e6ff, 0xb3b3b3ff, 0x737373ff, 0x333333ff};        /*shades of grey*/
