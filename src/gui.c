@@ -57,17 +57,17 @@ gui_cleanup() {
 void
 gui_render() {
     uint32_t    *pixels;
-    int         pitch, idx;
+    int         pitch, idx, buf_y, buf_x, gui_y, gui_x;
 
     if (SDL_LockTexture(gui_buffer, NULL, (void *)&pixels, &pitch) < 0) {
         SDL_Log("Couldn't lock texture: %s\n", SDL_GetError());
         state->done = true;
     }
-    for (int buf_y = 0; buf_y < 144; buf_y++) {
-        for (int buf_x = 0; buf_x < 160; buf_x++) {
+    for (buf_y = 0; buf_y < 144; buf_y++) {
+        for (buf_x = 0; buf_x < 160; buf_x++) {
             idx = state->screen_buf[buf_y * 160 + buf_x];
-            for (int gui_y = buf_y * GUI_SCALE_FACTOR; gui_y < (buf_y + 1) * GUI_SCALE_FACTOR; gui_y++) {
-                for (int gui_x = buf_x * GUI_SCALE_FACTOR; gui_x < (buf_x + 1) * GUI_SCALE_FACTOR; gui_x++) {
+            for (gui_y = buf_y * GUI_SCALE_FACTOR; gui_y < (buf_y + 1) * GUI_SCALE_FACTOR; gui_y++) {
+                for (gui_x = buf_x * GUI_SCALE_FACTOR; gui_x < (buf_x + 1) * GUI_SCALE_FACTOR; gui_x++) {
                     pixels[gui_y * GUI_SCALE_FACTOR * WND_WIDTH + gui_x] = gui_colors[idx];
                 }
             }
@@ -78,7 +78,9 @@ gui_render() {
 
 void
 gui_set_button_states(uint32_t key, uint8_t value) {
-    for (uint32_t i=0; i < num_game_controls; i++) {
+    uint32_t i;
+
+    for (i=0; i < num_game_controls; i++) {
         if (game_controls[i] == key) {
             state->buttons[i] = value;
             joypad_request_interrupt();

@@ -2,7 +2,9 @@
 
 bool is_argument(int ac, char **av, char *s)
 {
-    for (int i = 1; i < ac; i++) {
+    int i;
+
+    for (i = 1; i < ac; i++) {
         if (!strcmp(av[i], s))
             return true ;
     }
@@ -22,7 +24,7 @@ int main(int ac, char **av)
     uint8_t     op1;
     struct stat stat_buf;
     void (*f)(void *, t_state *, uint8_t *);
-    int         op_cycles = 4;
+    int         i, op_cycles = 4;
 
     if (ac < 2)
         return 1;
@@ -144,8 +146,8 @@ int main(int ac, char **av)
 
     }
     if (show_pc_history) {
-        for (int i=pc_idx; i<100; i++) { printf("PC %02d: %04x\n", i, pc_history[i]); };
-        for (int i=0; i<pc_idx; i++) { printf("PC %02d: %04x\n", i, pc_history[i]); };
+        for (i=pc_idx; i<100; i++) { printf("PC %02d: %04x\n", i, pc_history[i]); };
+        for (i=0; i<pc_idx; i++) { printf("PC %02d: %04x\n", i, pc_history[i]); };
     }
 
     serial_cleanup();

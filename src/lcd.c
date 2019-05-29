@@ -195,6 +195,8 @@ void    lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles)
     static bool     is_lyc;
     static bool     is_get_sprites;
     static uint8_t  sprites[10];
+    uint8_t         i;
+    uint16_t        dma_source;
 
     if (!is_lcd_enabled) {
         (void)memset(state->screen_buf, 0, 160*144);
@@ -260,8 +262,8 @@ void    lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles)
     }
     if (state->dma_update) {
         state->dma_update = false ;
-        uint16_t dma_source = gb_mem[0xff46] << 8;
-        for (uint8_t i = 0; i < 0xa0; i++)
+        dma_source = gb_mem[0xff46] << 8;
+        for (i = 0; i < 0xa0; i++)
             gb_mem[0xfe00 + i] = read_u8(dma_source + i);
     }
 }
