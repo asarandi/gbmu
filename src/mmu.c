@@ -16,6 +16,8 @@ uint8_t read_u8(uint16_t addr) {
 		return state->rom_read_u8(addr);
     if ((addr >= 0xa000) && (addr <= 0xbfff))           //RAM
         return state->ram_read_u8(addr);
+    if (addr == 0xff02)
+        return ((mem[0xff02] & 0x81) | 0x7e);
 
     /* ignore reads from oam in lcd-mode-2 and lcd-mode-3 */
     if ((addr >= 0xfe00) && (addr <= 0xfe9f) && ((is_lcd_mode_2) || (is_lcd_mode_3)))   return 0xff;
@@ -48,6 +50,12 @@ void    write_u8(uint16_t addr, uint8_t data) {
         return state->ram_write_u8(addr, data);
     if ((addr >= 0xc000) && (addr <= 0xddff))           //ECHO
         mem[addr+0x2000] = data;
+
+    if (addr == 0xff01)
+        return serial_data(data);
+
+    if (addr == 0xff02)
+        return serial_control(data);
     
     if (addr == 0xff02) {
         if (data == 0x81) {
