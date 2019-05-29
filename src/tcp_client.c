@@ -26,12 +26,12 @@ bool    client_create()
     client.is_blocking = false;
 
     client.server_address.sin_family = AF_INET;
-    client.server_address.sin_port = htons(server_listen_port);                                 //PORT
+    client.server_address.sin_port = htons(NETWORK_PORT);                                 //PORT
 
-    if (inet_pton(AF_INET, server_listen_address, &client.server_address.sin_addr) == -1) {     //ADDR
+    if (inet_pton(AF_INET, NETWORK_ADDRESS, &client.server_address.sin_addr) == -1) {     //ADDR
         (void)close(client.sock);
         if (SOCKET_DEBUG)
-            printf("%s: inet_pton(%s) failed\n", __func__, server_listen_address);
+            printf("%s: inet_pton(%s) failed\n", __func__, NETWORK_ADDRESS);
         return false;
     }
 
