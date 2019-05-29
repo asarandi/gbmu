@@ -6,7 +6,7 @@ bool    server_create()
 
     if ((server.server_sock = socket(AF_INET, SOCK_STREAM, 0)) == -1)
     {
-        if (socket_debug)
+        if (SOCKET_DEBUG)
             printf("%s: socket() failed\n", __func__);
         return false;
     }
@@ -14,7 +14,7 @@ bool    server_create()
     if ((server.server_sock_flags = fcntl(server.server_sock, F_GETFL)) == -1)
     {
         (void)close(server.server_sock);
-        if (socket_debug)
+        if (SOCKET_DEBUG)
             printf("%s: fcntl(F_GETFL) failed\n", __func__);
         return false;
     }
@@ -22,7 +22,7 @@ bool    server_create()
     if (fcntl(server.server_sock, F_SETFL, server.server_sock_flags | O_NONBLOCK) == -1)
     {
         (void)close(server.server_sock);
-        if (socket_debug)
+        if (SOCKET_DEBUG)
             printf("%s: fcntl(F_SETFL, O_NONBLOCK) failed\n", __func__);
         return false;
     }
@@ -32,7 +32,7 @@ bool    server_create()
     if (setsockopt(server.server_sock, SOL_SOCKET, SO_REUSEADDR, &server.server_opt, sizeof(server.server_opt)) == -1)
     {
         (void)close(server.server_sock);
-        if (socket_debug)
+        if (SOCKET_DEBUG)
             printf("%s: setsockopt() failed\n", __func__);
         return false;
     }
@@ -41,7 +41,7 @@ bool    server_create()
     if (setsockopt(server.server_sock, SOL_SOCKET, SO_REUSEPORT, &server.server_opt, sizeof(server.server_opt)) == -1)
     {
         (void)close(server.server_sock);
-        if (socket_debug)
+        if (SOCKET_DEBUG)
             printf("%s: setsockopt() failed\n", __func__);
         return false;
     }
@@ -54,7 +54,7 @@ bool    server_create()
 	if (bind(server.server_sock, (struct sockaddr *)&server.server_address, (socklen_t)sizeof(server.server_address)) == -1)
     {
         (void)close(server.server_sock);
-        if (socket_debug)
+        if (SOCKET_DEBUG)
             printf("%s: bind() failed\n", __func__);
         return false;
     }
@@ -62,7 +62,7 @@ bool    server_create()
 	if (listen(server.server_sock, 1) == -1)
     {
         (void)close(server.server_sock);
-        if (socket_debug)
+        if (SOCKET_DEBUG)
             printf("%s: listen() failed\n", __func__);
         return false;
     }

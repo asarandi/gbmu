@@ -5,21 +5,21 @@ bool    client_create()
     (void)memset(&client, 0, sizeof(t_client));
 
     if ((client.sock = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
-        if (socket_debug)
+        if (SOCKET_DEBUG)
             printf("%s: socket() failed\n", __func__);
         return false;
     }
 
     if ((client.sock_flags = fcntl(client.sock, F_GETFL)) == -1) {
         (void)close(client.sock);
-        if (socket_debug)
+        if (SOCKET_DEBUG)
             printf("%s: fcntl(F_GETFL) failed\n", __func__);
         return false;
     }
 
     if (fcntl(client.sock, F_SETFL, client.sock_flags | O_NONBLOCK) == -1) {
         (void)close(client.sock);
-        if (socket_debug)
+        if (SOCKET_DEBUG)
             printf("%s: fcntl(F_SETFL, O_NONBLOCK) failed\n", __func__);
         return false;
     }
@@ -30,7 +30,7 @@ bool    client_create()
 
     if (inet_pton(AF_INET, server_listen_address, &client.server_address.sin_addr) == -1) {     //ADDR
         (void)close(client.sock);
-        if (socket_debug)
+        if (SOCKET_DEBUG)
             printf("%s: inet_pton(%s) failed\n", __func__, server_listen_address);
         return false;
     }
@@ -41,7 +41,7 @@ bool    client_create()
     {
         if (errno == EINPROGRESS)
             return true ;        
-        if (socket_debug)
+        if (SOCKET_DEBUG)
             printf("%s: connect() failed\n", __func__);
         client.status &= ~sock_created;
         (void)close(client.sock);
