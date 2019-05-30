@@ -722,13 +722,14 @@ void    apu_init()
     if (!sdl_audio_device)
         return ;
 
-    if (memcmp(&sdl_wanted_spec.freq, &sdl_received_spec, sizeof(SDL_AudioSpec)))
-    {
+    if (sdl_wanted_spec.freq != sdl_received_spec.freq)
         printf("    sound freq: wanted = %d, received = %d\n", sdl_wanted_spec.freq,     sdl_received_spec.freq);
+    if (sdl_wanted_spec.format != sdl_received_spec.format)
         printf("  sound format: wanted = %d, received = %d\n", sdl_wanted_spec.format,   sdl_received_spec.format);
+    if (sdl_wanted_spec.channels != sdl_received_spec.channels)
         printf("sound channels: wanted = %d, received = %d\n", sdl_wanted_spec.channels, sdl_received_spec.channels);
+    if (sdl_wanted_spec.samples != sdl_received_spec.samples)
         printf(" sound samples: wanted = %d, received = %d\n", sdl_wanted_spec.samples,  sdl_received_spec.samples);
-    }
 
     SDL_PauseAudioDevice(sdl_audio_device, 0);
     return ;
