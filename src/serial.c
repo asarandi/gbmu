@@ -126,9 +126,9 @@ void    bit_transfer_ok(uint8_t octet_recv)
 {
     uint8_t *gb_mem = state->gameboy_memory;
 
-    gb_mem[0xff01] = (gb_mem[0xff01] << 1) | (octet_recv & 1);
-    current_bit++;
-    if (current_bit <= 8) return ;
+    gb_mem[0xff01] = octet_recv;
+//    current_bit++;
+//    if (current_bit <= 8) return ;
 //    printf("new SB: 0x%02x\n", gb_mem[0xff01]);
     current_bit = 1;
     gb_mem[0xff0f] |= 8;
@@ -165,7 +165,6 @@ void    master_init()
     serial_init = true;
     is_master = true ;
     is_slave = false ;
-    state->serial_cycles = 512;
 }
 
 void    slave_init()
@@ -193,14 +192,11 @@ void    master_bit_transfer()
     uint8_t *gb_mem = state->gameboy_memory;
     uint8_t octet_send = 0, octet_recv = 0;
 
-    octet_send = ((current_bit & 0xf) << 4) | ((gb_mem[0xff01] >> 7) & 1);
+    octet_send = gb_mem[0xff01];
     if (!socket_send(&octet_send))
         return (void)printf("%s: socketsend() failed\n", __func__);
-    octet_recv = ~octet_send;
     if (!socket_receive(&octet_recv))
         return (void)printf("%s: socket_receive() failed\n", __func__);
-    if ((octet_recv & 0xf0) != (octet_send & 0xf0))
-        return (void)printf("%s: bit counters different\n", __func__);
     bit_transfer_ok(octet_recv);
 }
 
@@ -212,9 +208,7 @@ void    slave_bit_transfer()
     set_blocking();
     if (!socket_receive(&octet_recv))
         return (void)printf("%s: socket_receive() failed\n", __func__);
-    if ((octet_recv >> 4) != current_bit)
-        return (void)printf("%s: bit counters different\n", __func__);
-    octet_send = ((current_bit & 0xf) << 4) | ((gb_mem[0xff01] >> 7) & 1);
+    octet_send =gb_mem[0xff01];
     if (!socket_send(&octet_send))
         return (void)printf("%s: socket_send() failed\n", __func__);
     bit_transfer_ok(octet_recv);
@@ -241,7 +235,7 @@ void    serial(uint8_t current_cycles)
         return ;
 
     state->serial_cycles += current_cycles;
-    if ((state->serial_cycles >> 10) < current_bit)
+    if ((state->serial_cycles >> 12) < current_bit)
         return ;
     if (is_slave)
         slave_bit_transfer();
