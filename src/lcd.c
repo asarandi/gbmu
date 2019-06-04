@@ -125,6 +125,19 @@ void    get_sprites(uint8_t *gb_mem, uint8_t lcd_y, uint8_t *sprites)
     (void)qsort(sprites, sprites_idx, 1, &sprites_compare);
 }
 
+void    screen_mask()
+{
+    uint8_t *gb_mem = state->gameboy_memory;
+    uint8_t color_0 = gb_mem[0xff47] & 3;
+
+    if (state->screen_mask == 0)                                /*freeze*/
+        return ;
+    if (state->screen_mask == 2)
+        (void)memset(state->screen_buf, 3, 144*160);            /*black*/
+    if (state->screen_mask == 3)
+        (void)memset(state->screen_buf, color_0, 144*160);      /*color 0*/
+}
+
 void    screen_update(uint8_t *gb_mem, t_state *state, uint8_t *sprites)
 {
 
@@ -142,6 +155,8 @@ void    screen_update(uint8_t *gb_mem, t_state *state, uint8_t *sprites)
 
     if (y > 143)
         return;
+    if (state->screen_mask)
+        return screen_mask();
 
     (void)memset(bg_data, 0, 160);
     (void)memset(obj_data, 0, 160);
