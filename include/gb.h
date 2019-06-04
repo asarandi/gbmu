@@ -152,6 +152,7 @@ void        gui_cleanup();
 void        gui_update();
 
 uint8_t     joypad_read();
+void        joypad_write(uint8_t data);
 void        joypad_request_interrupt();
 
 void        gameboy_init();
