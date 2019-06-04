@@ -10,3 +10,4 @@ test
 *.sav
 *.dump
 gbmu
+nohup.out
