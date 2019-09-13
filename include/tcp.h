@@ -11,7 +11,7 @@
 #include <arpa/inet.h>
 #include <sys/errno.h>
 
-//#define                     NETWORK_ADDRESS   "10.113.100.235"
+//#define                     NETWORK_ADDRESS   "10.113.6.23"
 #define                     NETWORK_ADDRESS   "0.0.0.0"
 #define                     NETWORK_PORT      42424
 
