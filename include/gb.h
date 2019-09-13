@@ -12,7 +12,6 @@
 #include <time.h>
 
 #define BOOTROM_ENABLED     false
-#define GUI_SCALE_FACTOR    3
 
 #define ROM_ADDRESS 0x4000
 #define ROM_SIZE    0x4000
