@@ -52,6 +52,15 @@ to play over LAN edit the `include/tcp.h` and update `NETWORK_ADDRESS` value, to
 
 
 
+#### settings:
+
+`-`, `=` sound volume
+
+`1`-`5` screen size
+
+`q`, `w` palette
+
+
 #### screenshots
 
 [![screenshots/screenshot1.png](screenshots/screenshot1.png "screenshots/screenshot1.png")](screenshots/screenshot1.png "screenshots/screenshot1.png")
