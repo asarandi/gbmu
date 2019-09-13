@@ -31,7 +31,7 @@ struct s_render_palette render_palettes[] = {
     {{0xd0f4f8, 0x70b0c0, 0x3c3468, 0x1c0820}, "blue-seni"},
     {{0x000000, 0x676767, 0xb6b6b6, 0xffffff}, "2-bit-grayscale"},
     {{0x332c50, 0x46878f, 0x94e344, 0xe2f3e4}, "kirokaze-gameboy"},
-    {{0x5a3921, 0x6b8c42, 0x7bc67b, 0xffffb5}, "links-awakening-sgb"},
+    {{0xffffb5, 0x7bc67b, 0x6b8c42, 0x5a3921}, "links-awakening-sgb-2"},
     {{0x331e50, 0xa63725, 0xd68e49, 0xf7e7c6}, "nintendo-super-gameboy"},
     {{0x081820, 0x346856, 0x88c070, 0xe0f8d0}, "nintendo-gameboy-bgb"},
     {{0x181010, 0x84739c, 0xf7b58c, 0xffefff}, "pokemon-sgb"},
@@ -43,69 +43,92 @@ struct s_render_palette render_palettes[] = {
     {{0x2c2137, 0x764462, 0xedb4a1, 0xa96868}, "rustic-gb"},
     {{0x243137, 0x3f503f, 0x768448, 0xacb56b}, "nintendo-gameboy-arne"},
     {{0x65296c, 0xb76591, 0xf4b26b, 0xfff5dd}, "grapefruit"},
-    {{0x2c2c96, 0x7733e7, 0xe78686, 0xf7bef7}, "kirby-sgb"},
+    {{0xf7bef7, 0xe78686, 0x7733e7, 0x2c2c96}, "kirby-sgb-2"},
     {{0x2e463d, 0x385d49, 0x577b46, 0x7e8416}, "nintendo-gameboy-black-zero"},
     {{0x202020, 0x5e6745, 0xaeba89, 0xe3eec0}, "andrade-gameboy"},
     {{0x1f1f1f, 0x4d533c, 0x8b956d, 0xc4cfa1}, "pj-gameboy"},
     {{0xe7e8f3, 0x8c83c3, 0x634d8f, 0x120b19}, "darkboy4"},
     {{0x4c625a, 0x7b9278, 0xabc396, 0xdbf4b4}, "grafxkid-gameboy-pocket-green"},
-    {{0x2c1700, 0x047e60, 0xb62558, 0xaedf1e}, "metroid-ii-sgb"},
+    {{0xaedf1e, 0xb62558, 0x2c1700, 0x047e60}, "metroid-ii-sgb-2"},
     {{0x2c2137, 0x446176, 0x3fac95, 0xa1ef8c}, "nymph-gb"},
-    {{0x1e0000, 0x9e0000, 0xf78e50, 0xcef7f7}, "kid-icarus-sgb"},
+    {{0xcef7f7, 0xf78e50, 0x9e0000, 0x1e0000}, "kid-icarus-sgb-2"},
     {{0x004333, 0x0d8833, 0xa1bc00, 0xebdd77}, "gb-easy-greens"},
     {{0x33ccff, 0x2086fd, 0x57001a, 0xb2194c}, "gameboy-pop"},
     {{0x622e4c, 0x7550e8, 0x608fcf, 0x8be5ff}, "wish-gb"},
-    {{0x000000, 0x11c600, 0xdfa677, 0xeff7b6}, "super-mario-land-2-sgb"}
+    {{0xeff7b6, 0xdfa677, 0x11c600, 0x000000}, "super-mario-land-2-sgb-2"}
 };
 
-static unsigned int render_palette_idx = 20;
+static unsigned int render_palette_idx = 36;
 #define num_render_palettes (sizeof(render_palettes) / sizeof(struct s_render_palette))
 
-bool
-gui_init() {
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0) {
+void set_window_title()
+{
+    char *s = render_palettes[render_palette_idx % num_render_palettes].name;
+    char *title1 = "gbmu";
+    char *title2 = "gbmu: ";
+    if ((!s) || (!strlen(s))) return SDL_SetWindowTitle(gui_window, title1);
+    char *t = malloc(strlen(title2) + strlen(s) + 1);
+    (void)strcpy(t, title2);
+    (void)strcat(t, s);
+    SDL_SetWindowTitle(gui_window, t);
+    free(t);
+}
+
+bool gui_init()
+{
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0)
+    {
         printf("Failed to initialise SDL\n");
         return false;
     }
-    if ((gui_window = SDL_CreateWindow("gbmu", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WND_WIDTH * GUI_SCALE_FACTOR, WND_HEIGHT * GUI_SCALE_FACTOR, 0)) == NULL) {
+    if ((gui_window = SDL_CreateWindow("gbmu", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WND_WIDTH * GUI_SCALE_FACTOR, WND_HEIGHT * GUI_SCALE_FACTOR, 0)) == NULL)
+    {
         SDL_Log("Could not create a window: %s", SDL_GetError());
         return false;
     }
-    if ((gui_renderer = SDL_CreateRenderer(gui_window, -1, SDL_RENDERER_ACCELERATED)) == NULL) {
+    if ((gui_renderer = SDL_CreateRenderer(gui_window, -1, SDL_RENDERER_ACCELERATED)) == NULL)
+    {
         SDL_Log("Could not create a renderer: %s", SDL_GetError());
         return false;
     }
-    if ((gui_buffer = SDL_CreateTexture(gui_renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, WND_WIDTH * GUI_SCALE_FACTOR, WND_HEIGHT * GUI_SCALE_FACTOR)) == NULL) {
+    if ((gui_buffer = SDL_CreateTexture(gui_renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, WND_WIDTH * GUI_SCALE_FACTOR, WND_HEIGHT * GUI_SCALE_FACTOR)) == NULL)
+    {
         SDL_Log("Could not create a texture: %s", SDL_GetError());
         return false;
     }
 
+    set_window_title();
     SDL_RenderClear(gui_renderer);
     return true;
 }
 
-void
-gui_cleanup() {
+void gui_cleanup()
+{
     SDL_DestroyTexture(gui_buffer);
     SDL_DestroyRenderer(gui_renderer);
     SDL_DestroyWindow(gui_window);
     SDL_Quit();
 }
 
-void
-gui_render() {
+void gui_render()
+{
     uint32_t    *pixels;
     int         pitch, idx, buf_y, buf_x, gui_y, gui_x;
 
-    if (SDL_LockTexture(gui_buffer, NULL, (void *)&pixels, &pitch) < 0) {
+    if (SDL_LockTexture(gui_buffer, NULL, (void *)&pixels, &pitch) < 0)
+    {
         SDL_Log("Couldn't lock texture: %s\n", SDL_GetError());
         state->done = true;
     }
-    for (buf_y = 0; buf_y < 144; buf_y++) {
-        for (buf_x = 0; buf_x < 160; buf_x++) {
+    for (buf_y = 0; buf_y < 144; buf_y++)
+    {
+        for (buf_x = 0; buf_x < 160; buf_x++)
+        {
             idx = state->screen_buf[buf_y * 160 + buf_x];
-            for (gui_y = buf_y * GUI_SCALE_FACTOR; gui_y < (buf_y + 1) * GUI_SCALE_FACTOR; gui_y++) {
-                for (gui_x = buf_x * GUI_SCALE_FACTOR; gui_x < (buf_x + 1) * GUI_SCALE_FACTOR; gui_x++) {
+            for (gui_y = buf_y * GUI_SCALE_FACTOR; gui_y < (buf_y + 1) * GUI_SCALE_FACTOR; gui_y++)
+            {
+                for (gui_x = buf_x * GUI_SCALE_FACTOR; gui_x < (buf_x + 1) * GUI_SCALE_FACTOR; gui_x++)
+                {
                     pixels[gui_y * GUI_SCALE_FACTOR * WND_WIDTH + gui_x] =
                     render_palettes[render_palette_idx % num_render_palettes].colors[idx];
                 }
@@ -115,25 +138,29 @@ gui_render() {
     SDL_UnlockTexture(gui_buffer);
 }
 
-void
-gui_set_button_states(uint32_t key, uint8_t value) {
+void gui_set_button_states(uint32_t key, uint8_t value)
+{
     uint32_t i;
 
-    for (i=0; i < num_game_controls; i++) {
-        if (game_controls[i] == key) {
+    for (i=0; i < num_game_controls; i++)
+    {
+        if (game_controls[i] == key)
+        {
             state->buttons[i] = value;
             joypad_request_interrupt();
         }
     }
 }
 
-void
-gui_update() {
+void gui_update()
+{
     SDL_Event   event;
 
     gui_render();
-    while (SDL_PollEvent(&event)) {
-        switch (event.type) {
+    while (SDL_PollEvent(&event))
+    {
+        switch (event.type)
+        {
             case SDL_QUIT:
                 state->done = true;
                 break ;
@@ -145,6 +172,8 @@ gui_update() {
                     render_palette_idx--;
                 if (event.key.keysym.sym == SDLK_w)
                     render_palette_idx++;
+                if ((event.key.keysym.sym == SDLK_q) || (event.key.keysym.sym == SDLK_w))
+                    set_window_title();
                 break ;
             case SDL_KEYUP:
                 gui_set_button_states(event.key.keysym.sym, 0);
