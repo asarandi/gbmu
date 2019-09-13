@@ -696,8 +696,8 @@ void MyAudioCallback(void *userdata, Uint8 *stream, int len)
         right += *(int16_t *)&sound_4_buffer[j + SAMPLE_SIZE];
         right = (right / 7) * MASTER_VOLUME_RIGHT;
 
-        left >>= 1;
-        right >>= 1;
+        left >>= 1 + state->volume;
+        right >>= 1 + state->volume;
         left &= INT16_MAX;
         right &= INT16_MAX;
 

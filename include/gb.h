@@ -52,6 +52,7 @@ typedef struct  s_state {
     bool            debug;
     bool            done;
     bool            dma_update;
+    int             volume;
     int             screen_mask;
     char            *rom_file;
     char            *ram_file;    

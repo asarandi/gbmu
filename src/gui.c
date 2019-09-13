@@ -84,7 +84,7 @@ void set_window_size()
     if (gui_buffer)
         SDL_DestroyTexture(gui_buffer);
     SDL_SetWindowSize(gui_window, width, height);
-	SDL_SetWindowPosition(gui_window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+    SDL_SetWindowPosition(gui_window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
     if ((gui_buffer = SDL_CreateTexture(gui_renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, width, height)) == NULL)
         SDL_Log("%s: could not create a texture: %s", __func__,  SDL_GetError());
 }
@@ -165,7 +165,7 @@ void gui_set_button_states(uint32_t key, uint8_t value)
 
 void gui_update()
 {
-	int			tmp;
+    int         tmp;
     SDL_Event   event;
 
     gui_render();
@@ -194,6 +194,11 @@ void gui_update()
                     gui_scale_factor = 5;
                 if (tmp != gui_scale_factor)
                     set_window_size();
+
+                if ((event.key.keysym.sym == SDLK_EQUALS) && (state->volume > 0))
+                    state->volume--;
+                if ((event.key.keysym.sym == SDLK_MINUS) && (state->volume < 16))
+                    state->volume++;
 
                 if (event.key.keysym.sym == SDLK_q)
                     render_palette_idx--;
