@@ -4,9 +4,11 @@
 #define WND_WIDTH   160
 #define WND_HEIGHT  144
 
-SDL_Window      *gui_window;
-SDL_Renderer    *gui_renderer;
-SDL_Texture     *gui_buffer;
+static int gui_scale_factor = 3;
+
+static SDL_Window      *gui_window;
+static SDL_Renderer    *gui_renderer;
+static SDL_Texture     *gui_buffer;
 
 uint32_t        game_controls[]     = {SDLK_DOWN, SDLK_UP, SDLK_LEFT, SDLK_RIGHT, SDLK_RETURN, SDLK_RSHIFT, SDLK_z, SDLK_x};
 uint32_t        num_game_controls   = sizeof(game_controls) / sizeof(uint32_t);
@@ -74,6 +76,19 @@ void set_window_title()
     free(t);
 }
 
+void set_window_size()
+{
+    int width = WND_WIDTH * gui_scale_factor;
+    int height = WND_HEIGHT * gui_scale_factor;
+
+    if (gui_buffer)
+        SDL_DestroyTexture(gui_buffer);
+    SDL_SetWindowSize(gui_window, width, height);
+	SDL_SetWindowPosition(gui_window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+    if ((gui_buffer = SDL_CreateTexture(gui_renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, width, height)) == NULL)
+        SDL_Log("%s: could not create a texture: %s", __func__,  SDL_GetError());
+}
+
 bool gui_init()
 {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0)
@@ -81,7 +96,7 @@ bool gui_init()
         printf("Failed to initialise SDL\n");
         return false;
     }
-    if ((gui_window = SDL_CreateWindow("gbmu", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WND_WIDTH * GUI_SCALE_FACTOR, WND_HEIGHT * GUI_SCALE_FACTOR, 0)) == NULL)
+    if ((gui_window = SDL_CreateWindow("gbmu", 0, 0, WND_WIDTH, WND_HEIGHT, 0)) == NULL)
     {
         SDL_Log("Could not create a window: %s", SDL_GetError());
         return false;
@@ -91,13 +106,9 @@ bool gui_init()
         SDL_Log("Could not create a renderer: %s", SDL_GetError());
         return false;
     }
-    if ((gui_buffer = SDL_CreateTexture(gui_renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, WND_WIDTH * GUI_SCALE_FACTOR, WND_HEIGHT * GUI_SCALE_FACTOR)) == NULL)
-    {
-        SDL_Log("Could not create a texture: %s", SDL_GetError());
-        return false;
-    }
 
     set_window_title();
+    set_window_size();
     SDL_RenderClear(gui_renderer);
     return true;
 }
@@ -125,11 +136,11 @@ void gui_render()
         for (buf_x = 0; buf_x < 160; buf_x++)
         {
             idx = state->screen_buf[buf_y * 160 + buf_x];
-            for (gui_y = buf_y * GUI_SCALE_FACTOR; gui_y < (buf_y + 1) * GUI_SCALE_FACTOR; gui_y++)
+            for (gui_y = buf_y * gui_scale_factor; gui_y < (buf_y + 1) * gui_scale_factor; gui_y++)
             {
-                for (gui_x = buf_x * GUI_SCALE_FACTOR; gui_x < (buf_x + 1) * GUI_SCALE_FACTOR; gui_x++)
+                for (gui_x = buf_x * gui_scale_factor; gui_x < (buf_x + 1) * gui_scale_factor; gui_x++)
                 {
-                    pixels[gui_y * GUI_SCALE_FACTOR * WND_WIDTH + gui_x] =
+                    pixels[gui_y * gui_scale_factor * WND_WIDTH + gui_x] =
                     render_palettes[render_palette_idx % num_render_palettes].colors[idx];
                 }
             }
@@ -154,6 +165,7 @@ void gui_set_button_states(uint32_t key, uint8_t value)
 
 void gui_update()
 {
+	int			tmp;
     SDL_Event   event;
 
     gui_render();
@@ -168,6 +180,21 @@ void gui_update()
                 gui_set_button_states(event.key.keysym.sym, 1);
                 if (event.key.keysym.sym == SDLK_ESCAPE)
                     state->done = true;
+
+                tmp = gui_scale_factor;
+                if (event.key.keysym.sym == SDLK_1)
+                    gui_scale_factor = 1;
+                if (event.key.keysym.sym == SDLK_2)
+                    gui_scale_factor = 2;
+                if (event.key.keysym.sym == SDLK_3)
+                    gui_scale_factor = 3;
+                if (event.key.keysym.sym == SDLK_4)
+                    gui_scale_factor = 4;
+                if (event.key.keysym.sym == SDLK_5)
+                    gui_scale_factor = 5;
+                if (tmp != gui_scale_factor)
+                    set_window_size();
+
                 if (event.key.keysym.sym == SDLK_q)
                     render_palette_idx--;
                 if (event.key.keysym.sym == SDLK_w)
