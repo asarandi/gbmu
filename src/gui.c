@@ -60,7 +60,7 @@ struct s_render_palette render_palettes[] = {
     {{0xeff7b6, 0xdfa677, 0x11c600, 0x000000}, "super-mario-land-2-sgb-2"}
 };
 
-static unsigned int render_palette_idx = 36;
+static unsigned int render_palette_idx = 35;
 #define num_render_palettes (sizeof(render_palettes) / sizeof(struct s_render_palette))
 
 void set_window_title()

@@ -90,6 +90,7 @@ int main(int ac, char **av)
     gameboy_init();
     cartridge_init();
 
+    uint8_t     dbgcmd = 0;
     uint16_t    pc_history[100] = {0};
     int         pc_idx = 0;
     bool        show_pc_history = false;
@@ -120,10 +121,11 @@ int main(int ac, char **av)
         {
             printf("state->cycles = %u\n", state->cycles);
             dump_registers(registers, state, mem);
-            uint8_t tmp; read(0, &tmp, 1);
-            if (tmp == 'c') {
+            if ((read(0, &dbgcmd, 1) == 1) && (dbgcmd == 'c'))
+            {
                 state->cycles = 0;
                 state->debug = false;
+                dbgcmd = 0;
             }
         }
         pc_history[pc_idx++] = r16->PC;
