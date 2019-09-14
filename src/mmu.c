@@ -72,9 +72,9 @@ void    write_u8(uint16_t addr, uint8_t data) {
         return sound_write_u8(addr, data);
 
     if (addr == 0xff41) {                                                   /* LCD STAT */
-        t_r16   *r16 = state->gameboy_registers;
-        printf("writing to STAT 0xff41, data: %02x, r16->PC = %04x\n", data, r16->PC);
-        printf("current LY 0xff44: %02x, current LYC 0xff45: %02x\n", mem[0xff44], mem[0xff45]);
+    //    t_r16   *r16 = state->gameboy_registers;
+    //    printf("writing to STAT 0xff41, data: %02x, r16->PC = %04x\n", data, r16->PC);
+    //    printf("current LY 0xff44: %02x, current LYC 0xff45: %02x\n", mem[0xff44], mem[0xff45]);
         data &= 0xf8; data |= (mem[0xff41] & 7);                            /*lcd stat bottom 3 bits read only*/
     }
 
