@@ -1,35 +1,75 @@
 #include "gb.h"
+#include <arpa/inet.h>
 
-bool is_argument(int ac, char **av, char *s)
+static char *default_network_address = "0.0.0.0";
+static int default_network_port = 4242;
+
+bool is_valid_ip(char *s)
 {
-    int i;
-
-    for (i = 1; i < ac; i++) {
-        if (!strcmp(av[i], s))
-            return true ;
-    }
-    return false;
+    struct sockaddr_in sa;
+    return inet_pton(AF_INET, s, &(sa.sin_addr)) == 1;
 }
+
+bool arg_parse(int ac, char **av)
+{
+    int c;
+
+    state->network_address = &default_network_address[0];
+    state->network_port = default_network_port;
+
+    while ((c = getopt(ac, av, "c:s:p:")) != -1)
+    {
+        switch (c)
+        {
+            case 'c':
+            case 's':
+                state->is_client = c == 'c';
+                state->is_server = c == 's';                
+                if (is_valid_ip(optarg))
+                    state->network_address = optarg;
+                else
+                    optind--;
+                break ;
+            case 'p':
+                state->network_port = atoi(optarg);
+                break ;
+            case '?':
+            default:
+                printf("failed to parse options");
+                return false;
+        }
+    }
+    if (state->is_client || state->is_server)
+        printf("netplay %s: %s:%d\n", state->is_client ? "client" : "server", state->network_address, state->network_port);
+    return true;
+}
+
+uint8_t     gb_mem[0x10000];
+t_state     gb_state;
+t_state     *state = &gb_state;
+t_r16       registers;
+t_r16       *r16 = &registers;
+
 
 int main(int ac, char **av)
 {
-
     int         fd;
-    void        *registers;
-    t_r16       *r16;
-    void        *gb_state;
-    void        *gb_mem;    
-    uint8_t     *mem;
-    uint8_t     op0;
-    uint8_t     op1;
+    uint8_t     op;
     struct stat stat_buf;
-    void (*f)(void *, t_state *, uint8_t *);
+    void        (*f)(void *, t_state *, uint8_t *);
     int         i, op_cycles = 4;
+    uint8_t     dbgcmd = 0;
+    uint16_t    pc_history[100] = {0};
+    int         pc_idx = 0;
+    bool        show_pc_history = false;
+    static int  instr_cycles;
 
-    if (ac < 2)
+    if (!arg_parse(ac, av))
         return 1;
 
-    if ((fd = open(av[ac - 1], O_RDONLY)) == -1) {
+    state->rom_file = av[ac-1];
+
+    if ((fd = open(state->rom_file, O_RDONLY)) == -1) {
         printf("failed to open file\n");
         return 1;
     }
@@ -39,7 +79,6 @@ int main(int ac, char **av)
         printf("fstat() failed\n");
         return 1;
     }
-
     
     if ((stat_buf.st_size < 0x8000) || 
             (stat_buf.st_size > 0x800000) || 
@@ -49,78 +88,49 @@ int main(int ac, char **av)
         return 1;
     }
 
-    registers = malloc(sizeof(t_r8));
-    (void)memset(registers, 0, sizeof(t_r8));
-    r16 = registers;
-
-    gb_state = malloc(sizeof(t_state));
-    (void)memset(gb_state, 0, sizeof(t_state));    
-    state = gb_state;
-
-    gb_mem = malloc(0x10000);
-    (void)memset(gb_mem, 0, 0x10000);
-    mem = gb_mem;
-
-    state->gameboy_memory = gb_mem;
-    state->gameboy_registers = registers;
+    state->serial_data = 0xff;
+//    state->gameboy_memory = gb_mem;
+    state->gameboy_registers = &registers;
     state->file_contents = malloc(stat_buf.st_size);
 	state->file_size = stat_buf.st_size;
-    state->rom_file = av[ac - 1];
-
-    if (is_argument(ac, av, "--server"))
-        state->is_server = true ;
-    if (is_argument(ac, av, "--client"))
-        state->is_client = true ;
-
-    state->serial_data = 0xff;
 
     if (read(fd, state->file_contents, stat_buf.st_size) != stat_buf.st_size) {
         printf("read() failed\n");
     }
     close(fd);
-    (void)memcpy(state->gameboy_memory, state->file_contents, 0x8000);
+    (void)memcpy(gb_mem, state->file_contents, 0x8000);
 
     if (!gui_init())
         state->done = true;
 
-    if (!is_argument(ac, av, "--nosound"))
-        (void)apu_init();
-
     state->bootrom_enabled = BOOTROM_ENABLED;
     gameboy_init();
     cartridge_init();
-
-    uint8_t     dbgcmd = 0;
-    uint16_t    pc_history[100] = {0};
-    int         pc_idx = 0;
-    bool        show_pc_history = false;
-
-    savefile_read(av[1]);
+    apu_init();
+    savefile_read();
 
     while (!state->done)
     {
         serial(op_cycles);
-        timers_update(gb_mem, gb_state, op_cycles);
-        lcd_update(gb_mem, gb_state, op_cycles);
-        apu_update(gb_mem, gb_state, op_cycles);
-        interrupts_update(gb_mem, state, registers);
+        timers_update(gb_mem, &gb_state, op_cycles);
+        lcd_update(gb_mem, &gb_state, op_cycles);
+        apu_update(gb_mem, &gb_state, op_cycles);
+        interrupts_update(gb_mem, state, &registers);
 
-        op0 = read_u8(r16->PC);
-        op1 = read_u8(r16->PC + 1);
-        f = ops0[op0];
-        if (op0 == 0xcb)
-            f = ops1[op1];
+        op = read_u8(r16->PC);
+        f = ops0[op];
+        if (op == 0xcb)
+            f = ops1[read_u8(r16->PC + 1)];
 
         if (r16->PC == 0x100 && state->bootrom_enabled) {
-            (void)memcpy(state->gameboy_memory, state->file_contents, 0x100);
+            (void)memcpy(gb_mem, state->file_contents, 0x100);
             state->bootrom_enabled = false;
         }
 
-//        if (r16->PC == 0x03ca) { state->debug = true; }
         if (state->debug)
         {
             printf("state->cycles = %u\n", state->cycles);
-            dump_registers(registers, state, mem);
+            dump_registers(&registers, state, gb_mem);
             if ((read(0, &dbgcmd, 1) == 1) && (dbgcmd == 'c'))
             {
                 state->cycles = 0;
@@ -130,16 +140,14 @@ int main(int ac, char **av)
         }
         pc_history[pc_idx++] = r16->PC;
         pc_idx %= 100;
-
         
-        static int instr_cycles;
         if ((!state->halt) && (!state->interrupt_cycles)) {
             if (!instr_cycles)
-                instr_cycles = get_num_cycles(registers, gb_mem);
+                instr_cycles = get_num_cycles(&registers, gb_mem);
             if (instr_cycles)
                 instr_cycles -= 4;
             if (!instr_cycles)
-                f(registers, gb_state, gb_mem);
+                f((void *)&registers, (void *)&gb_state, gb_mem);
         }
 
         op_cycles = 4;
@@ -157,9 +165,9 @@ int main(int ac, char **av)
     apu_cleanup();
     gui_cleanup();
     free(state->file_contents);
-    free(gb_mem);
-    free(gb_state);
-    free(registers);
+//    free(gb_mem);
+//    free(gb_state);
+//    free(registers);
 
     return 0;
 }

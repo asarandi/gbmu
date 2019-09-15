@@ -1,6 +1,6 @@
 #include "tcp.h"
 
-bool    client_create()
+bool    client_create(char *network_address, int network_port)
 {
     (void)memset(&client, 0, sizeof(t_client));
 
@@ -26,12 +26,12 @@ bool    client_create()
     client.is_blocking = false;
 
     client.server_address.sin_family = AF_INET;
-    client.server_address.sin_port = htons(NETWORK_PORT);                                 //PORT
+    client.server_address.sin_port = htons(network_port);                                 //PORT
 
-    if (inet_pton(AF_INET, NETWORK_ADDRESS, &client.server_address.sin_addr) == -1) {     //ADDR
+    if (inet_pton(AF_INET, network_address, &client.server_address.sin_addr) == -1) {     //ADDR
         (void)close(client.sock);
         if (SOCKET_DEBUG)
-            printf("%s: inet_pton(%s) failed\n", __func__, NETWORK_ADDRESS);
+            printf("%s: inet_pton(%s) failed\n", __func__, network_address);
         return false;
     }
 

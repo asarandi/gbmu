@@ -89,7 +89,7 @@ void    serial_connect()
     {
         if (!(server.status & sock_created))
         {
-            if (!server_create())
+            if (!server_create(state->network_address, state->network_port))
                 create_cooldown = SOCKET_RECONNECT_DELAY;
             return ;
         }
@@ -105,7 +105,7 @@ void    serial_connect()
     {
         if (!(client.status & sock_created))
         {
-            if (!client_create())
+            if (!client_create(state->network_address, state->network_port))
                 create_cooldown = SOCKET_RECONNECT_DELAY;
         }
         if (!(client.status & sock_connected))
@@ -124,8 +124,6 @@ static  bool    is_slave;
 
 void    bit_transfer_ok(uint8_t octet_recv)
 {
-    uint8_t *gb_mem = state->gameboy_memory;
-
     gb_mem[0xff01] = octet_recv;
 //    current_bit++;
 //    if (current_bit <= 8) return ;
@@ -141,8 +139,6 @@ void    bit_transfer_ok(uint8_t octet_recv)
 }
 void    master_offline()
 {
-    uint8_t *gb_mem = state->gameboy_memory;
-
     gb_mem[0xff01] = 0xff;
     gb_mem[0xff02] &= 1;
     gb_mem[0xff0f] |= 8;
@@ -150,7 +146,6 @@ void    master_offline()
 }
 void    master_init()
 {
-//    uint8_t *gb_mem = state->gameboy_memory;
     uint8_t octet_send, octet_recv;
 
     set_blocking();
@@ -169,7 +164,6 @@ void    master_init()
 
 void    slave_init()
 {
-//    uint8_t *gb_mem = state->gameboy_memory;
     uint8_t octet_send, octet_recv;
 
     set_nonblocking();
@@ -189,7 +183,6 @@ void    slave_init()
 
 void    master_bit_transfer()
 {
-    uint8_t *gb_mem = state->gameboy_memory;
     uint8_t octet_send = 0, octet_recv = 0;
 
     octet_send = gb_mem[0xff01];
@@ -202,7 +195,6 @@ void    master_bit_transfer()
 
 void    slave_bit_transfer()
 {
-    uint8_t *gb_mem = state->gameboy_memory;
     uint8_t octet_send = 0, octet_recv = 0;
 
     set_blocking();
@@ -217,10 +209,7 @@ void    slave_bit_transfer()
 
 void    serial(uint8_t current_cycles)
 {
-    uint8_t *gb_mem = state->gameboy_memory;
-
     serial_connect();
-
 
     if (!serial_init)
     {
@@ -245,7 +234,6 @@ void    serial(uint8_t current_cycles)
 
 void    serial_data(uint8_t data)
 {
-    uint8_t *gb_mem = state->gameboy_memory;
     if (state->is_transfer)
         printf("writing to SB during transfer: current = %02x, new = %02x\n", gb_mem[0xff01], data);
     gb_mem[0xff01] = data;
@@ -253,8 +241,6 @@ void    serial_data(uint8_t data)
 
 void    serial_control(uint8_t data)
 {
-    uint8_t *gb_mem = state->gameboy_memory;
-
     gb_mem[0xff02] = data & 0x81;
     if (state->is_transfer)
         printf("writing to SC during transfer");

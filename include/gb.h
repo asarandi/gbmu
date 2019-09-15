@@ -68,7 +68,9 @@ typedef struct  s_state {
     void            (*ram_write_u8)(uint16_t, uint8_t);
     uint8_t         (*rom_read_u8)(uint16_t);
     void            (*rom_write_u8)(uint16_t, uint8_t);
-/*    serial/tcp    */        
+/*    serial/tcp    */
+    char            *network_address;
+    int             network_port;
     bool            is_server;
     bool            is_client;
     bool            is_transfer;
@@ -76,7 +78,8 @@ typedef struct  s_state {
     unsigned int    serial_cycles;
 } t_state;
 
-t_state     *state;
+extern uint8_t gb_mem[];
+extern t_state *state;
 
 #define clear_z_flag     (r8->F &= (~0x80))
 #define clear_n_flag     (r8->F &= (~0x40))

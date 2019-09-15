@@ -11,11 +11,7 @@
 #include <arpa/inet.h>
 #include <sys/errno.h>
 
-//#define                     NETWORK_ADDRESS   "10.113.6.23"
-#define                     NETWORK_ADDRESS   "0.0.0.0"
-#define                     NETWORK_PORT      42424
-
-#define                     SOCKET_DEBUG    0
+#define                     SOCKET_DEBUG    true
 
 #define sock_created        1
 #define sock_connected      2
@@ -45,11 +41,11 @@ typedef struct  s_client {
     struct sockaddr_in      server_address;
 }   t_client;
 
-bool    client_create();
+bool    client_create(char *network_address, int network_port);
 bool    client_connect();
 bool    client_send();
 bool    client_recv();
-bool    server_create();
+bool    server_create(char *network_address, int network_port);
 bool    server_accept();
 bool    server_send();
 bool    server_recv();

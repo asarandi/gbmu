@@ -32,7 +32,7 @@ unsigned int DMG_ROM_bin_len = 256;
 void    set_initial_register_values()
 {
     t_r16   *r16    = state->gameboy_registers;
-    uint8_t *gb_mem = state->gameboy_memory;
+//    uint8_t *gb_mem = state->gameboy_memory;
 
     r16->AF = 0x01B0;
     r16->BC = 0x0013;
@@ -78,7 +78,7 @@ void    set_initial_register_values()
 
 void    gameboy_init()
 {
-    uint8_t *gb_mem = state->gameboy_memory;
+//    uint8_t *gb_mem = state->gameboy_memory;
     if (state->bootrom_enabled)
         (void)memcpy(gb_mem, DMG_ROM_bin, DMG_ROM_bin_len);
     else
