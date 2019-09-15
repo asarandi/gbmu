@@ -1,4 +1,4 @@
-CFLAGS  += -g -O1 -Wall -Werror -Wextra -I include
+CFLAGS  += -g -Wall -Werror -Wextra -I include
 LDFLAGS += $(shell sdl2-config --static-libs)
 
 src = $(wildcard src/*.c)

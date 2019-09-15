@@ -4,13 +4,11 @@
 
 void    joypad_request_interrupt()
 {
-    uint8_t *gb_mem = state->gameboy_memory;
     gb_mem[0xff0f] |= 0x10;
 }
 
 uint8_t    joypad_read()
 {
-    uint8_t *gb_mem = state->gameboy_memory;
     uint8_t joypad = gb_mem[0xff00];
     int     i, val;
 
@@ -78,7 +76,6 @@ void        joypad_write(uint8_t data)
 {
     static uint8_t  packet[256];
     static int      idx, i;
-    uint8_t *gb_mem = state->gameboy_memory;
 
     data &= 0x30;
     gb_mem[0xff00] = (gb_mem[0xff00] & 15) | data;

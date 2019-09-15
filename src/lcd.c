@@ -94,7 +94,6 @@ uint8_t     get_sprite_pixel(uint8_t *gb_mem, uint8_t idx, uint8_t y, uint8_t x)
 
 int sprites_compare(const void *alpha, const void *beta)
 {
-//    uint8_t *gb_mem = state->gameboy_memory;
 //  return (gb_mem[0xfe00 + *(uint8_t*)alpha + 1] - gb_mem[0xfe00 + *(uint8_t*)beta + 1]);  /* dmg priority */
     return (int)(*(uint8_t*)alpha - *(uint8_t*)beta);   /* cgb priority */
 }
@@ -127,7 +126,6 @@ void    get_sprites(uint8_t *gb_mem, uint8_t lcd_y, uint8_t *sprites)
 
 void    screen_mask()
 {
-    uint8_t *gb_mem = state->gameboy_memory;
     uint8_t color_0 = gb_mem[0xff47] & 3;
 
     if (state->screen_mask == 0)                                /*freeze*/

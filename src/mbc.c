@@ -67,8 +67,6 @@ t_cartridge cartridge_types[] = {
 
 bool    is_savefile_enabled()
 {
-    uint8_t *gb_mem = state->gameboy_memory;
-
     if (IS_MBC1_RAM_BATTERY)                return true;
     if (IS_MBC2_BATTERY)                    return true;
     if (IS_ROM_RAM_BATTERY)                 return true;
@@ -165,8 +163,6 @@ void    default_rom_write_u8(uint16_t addr, uint8_t data)
 
 void    cartridge_init()
 {
-    uint8_t *gb_mem = state->gameboy_memory;
-
     state->ram_read_u8  = &default_ram_read_u8;
     state->ram_write_u8 = &default_ram_write_u8;
     state->rom_read_u8  = &default_rom_read_u8;
