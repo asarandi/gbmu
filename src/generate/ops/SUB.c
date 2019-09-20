@@ -1,4 +1,3 @@
-#include "gb.h"
 
 void op_90(void *reg, t_state *state, uint8_t *mem)
 {

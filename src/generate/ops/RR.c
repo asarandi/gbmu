@@ -1,4 +1,3 @@
-#include "gb.h"
 
 void op_cb18(void *reg, t_state *state, uint8_t *mem)
 {
@@ -13,8 +12,9 @@ void op_cb18(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	uint8_t op = r8->B;
-	uint8_t carry = is_c_flag;
+	uint8_t op, carry;
+	op = r8->B;
+	carry = is_c_flag;
 	op & 1 ? set_c_flag : clear_c_flag;
 	op = (op >> 1) | (carry << 7);
 	clear_n_flag;
@@ -37,8 +37,9 @@ void op_cb19(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	uint8_t op = r8->C;
-	uint8_t carry = is_c_flag;
+	uint8_t op, carry;
+	op = r8->C;
+	carry = is_c_flag;
 	op & 1 ? set_c_flag : clear_c_flag;
 	op = (op >> 1) | (carry << 7);
 	clear_n_flag;
@@ -61,8 +62,9 @@ void op_cb1a(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	uint8_t op = r8->D;
-	uint8_t carry = is_c_flag;
+	uint8_t op, carry;
+	op = r8->D;
+	carry = is_c_flag;
 	op & 1 ? set_c_flag : clear_c_flag;
 	op = (op >> 1) | (carry << 7);
 	clear_n_flag;
@@ -85,8 +87,9 @@ void op_cb1b(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	uint8_t op = r8->E;
-	uint8_t carry = is_c_flag;
+	uint8_t op, carry;
+	op = r8->E;
+	carry = is_c_flag;
 	op & 1 ? set_c_flag : clear_c_flag;
 	op = (op >> 1) | (carry << 7);
 	clear_n_flag;
@@ -109,8 +112,9 @@ void op_cb1c(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	uint8_t op = r8->H;
-	uint8_t carry = is_c_flag;
+	uint8_t op, carry;
+	op = r8->H;
+	carry = is_c_flag;
 	op & 1 ? set_c_flag : clear_c_flag;
 	op = (op >> 1) | (carry << 7);
 	clear_n_flag;
@@ -133,8 +137,9 @@ void op_cb1d(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	uint8_t op = r8->L;
-	uint8_t carry = is_c_flag;
+	uint8_t op, carry;
+	op = r8->L;
+	carry = is_c_flag;
 	op & 1 ? set_c_flag : clear_c_flag;
 	op = (op >> 1) | (carry << 7);
 	clear_n_flag;
@@ -157,8 +162,9 @@ void op_cb1e(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	uint8_t op = read_u8(r16->HL);
-	uint8_t carry = is_c_flag;
+	uint8_t op, carry;
+	op = read_u8(r16->HL);
+	carry = is_c_flag;
 	op & 1 ? set_c_flag : clear_c_flag;
 	op = (op >> 1) | (carry << 7);
 	clear_n_flag;
@@ -181,8 +187,9 @@ void op_cb1f(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	uint8_t op = r8->A;
-	uint8_t carry = is_c_flag;
+	uint8_t op, carry;
+	op = r8->A;
+	carry = is_c_flag;
 	op & 1 ? set_c_flag : clear_c_flag;
 	op = (op >> 1) | (carry << 7);
 	clear_n_flag;

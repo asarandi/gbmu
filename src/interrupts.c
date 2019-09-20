@@ -42,14 +42,15 @@ void    interrupts_update(uint8_t *gb_mem, t_state *state, void *registers)
     }
     if (!state->interrupts_enabled)
         return ;
+
     if (is_int40_enabled && is_int40_requested)
-        return service_interrupt(gb_mem, state, registers, 0x40,  1);
-    if (is_int48_enabled && is_int48_requested)
-        return service_interrupt(gb_mem, state, registers, 0x48,  2);
-    if (is_int50_enabled && is_int50_requested)
-        return service_interrupt(gb_mem, state, registers, 0x50,  4);
-    if (is_int58_enabled && is_int58_requested)        
-        return service_interrupt(gb_mem, state, registers, 0x58,  8);
-    if (is_int60_enabled && is_int60_requested)
-        return service_interrupt(gb_mem, state, registers, 0x60, 16);
+        (void)service_interrupt(gb_mem, state, registers, 0x40,  1);
+    else if (is_int48_enabled && is_int48_requested)
+        (void)service_interrupt(gb_mem, state, registers, 0x48,  2);
+    else if (is_int50_enabled && is_int50_requested)
+        (void)service_interrupt(gb_mem, state, registers, 0x50,  4);
+    else if (is_int58_enabled && is_int58_requested)        
+        (void)service_interrupt(gb_mem, state, registers, 0x58,  8);
+    else if (is_int60_enabled && is_int60_requested)
+        (void)service_interrupt(gb_mem, state, registers, 0x60, 16);
 }

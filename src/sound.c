@@ -469,15 +469,17 @@ void    print_channel_3()
 
 void    apu_frequency_tick()
 {
+    int divisor, new_data;
+
     if (!(s4.is_enabled))
         return ;
     s4.frequency_counter++;
-    int divisor = (NR43 & 7) << 4;
+    divisor = (NR43 & 7) << 4;
     if (!divisor) divisor = 8;
     if (s4.frequency_counter < divisor)
         return ;
     s4.frequency_counter = 0;
-    int new_data = (((NR43 >> 4) & 1) ^ ((NR43 >> 5) & 1)) << 7;
+    new_data = (((NR43 >> 4) & 1) ^ ((NR43 >> 5) & 1)) << 7;
     new_data |= ((NR43 & 0xe0) >> 1);
     new_data |= (NR43 & 0x0f);
     if (NR43 & 8)
@@ -508,20 +510,23 @@ void    apu_update(uint8_t *gb_mem, t_state *state, int current_cycles)
 
 int16_t SquareWave(int time, int freq, int vol, int duty)
 {
-    freq = 131072 / (2048 - freq);
-
     uint8_t patterns[4][8] = {
         {0,0,0,0,0,0,0,1},
         {1,0,0,0,0,0,0,1},
         {1,0,0,0,0,1,1,1},
-        {0,1,1,1,1,1,1,0}};
+        {0,1,1,1,1,1,1,0}
+    };
+    int tpc, cyclepart, idx;
+    int16_t result;
+
+    freq = 131072 / (2048 - freq);
 
     if (freq > sdl_received_spec.freq) freq = sdl_received_spec.freq;
-    int tpc = sdl_received_spec.freq / freq;
-    int cyclepart = time % tpc;
+    tpc = sdl_received_spec.freq / freq;
+    cyclepart = time % tpc;
     if (tpc < 8) tpc |= 8;
-    int idx = cyclepart / (tpc >> 3);
-    int16_t result = (INT16_MAX/15) * vol * patterns[duty][idx & 7];
+    idx = cyclepart / (tpc >> 3);
+    result = (INT16_MAX/15) * vol * patterns[duty][idx & 7];
     return result ;
 }
 
@@ -563,13 +568,18 @@ void    sound_2_fill_buffer()
     }
 }
 
-int16_t sound_3_wave(int time, int freq) {
+int16_t sound_3_wave(int time, int freq)
+{
+    int tpc, cyclepart, idx;
+    uint8_t nibble;
+    int16_t amplitude;
+
     freq = 65536 / (2048 - freq);
-    int tpc = sdl_received_spec.freq / freq;
-    int cyclepart = time % tpc;
+    tpc = sdl_received_spec.freq / freq;
+    cyclepart = time % tpc;
     if (tpc < 32) tpc |= 32;
-    int idx = (cyclepart / (tpc >> 5)) & 31;
-    uint8_t nibble = gb_mem[0xff30 + (idx >> 1)];
+    idx = (cyclepart / (tpc >> 5)) & 31;
+    nibble = gb_mem[0xff30 + (idx >> 1)];
     if (!(idx & 1))
         nibble >>= 4;
     nibble &= 15;
@@ -579,7 +589,7 @@ int16_t sound_3_wave(int time, int freq) {
         case 2: nibble >>= 1; break;
         case 3: nibble >>= 2; break;
     }
-    int16_t amplitude = nibble * (INT16_MAX/15);
+    amplitude = nibble * (INT16_MAX/15);
     return amplitude;
 }
 

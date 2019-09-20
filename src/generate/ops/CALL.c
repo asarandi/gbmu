@@ -1,4 +1,3 @@
-#include "gb.h"
 
 void op_c4(void *reg, t_state *state, uint8_t *mem)
 {

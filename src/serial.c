@@ -152,10 +152,20 @@ void    master_init()
 
     set_blocking();
     octet_send = 0xfe;
-    if (!socket_send(&octet_send))    return master_offline();
+    if (!socket_send(&octet_send)) {
+        (void)master_offline();
+        return ;
+    }
     octet_recv = 0x00;
-    if (!socket_receive(&octet_recv)) return master_offline();
-    if (octet_recv != 0xfc) {printf("master missed recv: %02x\n", octet_recv); return master_offline();}
+    if (!socket_receive(&octet_recv)) {
+        (void)master_offline();
+        return ;
+    }
+    if (octet_recv != 0xfc) {
+        printf("master missed recv: %02x\n", octet_recv);
+        (void)master_offline();
+        return ;
+    }
 /*  
     printf("master SC: 0x%02x, SB: 0x%02x, ", gb_mem[0xff02], gb_mem[0xff01]);
  */
@@ -192,10 +202,14 @@ void    master_bit_transfer()
     uint8_t octet_send = 0, octet_recv = 0;
 
     octet_send = gb_mem[0xff01];
-    if (!socket_send(&octet_send))
-        return (void)printf("%s: socketsend() failed\n", __func__);
-    if (!socket_receive(&octet_recv))
-        return (void)printf("%s: socket_receive() failed\n", __func__);
+    if (!socket_send(&octet_send)) {
+        (void)printf("%s: socketsend() failed\n", __func__);
+        return ;
+    }
+    if (!socket_receive(&octet_recv)) {
+        (void)printf("%s: socket_receive() failed\n", __func__);
+        return ;
+    }
     bit_transfer_ok(octet_recv);
 }
 
@@ -204,11 +218,15 @@ void    slave_bit_transfer()
     uint8_t octet_send = 0, octet_recv = 0;
 
     set_blocking();
-    if (!socket_receive(&octet_recv))
-        return (void)printf("%s: socket_receive() failed\n", __func__);
+    if (!socket_receive(&octet_recv)) {
+        (void)printf("%s: socket_receive() failed\n", __func__);
+        return ;
+    }
     octet_send =gb_mem[0xff01];
-    if (!socket_send(&octet_send))
-        return (void)printf("%s: socket_send() failed\n", __func__);
+    if (!socket_send(&octet_send)) {
+        (void)printf("%s: socket_send() failed\n", __func__);
+        return ;
+    }
     bit_transfer_ok(octet_recv);
 }
 
@@ -255,8 +273,10 @@ void    serial_control(uint8_t data)
 */
     if ((!state->is_transfer) && ((gb_mem[0xff02] & 0x81) == 0x81))
     {
-        if (!is_online())
-            return master_offline();
+        if (!is_online()) {
+            (void)master_offline();
+            return ;
+        }
         state->is_transfer = true;
     }
 }

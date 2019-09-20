@@ -1,4 +1,3 @@
-#include "gb.h"
 
 void op_cb(void *reg, t_state *state, uint8_t *mem)
 {
@@ -11,7 +10,7 @@ void op_cb(void *reg, t_state *state, uint8_t *mem)
 	*/
 
 	printf("undefined instruction 0xcb\n");
-	printf("state->cycles = %lu\n", state->cycles);
+	printf("state->cycles = %u\n", state->cycles);
 	dump_registers(reg, state, mem);
 	state->done = true;
 }

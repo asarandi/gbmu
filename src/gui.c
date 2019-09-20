@@ -65,11 +65,14 @@ static unsigned int render_palette_idx = 35;
 
 void set_window_title()
 {
-    char *s = render_palettes[render_palette_idx % num_render_palettes].name;
+    char *t, *s = render_palettes[render_palette_idx % num_render_palettes].name;
     char *title1 = "gbmu";
     char *title2 = "gbmu: ";
-    if ((!s) || (!strlen(s))) return SDL_SetWindowTitle(gui_window, title1);
-    char *t = malloc(strlen(title2) + strlen(s) + 1);
+    if ((!s) || (!strlen(s))) {
+        (void)SDL_SetWindowTitle(gui_window, title1);
+        return ;
+    }
+    t = malloc(strlen(title2) + strlen(s) + 1);
     (void)strcpy(t, title2);
     (void)strcat(t, s);
     SDL_SetWindowTitle(gui_window, t);

@@ -23,7 +23,7 @@ bgcolor = {
     }
 
 signatures = [
-        '#include "gb.h"\n'
+#        '#include "gb.h"\n'        # use when generating multiple .c files
         ]
 instr_names = []
 byte_lens = []
@@ -56,7 +56,7 @@ for i in range(17*2):
             flags = data[4]
 
         code = '\tprintf("undefined instruction 0x%02x\\n");\n' % ((i-1)*16+(j-1))
-        code += '\tprintf("state->cycles = %lu\\n", state->cycles);\n'
+        code += '\tprintf("state->cycles = %u\\n", state->cycles);\n'
         code += '\tdump_registers(reg, state, mem);\n'
         code += ('\tstate->done = true;\n')
 
@@ -87,7 +87,8 @@ for i in range(17*2):
         fn = 'ops/' + op + '.c'
         if not os.path.exists(fn):
             with open(fn, 'a+') as fp:
-                fp.write('#include "gb.h"\n\n')
+#                fp.write('#include "gb.h"\n\n')
+                fp.write('\n')
                 fp.close()
 
         with open(fn, 'a+') as fp:

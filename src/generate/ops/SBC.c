@@ -1,4 +1,3 @@
-#include "gb.h"
 
 void op_98(void *reg, t_state *state, uint8_t *mem)
 {
@@ -13,9 +12,9 @@ void op_98(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	uint8_t op;
+	uint8_t op, calc;
 	op = r8->B;
-	uint8_t calc = r8->A - op - is_c_flag;
+	calc = r8->A - op - is_c_flag;
 	calc == 0 ? set_z_flag : clear_z_flag;
 	set_n_flag;
 	((r8->A & 0xf)-(op & 0xf)-is_c_flag)<0 ? set_h_flag : clear_h_flag;
@@ -37,9 +36,9 @@ void op_99(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	uint8_t op;
+	uint8_t op, calc;
 	op = r8->C;
-	uint8_t calc = r8->A - op - is_c_flag;
+	calc = r8->A - op - is_c_flag;
 	calc == 0 ? set_z_flag : clear_z_flag;
 	set_n_flag;
 	((r8->A & 0xf)-(op & 0xf)-is_c_flag)<0 ? set_h_flag : clear_h_flag;
@@ -61,9 +60,9 @@ void op_9a(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	uint8_t op;
+	uint8_t op, calc;
 	op = r8->D;
-	uint8_t calc = r8->A - op - is_c_flag;
+	calc = r8->A - op - is_c_flag;
 	calc == 0 ? set_z_flag : clear_z_flag;
 	set_n_flag;
 	((r8->A & 0xf)-(op & 0xf)-is_c_flag)<0 ? set_h_flag : clear_h_flag;
@@ -85,9 +84,9 @@ void op_9b(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	uint8_t op;
+	uint8_t op, calc;
 	op = r8->E;
-	uint8_t calc = r8->A - op - is_c_flag;
+	calc = r8->A - op - is_c_flag;
 	calc == 0 ? set_z_flag : clear_z_flag;
 	set_n_flag;
 	((r8->A & 0xf)-(op & 0xf)-is_c_flag)<0 ? set_h_flag : clear_h_flag;
@@ -109,9 +108,9 @@ void op_9c(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	uint8_t op;
+	uint8_t op, calc;
 	op = r8->H;
-	uint8_t calc = r8->A - op - is_c_flag;
+	calc = r8->A - op - is_c_flag;
 	calc == 0 ? set_z_flag : clear_z_flag;
 	set_n_flag;
 	((r8->A & 0xf)-(op & 0xf)-is_c_flag)<0 ? set_h_flag : clear_h_flag;
@@ -133,9 +132,9 @@ void op_9d(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	uint8_t op;
+	uint8_t op, calc;
 	op = r8->L;
-	uint8_t calc = r8->A - op - is_c_flag;
+	calc = r8->A - op - is_c_flag;
 	calc == 0 ? set_z_flag : clear_z_flag;
 	set_n_flag;
 	((r8->A & 0xf)-(op & 0xf)-is_c_flag)<0 ? set_h_flag : clear_h_flag;
@@ -157,9 +156,9 @@ void op_9e(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	uint8_t op;
+	uint8_t op, calc;
 	op = read_u8(r16->HL);
-	uint8_t calc = r8->A - op - is_c_flag;
+	calc = r8->A - op - is_c_flag;
 	calc == 0 ? set_z_flag : clear_z_flag;
 	set_n_flag;
 	((r8->A & 0xf)-(op & 0xf)-is_c_flag)<0 ? set_h_flag : clear_h_flag;
@@ -181,9 +180,9 @@ void op_9f(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	uint8_t op;
+	uint8_t op, calc;
 	op = r8->A;
-	uint8_t calc = r8->A - op - is_c_flag;
+	calc = r8->A - op - is_c_flag;
 	calc == 0 ? set_z_flag : clear_z_flag;
 	set_n_flag;
 	((r8->A & 0xf)-(op & 0xf)-is_c_flag)<0 ? set_h_flag : clear_h_flag;
@@ -205,9 +204,9 @@ void op_de(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	uint8_t op;
+	uint8_t op, calc;
 	op = read_u8(r16->PC+1);
-	uint8_t calc = r8->A - op - is_c_flag;
+	calc = r8->A - op - is_c_flag;
 	calc == 0 ? set_z_flag : clear_z_flag;
 	set_n_flag;
 	((r8->A & 0xf)-(op & 0xf)-is_c_flag)<0 ? set_h_flag : clear_h_flag;

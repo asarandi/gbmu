@@ -11,44 +11,51 @@
 
 uint8_t    get_bg_pixel_yx(uint8_t *gb_mem, uint8_t y, uint8_t x)
 {
+    uint16_t    tile_map_addr, tile_data_addr, tile_idx_addr;
+    uint8_t     tile_byte0, tile_byte1, tile_idx, pixel, *tile_data;
+    int8_t      idxi;
+
     y += gb_mem[0xff42];
     x += gb_mem[0xff43];
-    uint16_t tile_map_addr = (gb_mem[0xff40] & 0x08) ? 0x9c00 : 0x9800;              /* lcdc bit 3 */
-    uint16_t tile_data_addr = (gb_mem[0xff40] & 0x10) ? 0x8000 : 0x8800;             /* lcdc bit 4 */
-    uint16_t tile_idx_addr = ((y>>3)<<5)+(x>>3);
-    uint8_t tile_idx = gb_mem[tile_map_addr + tile_idx_addr];
-    uint8_t *tile_data = &gb_mem[tile_data_addr + (tile_idx << 4)];
+    tile_map_addr = (gb_mem[0xff40] & 0x08) ? 0x9c00 : 0x9800;              /* lcdc bit 3 */
+    tile_data_addr = (gb_mem[0xff40] & 0x10) ? 0x8000 : 0x8800;             /* lcdc bit 4 */
+    tile_idx_addr = ((y>>3)<<5)+(x>>3);
+    tile_idx = gb_mem[tile_map_addr + tile_idx_addr];
+    tile_data = &gb_mem[tile_data_addr + (tile_idx << 4)];
     if (tile_data_addr == 0x8800)
     {
-        int8_t idxi = (int8_t)gb_mem[tile_map_addr + tile_idx_addr];
+        idxi = (int8_t)gb_mem[tile_map_addr + tile_idx_addr];
         tile_data = &gb_mem[0x9000 + (idxi * 16)];
     }
-    uint8_t tile_byte0 = tile_data[(y % 8) * 2];
-    uint8_t tile_byte1 = tile_data[(y % 8) * 2 + 1];
-    uint8_t pixel = ((tile_byte0 >> (7-(x%8))) & 1) | (((tile_byte1 >> (7-(x%8))) << 1) & 3);
+    tile_byte0 = tile_data[(y % 8) * 2];
+    tile_byte1 = tile_data[(y % 8) * 2 + 1];
+    pixel = ((tile_byte0 >> (7-(x%8))) & 1) | (((tile_byte1 >> (7-(x%8))) << 1) & 3);
     return pixel;
 }
 
 uint8_t get_wnd_pixel_yx(uint8_t *gb_mem, uint8_t y, uint8_t x)
 {
+    int tile_map_addr, tile_data_addr;
+    uint16_t tile_idx_addr;
+    uint8_t tile_idx, *tile_data, tile_byte0, tile_byte1, pixel;
+    int8_t idxi;
 
     y -= gb_mem[0xff4a];
     x -= gb_mem[0xff4b];
     x += 7;
-
-    int tile_map_addr = (gb_mem[0xff40] & 0x40) ? 0x9c00 : 0x9800;              /* bit 6     */
-    int tile_data_addr = (gb_mem[0xff40] & 0x10) ? 0x8000 : 0x8800;             /* lcdc bit 4 */
-    uint16_t tile_idx_addr = ((y>>3)<<5)+(x>>3);
-    uint8_t tile_idx = gb_mem[tile_map_addr + tile_idx_addr];
-    uint8_t *tile_data = &gb_mem[tile_data_addr + (tile_idx << 4)];
+    tile_map_addr = (gb_mem[0xff40] & 0x40) ? 0x9c00 : 0x9800;              /* bit 6     */
+    tile_data_addr = (gb_mem[0xff40] & 0x10) ? 0x8000 : 0x8800;             /* lcdc bit 4 */
+    tile_idx_addr = ((y>>3)<<5)+(x>>3);
+    tile_idx = gb_mem[tile_map_addr + tile_idx_addr];
+    tile_data = &gb_mem[tile_data_addr + (tile_idx << 4)];
     if (tile_data_addr == 0x8800)
     {
-        int8_t idxi = (int8_t)gb_mem[tile_map_addr + tile_idx_addr];
+        idxi = (int8_t)gb_mem[tile_map_addr + tile_idx_addr];
         tile_data = &gb_mem[0x9000 + (idxi * 16)];
     }
-    uint8_t tile_byte0 = tile_data[(y % 8) * 2];
-    uint8_t tile_byte1 = tile_data[(y % 8) * 2 + 1];
-    uint8_t pixel = ((tile_byte0 >> (7-(x%8))) & 1) | (((tile_byte1 >> (7-(x%8))) << 1) & 3);
+    tile_byte0 = tile_data[(y % 8) * 2];
+    tile_byte1 = tile_data[(y % 8) * 2 + 1];
+    pixel = ((tile_byte0 >> (7-(x%8))) & 1) | (((tile_byte1 >> (7-(x%8))) << 1) & 3);
     return pixel;
 }
 
@@ -69,24 +76,27 @@ bool    is_window_pixel(uint8_t *gb_mem, uint8_t y, uint8_t x)
 
 uint8_t     get_sprite_pixel(uint8_t *gb_mem, uint8_t idx, uint8_t y, uint8_t x)
 {
+    uint8_t *oam, obj_height, coord_y, coord_x, obj_num, obj_attr;
+    uint8_t *tile_data, tile_byte0, tile_byte1, pixel;
+
     if ((idx == 0xff) || (!is_sprites_enabled))
         return 0;
-    uint8_t *oam = &gb_mem[0xfe00];
-    uint8_t obj_height = (gb_mem[0xff40] & 4) ? 16 : 8;
-    uint8_t coord_y = (y + 16 - oam[idx]) % obj_height;
-    uint8_t coord_x = (x + 8 - oam[idx + 1]) % 8;
-    uint8_t obj_num = oam[idx + 2];
-    uint8_t obj_attr = oam[idx + 3];
+    oam = &gb_mem[0xfe00];
+    obj_height = (gb_mem[0xff40] & 4) ? 16 : 8;
+    coord_y = (y + 16 - oam[idx]) % obj_height;
+    coord_x = (x + 8 - oam[idx + 1]) % 8;
+    obj_num = oam[idx + 2];
+    obj_attr = oam[idx + 3];
     if (obj_height == 16)
         obj_num &= 0xfe;
     if (is_obj_y_flip)
         coord_y = (obj_height-1) - coord_y;
     if (is_obj_x_flip)
         coord_x = 7 - coord_x;
-    uint8_t *tile_data = &gb_mem[0x8000 + (obj_num * 16)];
-    uint8_t tile_byte0 = tile_data[coord_y * 2];
-    uint8_t tile_byte1 = tile_data[coord_y * 2 + 1];
-    uint8_t pixel = ((tile_byte0 >> (7-(coord_x))) & 1) | (((tile_byte1 >> (7-(coord_x))) << 1) & 3);
+    tile_data = &gb_mem[0x8000 + (obj_num * 16)];
+    tile_byte0 = tile_data[coord_y * 2];
+    tile_byte1 = tile_data[coord_y * 2 + 1];
+    pixel = ((tile_byte0 >> (7-(coord_x))) & 1) | (((tile_byte1 >> (7-(coord_x))) << 1) & 3);
     if (!pixel)
         return 0;
     return (pixel | (obj_attr & 0xf0));
@@ -157,8 +167,10 @@ void    screen_update(uint8_t *gb_mem, t_state *state, uint8_t *sprites)
 
     if (y > 143)
         return;
-    if (state->screen_mask)
-        return screen_mask();
+    if (state->screen_mask) {
+        (void)screen_mask();
+        return ;
+    }
 
     (void)memset(bg_data, 0, 160);
     (void)memset(obj_data, 0, 160);
