@@ -9,9 +9,6 @@ gbmu: $(src:.c=.o)
 src/ops.o:
 	$(CC) $(CFLAGS) -Wno-unused-variable -Wno-unused-parameter -c src/ops.c -o $@
 
-src/debug.o:
-	$(CC) $(CFLAGS) -Wno-unused-result -c src/debug.c -o $@
-
 src/sound.o:
 	$(CC) $(CFLAGS) $(shell sdl2-config --cflags) -c src/sound.c -o $@
 
@@ -21,3 +18,7 @@ src/gui.o:
 clean:
 	rm -f $(src:.c=.o)
 
+fclean: clean
+	rm -f gbmu
+
+re: fclean gbmu

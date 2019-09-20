@@ -10,6 +10,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <sys/errno.h>
+#include <sys/select.h>
 
 #define                     SOCKET_DEBUG    true
 

@@ -1,5 +1,6 @@
 #include "gb.h"
 #include <arpa/inet.h>
+#include <getopt.h>
 
 static char *default_network_address = "0.0.0.0";
 static int default_network_port = 4242;

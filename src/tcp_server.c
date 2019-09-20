@@ -7,7 +7,7 @@ bool    server_create(char *network_address, int network_port)
     if ((server.server_sock = socket(AF_INET, SOCK_STREAM, 0)) == -1)
     {
         if (SOCKET_DEBUG)
-            printf("%s: socket() failed\n", __func__);
+            printf("%s: socket() failed\n", "server_create()");
         return false;
     }
 
@@ -15,7 +15,7 @@ bool    server_create(char *network_address, int network_port)
     {
         (void)close(server.server_sock);
         if (SOCKET_DEBUG)
-            printf("%s: fcntl(F_GETFL) failed\n", __func__);
+            printf("%s: fcntl(F_GETFL) failed\n", "server_create()");
         return false;
     }
 
@@ -23,7 +23,7 @@ bool    server_create(char *network_address, int network_port)
     {
         (void)close(server.server_sock);
         if (SOCKET_DEBUG)
-            printf("%s: fcntl(F_SETFL, O_NONBLOCK) failed\n", __func__);
+            printf("%s: fcntl(F_SETFL, O_NONBLOCK) failed\n", "server_create()");
         return false;
     }
 
@@ -33,7 +33,7 @@ bool    server_create(char *network_address, int network_port)
     {
         (void)close(server.server_sock);
         if (SOCKET_DEBUG)
-            printf("%s: setsockopt() failed\n", __func__);
+            printf("%s: setsockopt() failed\n", "server_create()");
         return false;
     }
 
@@ -42,7 +42,7 @@ bool    server_create(char *network_address, int network_port)
     {
         (void)close(server.server_sock);
         if (SOCKET_DEBUG)
-            printf("%s: setsockopt() failed\n", __func__);
+            printf("%s: setsockopt() failed\n", "server_create()");
         return false;
     }
 
@@ -54,7 +54,7 @@ bool    server_create(char *network_address, int network_port)
     {
         (void)close(server.server_sock);
         if (SOCKET_DEBUG)
-            printf("%s: bind() failed\n", __func__);
+            printf("%s: bind() failed\n", "server_create()");
         return false;
     }
 
@@ -62,7 +62,7 @@ bool    server_create(char *network_address, int network_port)
     {
         (void)close(server.server_sock);
         if (SOCKET_DEBUG)
-            printf("%s: listen() failed\n", __func__);
+            printf("%s: listen() failed\n", "server_create()");
         return false;
     }
 
