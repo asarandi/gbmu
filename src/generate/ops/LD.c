@@ -1,4 +1,3 @@
-#include "gb.h"
 
 void op_01(void *reg, t_state *state, uint8_t *mem)
 {
@@ -64,7 +63,7 @@ void op_08(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	uint16_t a16 = read_u16(r16->PC+1);
+	uint16_t a16; a16 = read_u16(r16->PC+1);
 	write_u16(a16, r16->SP);
 	r16->PC += 3;
 }
@@ -1459,7 +1458,7 @@ void op_ea(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	uint16_t a16 = read_u16(r16->PC+1);
+	uint16_t a16; a16 = read_u16(r16->PC+1);
 	write_u8(a16, r8->A);
 	r16->PC += 3;
 }
@@ -1533,7 +1532,7 @@ void op_fa(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	uint16_t a16 = read_u16(r16->PC+1);
+	uint16_t a16; a16 = read_u16(r16->PC+1);
 	r8->A = read_u8(a16);
 	r16->PC += 3;
 }

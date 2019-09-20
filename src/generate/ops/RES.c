@@ -1,4 +1,3 @@
-#include "gb.h"
 
 void op_cb80(void *reg, t_state *state, uint8_t *mem)
 {
@@ -115,7 +114,8 @@ void op_cb86(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	uint8_t op = read_u8(r16->HL);
+	uint8_t op;
+	op = read_u8(r16->HL);
 	op &= ~(1 << 0);
 	write_u8(r16->HL, op);
 	r16->PC += 2;
@@ -253,7 +253,8 @@ void op_cb8e(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	uint8_t op = read_u8(r16->HL);
+	uint8_t op;
+	op = read_u8(r16->HL);
 	op &= ~(1 << 1);
 	write_u8(r16->HL, op);
 	r16->PC += 2;
@@ -391,7 +392,8 @@ void op_cb96(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	uint8_t op = read_u8(r16->HL);
+	uint8_t op;
+	op = read_u8(r16->HL);
 	op &= ~(1 << 2);
 	write_u8(r16->HL, op);
 	r16->PC += 2;
@@ -529,7 +531,8 @@ void op_cb9e(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	uint8_t op = read_u8(r16->HL);
+	uint8_t op;
+	op = read_u8(r16->HL);
 	op &= ~(1 << 3);
 	write_u8(r16->HL, op);
 	r16->PC += 2;
@@ -667,7 +670,8 @@ void op_cba6(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	uint8_t op = read_u8(r16->HL);
+	uint8_t op;
+	op = read_u8(r16->HL);
 	op &= ~(1 << 4);
 	write_u8(r16->HL, op);
 	r16->PC += 2;
@@ -805,7 +809,8 @@ void op_cbae(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	uint8_t op = read_u8(r16->HL);
+	uint8_t op;
+	op = read_u8(r16->HL);
 	op &= ~(1 << 5);
 	write_u8(r16->HL, op);
 	r16->PC += 2;
@@ -943,7 +948,8 @@ void op_cbb6(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	uint8_t op = read_u8(r16->HL);
+	uint8_t op;
+	op = read_u8(r16->HL);
 	op &= ~(1 << 6);
 	write_u8(r16->HL, op);
 	r16->PC += 2;
@@ -1081,7 +1087,8 @@ void op_cbbe(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	uint8_t op = read_u8(r16->HL);
+	uint8_t op;
+	op = read_u8(r16->HL);
 	op &= ~(1 << 7);
 	write_u8(r16->HL, op);
 	r16->PC += 2;

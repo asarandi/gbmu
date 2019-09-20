@@ -1,4 +1,3 @@
-#include "gb.h"
 
 void op_17(void *reg, t_state *state, uint8_t *mem)
 {
@@ -13,7 +12,8 @@ void op_17(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	uint8_t carry = is_c_flag;
+	uint8_t carry;
+	carry = is_c_flag;
 	r8->A & 0x80 ? set_c_flag : clear_c_flag;
 	r8->A = (r8->A << 1) | carry;
 	clear_n_flag;

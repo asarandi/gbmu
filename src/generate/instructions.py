@@ -214,12 +214,12 @@ def gb_op_ld(instr, byte_len, cycles, flags):
         elif op2 == 'd8':
             code.append('%s = read_u8(r16->PC+1);' % (eight_bit_registers[op1],))    # XXX    d8
         elif op2 == '(a16)':
-            code.append('uint16_t a16 = read_u16(r16->PC+1);')
+            code.append('uint16_t a16; a16 = read_u16(r16->PC+1);')
             code.append('%s = read_u8(a16);' % (eight_bit_registers[op1],))          # XXX    a16
         elif op2 in sixteen_bit_reg_addr:
             code.append('%s = read_u8(%s);' % (eight_bit_registers[op1], sixteen_bit_reg_addr[op2]))
     elif op1 == '(a16)':
-        code.append('uint16_t a16 = read_u16(r16->PC+1);')
+        code.append('uint16_t a16; a16 = read_u16(r16->PC+1);')
         if op2 == 'SP':
             code.append('write_u16(a16, %s);' % (sixteen_bit_registers[op2],))      # two byte write
         elif op2 == 'A':
@@ -237,7 +237,8 @@ def gb_op_ldh(instr, byte_len, cycles, flags):
     code = [] + cast_void_to_reg
     op1 = instr.split()[1].split(',')[0]    
     op2 = instr.split()[1].split(',')[1]
-    code.append('uint8_t a8 = read_u8(r16->PC+1);')
+    code.append('uint8_t a8;')
+    code.append('a8 = read_u8(r16->PC+1);')
     if op1 == '(a8)' and op2 == 'A':
         code.append('write_u8(0xff00 + a8, r8->A);')
     elif op1 == 'A' and op2 == '(a8)':
@@ -301,9 +302,10 @@ def  gb_op_add(instr, byte_len, cycles, flags):
         code.append('calc > 0xffff ? set_c_flag : clear_c_flag;');
         code.append('r16->HL += op;')
     elif op1 == 'SP':
+        code.append('int16_t op;')
         code.append('clear_z_flag;')
         code.append('clear_n_flag;')
-        code.append('int16_t op = (int8_t)read_u8(r16->PC+1);')    #signed as per GBCPUman
+        code.append('op = (int8_t)read_u8(r16->PC+1);')    #signed as per GBCPUman
         code.append('(r16->SP & 0xf) + (op & 0xf) > 0xf ? set_h_flag : clear_h_flag;')
         code.append('(r16->SP & 0xff) + (op & 0xff) > 0xff ? set_c_flag : clear_c_flag;');
         code.append('r16->SP += op;')
@@ -359,10 +361,11 @@ def  gb_op_bit(instr, byte_len, cycles, flags):
     op1 = instr.split()[1].split(',')[0]    #bit
     op2 = instr.split()[1].split(',')[1]    #reg/mem
 
+    code.append('uint8_t op;')
     if op2 in eight_bit_registers:
-        code.append('uint8_t op = %s;' % (eight_bit_registers[op2], ))
+        code.append('op = %s;' % (eight_bit_registers[op2], ))
     elif op2 == '(HL)':
-        code.append('uint8_t op = read_u8(r16->HL);')
+        code.append('op = read_u8(r16->HL);')
     else:
         code.append('/* FIXME: BIT */')
     code.append('op & (1 << %s) ? clear_z_flag : set_z_flag;' % (op1,))#set Z flag if bit not set
@@ -398,7 +401,9 @@ def  gb_op_cp(instr, byte_len, cycles, flags):
         op0 = 'read_u8(r16->PC+1)'
     else:
         code.append('/* FIXME: CP */')
-    code.append('uint8_t op = %s;' % (op0,))
+
+    code.append('uint8_t op;')
+    code.append('op = %s;' % (op0,))
     code.append('r8->A == op ? set_z_flag : clear_z_flag;')
     code.append('set_n_flag;')
     code.append('(r8->A & 0xf) < (op & 0xf) ? set_h_flag : clear_h_flag;')
@@ -418,11 +423,14 @@ def  gb_op_dec(instr, byte_len, cycles, flags):
     code = [] + cast_void_to_reg
     op1 = instr.split()[1]
     if op1 in eight_bit_registers:
-        code.append('uint8_t op = %s;' % (eight_bit_registers[op1],))        
+        code.append('uint8_t op;')
+        code.append('op = %s;' % (eight_bit_registers[op1],))        
     elif op1 == '(HL)':
-        code.append('uint8_t op = read_u8(r16->HL);')
+        code.append('uint8_t op;')
+        code.append('op = read_u8(r16->HL);')
     elif op1 in sixteen_bit_registers:
-        code.append('uint16_t op = %s;' % (sixteen_bit_registers[op1],))
+        code.append('uint16_t op;')
+        code.append('op = %s;' % (sixteen_bit_registers[op1],))
     code.append('op--;')
     if (op1 in eight_bit_registers) or (op1 == '(HL)'):
         code.append('op == 0 ? set_z_flag : clear_z_flag;')
@@ -442,11 +450,14 @@ def  gb_op_inc(instr, byte_len, cycles, flags):
     code = [] + cast_void_to_reg
     op1 = instr.split()[1]
     if op1 in eight_bit_registers:
-        code.append('uint8_t op = %s;' % (eight_bit_registers[op1],))
+        code.append('uint8_t op;')
+        code.append('op = %s;' % (eight_bit_registers[op1],))
     elif op1 == '(HL)':
-        code.append('uint8_t op = read_u8(r16->HL);')
+        code.append('uint8_t op;')
+        code.append('op = read_u8(r16->HL);')
     elif op1 in sixteen_bit_registers:
-        code.append('uint16_t op = %s;' % (sixteen_bit_registers[op1],))
+        code.append('uint16_t op;')
+        code.append('op = %s;' % (sixteen_bit_registers[op1],))
     code.append('op++;')
     if (op1 in eight_bit_registers) or (op1 == '(HL)'):
         code.append('op == 0 ? set_z_flag : clear_z_flag;')
@@ -465,7 +476,7 @@ def  gb_op_sbc(instr, byte_len, cycles, flags):
     code = [] + cast_void_to_reg
     op1 = instr.split()[1].split(',')[0]
     op2 = instr.split()[1].split(',')[1]
-    code.append('uint8_t op;')
+    code.append('uint8_t op, calc;')
     if op2 in eight_bit_registers:
         code.append('op = %s;' % (eight_bit_registers[op2],))
     elif op2 == '(HL)':
@@ -474,7 +485,7 @@ def  gb_op_sbc(instr, byte_len, cycles, flags):
         code.append('op = read_u8(r16->PC+1);')
     else:
         code.append('/* FIXME: SBC */')        
-    code.append('uint8_t calc = r8->A - op - is_c_flag;')
+    code.append('calc = r8->A - op - is_c_flag;')
     code.append('calc == 0 ? set_z_flag : clear_z_flag;')
     code.append('set_n_flag;')
     code.append('((r8->A & 0xf)-(op & 0xf)-is_c_flag)<0 ? set_h_flag : clear_h_flag;')
@@ -511,7 +522,8 @@ def  gb_op_swap(instr, byte_len, cycles, flags):
         op0 = eight_bit_registers[op1]
     elif op1 == '(HL)':
         op0 = 'read_u8(r16->HL)'
-    code.append('uint8_t op = %s;' % (op0,))
+    code.append('uint8_t op;')
+    code.append('op = %s;' % (op0,))
     code.append('op == 0 ? set_z_flag : clear_z_flag;')
     code.append('clear_n_flag;')
     code.append('clear_h_flag;')
@@ -548,7 +560,8 @@ def  gb_op_res(instr, byte_len, cycles, flags):
     op1 = instr.split()[1].split(',')[0]    #bit
     op2 = instr.split()[1].split(',')[1]    #reg/mem
     if op2 == '(HL)':
-        code.append('uint8_t op = read_u8(r16->HL);')
+        code.append('uint8_t op;')
+        code.append('op = read_u8(r16->HL);')
         code.append('op &= ~(1 << %s);' % (op1,))
         code.append('write_u8(r16->HL, op);')
     elif op2 in eight_bit_registers:
@@ -562,7 +575,8 @@ def  gb_op_set(instr, byte_len, cycles, flags):
     op1 = instr.split()[1].split(',')[0]    #bit
     op2 = instr.split()[1].split(',')[1]    #reg/mem
     if op2 == '(HL)':
-        code.append('uint8_t op = read_u8(r16->HL);')
+        code.append('uint8_t op;')
+        code.append('op = read_u8(r16->HL);')
         code.append('op |= (1 << %s);' % (op1, ))
         code.append('write_u8(r16->HL, op);')        
     elif op2 in eight_bit_registers:
@@ -574,10 +588,11 @@ def  gb_op_set(instr, byte_len, cycles, flags):
 def  gb_op_sla(instr, byte_len, cycles, flags):
     code = [] + cast_void_to_reg
     op1 = instr.split()[1]
+    code.append('uint8_t op;')
     if op1 == '(HL)':
-        code.append('uint8_t op = read_u8(r16->HL);')
+        code.append('op = read_u8(r16->HL);')
     elif op1 in eight_bit_registers:
-        code.append('uint8_t op = %s;' % (eight_bit_registers[op1],))
+        code.append('op = %s;' % (eight_bit_registers[op1],))
     code.append('clear_n_flag;')    
     code.append('clear_h_flag;')
     code.append('op & 0x80 ? set_c_flag : clear_c_flag;')
@@ -592,11 +607,12 @@ def  gb_op_sla(instr, byte_len, cycles, flags):
 
 def  gb_op_sra(instr, byte_len, cycles, flags):
     code = [] + cast_void_to_reg
-    op1 = instr.split()[1]
+    op1 = instr.split()[1]    
+    code.append('uint8_t op;')
     if op1 == '(HL)':
-        code.append('uint8_t op = read_u8(r16->HL);')        
+        code.append('op = read_u8(r16->HL);')        
     elif op1 in eight_bit_registers:
-        code.append('uint8_t op = %s;' % (eight_bit_registers[op1],))
+        code.append('op = %s;' % (eight_bit_registers[op1],))
     code.append('clear_n_flag;')    
     code.append('clear_h_flag;')
     code.append('op & 1 ? set_c_flag : clear_c_flag;')
@@ -612,10 +628,11 @@ def  gb_op_sra(instr, byte_len, cycles, flags):
 def  gb_op_srl(instr, byte_len, cycles, flags):
     code = [] + cast_void_to_reg
     op1 = instr.split()[1]
+    code.append('uint8_t op;')
     if op1 == '(HL)':
-        code.append('uint8_t op = read_u8(r16->HL);')        
+        code.append('op = read_u8(r16->HL);')        
     elif op1 in eight_bit_registers:
-        code.append('uint8_t op = %s;' % (eight_bit_registers[op1],))
+        code.append('op = %s;' % (eight_bit_registers[op1],))
     code.append('clear_n_flag;')    
     code.append('clear_h_flag;')
     code.append('op & 1 ? set_c_flag : clear_c_flag;')
@@ -631,11 +648,12 @@ def  gb_op_srl(instr, byte_len, cycles, flags):
 def  gb_op_rr(instr, byte_len, cycles, flags):
     code = [] + cast_void_to_reg
     op1 = instr.split()[1]
+    code.append('uint8_t op, carry;')
     if op1 == '(HL)':
-        code.append('uint8_t op = read_u8(r16->HL);')
+        code.append('op = read_u8(r16->HL);')
     elif op1 in eight_bit_registers:
-        code.append('uint8_t op = %s;' % (eight_bit_registers[op1],))
-    code.append('uint8_t carry = is_c_flag;')
+        code.append('op = %s;' % (eight_bit_registers[op1],))
+    code.append('carry = is_c_flag;')
     code.append('op & 1 ? set_c_flag : clear_c_flag;')
     code.append('op = (op >> 1) | (carry << 7);')
     code.append('clear_n_flag;')    
@@ -650,12 +668,13 @@ def  gb_op_rr(instr, byte_len, cycles, flags):
 
 def  gb_op_rl(instr, byte_len, cycles, flags):
     code = [] + cast_void_to_reg
-    op1 = instr.split()[1]
+    op1 = instr.split()[1]    
+    code.append('uint8_t op, carry;')
     if op1 == '(HL)':
-        code.append('uint8_t op = read_u8(r16->HL);')        
+        code.append('op = read_u8(r16->HL);')        
     elif op1 in eight_bit_registers:
-        code.append('uint8_t op = %s;' % (eight_bit_registers[op1],))
-    code.append('uint8_t carry = is_c_flag;')
+        code.append('op = %s;' % (eight_bit_registers[op1],))
+    code.append('carry = is_c_flag;')
     code.append('op & 0x80 ? set_c_flag : clear_c_flag;')
     code.append('op = (op << 1) | carry;')
     code.append('clear_n_flag;')    
@@ -671,10 +690,11 @@ def  gb_op_rl(instr, byte_len, cycles, flags):
 def  gb_op_rlc(instr, byte_len, cycles, flags):
     code = [] + cast_void_to_reg
     op1 = instr.split()[1]    
+    code.append('uint8_t op;')
     if op1 == '(HL)':
-        code.append('uint8_t op = read_u8(r16->HL);')
+        code.append('op = read_u8(r16->HL);')
     elif op1 in eight_bit_registers:
-        code.append('uint8_t op = %s;' % (eight_bit_registers[op1],))
+        code.append('op = %s;' % (eight_bit_registers[op1],))
     code.append('op = (op << 1) | (op >> 7);')
     code.append('op == 0 ? set_z_flag : clear_z_flag;')
     code.append('clear_n_flag;')    
@@ -689,11 +709,12 @@ def  gb_op_rlc(instr, byte_len, cycles, flags):
 
 def  gb_op_rrc(instr, byte_len, cycles, flags):
     code = [] + cast_void_to_reg
-    op1 = instr.split()[1]
+    op1 = instr.split()[1]    
+    code.append('uint8_t op;')
     if op1 == '(HL)':
-        code.append('uint8_t op = read_u8(r16->HL);')        
+        code.append('op = read_u8(r16->HL);')        
     elif op1 in eight_bit_registers:
-        code.append('uint8_t op = %s;' % (eight_bit_registers[op1],))
+        code.append('op = %s;' % (eight_bit_registers[op1],))
     code.append('op = (op >> 1) | ((op & 1) << 7);')
     code.append('op == 0 ? set_z_flag : clear_z_flag;')
     code.append('clear_n_flag;')    
@@ -710,7 +731,8 @@ def  gb_op_rrc(instr, byte_len, cycles, flags):
 def  gb_op_rla(instr, byte_len, cycles, flags):  #same like rl, but z flag always set to 0
     code = [] + cast_void_to_reg
     op0 = eight_bit_registers['A']  #XXX
-    code.append('uint8_t carry = is_c_flag;')
+    code.append('uint8_t carry;')
+    code.append('carry = is_c_flag;')
     code.append('%s & 0x80 ? set_c_flag : clear_c_flag;' % (op0,))
     code.append('%s = (%s << 1) | carry;' % (op0,op0))
     code.append('clear_n_flag;')    
@@ -744,7 +766,8 @@ def gb_op_rrca(instr, byte_len, cycles, flags):
 def gb_op_rra(instr, byte_len, cycles, flags):
     code = [] + cast_void_to_reg
     op0 = eight_bit_registers['A']  #XXX
-    code.append('uint8_t carry = is_c_flag;')
+    code.append('uint8_t carry;')
+    code.append('carry = is_c_flag;')
     code.append('%s & 1 ? set_c_flag : clear_c_flag;' % (op0,))
     code.append('%s = (%s >> 1) | (carry << 7);' % (op0,op0))    
     code.append('clear_z_flag;')

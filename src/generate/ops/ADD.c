@@ -1,4 +1,3 @@
-#include "gb.h"
 
 void op_09(void *reg, t_state *state, uint8_t *mem)
 {
@@ -334,9 +333,10 @@ void op_e8(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
+	int16_t op;
 	clear_z_flag;
 	clear_n_flag;
-	int16_t op = (int8_t)read_u8(r16->PC+1);
+	op = (int8_t)read_u8(r16->PC+1);
 	(r16->SP & 0xf) + (op & 0xf) > 0xf ? set_h_flag : clear_h_flag;
 	(r16->SP & 0xff) + (op & 0xff) > 0xff ? set_c_flag : clear_c_flag;
 	r16->SP += op;

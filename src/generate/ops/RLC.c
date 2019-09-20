@@ -1,4 +1,3 @@
-#include "gb.h"
 
 void op_cb00(void *reg, t_state *state, uint8_t *mem)
 {
@@ -13,7 +12,8 @@ void op_cb00(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	uint8_t op = r8->B;
+	uint8_t op;
+	op = r8->B;
 	op = (op << 1) | (op >> 7);
 	op == 0 ? set_z_flag : clear_z_flag;
 	clear_n_flag;
@@ -36,7 +36,8 @@ void op_cb01(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	uint8_t op = r8->C;
+	uint8_t op;
+	op = r8->C;
 	op = (op << 1) | (op >> 7);
 	op == 0 ? set_z_flag : clear_z_flag;
 	clear_n_flag;
@@ -59,7 +60,8 @@ void op_cb02(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	uint8_t op = r8->D;
+	uint8_t op;
+	op = r8->D;
 	op = (op << 1) | (op >> 7);
 	op == 0 ? set_z_flag : clear_z_flag;
 	clear_n_flag;
@@ -82,7 +84,8 @@ void op_cb03(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	uint8_t op = r8->E;
+	uint8_t op;
+	op = r8->E;
 	op = (op << 1) | (op >> 7);
 	op == 0 ? set_z_flag : clear_z_flag;
 	clear_n_flag;
@@ -105,7 +108,8 @@ void op_cb04(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	uint8_t op = r8->H;
+	uint8_t op;
+	op = r8->H;
 	op = (op << 1) | (op >> 7);
 	op == 0 ? set_z_flag : clear_z_flag;
 	clear_n_flag;
@@ -128,7 +132,8 @@ void op_cb05(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	uint8_t op = r8->L;
+	uint8_t op;
+	op = r8->L;
 	op = (op << 1) | (op >> 7);
 	op == 0 ? set_z_flag : clear_z_flag;
 	clear_n_flag;
@@ -151,7 +156,8 @@ void op_cb06(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	uint8_t op = read_u8(r16->HL);
+	uint8_t op;
+	op = read_u8(r16->HL);
 	op = (op << 1) | (op >> 7);
 	op == 0 ? set_z_flag : clear_z_flag;
 	clear_n_flag;
@@ -174,7 +180,8 @@ void op_cb07(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	uint8_t op = r8->A;
+	uint8_t op;
+	op = r8->A;
 	op = (op << 1) | (op >> 7);
 	op == 0 ? set_z_flag : clear_z_flag;
 	clear_n_flag;

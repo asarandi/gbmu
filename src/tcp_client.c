@@ -54,17 +54,19 @@ bool    client_create(char *network_address, int network_port)
 
 bool client_connect()
 {
+    int ret, sock_error, sock_len;
+
     FD_ZERO(&client.fdset);
     FD_SET(client.sock, &client.fdset);
     client.tv.tv_sec = 0;
     client.tv.tv_usec = 1000;
-    int ret = select(client.sock + 1, NULL, &client.fdset, NULL, &client.tv);
+    ret = select(client.sock + 1, NULL, &client.fdset, NULL, &client.tv);
     if (ret == 0)
         return false ;                              /* select timed out, wait? */
     if (ret == 1)
     {
-        int sock_error = -1;
-        int sock_len = sizeof(sock_error);
+        sock_error = -1;
+        sock_len = sizeof(sock_error);
 
         if (getsockopt(client.sock, SOL_SOCKET, SO_ERROR, &sock_error, (socklen_t *)&sock_len) == 0)
         {
