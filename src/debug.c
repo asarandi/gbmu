@@ -18,7 +18,7 @@ void    dump_background(uint8_t *gb_mem)
         for (x=0; x<32; x++) {
 
             tile_idx = gb_mem[bg_tile_map_idx + ((y*32)+x)];
-            tile_data = &gb_mem[bg_tile_data_idx + (tile_idx * 16)];    //16 bytes of tile data
+            tile_data = &gb_mem[bg_tile_data_idx + (tile_idx * 16)];    /*16 bytes of tile data*/
             for (j=0; j<8; j++) {
                 uint8_t tile_byte0 = tile_data[j*2];
                 uint8_t tile_byte1 = tile_data[j*2+1];

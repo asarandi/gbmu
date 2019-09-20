@@ -26,9 +26,9 @@ bool    client_create(char *network_address, int network_port)
     client.is_blocking = false;
 
     client.server_address.sin_family = AF_INET;
-    client.server_address.sin_port = htons(network_port);                                 //PORT
+    client.server_address.sin_port = htons(network_port);                                 /* PORT */
 
-    if (inet_pton(AF_INET, network_address, &client.server_address.sin_addr) == -1) {     //ADDR
+    if (inet_pton(AF_INET, network_address, &client.server_address.sin_addr) == -1) {     /* ADDR */
         (void)close(client.sock);
         if (SOCKET_DEBUG)
             printf("%s: inet_pton(%s) failed\n", __func__, network_address);
@@ -60,7 +60,7 @@ bool client_connect()
     client.tv.tv_usec = 1000;
     int ret = select(client.sock + 1, NULL, &client.fdset, NULL, &client.tv);
     if (ret == 0)
-        return false ;                              //select timed out, wait?
+        return false ;                              /* select timed out, wait? */
     if (ret == 1)
     {
         int sock_error = -1;
@@ -70,14 +70,14 @@ bool client_connect()
         {
             if (sock_error == 0)
             {
-                client.status |= sock_connected;    //ok
+                client.status |= sock_connected;    /* ok */
                 return true;
             }
             if (sock_error == EINPROGRESS)
-                return false;                       //wait
+                return false;                       /* wait */
         }
     }
-    client.status &= ~sock_created;                 //fail
+    client.status &= ~sock_created;                 /* fail */
     close(client.sock);
     return false ;
 }
@@ -88,11 +88,11 @@ bool client_send(uint8_t *octet)
     if (write(client.sock, octet, 1) != 1)
     {
         if ((errno == EWOULDBLOCK) || (errno == EAGAIN))
-            return false ;                          //wait
-        client.status &= ~sock_connected;           //fail
+            return false ;                          /* wait */
+        client.status &= ~sock_connected;           /* fail */
         return false ;
     }
-    client.status |= sock_data_sent;                //ok
+    client.status |= sock_data_sent;                /* ok */
     return true ;
 }
 
@@ -102,10 +102,10 @@ bool client_recv(uint8_t *octet)
     if (read(client.sock, octet, 1) != 1)
     {
         if ((errno == EWOULDBLOCK) || (errno == EAGAIN))
-            return false ;                          //wait
-        client.status &= ~sock_connected;           //fail
+            return false ;                          /* wait */
+        client.status &= ~sock_connected;           /* fail */
         return false ;
     }
-    client.status |= sock_data_received;            //ok
+    client.status |= sock_data_received;            /* ok */
     return true ;
 }

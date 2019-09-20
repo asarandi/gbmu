@@ -45,8 +45,8 @@ void        mbc3_rom_write_u8(uint16_t addr, uint8_t data)
         if (data <= 3)
             ramb = data & 0x03;
         else
-            printf("mbc3 rtc register select, data = %02x\n", data);    //TODO
+            printf("mbc3 rtc register select, data = %02x\n", data);    /* TODO */
     }
     if ((addr >= 0x6000) && (addr <= 0x7fff))       
-        printf("mbc3 latch clock data, data = %02x\n", data);    //TODO
+        printf("mbc3 latch clock data, data = %02x\n", data);           /* TODO */
 }

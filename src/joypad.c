@@ -75,7 +75,7 @@ t_sgb_cmd   sgb_commands[] = {
 void        joypad_write(uint8_t data)
 {
     static uint8_t  packet[256];
-    static int      idx, i;
+    static int      idx;
 
     data &= 0x30;
     gb_mem[0xff00] = (gb_mem[0xff00] & 15) | data;
@@ -85,7 +85,7 @@ void        joypad_write(uint8_t data)
     if (data == 3)              /* both high between pulses */
         return ;
     if (!data) {                /* both low: reset */
-//        printf("joypad reset ");
+/*        printf("joypad reset "); */
         for (idx = 0; idx < 256; idx++)
             packet[idx] = 0;
         idx = 0;
@@ -95,10 +95,12 @@ void        joypad_write(uint8_t data)
     idx++;
     idx &= 0x7ff;
     if (idx == 128) {
+/*        
         for (i=0;i<16;i++) {
-//            printf("%02x ", packet[i]);
+            printf("%02x ", packet[i]);
         }
-//        printf("%s\n", sgb_commands[packet[0]>>3].info);
+        printf("%s\n", sgb_commands[packet[0]>>3].info);
+*/        
         if (packet[0] == 0xb9)                          /*MASK_EN, len 1*/
             state->screen_mask = packet[1] & 3;
         if ((packet[0] == 0x51) && (packet[9] & 0x40))  /*PAL_SET, len 1*/

@@ -89,7 +89,6 @@ int main(int ac, char **av)
     }
 
     state->serial_data = 0xff;
-//    state->gameboy_memory = gb_mem;
     state->gameboy_registers = &registers;
     state->file_contents = malloc(stat_buf.st_size);
 	state->file_size = stat_buf.st_size;
@@ -165,9 +164,6 @@ int main(int ac, char **av)
     apu_cleanup();
     gui_cleanup();
     free(state->file_contents);
-//    free(gb_mem);
-//    free(gb_state);
-//    free(registers);
 
     return 0;
 }

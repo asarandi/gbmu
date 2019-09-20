@@ -123,7 +123,7 @@ void    savefile_write()
     while ((size >= 0) && (!state->ram_banks[size]))
         size--;
     size++;
-    if (!size) return ; //game did not use ram?
+    if (!size) return ; /* game did not use ram? */
     if ((fd = open(state->ram_file, O_CREAT | O_WRONLY, 0644)) == -1) {
         printf("%s: open() failed\n", __func__);
         return ;

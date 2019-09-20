@@ -116,7 +116,7 @@ void    serial_connect()
     }
 }
 
-//static  uint8_t bit_counter;
+/* static  uint8_t bit_counter; */
 static  uint8_t current_bit;
 static  bool    serial_init;
 static  bool    is_master;
@@ -125,9 +125,11 @@ static  bool    is_slave;
 void    bit_transfer_ok(uint8_t octet_recv)
 {
     gb_mem[0xff01] = octet_recv;
-//    current_bit++;
-//    if (current_bit <= 8) return ;
-//    printf("new SB: 0x%02x\n", gb_mem[0xff01]);
+/*    
+    current_bit++;
+    if (current_bit <= 8) return ;
+    printf("new SB: 0x%02x\n", gb_mem[0xff01]);
+*/
     current_bit = 1;
     gb_mem[0xff0f] |= 8;
 	gb_mem[0xff02] &= 1;
@@ -154,7 +156,9 @@ void    master_init()
     octet_recv = 0x00;
     if (!socket_receive(&octet_recv)) return master_offline();
     if (octet_recv != 0xfc) {printf("master missed recv: %02x\n", octet_recv); return master_offline();}
-//    printf("master SC: 0x%02x, SB: 0x%02x, ", gb_mem[0xff02], gb_mem[0xff01]);
+/*  
+    printf("master SC: 0x%02x, SB: 0x%02x, ", gb_mem[0xff02], gb_mem[0xff01]);
+ */
     state->is_transfer = true;
     current_bit = 1;
     serial_init = true;
@@ -173,7 +177,9 @@ void    slave_init()
     octet_send = 0xfc;
     if (!socket_send(&octet_send))    return ;
     if (octet_recv != 0xfe) {printf("slave missed recv: %02x\n", octet_recv); return ;}
-//    printf(" slave SC: 0x%02x, SB: 0x%02x, ", gb_mem[0xff02], gb_mem[0xff01]);
+/*    
+    printf(" slave SC: 0x%02x, SB: 0x%02x, ", gb_mem[0xff02], gb_mem[0xff01]);
+*/
     state->is_transfer = true;
     current_bit = 1;
     serial_init = true;    
@@ -214,9 +220,9 @@ void    serial(uint8_t current_cycles)
     if (!serial_init)
     {
         if ((gb_mem[0xff02] & 0x81) == 0x80)
-            slave_init();   //listen for incoming
+            slave_init();   /* listen for incoming */
         if ((gb_mem[0xff02] & 0x81) == 0x81)
-            master_init();  //start transfer
+            master_init();  /* start transfer */
         return ;
     }
 
@@ -244,8 +250,9 @@ void    serial_control(uint8_t data)
     gb_mem[0xff02] = data & 0x81;
     if (state->is_transfer)
         printf("writing to SC during transfer");
-
-//    printf("serial control: %02x\n", gb_mem[0xff02]);
+/*
+    printf("serial control: %02x\n", gb_mem[0xff02]);
+*/
     if ((!state->is_transfer) && ((gb_mem[0xff02] & 0x81) == 0x81))
     {
         if (!is_online())
