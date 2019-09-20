@@ -1495,10 +1495,10 @@ void op_f8(void *reg, t_state *state, uint8_t *mem)
 	t_r16 *r16 = reg;
 	int offset = (int8_t)read_u8(r16->PC+1);
 	r16->HL = r16->SP + offset;
-	clear_z_flag;
-	clear_n_flag;
-	(offset & 0xf) + (r16->SP & 0xf) > 0xf ? set_h_flag : clear_h_flag;
-	(offset & 0xff) + (r16->SP & 0xff) > 0xff ? set_c_flag : clear_c_flag;
+	CLEAR_Z_FLAG;
+	CLEAR_N_FLAG;
+	(offset & 0xf) + (r16->SP & 0xf) > 0xf ? SET_H_FLAG : CLEAR_H_FLAG;
+	(offset & 0xff) + (r16->SP & 0xff) > 0xff ? SET_C_FLAG : CLEAR_C_FLAG;
 	r16->PC += 2;
 }
 

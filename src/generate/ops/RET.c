@@ -12,7 +12,7 @@ void op_c0(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	if (!is_z_flag)
+	if (!IS_Z_FLAG)
 	{ r16->PC = read_u16(r16->SP); r16->SP += 2; return ; }
 	r16->PC += 1;
 }
@@ -30,7 +30,7 @@ void op_c8(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	if (is_z_flag)
+	if (IS_Z_FLAG)
 	{ r16->PC = read_u16(r16->SP); r16->SP += 2; return ; }
 	r16->PC += 1;
 }
@@ -66,7 +66,7 @@ void op_d0(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	if (!is_c_flag)
+	if (!IS_C_FLAG)
 	{ r16->PC = read_u16(r16->SP); r16->SP += 2; return ; }
 	r16->PC += 1;
 }
@@ -84,7 +84,7 @@ void op_d8(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	if (is_c_flag)
+	if (IS_C_FLAG)
 	{ r16->PC = read_u16(r16->SP); r16->SP += 2; return ; }
 	r16->PC += 1;
 }

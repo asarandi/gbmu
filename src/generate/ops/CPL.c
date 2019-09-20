@@ -13,8 +13,8 @@ void op_2f(void *reg, t_state *state, uint8_t *mem)
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
 	r8->A = (~r8->A);
-	set_n_flag;
-	set_h_flag;
+	SET_N_FLAG;
+	SET_H_FLAG;
 	r16->PC += 1;
 }
 

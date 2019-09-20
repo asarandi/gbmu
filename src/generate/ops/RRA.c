@@ -13,12 +13,12 @@ void op_1f(void *reg, t_state *state, uint8_t *mem)
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
 	uint8_t carry;
-	carry = is_c_flag;
-	r8->A & 1 ? set_c_flag : clear_c_flag;
+	carry = IS_C_FLAG;
+	r8->A & 1 ? SET_C_FLAG : CLEAR_C_FLAG;
 	r8->A = (r8->A >> 1) | (carry << 7);
-	clear_z_flag;
-	clear_n_flag;
-	clear_h_flag;
+	CLEAR_Z_FLAG;
+	CLEAR_N_FLAG;
+	CLEAR_H_FLAG;
 	r16->PC += 1;
 }
 
