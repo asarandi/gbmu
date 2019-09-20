@@ -1,9 +1,9 @@
 #include "gb.h"
 
-#define frame_duration          70224                                           //10 vblank scanlines
+#define frame_duration          70224                                           /* 10 vblank scanlines */
 #define is_lcd_enabled          (gb_mem[0xff40] & 0x80 ? 1:0)
 #define is_wnd_enabled          (gb_mem[0xff40] & 0x20 ? 1:0)
-#define is_bg_enabled           (gb_mem[0xff40] & 0x01 ? 1:0)                   //DMG specific XXX
+#define is_bg_enabled           (gb_mem[0xff40] & 0x01 ? 1:0)                   /* DMG specific XXX */
 #define is_sprites_enabled      (gb_mem[0xff40] & 0x02 ? 1:0)
 #define sprite_height           (gb_mem[0xff40] & 0x04 ? 16:8)
 #define is_obj_y_flip           (obj_attr & 0x40 ? 1:0)
@@ -13,8 +13,8 @@ uint8_t    get_bg_pixel_yx(uint8_t *gb_mem, uint8_t y, uint8_t x)
 {
     y += gb_mem[0xff42];
     x += gb_mem[0xff43];
-    uint16_t tile_map_addr = (gb_mem[0xff40] & 0x08) ? 0x9c00 : 0x9800;                 //lcdc bit 3
-    uint16_t tile_data_addr = (gb_mem[0xff40] & 0x10) ? 0x8000 : 0x8800;             //lcdc bit 4
+    uint16_t tile_map_addr = (gb_mem[0xff40] & 0x08) ? 0x9c00 : 0x9800;              /* lcdc bit 3 */
+    uint16_t tile_data_addr = (gb_mem[0xff40] & 0x10) ? 0x8000 : 0x8800;             /* lcdc bit 4 */
     uint16_t tile_idx_addr = ((y>>3)<<5)+(x>>3);
     uint8_t tile_idx = gb_mem[tile_map_addr + tile_idx_addr];
     uint8_t *tile_data = &gb_mem[tile_data_addr + (tile_idx << 4)];
@@ -36,8 +36,8 @@ uint8_t get_wnd_pixel_yx(uint8_t *gb_mem, uint8_t y, uint8_t x)
     x -= gb_mem[0xff4b];
     x += 7;
 
-    int tile_map_addr = (gb_mem[0xff40] & 0x40) ? 0x9c00 : 0x9800;              //bit 6
-    int tile_data_addr = (gb_mem[0xff40] & 0x10) ? 0x8000 : 0x8800;             //lcdc bit 4
+    int tile_map_addr = (gb_mem[0xff40] & 0x40) ? 0x9c00 : 0x9800;              /* bit 6     */
+    int tile_data_addr = (gb_mem[0xff40] & 0x10) ? 0x8000 : 0x8800;             /* lcdc bit 4 */
     uint16_t tile_idx_addr = ((y>>3)<<5)+(x>>3);
     uint8_t tile_idx = gb_mem[tile_map_addr + tile_idx_addr];
     uint8_t *tile_data = &gb_mem[tile_data_addr + (tile_idx << 4)];
@@ -62,7 +62,7 @@ bool    is_window_pixel(uint8_t *gb_mem, uint8_t y, uint8_t x)
         return false ;
     if ((wy > 143) || (wx > 166))
         return false ;
-    if ((y >= wy) && (x + 7 >= wx))                 // current pixel is in window region
+    if ((y >= wy) && (x + 7 >= wx))                 /* current pixel is in window region */
         return true ;
     return false ;
 }
@@ -94,7 +94,11 @@ uint8_t     get_sprite_pixel(uint8_t *gb_mem, uint8_t idx, uint8_t y, uint8_t x)
 
 int sprites_compare(const void *alpha, const void *beta)
 {
-//  return (gb_mem[0xfe00 + *(uint8_t*)alpha + 1] - gb_mem[0xfe00 + *(uint8_t*)beta + 1]);  /* dmg priority */
+    /* dmg priority */
+
+    /* 
+     * return (gb_mem[0xfe00 + *(uint8_t*)alpha + 1] - gb_mem[0xfe00 + *(uint8_t*)beta + 1]);
+     * */
     return (int)(*(uint8_t*)alpha - *(uint8_t*)beta);   /* cgb priority */
 }
 
@@ -224,24 +228,24 @@ void    lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles)
 
     gb_mem[0xff44] = lcd_cycle / 456;
 
-    if (gb_mem[0xff44] == gb_mem[0xff45]) {                         //ly == lyc ?
-        gb_mem[0xff41] |= 4;                                        //set coincidence bit
+    if (gb_mem[0xff44] == gb_mem[0xff45]) {                         /* ly == lyc ? */
+        gb_mem[0xff41] |= 4;                                        /* set coincidence bit */
         if (is_lyc) {
             is_lyc = false ;
-            if (gb_mem[0xff41] & 0x40)      gb_mem[0xff0f] |= 2;    //irq
+            if (gb_mem[0xff41] & 0x40)      gb_mem[0xff0f] |= 2;    /* irq */
         }
-    }                                                               //if coincidence bit enabled
+    }                                                               /* if coincidence bit enabled */
     else {
-        gb_mem[0xff41] &= 0xfb;                                     //clear coincidence bit
+        gb_mem[0xff41] &= 0xfb;                                     /* clear coincidence bit */
         is_lyc = true;
     }
 
     if (gb_mem[0xff44] < 144) {
         if ((lcd_cycle % 456) < 80) {
-            gb_mem[0xff41] = (gb_mem[0xff41] & 0xfc) | 2;           //mode 2
+            gb_mem[0xff41] = (gb_mem[0xff41] & 0xfc) | 2;           /* mode 2 */
             if (is_oam) {
                 is_oam = false;
-                if (gb_mem[0xff41] & 0x20)  gb_mem[0xff0f] |= 2;    //irq
+                if (gb_mem[0xff41] & 0x20)  gb_mem[0xff0f] |= 2;    /* irq */
             }
             is_get_sprites = true;
         }
@@ -250,26 +254,26 @@ void    lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles)
                 is_get_sprites = false;
                 get_sprites(gb_mem, gb_mem[0xff44], sprites);
             }
-            gb_mem[0xff41] = (gb_mem[0xff41] & 0xfc) | 3;           //mode 3
+            gb_mem[0xff41] = (gb_mem[0xff41] & 0xfc) | 3;           /* mode 3 */
             is_hblank = true;
         }
         else {
-            gb_mem[0xff41] &= 0xfc;                                 //mode 0
+            gb_mem[0xff41] &= 0xfc;                                 /* mode 0 */
             if (is_hblank) {
                 is_hblank = false;
                 screen_update(gb_mem, state, sprites);
-                if (gb_mem[0xff41] & 0x08)  gb_mem[0xff0f] |= 2;    //irq
+                if (gb_mem[0xff41] & 0x08)  gb_mem[0xff0f] |= 2;    /* irq */
             }
             is_vblank = true;
         }
     }
     else {
-        gb_mem[0xff41] = (gb_mem[0xff41] & 0xfc) | 1;               //mode 1
+        gb_mem[0xff41] = (gb_mem[0xff41] & 0xfc) | 1;               /* mode 1 */
         if (is_vblank) {
             is_vblank = false;
             gui_update();
-            gb_mem[0xff0f] |= 1;                                    //request vblank
-            if (gb_mem[0xff41] & 0x10)      gb_mem[0xff0f] |= 2;    //irq
+            gb_mem[0xff0f] |= 1;                                    /* request vblank */
+            if (gb_mem[0xff41] & 0x10)      gb_mem[0xff0f] |= 2;    /* irq */
         }
         is_oam = true;
     }

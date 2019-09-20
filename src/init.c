@@ -32,7 +32,6 @@ unsigned int DMG_ROM_bin_len = 256;
 void    set_initial_register_values()
 {
     t_r16   *r16    = state->gameboy_registers;
-//    uint8_t *gb_mem = state->gameboy_memory;
 
     r16->AF = 0x01B0;
     r16->BC = 0x0013;
@@ -41,44 +40,43 @@ void    set_initial_register_values()
     r16->SP = 0xFFFE;
     r16->PC = 0x0100;
 
-    gb_mem[0xFF05] = 0x00;  //   ; TIMA
-    gb_mem[0xFF06] = 0x00;  //   ; TMA
-    gb_mem[0xFF07] = 0x00;  //   ; TAC
-/*
-    gb_mem[0xFF10] = 0x80;  //   ; NR10
-    gb_mem[0xFF11] = 0xBF;  //   ; NR11
-    gb_mem[0xFF12] = 0xF3;  //   ; NR12
-    gb_mem[0xFF14] = 0xBF;  //   ; NR14
-    gb_mem[0xFF16] = 0x3F;  //   ; NR21
-    gb_mem[0xFF17] = 0x00;  //   ; NR22
-    gb_mem[0xFF19] = 0xBF;  //   ; NR24
-    gb_mem[0xFF1A] = 0x7F;  //   ; NR30
-    gb_mem[0xFF1B] = 0xFF;  //   ; NR31
-    gb_mem[0xFF1C] = 0x9F;  //   ; NR32
-    gb_mem[0xFF1E] = 0xBF;  //   ; NR33
-    gb_mem[0xFF20] = 0xFF;  //   ; NR41
-    gb_mem[0xFF21] = 0x00;  //   ; NR42
-    gb_mem[0xFF22] = 0x00;  //   ; NR43
-    gb_mem[0xFF23] = 0xBF;  //   ; NR44
-    gb_mem[0xFF24] = 0x77;  //   ; NR50
-    gb_mem[0xFF25] = 0xF3;  //   ; NR51
-    gb_mem[0xFF26] = 0xF1;  //-GB, 0xF0-SGB ; NR52
-*/
-    gb_mem[0xFF40] = 0x91;  //   ; LCDC
-    gb_mem[0xFF42] = 0x00;  //   ; SCY
-    gb_mem[0xFF43] = 0x00;  //   ; SCX
-    gb_mem[0xFF45] = 0x00;  //   ; LYC
-    gb_mem[0xFF47] = 0xFC;  //   ; BGP
-    gb_mem[0xFF48] = 0xFF;  //   ; OBP0
-    gb_mem[0xFF49] = 0xFF;  //   ; OBP1
-    gb_mem[0xFF4A] = 0x00;  //   ; WY
-    gb_mem[0xFF4B] = 0x00;  //   ; WX
-    gb_mem[0xFFFF] = 0x00;  //   ; IE
+    gb_mem[0xFF05] = 0x00;  /* TIMA */ 
+    gb_mem[0xFF06] = 0x00;  /* TMA  */
+    gb_mem[0xFF07] = 0x00;  /* TAC  */
+
+    gb_mem[0xFF10] = 0x80;  /* NR10 */
+    gb_mem[0xFF11] = 0xBF;  /* NR11 */
+    gb_mem[0xFF12] = 0xF3;  /* NR12 */
+    gb_mem[0xFF14] = 0xBF;  /* NR14 */
+    gb_mem[0xFF16] = 0x3F;  /* NR21 */
+    gb_mem[0xFF17] = 0x00;  /* NR22 */
+    gb_mem[0xFF19] = 0xBF;  /* NR24 */
+    gb_mem[0xFF1A] = 0x7F;  /* NR30 */
+    gb_mem[0xFF1B] = 0xFF;  /* NR31 */
+    gb_mem[0xFF1C] = 0x9F;  /* NR32 */
+    gb_mem[0xFF1E] = 0xBF;  /* NR33 */
+    gb_mem[0xFF20] = 0xFF;  /* NR41 */
+    gb_mem[0xFF21] = 0x00;  /* NR42 */
+    gb_mem[0xFF22] = 0x00;  /* NR43 */
+    gb_mem[0xFF23] = 0xBF;  /* NR44 */
+    gb_mem[0xFF24] = 0x77;  /* NR50 */
+    gb_mem[0xFF25] = 0xF3;  /* NR51 */
+    gb_mem[0xFF26] = 0xF1;  /* NR52 */
+
+    gb_mem[0xFF40] = 0x91;  /* LCDC */
+    gb_mem[0xFF42] = 0x00;  /* SCY  */
+    gb_mem[0xFF43] = 0x00;  /* SCX  */
+    gb_mem[0xFF45] = 0x00;  /* LYC  */
+    gb_mem[0xFF47] = 0xFC;  /* BGP  */
+    gb_mem[0xFF48] = 0xFF;  /* OBP0 */
+    gb_mem[0xFF49] = 0xFF;  /* OBP1 */
+    gb_mem[0xFF4A] = 0x00;  /* WY   */
+    gb_mem[0xFF4B] = 0x00;  /* WX   */
+    gb_mem[0xFFFF] = 0x00;  /* IE   */  
 }
 
 void    gameboy_init()
 {
-//    uint8_t *gb_mem = state->gameboy_memory;
     if (state->bootrom_enabled)
         (void)memcpy(gb_mem, DMG_ROM_bin, DMG_ROM_bin_len);
     else

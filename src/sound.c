@@ -87,26 +87,26 @@
 #define ADDR_NR51   0xff25
 #define ADDR_NR52   0xff26
 
-#define             S1_IS_SWEEP_DECREASE    ((NR10 >> 3)   & 0x01)         //read each time
-#define             S1_SWEEP_SHIFT_NUMBER   (NR10          & 0x07)         //read each time
-#define             S1_DUTY_CYCLE           ((NR11 >> 6)   & 0x03)         //read each time
-#define             S1_IS_LENGTH_ENABLED    ((NR14 >> 6)   & 0x01)         //read each time
+#define             S1_IS_SWEEP_DECREASE    ((NR10 >> 3)   & 0x01)         /* read each time */ 
+#define             S1_SWEEP_SHIFT_NUMBER   (NR10          & 0x07)         /* read each time */
+#define             S1_DUTY_CYCLE           ((NR11 >> 6)   & 0x03)         /* read each time */
+#define             S1_IS_LENGTH_ENABLED    ((NR14 >> 6)   & 0x01)         /* read each time */
 
-#define             S2_DUTY_CYCLE           ((NR21 >> 6)   & 0x03)         //read each time
-#define             S2_IS_LENGTH_ENABLED    ((NR24 >> 6)   & 0x01)         //read each time
+#define             S2_DUTY_CYCLE           ((NR21 >> 6)   & 0x03)         /* read each time */
+#define             S2_IS_LENGTH_ENABLED    ((NR24 >> 6)   & 0x01)         /* read each time */
 
-#define             S3_IS_LENGTH_ENABLED    ((NR34 >> 6)   & 0x01)         //read each time
-#define             S4_IS_LENGTH_ENABLED    ((NR44 >> 6)   & 0x01)         //read each time
+#define             S3_IS_LENGTH_ENABLED    ((NR34 >> 6)   & 0x01)         /* read each time */
+#define             S4_IS_LENGTH_ENABLED    ((NR44 >> 6)   & 0x01)         /* read each time */
 
 typedef struct  s_sound
 {
-    int   sweep_time;              //nr10 bits 6-4
-    int   sound_length;            //nr11 bits 5-0
-    int   sound_volume;            //nr12 bits 7-4
-    int   is_volume_increase;      //nr12 bit  3
-    int   envelope_length;         //nr12 bits 2-0
-    int   frequency;               //nr14 bits 2-0, nr13 bits 7-0
-    int   is_enabled;              //nr14 bit  7
+    int   sweep_time;              /* nr10 bits 6-4 */ 
+    int   sound_length;            /* nr11 bits 5-0 */
+    int   sound_volume;            /* nr12 bits 7-4 */
+    int   is_volume_increase;      /* nr12 bit  3   */
+    int   envelope_length;         /* nr12 bits 2-0 */
+    int   frequency;               /* nr14 bits 2-0, nr13 bits 7-0 */
+    int   is_enabled;              /* nr14 bit  7   */
     int   volume_counter;
     int   sweep_counter;
     int   length_counter;
@@ -132,33 +132,33 @@ t_sound   s4;
 void    sound_nr10_update(uint8_t data)
 {
     NR10 = data;
-    s1.sweep_time           = (NR10 >> 4)   & 0x07;         //set when nr10 written to
+    s1.sweep_time           = (NR10 >> 4)   & 0x07;         /*set when nr10 written to*/
 }
 
 void    sound_nr11_update(uint8_t data)
 {
     NR11 = data;
-    s1.sound_length         = 64 - (NR11          & 0x3f);         //set when nr11 written to
+    s1.sound_length         = 64 - (NR11          & 0x3f);         /*set when nr11 written to*/
 }
 
 void    sound_nr12_update(uint8_t data)
 {
     NR12 = data;
-    s1.sound_volume         = (NR12 >> 4)   & 0x0f;         //set when nr12 written to
-    s1.is_volume_increase   = (NR12 >> 3)   & 0x01;         //set when nr12 written to
-    s1.envelope_length      = NR12          & 0x07;         //set when nr12 written to
+    s1.sound_volume         = (NR12 >> 4)   & 0x0f;         /*set when nr12 written to*/
+    s1.is_volume_increase   = (NR12 >> 3)   & 0x01;         /*set when nr12 written to*/
+    s1.envelope_length      = NR12          & 0x07;         /*set when nr12 written to*/
 }
 
 void    sound_nr13_update(uint8_t data)
 {
     NR13 = data;
-    s1.frequency            = ((NR14 & 0x07) << 8) | NR13;  //set when nr13 or nr14 written to
+    s1.frequency            = ((NR14 & 0x07) << 8) | NR13;  /*set when nr13 or nr14 written to*/
 }
 
 void    sound_1_init()
 {
-    sound_nr12_update(NR12);                                //set volume
-    sound_nr13_update(NR13);                                //set frequency
+    sound_nr12_update(NR12);                                /*set volume*/
+    sound_nr13_update(NR13);                                /*set frequency*/
     s1.volume_counter = 0;
     s1.sweep_counter = 0;
     s1.length_counter = 0;
@@ -169,34 +169,34 @@ void    sound_1_init()
 void    sound_nr14_update(uint8_t data)
 {
     NR14 = data;
-    s1.frequency            = ((NR14 & 0x07) << 8) | NR13;  //set when nr13 or nr14 written to
+    s1.frequency            = ((NR14 & 0x07) << 8) | NR13;  /*set when nr13 or nr14 written to*/
     if (NR14 & 0x80)        sound_1_init();
 }
 
 void    sound_nr21_update(uint8_t data)
 {
     NR21 = data;
-    s2.sound_length         = 64 - (NR21          & 0x3f);         //set when nr21 written to
+    s2.sound_length         = 64 - (NR21          & 0x3f);         /*set when nr21 written to*/
 }
 
 void    sound_nr22_update(uint8_t data)
 {
     NR22 = data;
-    s2.sound_volume         = (NR22 >> 4)   & 0x0f;         //set when nr22 written to
-    s2.is_volume_increase   = (NR22 >> 3)   & 0x01;         //set when nr22 written to
-    s2.envelope_length      = NR22          & 0x07;         //set when nr22 written to
+    s2.sound_volume         = (NR22 >> 4)   & 0x0f;         /*set when nr22 written to*/
+    s2.is_volume_increase   = (NR22 >> 3)   & 0x01;         /*set when nr22 written to*/
+    s2.envelope_length      = NR22          & 0x07;         /*set when nr22 written to*/
 }
 
 void    sound_nr23_update(uint8_t data)
 {
     NR23 = data;
-    s2.frequency            = ((NR24 & 0x07) << 8) | NR23;  //set when nr23 or nr24 written to
+    s2.frequency            = ((NR24 & 0x07) << 8) | NR23;  /*set when nr23 or nr24 written to*/
 }
 
 void    sound_2_init()
 {
-    sound_nr22_update(NR22);                                //set volume
-    sound_nr23_update(NR23);                                //set frequency
+    sound_nr22_update(NR22);                                /*set volume*/
+    sound_nr23_update(NR23);                                /*set frequency*/
     s2.volume_counter = 0;
     s2.length_counter = 0;
     s2.sample_counter = 0;
@@ -206,8 +206,8 @@ void    sound_2_init()
 void    sound_nr24_update(uint8_t data)
 {
     NR24 = data;
-    s2.frequency            = ((NR24 & 0x07) << 8) | NR23;  //set when nr23 or nr24 written to
-    if (NR24 & 0x80)         //set when nr24 written to, bit 7 set
+    s2.frequency            = ((NR24 & 0x07) << 8) | NR23;  /*set when nr23 or nr24 written to*/
+    if (NR24 & 0x80)         /*set when nr24 written to, bit 7 set*/
         sound_2_init();
 }
 
@@ -215,7 +215,7 @@ void    sound_nr30_update(uint8_t data)
 {
     NR30 = data;
     s3.is_enabled = ((NR30) >> 7) & 1;
-}    //nr30 only bit 7 is writable
+}    /*nr30 only bit 7 is writable*/
 
 void    sound_nr31_update(uint8_t data)
 {
@@ -258,15 +258,15 @@ void    sound_nr41_update(uint8_t data)
 void    sound_nr42_update(uint8_t data)
 {
     NR42 = data;
-    s4.sound_volume         = (NR42 >> 4)   & 0x0f;         //set when nr42 written to
-    s4.is_volume_increase   = (NR42 >> 3)   & 0x01;         //set when nr42 written to
-    s4.envelope_length      = NR42          & 0x07;         //set when nr42 written to
+    s4.sound_volume         = (NR42 >> 4)   & 0x0f;         /*set when nr42 written to*/
+    s4.is_volume_increase   = (NR42 >> 3)   & 0x01;         /*set when nr42 written to*/
+    s4.envelope_length      = NR42          & 0x07;         /*set when nr42 written to*/
 }
 
 void    sound_nr43_update(uint8_t data)
 {
     NR43 = data;
-}      // FIXME lfsr
+}      /* FIXME lfsr*/
 
 void    sound_4_init()
 {
@@ -303,11 +303,11 @@ void    sound_nr52_update(uint8_t data)
     memset(&s3, 0, sizeof(s3));
     memset(&s4, 0, sizeof(s4));
 */
-}    //nr52 only bit 7 is writable
+}    /*nr52 only bit 7 is writable*/
 
 void    sound_write_u8(uint16_t addr, uint8_t data)
 {
-    if ((addr != ADDR_NR52) && (!(NR52 & 0x80)) )  return ;      //ignore all writes when sound off
+    if ((addr != ADDR_NR52) && (!(NR52 & 0x80)) )  return ;      /*ignore all writes when sound off*/
 
     if (addr == ADDR_NR10) { sound_nr10_update(data); return; }
     if (addr == ADDR_NR11) { sound_nr11_update(data); return; }
@@ -343,7 +343,7 @@ void    channel_volume_tick(t_sound *s0)
     s0->volume_counter++;
     if (s0->volume_counter < s0->envelope_length)
         return ;
-    s0->volume_counter = 0; //counter - envelope_length;
+    s0->volume_counter = 0; /*counter - envelope_length;*/
     if ((s0->is_volume_increase) && (s0->sound_volume < 15))
         s0->sound_volume++;
     if ((!(s0->is_volume_increase)) && (s0->sound_volume > 0))
@@ -366,7 +366,7 @@ void    apu_sweep_tick()
     s1.sweep_counter++;
     if (s1.sweep_counter < s1.sweep_time)
         return ;
-    s1.sweep_counter = 0;       //counter - sweep_time
+    s1.sweep_counter = 0;       /*counter - sweep_time*/
     shadow_freq = s1.frequency;
     if (S1_IS_SWEEP_DECREASE)
         shadow_freq -= (shadow_freq >> S1_SWEEP_SHIFT_NUMBER);
@@ -485,7 +485,7 @@ void    apu_frequency_tick()
         new_data &= 0xbf;
         new_data |= (((NR43 >> 4) & 1) ^ ((NR43 >> 5) & 1)) << 6;
     }
-//    printf("NR43 %02x, %02x\n", gb_mem[0xff22], new_data);
+/*    printf("NR43 %02x, %02x\n", gb_mem[0xff22], new_data);*/
     NR43 = new_data;
 }
 
@@ -501,7 +501,7 @@ void    apu_update(uint8_t *gb_mem, t_state *state, int current_cycles)
     if ((cycles / VOLUME_CLOCK)    > (prev_cycles / VOLUME_CLOCK))      apu_volume_tick();
     if ((cycles / SWEEP_CLOCK)     > (prev_cycles / SWEEP_CLOCK))       apu_sweep_tick();
     if ((cycles / LENGTH_CLOCK)    > (prev_cycles / LENGTH_CLOCK))      apu_length_tick();
-//    if ((cycles / FREQUENCY_CLOCK) > (prev_cycles / FREQUENCY_CLOCK))   apu_frequency_tick();
+/*    if ((cycles / FREQUENCY_CLOCK) > (prev_cycles / FREQUENCY_CLOCK))   apu_frequency_tick();*/
     prev_cycles = cycles;
     NR52 = (NR52 & 0x80) | (s1.is_enabled<<0) | (s2.is_enabled<<1) | (s3.is_enabled<<2) | (s4.is_enabled<<3);
 }
@@ -612,7 +612,7 @@ void    sound_4_fill_buffer()
     if (!s4.is_enabled)
         return ;
 
-    sample = rand() & 1; //~((NR43 >> 4) & 1);
+    sample = rand() & 1; /*~((NR43 >> 4) & 1);*/
     sample *= ((INT16_MAX/15) * s4.sound_volume);
 
     for (i = 0; i < sdl_received_spec.samples; i++)

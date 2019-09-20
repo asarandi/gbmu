@@ -1,10 +1,10 @@
 #include "gb.h"
 
-#define is_int40_enabled   (gb_mem[0xffff] &  1 ? 1:0)      //v-blank
-#define is_int48_enabled   (gb_mem[0xffff] &  2 ? 1:0)      //lcd
-#define is_int50_enabled   (gb_mem[0xffff] &  4 ? 1:0)      //timer
-#define is_int58_enabled   (gb_mem[0xffff] &  8 ? 1:0)      //serial
-#define is_int60_enabled   (gb_mem[0xffff] & 16 ? 1:0)      //joypad
+#define is_int40_enabled   (gb_mem[0xffff] &  1 ? 1:0)      /* v-blank */
+#define is_int48_enabled   (gb_mem[0xffff] &  2 ? 1:0)      /* lcd     */
+#define is_int50_enabled   (gb_mem[0xffff] &  4 ? 1:0)      /* timer   */
+#define is_int58_enabled   (gb_mem[0xffff] &  8 ? 1:0)      /* serial  */
+#define is_int60_enabled   (gb_mem[0xffff] & 16 ? 1:0)      /* joypad  */
 
 #define is_int40_requested (gb_mem[0xff0f] &  1 ? 1:0)
 #define is_int48_requested (gb_mem[0xff0f] &  2 ? 1:0)
@@ -26,7 +26,7 @@ void    service_interrupt(uint8_t *gb_mem, t_state *state, void *registers,
     gb_mem[0xff0f] &= (~clear_bit);
 
     state->interrupt_cycles = 20;
-//    printf("interrupt %04x\n", r16->PC);
+/*    printf("interrupt %04x\n", r16->PC); */
 }
 
 void    interrupts_update(uint8_t *gb_mem, t_state *state, void *registers)
@@ -37,8 +37,8 @@ void    interrupts_update(uint8_t *gb_mem, t_state *state, void *registers)
     }
     if (gb_mem[0xffff] & gb_mem[0xff0f] & 0x1f) {
         state->halt = false;
-//        if (state->halt)
-//            state->debug = true ;
+/*  if (state->halt)
+        state->debug = true ;   */
     }
     if (!state->interrupts_enabled)
         return ;

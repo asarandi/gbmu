@@ -77,15 +77,15 @@ bool server_accept()
     if (server.client_sock == -1)
     {
         if ((errno == EWOULDBLOCK) || (errno == EAGAIN))
-            return false ;                                  //wait
+            return false ;                                  /* wait */
         else
         {
-            server.status &= ~sock_created;                 //fail
+            server.status &= ~sock_created;                 /* fail */
             return false;
         }
     }
     else
-        server.status |= sock_connected;                    //ok
+        server.status |= sock_connected;                    /* ok */
 
     server.client_sock_flags = fcntl(server.client_sock, F_GETFL);
     fcntl(server.client_sock, F_SETFL, server.client_sock_flags | O_NONBLOCK);
@@ -100,11 +100,11 @@ bool server_send(uint8_t *octet)
     if (write(server.client_sock, octet, 1) != 1)
     {
         if ((errno == EWOULDBLOCK) || (errno == EAGAIN))
-            return false ;                                  //wait
+            return false ;                                  /* wait */
         server.status &= ~sock_connected;
-        return false ;                                      //fail
+        return false ;                                      /* fail */
     }
-    server.status |= sock_data_sent;                        //ok
+    server.status |= sock_data_sent;                        /* ok */
     return true ;
 }
 
@@ -114,11 +114,11 @@ bool server_recv(uint8_t *octet)
     if (read(server.client_sock, octet, 1) != 1)
     {
         if ((errno == EWOULDBLOCK) || (errno == EAGAIN))
-            return false ;                                  //wait
+            return false ;                                  /* wait */
         perror("server_recv()");
-        server.status &= ~sock_connected;                   //fail
+        server.status &= ~sock_connected;                   /* fail */
         return false ;
     }
-    server.status |= sock_data_received;                    //ok
+    server.status |= sock_data_received;                    /* ok */
     return true ;
 }
