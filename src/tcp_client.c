@@ -6,21 +6,21 @@ bool    client_create(char *network_address, int network_port)
 
     if ((client.sock = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
         if (SOCKET_DEBUG)
-            printf("%s: socket() failed\n", __func__);
+            printf("%s: socket() failed\n", "client_create()");
         return false;
     }
 
     if ((client.sock_flags = fcntl(client.sock, F_GETFL)) == -1) {
         (void)close(client.sock);
         if (SOCKET_DEBUG)
-            printf("%s: fcntl(F_GETFL) failed\n", __func__);
+            printf("%s: fcntl(F_GETFL) failed\n", "client_create()");
         return false;
     }
 
     if (fcntl(client.sock, F_SETFL, client.sock_flags | O_NONBLOCK) == -1) {
         (void)close(client.sock);
         if (SOCKET_DEBUG)
-            printf("%s: fcntl(F_SETFL, O_NONBLOCK) failed\n", __func__);
+            printf("%s: fcntl(F_SETFL, O_NONBLOCK) failed\n", "client_create()");
         return false;
     }
     client.is_blocking = false;
@@ -31,7 +31,7 @@ bool    client_create(char *network_address, int network_port)
     if (inet_pton(AF_INET, network_address, &client.server_address.sin_addr) == -1) {     /* ADDR */
         (void)close(client.sock);
         if (SOCKET_DEBUG)
-            printf("%s: inet_pton(%s) failed\n", __func__, network_address);
+            printf("%s: inet_pton(%s) failed\n", "client_create()", network_address);
         return false;
     }
 
@@ -42,7 +42,7 @@ bool    client_create(char *network_address, int network_port)
         if (errno == EINPROGRESS)
             return true ;        
         if (SOCKET_DEBUG)
-            printf("%s: connect() failed\n", __func__);
+            printf("%s: connect() failed\n", "client_create()");
         client.status &= ~sock_created;
         (void)close(client.sock);
         return false ;
@@ -56,11 +56,11 @@ bool client_connect()
 {
     int ret, sock_error, sock_len;
 
-    FD_ZERO(&client.fdset);
-    FD_SET(client.sock, &client.fdset);
+    FD_ZERO((fd_set *)&client.fdset);
+    FD_SET(client.sock, (fd_set *)&client.fdset);
     client.tv.tv_sec = 0;
     client.tv.tv_usec = 1000;
-    ret = select(client.sock + 1, NULL, &client.fdset, NULL, &client.tv);
+    ret = select(client.sock + 1, NULL, (fd_set *)&client.fdset, NULL, &client.tv);
     if (ret == 0)
         return false ;                              /* select timed out, wait? */
     if (ret == 1)

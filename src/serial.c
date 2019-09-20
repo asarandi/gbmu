@@ -201,11 +201,11 @@ void    master_bit_transfer()
 
     octet_send = gb_mem[0xff01];
     if (!socket_send(&octet_send)) {
-        (void)printf("%s: socketsend() failed\n", __func__);
+        (void)printf("%s: socketsend() failed\n", "master_bit_transfer()");
         return ;
     }
     if (!socket_receive(&octet_recv)) {
-        (void)printf("%s: socket_receive() failed\n", __func__);
+        (void)printf("%s: socket_receive() failed\n", "master_bit_transfer()");
         return ;
     }
     bit_transfer_ok(octet_recv);
@@ -217,12 +217,12 @@ void    slave_bit_transfer()
 
     set_blocking();
     if (!socket_receive(&octet_recv)) {
-        (void)printf("%s: socket_receive() failed\n", __func__);
+        (void)printf("%s: socket_receive() failed\n", "slave_bit_transfer()");
         return ;
     }
     octet_send =gb_mem[0xff01];
     if (!socket_send(&octet_send)) {
-        (void)printf("%s: socket_send() failed\n", __func__);
+        (void)printf("%s: socket_send() failed\n", "slave_bit_transfer()");
         return ;
     }
     bit_transfer_ok(octet_recv);

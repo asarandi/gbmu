@@ -89,7 +89,7 @@ void set_window_size()
     SDL_SetWindowSize(gui_window, width, height);
     SDL_SetWindowPosition(gui_window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
     if ((gui_buffer = SDL_CreateTexture(gui_renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, width, height)) == NULL)
-        SDL_Log("%s: could not create a texture: %s", __func__,  SDL_GetError());
+        SDL_Log("%s: could not create a texture: %s", "set_window_size()",  SDL_GetError());
 }
 
 bool gui_init()

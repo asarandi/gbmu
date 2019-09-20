@@ -91,7 +91,7 @@ void    savefile_read()
     len = strlen(state->rom_file);
     state->ram_file = malloc(len + 5);
     strncpy(state->ram_file, state->rom_file, len);
-    bzero(&state->ram_file[len], 5);
+    (void)memset(&state->ram_file[len], 0, 5);
     offset = 0;
     if (!strcmp(&state->ram_file[len - 3], ".gb"))
         offset = 3;
@@ -101,12 +101,12 @@ void    savefile_read()
     printf("ramfile: %s\n", state->ram_file);
 
     if ((fd = open(state->ram_file, O_RDONLY)) == -1) {
-        printf("%s: open() failed\n", __func__);
+        printf("%s: open() failed\n", "savefile_read()");
         return ;
     }
     if ((read(fd, state->ram_banks, RAM_SIZE * 16)) == -1) {
         close(fd);        
-        printf("%s: read() failed\n", __func__);
+        printf("%s: read() failed\n", "savefile_read()");
         return ;
     }
     close(fd);
@@ -125,11 +125,11 @@ void    savefile_write()
     size++;
     if (!size) return ; /* game did not use ram? */
     if ((fd = open(state->ram_file, O_CREAT | O_WRONLY, 0644)) == -1) {
-        printf("%s: open() failed\n", __func__);
+        printf("%s: open() failed\n", "savefile_write()");
         return ;
     }
     if (write(fd, state->ram_banks, size) == -1) {
-        printf("%s: write() failed\n", __func__);
+        printf("%s: write() failed\n", "savefile_write()");
     }
     close(fd);
     printf("ramfile saved\n");
