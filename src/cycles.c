@@ -132,13 +132,13 @@ int get_num_cycles(void *gb_reg, void *gb_mem)
     switch (is_conditional_num_cycles[idx])
     {
         case 1:
-            return (is_z_flag)  ? cycles_table0[idx] : cycles_table1[idx];
+            return (IS_Z_FLAG)  ? cycles_table0[idx] : cycles_table1[idx];
         case 2:
-            return (!is_z_flag) ? cycles_table0[idx] : cycles_table1[idx];
+            return (!IS_Z_FLAG) ? cycles_table0[idx] : cycles_table1[idx];
         case 3:
-            return (is_c_flag)  ? cycles_table0[idx] : cycles_table1[idx];
+            return (IS_C_FLAG)  ? cycles_table0[idx] : cycles_table1[idx];
         case 4:
-            return (!is_c_flag) ? cycles_table0[idx] : cycles_table1[idx];
+            return (!IS_C_FLAG) ? cycles_table0[idx] : cycles_table1[idx];
     }
     return cycles_table0[idx];
 }

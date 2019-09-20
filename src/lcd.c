@@ -1,13 +1,12 @@
 #include "gb.h"
 
-#define frame_duration          70224                                           /* 10 vblank scanlines */
-#define is_lcd_enabled          (gb_mem[0xff40] & 0x80 ? 1:0)
-#define is_wnd_enabled          (gb_mem[0xff40] & 0x20 ? 1:0)
-#define is_bg_enabled           (gb_mem[0xff40] & 0x01 ? 1:0)                   /* DMG specific XXX */
-#define is_sprites_enabled      (gb_mem[0xff40] & 0x02 ? 1:0)
-#define sprite_height           (gb_mem[0xff40] & 0x04 ? 16:8)
-#define is_obj_y_flip           (obj_attr & 0x40 ? 1:0)
-#define is_obj_x_flip           (obj_attr & 0x20 ? 1:0)
+#define FRAME_DURATION          70224
+#define IS_LCD_ENABLED          (gb_mem[0xff40] & 0x80 ? 1:0)
+#define IS_WND_ENABLED          (gb_mem[0xff40] & 0x20 ? 1:0)
+#define IS_BG_ENABLED           (gb_mem[0xff40] & 0x01 ? 1:0)                   /* DMG specific XXX */
+#define IS_OBJ_ENABLED          (gb_mem[0xff40] & 0x02 ? 1:0)
+#define IS_OBJ_Y_FLIP           (obj_attr & 0x40 ? 1:0)
+#define IS_OBJ_X_FLIP           (obj_attr & 0x20 ? 1:0)
 
 uint8_t    get_bg_pixel_yx(uint8_t *gb_mem, uint8_t y, uint8_t x)
 {
@@ -65,7 +64,7 @@ bool    is_window_pixel(uint8_t *gb_mem, uint8_t y, uint8_t x)
 
     wy = gb_mem[0xff4a];
     wx = gb_mem[0xff4b];
-    if (!is_wnd_enabled)
+    if (!IS_WND_ENABLED)
         return false ;
     if ((wy > 143) || (wx > 166))
         return false ;
@@ -79,7 +78,7 @@ uint8_t     get_sprite_pixel(uint8_t *gb_mem, uint8_t idx, uint8_t y, uint8_t x)
     uint8_t *oam, obj_height, coord_y, coord_x, obj_num, obj_attr;
     uint8_t *tile_data, tile_byte0, tile_byte1, pixel;
 
-    if ((idx == 0xff) || (!is_sprites_enabled))
+    if ((idx == 0xff) || (!IS_OBJ_ENABLED))
         return 0;
     oam = &gb_mem[0xfe00];
     obj_height = (gb_mem[0xff40] & 4) ? 16 : 8;
@@ -89,9 +88,9 @@ uint8_t     get_sprite_pixel(uint8_t *gb_mem, uint8_t idx, uint8_t y, uint8_t x)
     obj_attr = oam[idx + 3];
     if (obj_height == 16)
         obj_num &= 0xfe;
-    if (is_obj_y_flip)
+    if (IS_OBJ_Y_FLIP)
         coord_y = (obj_height-1) - coord_y;
-    if (is_obj_x_flip)
+    if (IS_OBJ_X_FLIP)
         coord_x = 7 - coord_x;
     tile_data = &gb_mem[0x8000 + (obj_num * 16)];
     tile_byte0 = tile_data[coord_y * 2];
@@ -120,7 +119,7 @@ void    get_sprites(uint8_t *gb_mem, uint8_t lcd_y, uint8_t *sprites)
     uint8_t     obj_height = (gb_mem[0xff40] & 4) ? 16 : 8;
 
     (void)memset(sprites, 0xff, 10);
-    if (!is_sprites_enabled) return ;
+    if (!IS_OBJ_ENABLED) return ;
 
     idx = 0;
     sprites_idx = 0;
@@ -178,7 +177,7 @@ void    screen_update(uint8_t *gb_mem, t_state *state, uint8_t *sprites)
     bg_pal = gb_mem[0xff47];
 
     for (x = 0; x < 160; x++) {
-        if (is_bg_enabled) {
+        if (IS_BG_ENABLED) {
             bg_pixel = get_bg_pixel_yx(gb_mem, y, x);
             bg_render = (bg_pal >> ((bg_pixel & 3) << 1)) & 3;
             state->screen_buf[y * 160 + x] = bg_render ;
@@ -217,17 +216,13 @@ void    screen_update(uint8_t *gb_mem, t_state *state, uint8_t *sprites)
 
 void    lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles)
 {
+    static bool     is_vblank, is_hblank, is_oam, is_lyc, is_get_sprites;
     static int      lcd_cycle;
-    static bool     is_vblank;
-    static bool     is_hblank;
-    static bool     is_oam;
-    static bool     is_lyc;
-    static bool     is_get_sprites;
     static uint8_t  sprites[10];
     uint8_t         i;
     uint16_t        dma_source;
 
-    if (!is_lcd_enabled) {
+    if (!IS_LCD_ENABLED) {
         (void)memset(state->screen_buf, 0, 160*144);
         gb_mem[0xff41] &= 0xfc ;
         gb_mem[0xff44] = 0;
@@ -236,7 +231,7 @@ void    lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles)
     }
 
     lcd_cycle += current_cycles;
-    lcd_cycle %= 70224;
+    lcd_cycle %= FRAME_DURATION;
 
     gb_mem[0xff44] = lcd_cycle / 456;
 
