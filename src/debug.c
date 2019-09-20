@@ -57,10 +57,10 @@ void dump_registers(void *registers, void *gb_state, uint8_t *gb_mem)
     uint8_t     u8;
     uint16_t    u16;
 
-    z = is_z_flag ? 'Z' : '-';
-    n = is_n_flag ? 'N' : '-';
-    h = is_h_flag ? 'H' : '-';
-    c = is_c_flag ? 'C' : '-';
+    z = IS_Z_FLAG ? 'Z' : '-';
+    n = IS_N_FLAG ? 'N' : '-';
+    h = IS_H_FLAG ? 'H' : '-';
+    c = IS_C_FLAG ? 'C' : '-';
 
     (void)gb_state;
     (void)gb_mem;

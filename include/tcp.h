@@ -43,12 +43,12 @@ typedef struct  s_client {
 
 bool    client_create(char *network_address, int network_port);
 bool    client_connect();
-bool    client_send();
-bool    client_recv();
+bool    client_recv(uint8_t *octet);
+bool    client_send(uint8_t *octet);
 bool    server_create(char *network_address, int network_port);
 bool    server_accept();
-bool    server_send();
-bool    server_recv();
+bool    server_recv(uint8_t *octet);
+bool    server_send(uint8_t *octet);
 
 t_client    client;
 t_server    server;

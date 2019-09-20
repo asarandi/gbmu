@@ -81,20 +81,20 @@ typedef struct  s_state {
 extern uint8_t gb_mem[];
 extern t_state *state;
 
-#define clear_z_flag     (r8->F &= (~0x80))
-#define clear_n_flag     (r8->F &= (~0x40))
-#define clear_h_flag     (r8->F &= (~0x20))
-#define clear_c_flag     (r8->F &= (~0x10))
+#define CLEAR_Z_FLAG     (r8->F &= (~0x80))
+#define CLEAR_N_FLAG     (r8->F &= (~0x40))
+#define CLEAR_H_FLAG     (r8->F &= (~0x20))
+#define CLEAR_C_FLAG     (r8->F &= (~0x10))
 
-#define set_z_flag       (r8->F |= 0x80)
-#define set_n_flag       (r8->F |= 0x40)
-#define set_h_flag       (r8->F |= 0x20)
-#define set_c_flag       (r8->F |= 0x10)
+#define SET_Z_FLAG       (r8->F |= 0x80)
+#define SET_N_FLAG       (r8->F |= 0x40)
+#define SET_H_FLAG       (r8->F |= 0x20)
+#define SET_C_FLAG       (r8->F |= 0x10)
 
-#define is_z_flag        (r8->F & 0x80 ? 1:0)
-#define is_n_flag        (r8->F & 0x40 ? 1:0)
-#define is_h_flag        (r8->F & 0x20 ? 1:0)
-#define is_c_flag        (r8->F & 0x10 ? 1:0)
+#define IS_Z_FLAG        (r8->F & 0x80 ? 1:0)
+#define IS_N_FLAG        (r8->F & 0x40 ? 1:0)
+#define IS_H_FLAG        (r8->F & 0x20 ? 1:0)
+#define IS_C_FLAG        (r8->F & 0x10 ? 1:0)
 
 int         get_num_cycles(void *gb_reg, void *gb_mem);
 void        dump_background2(uint8_t *gb_mem, t_state *state);
@@ -161,14 +161,7 @@ extern      char* op_names0[];
 extern      char* op_names1[];
 
 /*  serial/tcp  */
-bool    client_create();
-bool    client_connect();
-bool    client_send(uint8_t *octet);
-bool    client_recv(uint8_t *octet);
-bool    server_create();
-bool    server_accept();
-bool    server_send(uint8_t *octet);
-bool    server_recv(uint8_t *octet);
+
 bool    is_online();
 bool    socket_send(uint8_t *octet);
 bool    socket_receive(uint8_t *octet);

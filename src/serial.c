@@ -9,8 +9,6 @@
 #define BIT_TRANSFER_CYCLES                 (GAMEBOY_CLOCK_SPEED / SERIAL_CLOCK_SPEED)
 #define BYTE_TRANSFER_CYCLES                (BIT_TRANSFER_CYCLES * 8)
 
-#define serial_debug                        true
-
 bool    is_online()
 {
     if ((state->is_server) && (server.status & sock_created) && (server.status & sock_connected)) return true ;
