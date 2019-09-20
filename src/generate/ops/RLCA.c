@@ -13,10 +13,10 @@ void op_07(void *reg, t_state *state, uint8_t *mem)
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
 	r8->A = (r8->A << 1) | (r8->A >> 7);
-	clear_z_flag;
-	clear_n_flag;
-	clear_h_flag;
-	r8->A & 1 ? set_c_flag : clear_c_flag;
+	CLEAR_Z_FLAG;
+	CLEAR_N_FLAG;
+	CLEAR_H_FLAG;
+	r8->A & 1 ? SET_C_FLAG : CLEAR_C_FLAG;
 	r16->PC += 1;
 }
 

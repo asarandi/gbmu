@@ -12,9 +12,9 @@ void op_3f(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	is_c_flag ? clear_c_flag : set_c_flag;
-	clear_n_flag;
-	clear_h_flag;
+	IS_C_FLAG ? CLEAR_C_FLAG : SET_C_FLAG;
+	CLEAR_N_FLAG;
+	CLEAR_H_FLAG;
 	r16->PC += 1;
 }
 

@@ -12,9 +12,9 @@ void op_37(void *reg, t_state *state, uint8_t *mem)
 
 	t_r8  *r8  = reg;
 	t_r16 *r16 = reg;
-	clear_n_flag;
-	clear_h_flag;
-	set_c_flag;
+	CLEAR_N_FLAG;
+	CLEAR_H_FLAG;
+	SET_C_FLAG;
 	r16->PC += 1;
 }
 
