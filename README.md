@@ -39,25 +39,21 @@ work in progress; gameboy emulator in c;
 
 #### netplay:
 
-- on two different computers:
-    first computer has to run a server instance:
-```
-./gbmu -s 10.113.5.26 Tetris.gb
-```
+##### netplay on two different computers:
 
-    second computer has to run a client instance:
-```
-./gbmu -c 10.113.5.26 Tetris.gb
-```
+first computer runs a server instance:
 
-    ip address should be of computer running the server instance
+`./gbmu -s 10.113.5.26 Tetris.gb`
 
--
+second computer runs a client instance:
 
-- on one computer:
-```
-f=Tetris.gb; nice -n0 nohup ./gbmu -s "$f" &; nice -n0 nohup ./gbmu -c "$f" &;
-```
+`./gbmu -c 10.113.5.26 Tetris.gb`
+
+ip address should be of machine running server instance instance
+
+
+##### netplay on one computer:
+`f=../path/to/tetris.gb; nohup ./gbmu -s "$f" &; nohup ./gbmu -c "$f" &;`
 
 
 #### controls:
