@@ -26,17 +26,29 @@ work in progress; gameboy emulator in c;
 
 #### usage:
 
-`./gbmu <gameboy_rom_file.gb>`
+```
+./gbmu [options] rom_file.gb
+
+  options:
+   -s <ip address>          : server
+   -c <ip address>          : client
+   -p <port>                : port
+```
 
 
 
 #### netplay:
 
-run server instance `./gbmu --server <gameboy_rom_file.gb>`
+for netplay on two different computers, first computer has to run a server instance: `./gbmu -s 10.113.5.26 Tetris.gb`
 
-run client instance `./gbmu --client <gameboy_rom_file.gb>`
+second computer has to run a client instance `./gbmu -c 10.113.5.26 Tetris.gb`
 
-to play over LAN edit the `include/tcp.h` and update `NETWORK_ADDRESS` value, to recompile run `make clean && make`
+ip address should be of computer running the server instance
+
+-
+
+for netplay on the same computer:
+    `f=Tetris.gb; nice -n0 nohup ./gbmu -s "$f" &; nice -n0 nohup ./gbmu -c "$f" &;`
 
 
 
