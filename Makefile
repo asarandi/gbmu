@@ -3,17 +3,12 @@ LDFLAGS += $(shell sdl2-config --libs)
 
 src = $(wildcard src/*.c)
 
+src/debug.o : CFLAGS += -Wno-unused-result
+src/ops.o : CFLAGS += -Wno-unused-variable -Wno-unused-parameter
+src/sound.o src/gui.o : CFLAGS += $(shell sdl2-config --cflags)
+
 gbmu: $(src:.c=.o) 
 	$(CC) $(CFLAGS) $^ $(LDFLAGS) -o gbmu
-
-src/ops.o:
-	$(CC) $(CFLAGS) -Wno-unused-variable -Wno-unused-parameter -c src/ops.c -o $@
-
-src/sound.o:
-	$(CC) $(CFLAGS) $(shell sdl2-config --cflags) -c src/sound.c -o $@
-
-src/gui.o:
-	$(CC) $(CFLAGS) $(shell sdl2-config --cflags) -c src/gui.c -o $@
 
 clean:
 	rm -f $(src:.c=.o)
