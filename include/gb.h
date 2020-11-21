@@ -64,6 +64,7 @@ typedef struct  s_state {
     unsigned int    cycles;
     uint8_t         screen_buf[144*160];
     uint8_t         buttons[8];
+    uint8_t         sound_channels[4];
     uint8_t         (*ram_read_u8)(uint16_t);
     void            (*ram_write_u8)(uint16_t, uint8_t);
     uint8_t         (*rom_read_u8)(uint16_t);

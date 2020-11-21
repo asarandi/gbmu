@@ -1,4 +1,4 @@
-CFLAGS  += -Ofast -pedantic -std=c89 -Wall -Werror -Wextra -I include
+CFLAGS  += -O2 -Wall -Werror -Wextra -I include
 LDFLAGS += $(shell sdl2-config --libs)
 
 src = $(wildcard src/*.c)

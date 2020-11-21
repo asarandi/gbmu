@@ -159,7 +159,7 @@ void gui_set_button_states(uint32_t key, uint8_t value)
 
 void gui_update()
 {
-    int         tmp;
+    int         i, tmp;
     SDL_Event   event;
 
     gui_render();
@@ -191,6 +191,19 @@ void gui_update()
                 state->volume--;
             if ((event.key.keysym.sym == SDLK_MINUS) && (state->volume < 16))
                 state->volume++;
+
+            for (i=tmp=0; i<4; i++) {
+                if (event.key.keysym.sym == (int[]){SDLK_u, SDLK_i, SDLK_o, SDLK_p}[i]) {
+                    state->sound_channels[i] ^= 1;
+                    tmp = 1;
+                }
+            }
+
+            for (i=0; tmp && i<4; i++) {
+                printf("nr%d [%s]%s", i + 1,
+                state->sound_channels[i] ? "on" : "off",
+                i + 1 < 4 ? ", " : "\n");
+            }
 
             if (event.key.keysym.sym == SDLK_q)
                 render_palette_idx--;

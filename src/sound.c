@@ -161,7 +161,8 @@ void    sound_1_init()
     s1.volume_counter = 0;
     s1.sweep_counter = 0;
     s1.length_counter = 0;
-    s1.sample_counter = 0;
+    if (!s1.is_enabled)
+        s1.sample_counter = 0;
     s1.is_enabled = true;
 }
 
@@ -198,7 +199,8 @@ void    sound_2_init()
     sound_nr23_update(NR23);                                /*set frequency*/
     s2.volume_counter = 0;
     s2.length_counter = 0;
-    s2.sample_counter = 0;
+    if (!s2.is_enabled)
+        s2.sample_counter = 0;
     s2.is_enabled = true ;
 }
 
@@ -227,13 +229,6 @@ void    sound_nr32_update(uint8_t data)
     NR32 = data;
 }
 
-void    sound_3_init()
-{
-    s3.length_counter = 0;
-    s3.sample_counter = 0;
-    s3.is_enabled = ((NR30 & 0x80) >> 7) & 1;
-}
-
 void    sound_nr33_update(uint8_t data)
 {
     NR33 = data;
@@ -244,8 +239,12 @@ void    sound_nr34_update(uint8_t data)
 {
     NR34 = data;
     s3.frequency            = ((NR34 & 0x07) << 8) | NR33;
-    if (NR34 & 0x80)
-        sound_3_init();
+    if (NR34 & 0x80) {
+        s3.length_counter = 0;
+        if (!s3.is_enabled)
+            s3.sample_counter = 0;
+        s3.is_enabled = (NR30 >> 7) & 1;
+    }
 }
 
 void    sound_nr41_update(uint8_t data)
@@ -271,8 +270,9 @@ void    sound_4_init()
 {
     s4.volume_counter = 0;
     s4.length_counter = 0;
-    s4.sample_counter = 0;
     s4.frequency_counter = 0;
+    if (!s4.is_enabled)
+        s4.sample_counter = 0;
     s4.is_enabled = true;
 }
 void    sound_nr44_update(uint8_t data)
@@ -445,9 +445,9 @@ void    apu_sweep_tick()
 
 void    channel_length_tick(t_sound *s0, uint8_t reg)
 {
-    if ((s0->is_enabled) && (s0->sound_length)) {
-        s0->length_counter++;
-        if ((s0->length_counter >= s0->sound_length) && (reg & 0x40))
+    s0->length_counter++;
+    if (reg & 0x40) {
+        if (s0->length_counter >= s0->sound_length)
             s0->is_enabled = false;
     }
 }
@@ -585,7 +585,7 @@ int16_t SquareWave(int time, int freq, int vol, int duty)
     cyclepart = time % tpc;
     if (tpc < 8) tpc |= 8;
     idx = cyclepart / (tpc >> 3);
-    result = (INT16_MAX/15) * vol * patterns[duty][idx & 7];
+    result = 0x888 * vol * patterns[duty][idx & 7];
     return result ;
 }
 
@@ -629,7 +629,6 @@ int16_t sound_3_wave(int time, int freq)
 {
     int tpc, cyclepart, idx;
     uint8_t nibble;
-    int16_t amplitude;
 
     freq = 65536 / (2048 - freq);
     tpc = sdl_received_spec.freq / freq;
@@ -651,8 +650,7 @@ int16_t sound_3_wave(int time, int freq)
         nibble >>= 2;
         break;
     }
-    amplitude = nibble * (INT16_MAX/15);
-    return amplitude;
+    return nibble * 0x888;
 }
 
 void    sound_3_fill_buffer()
@@ -684,7 +682,7 @@ void    sound_4_fill_buffer()
         return ;
 
     sample = rand() & 1; /*~((NR43 >> 4) & 1);*/
-    sample *= ((INT16_MAX/15) * s4.sound_volume);
+    sample *= (0x888 * s4.sound_volume);
 
     for (i = 0; i < sdl_received_spec.samples; i++) {
         if (IS_SOUND_4_LEFT_ENABLED)
@@ -704,10 +702,19 @@ void MyAudioCallback(void *userdata, Uint8 *stream, int len)
     if (!sdl_audio_device)
         return ;
 
-    sound_1_fill_buffer();
-    sound_2_fill_buffer();
-    sound_3_fill_buffer();
-    sound_4_fill_buffer();
+    memset(sound_1_buffer, 0, sizeof(sound_1_buffer));
+    memset(sound_2_buffer, 0, sizeof(sound_2_buffer));
+    memset(sound_3_buffer, 0, sizeof(sound_3_buffer));
+    memset(sound_4_buffer, 0, sizeof(sound_4_buffer));
+
+    if (state->sound_channels[0])
+        sound_1_fill_buffer();
+    if (state->sound_channels[1])
+        sound_2_fill_buffer();
+    if (state->sound_channels[2])
+        sound_3_fill_buffer();
+    if (state->sound_channels[3])
+        sound_4_fill_buffer();
 
     for (i = 0; i < sdl_received_spec.samples; i++) {
         j = i * (sdl_received_spec.channels * SAMPLE_SIZE);
@@ -739,6 +746,7 @@ void MyAudioCallback(void *userdata, Uint8 *stream, int len)
 /* gui_init() must be called first because it calls SDL_Init() */
 void    apu_init()
 {
+    int i;
 
     SDL_memset(&sdl_received_spec, 0, sizeof(SDL_AudioSpec));
     SDL_memset(&sdl_wanted_spec, 0, sizeof(SDL_AudioSpec));
@@ -762,6 +770,8 @@ void    apu_init()
         printf(" sound samples: wanted = %d, received = %d\n", sdl_wanted_spec.samples,  sdl_received_spec.samples);
 
     SDL_PauseAudioDevice(sdl_audio_device, 0);
+    for (i=0; i<4; i++)
+        state->sound_channels[i] = 1;
     return ;
 }
 
