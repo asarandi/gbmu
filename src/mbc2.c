@@ -3,16 +3,16 @@
 static uint8_t ramg, romb = 1;
 
 void    mbc2_ram_write_u8(uint16_t addr, uint8_t data)
-{    
+{
     if (ramg != 0x0a)
         return ;
     state->ram_banks[addr & 0x1fff] = (data & 0x0f) | 0xf0;
 }
 
 uint8_t mbc2_ram_read_u8(uint16_t addr)
-{    
+{
     if (ramg != 0x0a)
-        return 0xff;    
+        return 0xff;
     return (state->ram_banks[addr & 0x1fff] & 0x0f) | 0xf0;
 }
 

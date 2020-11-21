@@ -37,10 +37,9 @@ bool    client_create(char *network_address, int network_port)
 
     client.status |= sock_created;
     errno = 0;
-    if (connect(client.sock, (struct sockaddr *)&client.server_address, (socklen_t)sizeof(client.server_address)) == -1)
-    {
+    if (connect(client.sock, (struct sockaddr *)&client.server_address, (socklen_t)sizeof(client.server_address)) == -1) {
         if (errno == EINPROGRESS)
-            return true ;        
+            return true ;
         if (SOCKET_DEBUG)
             printf("%s: connect() failed\n", "client_create()");
         client.status &= ~sock_created;
@@ -63,15 +62,12 @@ bool client_connect()
     ret = select(client.sock + 1, NULL, (fd_set *)&client.fdset, NULL, &client.tv);
     if (ret == 0)
         return false ;                              /* select timed out, wait? */
-    if (ret == 1)
-    {
+    if (ret == 1) {
         sock_error = -1;
         sock_len = sizeof(sock_error);
 
-        if (getsockopt(client.sock, SOL_SOCKET, SO_ERROR, &sock_error, (socklen_t *)&sock_len) == 0)
-        {
-            if (sock_error == 0)
-            {
+        if (getsockopt(client.sock, SOL_SOCKET, SO_ERROR, &sock_error, (socklen_t *)&sock_len) == 0) {
+            if (sock_error == 0) {
                 client.status |= sock_connected;    /* ok */
                 return true;
             }
@@ -87,8 +83,7 @@ bool client_connect()
 bool client_send(uint8_t *octet)
 {
     errno = 0;
-    if (write(client.sock, octet, 1) != 1)
-    {
+    if (write(client.sock, octet, 1) != 1) {
         if ((errno == EWOULDBLOCK) || (errno == EAGAIN))
             return false ;                          /* wait */
         client.status &= ~sock_connected;           /* fail */
@@ -101,8 +96,7 @@ bool client_send(uint8_t *octet)
 bool client_recv(uint8_t *octet)
 {
     errno = 0;
-    if (read(client.sock, octet, 1) != 1)
-    {
+    if (read(client.sock, octet, 1) != 1) {
         if ((errno == EWOULDBLOCK) || (errno == EAGAIN))
             return false ;                          /* wait */
         client.status &= ~sock_connected;           /* fail */

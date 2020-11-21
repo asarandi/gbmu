@@ -31,8 +31,7 @@ uint8_t    joypad_read()
     return joypad;
 }
 
-typedef struct s_sgb_cmd
-{
+typedef struct s_sgb_cmd {
     uint8_t code;
     char    *info;
 }              t_sgb_cmd;
@@ -85,7 +84,7 @@ void        joypad_write(uint8_t data)
     if (data == 3)              /* both high between pulses */
         return ;
     if (!data) {                /* both low: reset */
-/*        printf("joypad reset "); */
+        /*        printf("joypad reset "); */
         for (idx = 0; idx < 256; idx++)
             packet[idx] = 0;
         idx = 0;
@@ -95,12 +94,12 @@ void        joypad_write(uint8_t data)
     idx++;
     idx &= 0x7ff;
     if (idx == 128) {
-/*        
-        for (i=0;i<16;i++) {
-            printf("%02x ", packet[i]);
-        }
-        printf("%s\n", sgb_commands[packet[0]>>3].info);
-*/        
+        /*
+                for (i=0;i<16;i++) {
+                    printf("%02x ", packet[i]);
+                }
+                printf("%s\n", sgb_commands[packet[0]>>3].info);
+        */
         if (packet[0] == 0xb9)                          /*MASK_EN, len 1*/
             state->screen_mask = packet[1] & 3;
         if ((packet[0] == 0x51) && (packet[9] & 0x40))  /*PAL_SET, len 1*/

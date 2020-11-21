@@ -21,8 +21,7 @@ uint8_t    get_bg_pixel_yx(uint8_t *gb_mem, uint8_t y, uint8_t x)
     tile_idx_addr = ((y>>3)<<5)+(x>>3);
     tile_idx = gb_mem[tile_map_addr + tile_idx_addr];
     tile_data = &gb_mem[tile_data_addr + (tile_idx << 4)];
-    if (tile_data_addr == 0x8800)
-    {
+    if (tile_data_addr == 0x8800) {
         idxi = (int8_t)gb_mem[tile_map_addr + tile_idx_addr];
         tile_data = &gb_mem[0x9000 + (idxi * 16)];
     }
@@ -47,8 +46,7 @@ uint8_t get_wnd_pixel_yx(uint8_t *gb_mem, uint8_t y, uint8_t x)
     tile_idx_addr = ((y>>3)<<5)+(x>>3);
     tile_idx = gb_mem[tile_map_addr + tile_idx_addr];
     tile_data = &gb_mem[tile_data_addr + (tile_idx << 4)];
-    if (tile_data_addr == 0x8800)
-    {
+    if (tile_data_addr == 0x8800) {
         idxi = (int8_t)gb_mem[tile_map_addr + tile_idx_addr];
         tile_data = &gb_mem[0x9000 + (idxi * 16)];
     }
@@ -105,7 +103,7 @@ int sprites_compare(const void *alpha, const void *beta)
 {
     /* dmg priority */
 
-    /* 
+    /*
      * return (gb_mem[0xfe00 + *(uint8_t*)alpha + 1] - gb_mem[0xfe00 + *(uint8_t*)beta + 1]);
      * */
     return (int)(*(uint8_t*)alpha - *(uint8_t*)beta);   /* cgb priority */
@@ -255,16 +253,14 @@ void    lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles)
                 if (gb_mem[0xff41] & 0x20)  gb_mem[0xff0f] |= 2;    /* irq */
             }
             is_get_sprites = true;
-        }
-        else if ((lcd_cycle % 456) < 252) {
+        } else if ((lcd_cycle % 456) < 252) {
             if (is_get_sprites) {
                 is_get_sprites = false;
                 get_sprites(gb_mem, gb_mem[0xff44], sprites);
             }
             gb_mem[0xff41] = (gb_mem[0xff41] & 0xfc) | 3;           /* mode 3 */
             is_hblank = true;
-        }
-        else {
+        } else {
             gb_mem[0xff41] &= 0xfc;                                 /* mode 0 */
             if (is_hblank) {
                 is_hblank = false;
@@ -273,8 +269,7 @@ void    lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles)
             }
             is_vblank = true;
         }
-    }
-    else {
+    } else {
         gb_mem[0xff41] = (gb_mem[0xff41] & 0xfc) | 1;               /* mode 1 */
         if (is_vblank) {
             is_vblank = false;

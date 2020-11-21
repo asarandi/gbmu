@@ -3,16 +3,16 @@
 static uint8_t ramg, romb0 = 1, ramb;
 
 void    mbc3_ram_write_u8(uint16_t addr, uint8_t data)
-{    
+{
     if (ramg != 0x0a)
         return ;
     state->ram_banks[(ramb << 13) + (addr & 0x1fff)] = data;
 }
 
 uint8_t mbc3_ram_read_u8(uint16_t addr)
-{    
+{
     if (ramg != 0x0a)
-        return 0xff;    
+        return 0xff;
     return state->ram_banks[(ramb << 13) + (addr & 0x1fff)];
 }
 
@@ -47,6 +47,6 @@ void        mbc3_rom_write_u8(uint16_t addr, uint8_t data)
         else
             printf("mbc3 rtc register select, data = %02x\n", data);    /* TODO */
     }
-    if ((addr >= 0x6000) && (addr <= 0x7fff))       
+    if ((addr >= 0x6000) && (addr <= 0x7fff))
         printf("mbc3 latch clock data, data = %02x\n", data);           /* TODO */
 }

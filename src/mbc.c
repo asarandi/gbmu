@@ -1,6 +1,6 @@
 #include "gb.h"
 
-#define     IS_ROM_ONLY                              (gb_mem[0x0147] == 0x00 ? 1:0) 
+#define     IS_ROM_ONLY                              (gb_mem[0x0147] == 0x00 ? 1:0)
 #define     IS_MBC1                                  (gb_mem[0x0147] == 0x01 ? 1:0)
 #define     IS_MBC1_RAM                              (gb_mem[0x0147] == 0x02 ? 1:0)
 #define     IS_MBC1_RAM_BATTERY                      (gb_mem[0x0147] == 0x03 ? 1:0)
@@ -34,7 +34,7 @@ typedef struct  s_cartridge {
     char        *name;
 }               t_cartridge;
 
-t_cartridge cartridge_types[] = { 
+t_cartridge cartridge_types[] = {
     {0x00, "ROM ONLY"},
     {0x01, "MBC1"},
     {0x02, "MBC1+RAM"},
@@ -105,7 +105,7 @@ void    savefile_read()
         return ;
     }
     if ((read(fd, state->ram_banks, RAM_SIZE * 16)) == -1) {
-        close(fd);        
+        close(fd);
         printf("%s: read() failed\n", "savefile_read()");
         return ;
     }
@@ -168,32 +168,28 @@ void    cartridge_init()
     state->rom_read_u8  = &default_rom_read_u8;
     state->rom_write_u8 = &default_rom_write_u8;
 
-    if ((IS_MBC1) || (IS_MBC1_RAM) || (IS_MBC1_RAM_BATTERY))
-    {       
+    if ((IS_MBC1) || (IS_MBC1_RAM) || (IS_MBC1_RAM_BATTERY)) {
         state->ram_read_u8  = &mbc1_ram_read_u8;
         state->ram_write_u8 = &mbc1_ram_write_u8;
         state->rom_read_u8  = &mbc1_rom_read_u8;
         state->rom_write_u8 = &mbc1_rom_write_u8;
     }
-    
-    if ((IS_MBC2) || (IS_MBC2_BATTERY))
-    {
+
+    if ((IS_MBC2) || (IS_MBC2_BATTERY)) {
         state->ram_read_u8  = &mbc2_ram_read_u8;
         state->ram_write_u8 = &mbc2_ram_write_u8;
         state->rom_read_u8  = &mbc2_rom_read_u8;
         state->rom_write_u8 = &mbc2_rom_write_u8;
     }
 
-    if ((IS_MBC3_TIMER_BATTERY) || (IS_MBC3_TIMER_RAM_BATTERY) || (IS_MBC3) || (IS_MBC3_RAM) || (IS_MBC3_RAM_BATTERY))
-    {
+    if ((IS_MBC3_TIMER_BATTERY) || (IS_MBC3_TIMER_RAM_BATTERY) || (IS_MBC3) || (IS_MBC3_RAM) || (IS_MBC3_RAM_BATTERY)) {
         state->ram_read_u8  = &mbc3_ram_read_u8;
         state->ram_write_u8 = &mbc3_ram_write_u8;
         state->rom_read_u8  = &mbc3_rom_read_u8;
         state->rom_write_u8 = &mbc3_rom_write_u8;
     }
 
-    if ((IS_MBC5) || (IS_MBC5_RAM) || (IS_MBC5_RAM_BATTERY) || (IS_MBC5_RUMBLE) || (IS_MBC5_RUMBLE_RAM) || (IS_MBC5_RUMBLE_RAM_BATTERY))
-    {
+    if ((IS_MBC5) || (IS_MBC5_RAM) || (IS_MBC5_RAM_BATTERY) || (IS_MBC5_RUMBLE) || (IS_MBC5_RUMBLE_RAM) || (IS_MBC5_RUMBLE_RAM_BATTERY)) {
         state->ram_read_u8  = &mbc5_ram_read_u8;
         state->ram_write_u8 = &mbc5_ram_write_u8;
         state->rom_read_u8  = &mbc5_rom_read_u8;

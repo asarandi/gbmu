@@ -3,7 +3,7 @@
 static uint8_t ramg, bank1 = 1, bank2, mode;
 
 void    mbc1_ram_write_u8(uint16_t addr, uint8_t data)
-{    
+{
     if (ramg != 0x0a)
         return ;
     if (mode == 0)
@@ -13,9 +13,9 @@ void    mbc1_ram_write_u8(uint16_t addr, uint8_t data)
 }
 
 uint8_t mbc1_ram_read_u8(uint16_t addr)
-{    
+{
     if (ramg != 0x0a)
-        return 0xff;    
+        return 0xff;
     if (mode == 1)
         return state->ram_banks[(bank2 << 13) + (addr & 0x1fff)];
     return state->ram_banks[addr & 0x1fff];

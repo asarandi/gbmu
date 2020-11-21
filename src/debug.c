@@ -31,7 +31,7 @@ void    dump_background(uint8_t *gb_mem)
     }
 
     fd = open("background.dump", O_WRONLY | O_CREAT, 0644);
-    for (i=0;i<0x100;i++) {
+    for (i=0; i<0x100; i++) {
         (void)write(fd, &background[i*0x100], 0x100);
         (void)write(fd, "\n", 1);
     }
@@ -42,7 +42,7 @@ void    dump_background(uint8_t *gb_mem)
 void dump_ram(void *ram)
 {
     int fd;
-    
+
     fd = open("mem.dump", O_CREAT | O_WRONLY, 0644);
     (void)write(fd, ram, 0x10000);
     close(fd);
@@ -97,7 +97,7 @@ void dump_registers(void *registers, void *gb_state, uint8_t *gb_mem)
         printf(op_name, u8);
     else if (strstr(op_name, "%04"))
         printf(op_name, u16);
-    else        
+    else
         printf("%s", op_name);
 
     printf("\n>\n");

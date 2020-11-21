@@ -34,14 +34,12 @@ bool    socket_receive(uint8_t *octet)
 
 void    serial_cleanup()
 {
-    if (state->is_server)
-    {
+    if (state->is_server) {
         close(server.client_sock);
         close(server.server_sock);
         (void)memset(&server, 0, sizeof(t_server));
     }
-    if (state->is_client)
-    {
+    if (state->is_client) {
         close(client.sock);
         (void)memset(&client, 0, sizeof(t_client));
     }
@@ -49,13 +47,11 @@ void    serial_cleanup()
 
 void    set_blocking()
 {
-    if ((state->is_server) && (!server.is_blocking))
-    {
+    if ((state->is_server) && (!server.is_blocking)) {
         fcntl(server.client_sock, F_SETFL, server.client_sock_flags & (~O_NONBLOCK));
         server.is_blocking = true ;
     }
-    if ((state->is_client) && (!client.is_blocking))
-    {
+    if ((state->is_client) && (!client.is_blocking)) {
         fcntl(client.sock, F_SETFL, client.sock_flags & (~O_NONBLOCK));
         client.is_blocking = true ;
     }
@@ -63,13 +59,11 @@ void    set_blocking()
 
 void    set_nonblocking()
 {
-    if ((state->is_server) && (server.is_blocking))
-    {
+    if ((state->is_server) && (server.is_blocking)) {
         fcntl(server.client_sock, F_SETFL, server.client_sock_flags | O_NONBLOCK);
         server.is_blocking = false ;
     }
-    if ((state->is_client) && (client.is_blocking))
-    {
+    if ((state->is_client) && (client.is_blocking)) {
         fcntl(client.sock, F_SETFL, client.sock_flags | O_NONBLOCK);
         client.is_blocking = false ;
     }
@@ -83,31 +77,25 @@ void    serial_connect()
         return ;
     }
 
-    if (state->is_server)
-    {
-        if (!(server.status & sock_created))
-        {
+    if (state->is_server) {
+        if (!(server.status & sock_created)) {
             if (!server_create(state->network_address, state->network_port))
                 create_cooldown = SOCKET_RECONNECT_DELAY;
             return ;
         }
-        if (!(server.status & sock_connected))
-        {
+        if (!(server.status & sock_connected)) {
             if (!server_accept())
                 create_cooldown = SOCKET_RECONNECT_DELAY;
             return ;
         }
     }
 
-    if (state->is_client)
-    {
-        if (!(client.status & sock_created))
-        {
+    if (state->is_client) {
+        if (!(client.status & sock_created)) {
             if (!client_create(state->network_address, state->network_port))
                 create_cooldown = SOCKET_RECONNECT_DELAY;
         }
-        if (!(client.status & sock_connected))
-        {
+        if (!(client.status & sock_connected)) {
             if (!client_connect())
                 create_cooldown = SOCKET_RECONNECT_DELAY;
         }
@@ -123,17 +111,17 @@ static  bool    is_slave;
 void    bit_transfer_ok(uint8_t octet_recv)
 {
     gb_mem[0xff01] = octet_recv;
-/*    
-    current_bit++;
-    if (current_bit <= 8) return ;
-    printf("new SB: 0x%02x\n", gb_mem[0xff01]);
-*/
+    /*
+        current_bit++;
+        if (current_bit <= 8) return ;
+        printf("new SB: 0x%02x\n", gb_mem[0xff01]);
+    */
     current_bit = 1;
     gb_mem[0xff0f] |= 8;
-	gb_mem[0xff02] &= 1;
+    gb_mem[0xff02] &= 1;
     state->is_transfer = false ;
     state->serial_cycles = 0;
-    serial_init = false;    
+    serial_init = false;
     is_master = false ;
     is_slave = false ;
 }
@@ -164,9 +152,9 @@ void    master_init()
         (void)master_offline();
         return ;
     }
-/*  
-    printf("master SC: 0x%02x, SB: 0x%02x, ", gb_mem[0xff02], gb_mem[0xff01]);
- */
+    /*
+        printf("master SC: 0x%02x, SB: 0x%02x, ", gb_mem[0xff02], gb_mem[0xff01]);
+     */
     state->is_transfer = true;
     current_bit = 1;
     serial_init = true;
@@ -184,13 +172,16 @@ void    slave_init()
     set_blocking();
     octet_send = 0xfc;
     if (!socket_send(&octet_send))    return ;
-    if (octet_recv != 0xfe) {printf("slave missed recv: %02x\n", octet_recv); return ;}
-/*    
-    printf(" slave SC: 0x%02x, SB: 0x%02x, ", gb_mem[0xff02], gb_mem[0xff01]);
-*/
+    if (octet_recv != 0xfe) {
+        printf("slave missed recv: %02x\n", octet_recv);
+        return ;
+    }
+    /*
+        printf(" slave SC: 0x%02x, SB: 0x%02x, ", gb_mem[0xff02], gb_mem[0xff01]);
+    */
     state->is_transfer = true;
     current_bit = 1;
-    serial_init = true;    
+    serial_init = true;
     is_master = false ;
     is_slave = true ;
 }
@@ -233,8 +224,7 @@ void    serial(uint8_t current_cycles)
 {
     serial_connect();
 
-    if (!serial_init)
-    {
+    if (!serial_init) {
         if ((gb_mem[0xff02] & 0x81) == 0x80)
             slave_init();   /* listen for incoming */
         if ((gb_mem[0xff02] & 0x81) == 0x81)
@@ -266,11 +256,10 @@ void    serial_control(uint8_t data)
     gb_mem[0xff02] = data & 0x81;
     if (state->is_transfer)
         printf("writing to SC during transfer");
-/*
-    printf("serial control: %02x\n", gb_mem[0xff02]);
-*/
-    if ((!state->is_transfer) && ((gb_mem[0xff02] & 0x81) == 0x81))
-    {
+    /*
+        printf("serial control: %02x\n", gb_mem[0xff02]);
+    */
+    if ((!state->is_transfer) && ((gb_mem[0xff02] & 0x81) == 0x81)) {
         if (!is_online()) {
             (void)master_offline();
             return ;

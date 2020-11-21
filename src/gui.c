@@ -15,7 +15,8 @@ uint32_t        num_game_controls   = sizeof(game_controls) / sizeof(uint32_t);
 
 struct s_render_palette {
     uint32_t colors[4];
-    char *name;         };
+    char *name;
+};
 
 struct s_render_palette render_palettes[] = {
     {{0xffffff, 0xaaaaaa, 0x555555, 0x000000}, "classic"},
@@ -61,7 +62,7 @@ struct s_render_palette render_palettes[] = {
 
 #define num_render_palettes (sizeof(render_palettes) / sizeof(struct s_render_palette))
 
-static unsigned int render_palette_idx = num_render_palettes * 0x10000;
+static unsigned int render_palette_idx = num_render_palettes * 0x10000 + 14;
 
 void set_window_title()
 {
@@ -94,18 +95,15 @@ void set_window_size()
 
 bool gui_init()
 {
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0)
-    {
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0) {
         printf("Failed to initialise SDL\n");
         return false;
     }
-    if ((gui_window = SDL_CreateWindow("gbmu", 0, 0, WND_WIDTH, WND_HEIGHT, 0)) == NULL)
-    {
+    if ((gui_window = SDL_CreateWindow("gbmu", 0, 0, WND_WIDTH, WND_HEIGHT, 0)) == NULL) {
         SDL_Log("Could not create a window: %s", SDL_GetError());
         return false;
     }
-    if ((gui_renderer = SDL_CreateRenderer(gui_window, -1, SDL_RENDERER_ACCELERATED)) == NULL)
-    {
+    if ((gui_renderer = SDL_CreateRenderer(gui_window, -1, SDL_RENDERER_ACCELERATED)) == NULL) {
         SDL_Log("Could not create a renderer: %s", SDL_GetError());
         return false;
     }
@@ -129,22 +127,17 @@ void gui_render()
     uint32_t    *pixels;
     int         pitch, idx, buf_y, buf_x, gui_y, gui_x;
 
-    if (SDL_LockTexture(gui_buffer, NULL, (void *)&pixels, &pitch) < 0)
-    {
+    if (SDL_LockTexture(gui_buffer, NULL, (void *)&pixels, &pitch) < 0) {
         SDL_Log("Couldn't lock texture: %s\n", SDL_GetError());
         state->done = true;
     }
-    for (buf_y = 0; buf_y < 144; buf_y++)
-    {
-        for (buf_x = 0; buf_x < 160; buf_x++)
-        {
+    for (buf_y = 0; buf_y < 144; buf_y++) {
+        for (buf_x = 0; buf_x < 160; buf_x++) {
             idx = state->screen_buf[buf_y * 160 + buf_x];
-            for (gui_y = buf_y * gui_scale_factor; gui_y < (buf_y + 1) * gui_scale_factor; gui_y++)
-            {
-                for (gui_x = buf_x * gui_scale_factor; gui_x < (buf_x + 1) * gui_scale_factor; gui_x++)
-                {
+            for (gui_y = buf_y * gui_scale_factor; gui_y < (buf_y + 1) * gui_scale_factor; gui_y++) {
+                for (gui_x = buf_x * gui_scale_factor; gui_x < (buf_x + 1) * gui_scale_factor; gui_x++) {
                     pixels[gui_y * gui_scale_factor * WND_WIDTH + gui_x] =
-                    render_palettes[render_palette_idx % num_render_palettes].colors[idx];
+                        render_palettes[render_palette_idx % num_render_palettes].colors[idx];
                 }
             }
         }
@@ -156,10 +149,8 @@ void gui_set_button_states(uint32_t key, uint8_t value)
 {
     uint32_t i;
 
-    for (i=0; i < num_game_controls; i++)
-    {
-        if (game_controls[i] == key)
-        {
+    for (i=0; i < num_game_controls; i++) {
+        if (game_controls[i] == key) {
             state->buttons[i] = value;
             joypad_request_interrupt();
         }
@@ -172,47 +163,45 @@ void gui_update()
     SDL_Event   event;
 
     gui_render();
-    while (SDL_PollEvent(&event))
-    {
-        switch (event.type)
-        {
-            case SDL_QUIT:
+    while (SDL_PollEvent(&event)) {
+        switch (event.type) {
+        case SDL_QUIT:
+            state->done = true;
+            break ;
+        case SDL_KEYDOWN:
+            gui_set_button_states(event.key.keysym.sym, 1);
+            if (event.key.keysym.sym == SDLK_ESCAPE)
                 state->done = true;
-                break ;
-            case SDL_KEYDOWN:
-                gui_set_button_states(event.key.keysym.sym, 1);
-                if (event.key.keysym.sym == SDLK_ESCAPE)
-                    state->done = true;
 
-                tmp = gui_scale_factor;
-                if (event.key.keysym.sym == SDLK_1)
-                    gui_scale_factor = 1;
-                if (event.key.keysym.sym == SDLK_2)
-                    gui_scale_factor = 2;
-                if (event.key.keysym.sym == SDLK_3)
-                    gui_scale_factor = 3;
-                if (event.key.keysym.sym == SDLK_4)
-                    gui_scale_factor = 4;
-                if (event.key.keysym.sym == SDLK_5)
-                    gui_scale_factor = 5;
-                if (tmp != gui_scale_factor)
-                    set_window_size();
+            tmp = gui_scale_factor;
+            if (event.key.keysym.sym == SDLK_1)
+                gui_scale_factor = 1;
+            if (event.key.keysym.sym == SDLK_2)
+                gui_scale_factor = 2;
+            if (event.key.keysym.sym == SDLK_3)
+                gui_scale_factor = 3;
+            if (event.key.keysym.sym == SDLK_4)
+                gui_scale_factor = 4;
+            if (event.key.keysym.sym == SDLK_5)
+                gui_scale_factor = 5;
+            if (tmp != gui_scale_factor)
+                set_window_size();
 
-                if ((event.key.keysym.sym == SDLK_EQUALS) && (state->volume > 0))
-                    state->volume--;
-                if ((event.key.keysym.sym == SDLK_MINUS) && (state->volume < 16))
-                    state->volume++;
+            if ((event.key.keysym.sym == SDLK_EQUALS) && (state->volume > 0))
+                state->volume--;
+            if ((event.key.keysym.sym == SDLK_MINUS) && (state->volume < 16))
+                state->volume++;
 
-                if (event.key.keysym.sym == SDLK_q)
-                    render_palette_idx--;
-                if (event.key.keysym.sym == SDLK_w)
-                    render_palette_idx++;
-                if ((event.key.keysym.sym == SDLK_q) || (event.key.keysym.sym == SDLK_w))
-                    set_window_title();
-                break ;
-            case SDL_KEYUP:
-                gui_set_button_states(event.key.keysym.sym, 0);
-                break ;
+            if (event.key.keysym.sym == SDLK_q)
+                render_palette_idx--;
+            if (event.key.keysym.sym == SDLK_w)
+                render_palette_idx++;
+            if ((event.key.keysym.sym == SDLK_q) || (event.key.keysym.sym == SDLK_w))
+                set_window_title();
+            break ;
+        case SDL_KEYUP:
+            gui_set_button_states(event.key.keysym.sym, 0);
+            break ;
         }
     }
     SDL_RenderClear(gui_renderer);

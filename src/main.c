@@ -18,26 +18,24 @@ bool arg_parse(int ac, char **av)
     state->network_address = &default_network_address[0];
     state->network_port = default_network_port;
 
-    while ((c = getopt(ac, av, "c:s:p:")) != -1)
-    {
-        switch (c)
-        {
-            case 'c':
-            case 's':
-                state->is_client = c == 'c';
-                state->is_server = c == 's';                
-                if (is_valid_ip(optarg))
-                    state->network_address = optarg;
-                else
-                    optind--;
-                break ;
-            case 'p':
-                state->network_port = atoi(optarg);
-                break ;
-            case '?':
-            default:
-                printf("failed to parse options");
-                return false;
+    while ((c = getopt(ac, av, "c:s:p:")) != -1) {
+        switch (c) {
+        case 'c':
+        case 's':
+            state->is_client = c == 'c';
+            state->is_server = c == 's';
+            if (is_valid_ip(optarg))
+                state->network_address = optarg;
+            else
+                optind--;
+            break ;
+        case 'p':
+            state->network_port = atoi(optarg);
+            break ;
+        case '?':
+        default:
+            printf("failed to parse options");
+            return false;
         }
     }
     if (state->is_client || state->is_server)
@@ -80,9 +78,9 @@ int main(int ac, char **av)
         printf("fstat() failed\n");
         return 1;
     }
-    
-    if ((stat_buf.st_size < 0x8000) || 
-            (stat_buf.st_size > 0x800000) || 
+
+    if ((stat_buf.st_size < 0x8000) ||
+            (stat_buf.st_size > 0x800000) ||
             (stat_buf.st_size & 0x7fff)) {
         close(fd);
         printf("invalid file\n");
@@ -92,7 +90,7 @@ int main(int ac, char **av)
     state->serial_data = 0xff;
     state->gameboy_registers = &registers;
     state->file_contents = malloc(stat_buf.st_size);
-	state->file_size = stat_buf.st_size;
+    state->file_size = stat_buf.st_size;
 
     if (read(fd, state->file_contents, stat_buf.st_size) != stat_buf.st_size) {
         printf("read() failed\n");
@@ -109,8 +107,7 @@ int main(int ac, char **av)
     apu_init();
     savefile_read();
 
-    while (!state->done)
-    {
+    while (!state->done) {
         serial(op_cycles);
         timers_update(gb_mem, &gb_state, op_cycles);
         lcd_update(gb_mem, &gb_state, op_cycles);
@@ -127,12 +124,10 @@ int main(int ac, char **av)
             state->bootrom_enabled = false;
         }
 
-        if (state->debug)
-        {
+        if (state->debug) {
             printf("state->cycles = %u\n", state->cycles);
             dump_registers(&registers, state, gb_mem);
-            if ((read(0, &dbgcmd, 1) == 1) && (dbgcmd == 'c'))
-            {
+            if ((read(0, &dbgcmd, 1) == 1) && (dbgcmd == 'c')) {
                 state->cycles = 0;
                 state->debug = false;
                 dbgcmd = 0;
@@ -140,7 +135,7 @@ int main(int ac, char **av)
         }
         pc_history[pc_idx++] = r16->PC;
         pc_idx %= 100;
-        
+
         if ((!state->halt) && (!state->interrupt_cycles)) {
             if (!instr_cycles)
                 instr_cycles = get_num_cycles(&registers, gb_mem);
@@ -156,8 +151,12 @@ int main(int ac, char **av)
 
     }
     if (show_pc_history) {
-        for (i=pc_idx; i<100; i++) { printf("PC %02d: %04x\n", i, pc_history[i]); };
-        for (i=0; i<pc_idx; i++) { printf("PC %02d: %04x\n", i, pc_history[i]); };
+        for (i=pc_idx; i<100; i++) {
+            printf("PC %02d: %04x\n", i, pc_history[i]);
+        };
+        for (i=0; i<pc_idx; i++) {
+            printf("PC %02d: %04x\n", i, pc_history[i]);
+        };
     }
 
     serial_cleanup();

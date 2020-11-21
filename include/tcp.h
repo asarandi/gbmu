@@ -37,8 +37,8 @@ typedef struct  s_client {
     int                     sock;
     int                     sock_flags;
     bool                    is_blocking;
-    fd_set                  fdset;    
-    struct timeval          tv;    
+    fd_set                  fdset;
+    struct timeval          tv;
     struct sockaddr_in      server_address;
 }   t_client;
 
