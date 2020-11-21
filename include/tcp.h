@@ -12,6 +12,10 @@
 #include <sys/errno.h>
 #include <sys/select.h>
 
+#ifndef SO_REUSEPORT
+# define SO_REUSEPORT	15
+#endif
+
 #define                     SOCKET_DEBUG    true
 
 #define sock_created        1

@@ -89,8 +89,8 @@ void    savefile_read()
         return ;
 
     len = strlen(state->rom_file);
-    state->ram_file = malloc(len + 5);
-    strncpy(state->ram_file, state->rom_file, len);
+    state->ram_file = malloc(len + 6);
+    strncpy(state->ram_file, state->rom_file, len + 1);
     (void)memset(&state->ram_file[len], 0, 5);
     offset = 0;
     if (!strcmp(&state->ram_file[len - 3], ".gb"))
