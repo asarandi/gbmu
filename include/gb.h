@@ -19,26 +19,26 @@
 #define RAM_SIZE    0x2000
 
 typedef struct  s_r16 {
-    uint16_t    AF; 
-    uint16_t    BC; 
-    uint16_t    DE; 
-    uint16_t    HL; 
-    uint16_t    SP; 
-    uint16_t    PC; 
-}               t_r16;            
+    uint16_t    AF;
+    uint16_t    BC;
+    uint16_t    DE;
+    uint16_t    HL;
+    uint16_t    SP;
+    uint16_t    PC;
+}               t_r16;
 
 typedef struct  s_r8 {
-    uint8_t     F;  
-    uint8_t     A;  
-    uint8_t     C;  
-    uint8_t     B;  
-    uint8_t     E;  
-    uint8_t     D;  
-    uint8_t     L;  
-    uint8_t     H;  
-    uint16_t    SP; 
-    uint16_t    PC; 
-}               t_r8;             
+    uint8_t     F;
+    uint8_t     A;
+    uint8_t     C;
+    uint8_t     B;
+    uint8_t     E;
+    uint8_t     D;
+    uint8_t     L;
+    uint8_t     H;
+    uint16_t    SP;
+    uint16_t    PC;
+}               t_r8;
 
 typedef struct  s_state {
     void            *gameboy_memory;
@@ -55,7 +55,7 @@ typedef struct  s_state {
     int             volume;
     int             screen_mask;
     char            *rom_file;
-    char            *ram_file;    
+    char            *ram_file;
     size_t          file_size;
     uint8_t         *file_contents;
     uint8_t         ram_banks[RAM_SIZE * 16];
@@ -68,7 +68,7 @@ typedef struct  s_state {
     void            (*ram_write_u8)(uint16_t, uint8_t);
     uint8_t         (*rom_read_u8)(uint16_t);
     void            (*rom_write_u8)(uint16_t, uint8_t);
-/*    serial/tcp    */
+    /*    serial/tcp    */
     char            *network_address;
     int             network_port;
     bool            is_server;

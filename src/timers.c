@@ -4,7 +4,7 @@ void    timers_update(uint8_t *gb_mem, t_state *state, int current_cycles)
 {
     static  uint8_t     tima, counter;
     static bool         current, prev, overflow;
-    uint8_t             shifts[] = {9, 3, 5, 7};    
+    uint8_t             shifts[] = {9, 3, 5, 7};
     int                 f;
 
     state->div_cycles += current_cycles;

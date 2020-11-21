@@ -4,23 +4,20 @@ bool    server_create(char *network_address, int network_port)
 {
     (void)memset(&server, 0, sizeof(t_server));
 
-    if ((server.server_sock = socket(AF_INET, SOCK_STREAM, 0)) == -1)
-    {
+    if ((server.server_sock = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
         if (SOCKET_DEBUG)
             printf("%s: socket() failed\n", "server_create()");
         return false;
     }
 
-    if ((server.server_sock_flags = fcntl(server.server_sock, F_GETFL)) == -1)
-    {
+    if ((server.server_sock_flags = fcntl(server.server_sock, F_GETFL)) == -1) {
         (void)close(server.server_sock);
         if (SOCKET_DEBUG)
             printf("%s: fcntl(F_GETFL) failed\n", "server_create()");
         return false;
     }
 
-    if (fcntl(server.server_sock, F_SETFL, server.server_sock_flags | O_NONBLOCK) == -1)
-    {
+    if (fcntl(server.server_sock, F_SETFL, server.server_sock_flags | O_NONBLOCK) == -1) {
         (void)close(server.server_sock);
         if (SOCKET_DEBUG)
             printf("%s: fcntl(F_SETFL, O_NONBLOCK) failed\n", "server_create()");
@@ -29,8 +26,7 @@ bool    server_create(char *network_address, int network_port)
 
 
     server.server_opt = 1;
-    if (setsockopt(server.server_sock, SOL_SOCKET, SO_REUSEADDR, &server.server_opt, sizeof(server.server_opt)) == -1)
-    {
+    if (setsockopt(server.server_sock, SOL_SOCKET, SO_REUSEADDR, &server.server_opt, sizeof(server.server_opt)) == -1) {
         (void)close(server.server_sock);
         if (SOCKET_DEBUG)
             printf("%s: setsockopt() failed\n", "server_create()");
@@ -38,8 +34,7 @@ bool    server_create(char *network_address, int network_port)
     }
 
     server.server_opt = 1;
-    if (setsockopt(server.server_sock, SOL_SOCKET, SO_REUSEPORT, &server.server_opt, sizeof(server.server_opt)) == -1)
-    {
+    if (setsockopt(server.server_sock, SOL_SOCKET, SO_REUSEPORT, &server.server_opt, sizeof(server.server_opt)) == -1) {
         (void)close(server.server_sock);
         if (SOCKET_DEBUG)
             printf("%s: setsockopt() failed\n", "server_create()");
@@ -50,16 +45,14 @@ bool    server_create(char *network_address, int network_port)
     server.server_address.sin_addr.s_addr = inet_addr(network_address);
     server.server_address.sin_port = htons(network_port);
 
-	if (bind(server.server_sock, (struct sockaddr *)&server.server_address, (socklen_t)sizeof(server.server_address)) == -1)
-    {
+    if (bind(server.server_sock, (struct sockaddr *)&server.server_address, (socklen_t)sizeof(server.server_address)) == -1) {
         (void)close(server.server_sock);
         if (SOCKET_DEBUG)
             printf("%s: bind() failed\n", "server_create()");
         return false;
     }
 
-	if (listen(server.server_sock, 1) == -1)
-    {
+    if (listen(server.server_sock, 1) == -1) {
         (void)close(server.server_sock);
         if (SOCKET_DEBUG)
             printf("%s: listen() failed\n", "server_create()");
@@ -74,17 +67,14 @@ bool server_accept()
 {
     errno = 0;
     server.client_sock = accept(server.server_sock, (struct sockaddr *)&server.client_address, (socklen_t *) &server.client_address_len);
-    if (server.client_sock == -1)
-    {
+    if (server.client_sock == -1) {
         if ((errno == EWOULDBLOCK) || (errno == EAGAIN))
             return false ;                                  /* wait */
-        else
-        {
+        else {
             server.status &= ~sock_created;                 /* fail */
             return false;
         }
-    }
-    else
+    } else
         server.status |= sock_connected;                    /* ok */
 
     server.client_sock_flags = fcntl(server.client_sock, F_GETFL);
@@ -97,8 +87,7 @@ bool server_accept()
 bool server_send(uint8_t *octet)
 {
     errno = 0;
-    if (write(server.client_sock, octet, 1) != 1)
-    {
+    if (write(server.client_sock, octet, 1) != 1) {
         if ((errno == EWOULDBLOCK) || (errno == EAGAIN))
             return false ;                                  /* wait */
         server.status &= ~sock_connected;
@@ -111,8 +100,7 @@ bool server_send(uint8_t *octet)
 bool server_recv(uint8_t *octet)
 {
     errno = 0;
-    if (read(server.client_sock, octet, 1) != 1)
-    {
+    if (read(server.client_sock, octet, 1) != 1) {
         if ((errno == EWOULDBLOCK) || (errno == EAGAIN))
             return false ;                                  /* wait */
         perror("server_recv()");
