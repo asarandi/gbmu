@@ -193,7 +193,9 @@ void gui_update()
                 state->volume++;
 
             for (i=tmp=0; i<4; i++) {
-                if (event.key.keysym.sym == (int[]){SDLK_u, SDLK_i, SDLK_o, SDLK_p}[i]) {
+                if (event.key.keysym.sym == (int[]) {
+                SDLK_u, SDLK_i, SDLK_o, SDLK_p
+            }[i]) {
                     state->sound_channels[i] ^= 1;
                     tmp = 1;
                 }
@@ -201,8 +203,8 @@ void gui_update()
 
             for (i=0; tmp && i<4; i++) {
                 printf("nr%d [%s]%s", i + 1,
-                state->sound_channels[i] ? "on" : "off",
-                i + 1 < 4 ? ", " : "\n");
+                       state->sound_channels[i] ? "on" : "off",
+                       i + 1 < 4 ? ", " : "\n");
             }
 
             if (event.key.keysym.sym == SDLK_q)

@@ -17,3 +17,6 @@ fclean: clean
 	rm -f gbmu
 
 re: fclean gbmu
+
+format:
+	astyle -A3 -n src/*.c include/*.h
