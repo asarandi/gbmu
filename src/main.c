@@ -110,7 +110,11 @@ int main(int ac, char **av)
     while (!state->done) {
         serial(op_cycles);
         timers_update(gb_mem, &gb_state, op_cycles);
-        lcd_update(gb_mem, &gb_state, op_cycles);
+        if (lcd_update(gb_mem, &gb_state, op_cycles)) {
+            gui_update();
+            gui_render();
+            apu_sync();
+        }
         apu_update(gb_mem, &gb_state, op_cycles);
         interrupts_update(gb_mem, state, &registers);
 
@@ -147,8 +151,7 @@ int main(int ac, char **av)
 
         op_cycles = 4;
         state->cycles += op_cycles;
-        gb_throttle();
-
+//        gb_throttle();
     }
     if (show_pc_history) {
         for (i=pc_idx; i<100; i++) {

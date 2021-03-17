@@ -103,7 +103,7 @@ void        dump_background(uint8_t *gb_mem);
 void        dump_ram(void *ram);
 void        dump_registers(void *registers, void *gb_state, uint8_t *gb_mem);
 void        *gui(void *arg);
-void        lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles);
+int         lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles);
 void        interrupts_update(uint8_t *gb_mem, t_state *state, void *registers);
 void        timers_update(uint8_t *gb_mem, t_state *state, int current_cycles);
 
@@ -111,9 +111,11 @@ void        apu_init();
 void        apu_cleanup();
 void        apu_update(uint8_t *gb_mem, t_state *state, int current_cycles);
 void        sound_write_u8(uint16_t addr, uint8_t data);
+int         apu_sync();
 
 bool        gui_init();
 void        gui_cleanup();
+void        gui_render();
 void        gui_update();
 
 uint8_t     joypad_read();

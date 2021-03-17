@@ -62,7 +62,7 @@ struct s_render_palette render_palettes[] = {
 
 #define num_render_palettes (sizeof(render_palettes) / sizeof(struct s_render_palette))
 
-static unsigned int render_palette_idx = num_render_palettes * 0x10000 + 14;
+static unsigned int render_palette_idx = num_render_palettes * 0x10000 + 6;
 
 void set_window_title()
 {
@@ -143,6 +143,9 @@ void gui_render()
         }
     }
     SDL_UnlockTexture(gui_buffer);
+    SDL_RenderClear(gui_renderer);
+    SDL_RenderCopy(gui_renderer, gui_buffer, NULL, NULL);
+    SDL_RenderPresent(gui_renderer);
 }
 
 void gui_set_button_states(uint32_t key, uint8_t value)
@@ -162,7 +165,6 @@ void gui_update()
     int         i, tmp;
     SDL_Event   event;
 
-    gui_render();
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
         case SDL_QUIT:
@@ -219,9 +221,6 @@ void gui_update()
             break ;
         }
     }
-    SDL_RenderClear(gui_renderer);
-    SDL_RenderCopy(gui_renderer, gui_buffer, NULL, NULL);
-    SDL_RenderPresent(gui_renderer);
 }
 
 void gb_throttle()

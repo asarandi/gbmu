@@ -10,8 +10,10 @@
 #define LENGTH_CLOCK     (4194304 / 256)
 #define FREQUENCY_CLOCK  (4194304 / 512)
 
-#define SAMPLING_FREQUENCY          96000
-#define NUM_SAMPLES                 32
+#define SAMPLING_FREQUENCY          (60*1024)
+#define NUM_SAMPLES                 (SAMPLING_FREQUENCY / 60)
+#define SAMPLE_CLOCK                (4194304 / SAMPLING_FREQUENCY)
+
 #define NUM_CHANNELS                2
 #define SAMPLE_SIZE                 2
 #define CHANNEL_BUF_SIZE            (NUM_SAMPLES * SAMPLE_SIZE * NUM_CHANNELS)
@@ -304,98 +306,78 @@ void    sound_nr52_update(uint8_t data)
     */
 }    /*nr52 only bit 7 is writable*/
 
+void write_sample();
+
 void    sound_write_u8(uint16_t addr, uint8_t data)
 {
-    if ((addr != ADDR_NR52) && (!(NR52 & 0x80)) )  return ;      /*ignore all writes when sound off*/
+    if ((addr != ADDR_NR52) && (!(NR52 & 0x80))) {
+        return ;      /*ignore all writes when sound off*/
+    }
 
     if (addr == ADDR_NR10) {
         sound_nr10_update(data);
-        return;
     }
     if (addr == ADDR_NR11) {
         sound_nr11_update(data);
-        return;
     }
     if (addr == ADDR_NR12) {
         sound_nr12_update(data);
-        return;
     }
     if (addr == ADDR_NR13) {
         sound_nr13_update(data);
-        return;
     }
     if (addr == ADDR_NR14) {
         sound_nr14_update(data);
-        return;
     }
-
     if (addr == ADDR_NR21) {
         sound_nr21_update(data);
-        return;
     }
     if (addr == ADDR_NR22) {
         sound_nr22_update(data);
-        return;
     }
     if (addr == ADDR_NR23) {
         sound_nr23_update(data);
-        return;
     }
     if (addr == ADDR_NR24) {
         sound_nr24_update(data);
-        return;
     }
-
     if (addr == ADDR_NR30) {
         sound_nr30_update(data);
-        return;
     }
     if (addr == ADDR_NR31) {
         sound_nr31_update(data);
-        return;
     }
     if (addr == ADDR_NR32) {
         sound_nr32_update(data);
-        return;
     }
     if (addr == ADDR_NR33) {
         sound_nr33_update(data);
-        return;
     }
     if (addr == ADDR_NR34) {
         sound_nr34_update(data);
-        return;
     }
-
     if (addr == ADDR_NR41) {
         sound_nr41_update(data);
-        return;
     }
     if (addr == ADDR_NR42) {
         sound_nr42_update(data);
-        return;
     }
     if (addr == ADDR_NR43) {
         sound_nr43_update(data);
-        return;
     }
     if (addr == ADDR_NR44) {
         sound_nr44_update(data);
-        return;
     }
-
     if (addr == ADDR_NR50) {
         sound_nr50_update(data);
-        return;
     }
     if (addr == ADDR_NR51) {
         sound_nr51_update(data);
-        return;
     }
     if (addr == ADDR_NR52) {
         sound_nr52_update(data);
-        return;
     }
+    write_sample();
 }
 
 void    channel_volume_tick(t_sound *s0)
@@ -546,25 +528,7 @@ void    apu_frequency_tick()
         new_data &= 0xbf;
         new_data |= (((NR43 >> 4) & 1) ^ ((NR43 >> 5) & 1)) << 6;
     }
-    /*    printf("NR43 %02x, %02x\n", gb_mem[0xff22], new_data);*/
     NR43 = new_data;
-}
-
-void    apu_update(uint8_t *gb_mem, t_state *state, int current_cycles)
-{
-    static unsigned int     cycles, prev_cycles;
-
-    if (!sdl_audio_device)
-        return ;
-
-    (void)state;
-    cycles += current_cycles;
-    if ((cycles / VOLUME_CLOCK)    > (prev_cycles / VOLUME_CLOCK))      apu_volume_tick();
-    if ((cycles / SWEEP_CLOCK)     > (prev_cycles / SWEEP_CLOCK))       apu_sweep_tick();
-    if ((cycles / LENGTH_CLOCK)    > (prev_cycles / LENGTH_CLOCK))      apu_length_tick();
-    /*    if ((cycles / FREQUENCY_CLOCK) > (prev_cycles / FREQUENCY_CLOCK))   apu_frequency_tick();*/
-    prev_cycles = cycles;
-    NR52 = (NR52 & 0x80) | (s1.is_enabled<<0) | (s2.is_enabled<<1) | (s3.is_enabled<<2) | (s4.is_enabled<<3);
 }
 
 int16_t SquareWave(int time, int freq, int vol, int duty)
@@ -585,44 +549,8 @@ int16_t SquareWave(int time, int freq, int vol, int duty)
     cyclepart = time % tpc;
     if (tpc < 8) tpc |= 8;
     idx = cyclepart / (tpc >> 3);
-    result = 0x888 * vol * patterns[duty][idx & 7];
+    result = (INT16_MAX/15) * vol * patterns[duty][idx & 7];
     return result ;
-}
-
-void    sound_1_fill_buffer()
-{
-    int16_t             sample, i;
-
-    (void)memset(sound_1_buffer, 0, sizeof(sound_1_buffer));
-
-    if (!s1.is_enabled)
-        return ;
-
-    for (i = 0; i < sdl_received_spec.samples; i++) {
-        sample = SquareWave(s1.sample_counter++, s1.frequency, s1.sound_volume, S1_DUTY_CYCLE);
-        if (IS_SOUND_1_LEFT_ENABLED)
-            *(int16_t *)&sound_1_buffer[i * 4] = sample;
-        if (IS_SOUND_1_RIGHT_ENABLED)
-            *(int16_t *)&sound_1_buffer[i * 4 + 2] = sample;
-    }
-}
-
-void    sound_2_fill_buffer()
-{
-    int16_t             sample, i;
-
-    (void)memset(sound_2_buffer, 0, sizeof(sound_2_buffer));
-
-    if (!s2.is_enabled)
-        return ;
-
-    for (i = 0; i < sdl_received_spec.samples; i++) {
-        sample = SquareWave(s2.sample_counter++, s2.frequency, s2.sound_volume, S2_DUTY_CYCLE);
-        if (IS_SOUND_2_LEFT_ENABLED)
-            *(int16_t *)&sound_2_buffer[i * 4] = sample;
-        if (IS_SOUND_2_RIGHT_ENABLED)
-            *(int16_t *)&sound_2_buffer[i * 4 + 2] = sample;
-    }
 }
 
 int16_t sound_3_wave(int time, int freq)
@@ -653,94 +581,125 @@ int16_t sound_3_wave(int time, int freq)
     return nibble * 0x888;
 }
 
-void    sound_3_fill_buffer()
+static volatile int32_t audio_done, sample_index;
+
+int apu_sync()
 {
-    int16_t             sample, i;
+    if (sample_index < CHANNEL_BUF_SIZE) {
+        return 0;
+    }
+    while (!audio_done)
+        SDL_Delay(1);
+    audio_done = 0;
+    sample_index = 0;
+    return 1;
+}
 
-    (void)memset(sound_3_buffer, 0, sizeof(sound_3_buffer));
+void    write_sample()
+{
+    int32_t left, right, sample ;
 
-    if (!s3.is_enabled)
-        return ;
+    left = right = 0 ;
+    s1.sample_counter++;
+    s2.sample_counter++;
+    s3.sample_counter++;
 
-    for (i = 0; i < sdl_received_spec.samples; i++) {
-        sample = sound_3_wave(s3.sample_counter++, s3.frequency);
-        if (IS_SOUND_3_LEFT_ENABLED)
-            *(int16_t *)&sound_3_buffer[i * 4] = sample;
-        if (IS_SOUND_3_RIGHT_ENABLED)
-            *(int16_t *)&sound_3_buffer[i * 4 + 2] = sample;
+    if ((s1.is_enabled) && (state->sound_channels[0])) {
+        sample = SquareWave(s1.sample_counter, s1.frequency, s1.sound_volume, S1_DUTY_CYCLE);
+        if (IS_SOUND_1_LEFT_ENABLED) {
+            left += sample ;
+        }
+        if (IS_SOUND_1_RIGHT_ENABLED) {
+            right += sample ;
+        }
+    }
+
+    if ((s2.is_enabled) && (state->sound_channels[1])) {
+        sample = SquareWave(s2.sample_counter, s2.frequency, s2.sound_volume, S2_DUTY_CYCLE);
+        if (IS_SOUND_2_LEFT_ENABLED) {
+            left += sample ;
+        }
+        if (IS_SOUND_2_RIGHT_ENABLED) {
+            right += sample ;
+        }
+    }
+
+    if ((s3.is_enabled) && (state->sound_channels[2])) {
+        sample = sound_3_wave(s3.sample_counter, s3.frequency);
+        if (IS_SOUND_3_LEFT_ENABLED) {
+            left += sample ;
+        }
+        if (IS_SOUND_3_RIGHT_ENABLED) {
+            right += sample ;
+        }
+    }
+
+    if ((s4.is_enabled) && (state->sound_channels[3])) {
+        sample = rand() & 1; /*~((NR43 >> 4) & 1);*/
+        sample *= (0x888 * s4.sound_volume);
+        if (IS_SOUND_4_LEFT_ENABLED) {
+            left += sample ;
+        }
+        if (IS_SOUND_4_RIGHT_ENABLED) {
+            right += sample ;
+        }
+    }
+
+
+    left = (left / 7) * MASTER_VOLUME_LEFT;
+    left = left > INT16_MAX ? INT16_MAX : left;
+    left = left < INT16_MIN ? INT16_MIN : left;
+
+    right = (right / 7) * MASTER_VOLUME_RIGHT;
+    right = right > INT16_MAX ? INT16_MAX : right;
+    right = right < INT16_MIN ? INT16_MIN : right;
+
+    *(int16_t *)&sound_1_buffer[sample_index] = (int16_t)left;
+    *(int16_t *)&sound_1_buffer[sample_index + SAMPLE_SIZE] = (int16_t)right;
+    sample_index += (SAMPLE_SIZE * 2);
+    if (sample_index >= CHANNEL_BUF_SIZE) {
+        apu_sync();
     }
 }
 
-void    sound_4_fill_buffer()
+
+void    apu_update(uint8_t *gb_mem, t_state *state, int current_cycles)
 {
-    int16_t     sample, i;
-
-
-    (void)memset(sound_4_buffer, 0, sizeof(sound_4_buffer));
-
-    if (!s4.is_enabled)
-        return ;
-
-    sample = rand() & 1; /*~((NR43 >> 4) & 1);*/
-    sample *= (0x888 * s4.sound_volume);
-
-    for (i = 0; i < sdl_received_spec.samples; i++) {
-        if (IS_SOUND_4_LEFT_ENABLED)
-            *(int16_t *)&sound_4_buffer[i * 4] = sample;
-        if (IS_SOUND_4_RIGHT_ENABLED)
-            *(int16_t *)&sound_4_buffer[i * 4 + 2] = sample;
-    }
-}
-
-void MyAudioCallback(void *userdata, Uint8 *stream, int len)
-{
-    int32_t     left, right, i, j;
-
-    (void)userdata;
-    (void)memset(stream, 0, len);
+    static unsigned int     cycles, prev_cycles;
 
     if (!sdl_audio_device)
         return ;
 
-    memset(sound_1_buffer, 0, sizeof(sound_1_buffer));
-    memset(sound_2_buffer, 0, sizeof(sound_2_buffer));
-    memset(sound_3_buffer, 0, sizeof(sound_3_buffer));
-    memset(sound_4_buffer, 0, sizeof(sound_4_buffer));
-
-    if (state->sound_channels[0])
-        sound_1_fill_buffer();
-    if (state->sound_channels[1])
-        sound_2_fill_buffer();
-    if (state->sound_channels[2])
-        sound_3_fill_buffer();
-    if (state->sound_channels[3])
-        sound_4_fill_buffer();
-
-    for (i = 0; i < sdl_received_spec.samples; i++) {
-        j = i * (sdl_received_spec.channels * SAMPLE_SIZE);
-
-        left = 0;
-        left += *(int16_t *)&sound_1_buffer[j];
-        left += *(int16_t *)&sound_2_buffer[j];
-        left += *(int16_t *)&sound_3_buffer[j];
-        left += *(int16_t *)&sound_4_buffer[j];
-        left = (left / 7) * MASTER_VOLUME_LEFT;
-
-        right = 0;
-        right += *(int16_t *)&sound_1_buffer[j + SAMPLE_SIZE];
-        right += *(int16_t *)&sound_2_buffer[j + SAMPLE_SIZE];
-        right += *(int16_t *)&sound_3_buffer[j + SAMPLE_SIZE];
-        right += *(int16_t *)&sound_4_buffer[j + SAMPLE_SIZE];
-        right = (right / 7) * MASTER_VOLUME_RIGHT;
-
-        left >>= 1 + state->volume;
-        right >>= 1 + state->volume;
-        left &= INT16_MAX;
-        right &= INT16_MAX;
-
-        *(int16_t *)&stream[j] = (int16_t)left;
-        *(int16_t *)&stream[j + SAMPLE_SIZE] = (int16_t)right;
+    (void)state;
+    cycles += current_cycles;
+    if ((cycles / VOLUME_CLOCK)    > (prev_cycles / VOLUME_CLOCK))    {
+        apu_volume_tick();
     }
+    if ((cycles / SWEEP_CLOCK)     > (prev_cycles / SWEEP_CLOCK))     {
+        apu_sweep_tick();
+    }
+    if ((cycles / LENGTH_CLOCK)    > (prev_cycles / LENGTH_CLOCK))    {
+        apu_length_tick();
+    }
+//    if ((cycles / FREQUENCY_CLOCK) > (prev_cycles / FREQUENCY_CLOCK)) {
+//        apu_frequency_tick();
+//    }
+    if ((cycles / SAMPLE_CLOCK) > (prev_cycles / SAMPLE_CLOCK)) {
+        write_sample();
+    }
+    NR52 = (NR52 & 0x80) | (s1.is_enabled<<0) | (s2.is_enabled<<1) | (s3.is_enabled<<2) | (s4.is_enabled<<3);
+    prev_cycles = cycles;
+}
+
+
+void MyAudioCallback(void *userdata, Uint8 *stream, int len)
+{
+    (void)userdata;
+
+    if (!sdl_audio_device)
+        return ;
+    memcpy(stream, sound_1_buffer, len);
+    audio_done = 1;
 }
 
 /* gui_init() must be called first because it calls SDL_Init() */
