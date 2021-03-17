@@ -212,20 +212,23 @@ void    screen_update(uint8_t *gb_mem, t_state *state, uint8_t *sprites)
     }
 }
 
-void    lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles)
+int    lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles)
 {
     static bool     is_vblank, is_hblank, is_oam, is_lyc, is_get_sprites;
     static int      lcd_cycle;
     static uint8_t  sprites[10];
     uint8_t         i;
     uint16_t        dma_source;
+    int             render ;
+
+    render = 0;
 
     if (!IS_LCD_ENABLED) {
         (void)memset(state->screen_buf, 0, 160*144);
         gb_mem[0xff41] &= 0xfc ;
         gb_mem[0xff44] = 0;
         lcd_cycle = 0;
-        return ;
+        return render;
     }
 
     lcd_cycle += current_cycles;
@@ -273,7 +276,7 @@ void    lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles)
         gb_mem[0xff41] = (gb_mem[0xff41] & 0xfc) | 1;               /* mode 1 */
         if (is_vblank) {
             is_vblank = false;
-            gui_update();
+            render = 1;
             gb_mem[0xff0f] |= 1;                                    /* request vblank */
             if (gb_mem[0xff41] & 0x10)      gb_mem[0xff0f] |= 2;    /* irq */
         }
@@ -285,4 +288,5 @@ void    lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles)
         for (i = 0; i < 0xa0; i++)
             gb_mem[0xfe00 + i] = read_u8(dma_source + i);
     }
+    return render;
 }
