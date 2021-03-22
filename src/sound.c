@@ -202,6 +202,9 @@ void    sound_write_u8(uint16_t addr, uint8_t data)
         s4.lfsr_shift = (data >> 4) & 15;
         s4.lfsr_width = (data >> 3) & 1;        // 0 = 15 bits, 1 = 7 bits
         s4.lfsr_ratio = data & 7;
+        uint32_t f = 524288;
+        uint32_t tab[] = {f*2, f, f/2, f/3, f/4, f/5, f/6, f/7};
+        s4.freq = tab[s4.lfsr_ratio] >> s4.lfsr_shift;
         break ;
 
     case rAUD4GO:       // rNR44
@@ -210,6 +213,7 @@ void    sound_write_u8(uint16_t addr, uint8_t data)
         if (data & 128) {
             // trigger
             if (!s4.on) {
+                s4.lfsr = 0x7fff;
                 s4.cycles = 0;
                 s4.env_ctr = 0;
             }
@@ -395,9 +399,29 @@ void    sweep_tick()
     sweep_calc();
 }
 
+void lfsr()
+{
+    uint32_t ticks, new_bit;
+
+    if ((!s4.on) || (!s4.freq)) {
+        return ;
+    }
+    ticks = 4194304 / s4.freq;
+    for (; s4.cycles >= ticks; s4.cycles -= ticks) {
+        new_bit = ((s4.lfsr >> 1) & 1) ^ (s4.lfsr & 1);
+        s4.lfsr >>= 1;
+        s4.lfsr &= ~(1 << 14);
+        s4.lfsr |= (new_bit << 14);
+        if (s4.lfsr_width) {
+            s4.lfsr &= ~(1 << 6);
+            s4.lfsr |= (new_bit << 6);
+        }
+    }
+}
+
 void    apu_update(uint8_t *gb_mem, t_state *state, int cycles)
 {
-    static uint32_t volume, sweep, length, frequency, samples;
+    static uint32_t volume, sweep, length, samples;
 
     if (!sdl_audio_device)
         return ;
@@ -408,6 +432,7 @@ void    apu_update(uint8_t *gb_mem, t_state *state, int cycles)
     s2.cycles += cycles ;
     s3.cycles += cycles ;
     s4.cycles += cycles ;
+    lfsr();
 
     volume += cycles ;
     if (volume >= VOLUME_CLOCK) {
@@ -430,20 +455,6 @@ void    apu_update(uint8_t *gb_mem, t_state *state, int cycles)
         length_tick(&s2, 63);
         length_tick(&s3, 255);
         length_tick(&s4, 63);
-    }
-
-    frequency += cycles ;
-    if (frequency >= FREQUENCY_CLOCK) {
-        frequency -= FREQUENCY_CLOCK ;
-
-        uint32_t newBit = ((s4.lfsr >> 1) & 1) ^ (s4.lfsr & 1);
-        s4.lfsr >>= 1;
-        s4.lfsr &= ~(1<<14);
-        s4.lfsr |= (newBit<<14);
-        if (s4.lfsr_width) {
-            s4.lfsr &= ~(1<<6);
-            s4.lfsr |= (newBit<<6);
-        }
     }
 
     samples += cycles ;
