@@ -326,15 +326,11 @@ void    write_sample()
         right += (gb_mem[rAUDTERM] & AUDTERM_4_RIGHT) ? sample : 0;
     }
 
-    left >>= 1;
+    left >>= 2;
     left = (left / 7) * ((gb_mem[rAUDVOL] >> 4) & 7);
-    left = left > INT16_MAX ? INT16_MAX : left;
-    left = left < INT16_MIN ? INT16_MIN : left;
 
-    right >>= 1;
+    right >>= 2;
     right = (right / 7) * (gb_mem[rAUDVOL] & 7);
-    right = right > INT16_MAX ? INT16_MAX : right;
-    right = right < INT16_MIN ? INT16_MIN : right;
 
     *(int16_t *)&sound_buffer[sample_index] = (int16_t)left;
     *(int16_t *)&sound_buffer[sample_index + SAMPLE_SIZE] = (int16_t)right;
