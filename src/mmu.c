@@ -17,7 +17,9 @@ uint8_t read_u8(uint16_t addr)
         return state->ram_read_u8(addr);
     if (addr == 0xff02)
         return ((gb_mem[0xff02] & 0x81) | 0x7e);
-
+    if ((addr >= 0xff10) && (addr < 0xff40)) {
+        return sound_read_u8(addr);
+    }
     /* ignore reads from oam in lcd-mode-2 and lcd-mode-3 */
     if ((addr >= 0xfe00) && (addr <= 0xfe9f) && ((is_lcd_mode_2) || (is_lcd_mode_3)))
         return 0xff;
@@ -90,9 +92,8 @@ void    write_u8(uint16_t addr, uint8_t data)
         data = 0xf8 | (data & 7);    /* TAC bottom 3 bits only */
     }
 
-    if ((addr >= 0xff10) && (addr <= 0xff26)) {
-        (void)sound_write_u8(addr, data);
-        return ;
+    if ((addr >= 0xff10) && (addr < 0xff40)) {
+        return sound_write_u8(addr, data);
     }
 
     if (addr == 0xff41) {                                                   /* LCD STAT */

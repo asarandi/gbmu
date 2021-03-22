@@ -110,7 +110,9 @@ void        timers_update(uint8_t *gb_mem, t_state *state, int current_cycles);
 void        apu_init();
 void        apu_cleanup();
 void        apu_update(uint8_t *gb_mem, t_state *state, int current_cycles);
+void        write_sample();
 void        sound_write_u8(uint16_t addr, uint8_t data);
+uint8_t     sound_read_u8(uint16_t addr);
 int         apu_sync();
 
 bool        gui_init();
