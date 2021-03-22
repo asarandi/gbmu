@@ -11,7 +11,7 @@
 #define LENGTH_CLOCK                (4194304 / 256)
 #define FREQUENCY_CLOCK             (4194304 / 512)
 
-#define SAMPLING_FREQUENCY          (65536)
+#define SAMPLING_FREQUENCY          (44100)
 #define NUM_SAMPLES                 (SAMPLING_FREQUENCY / 60)
 #define SAMPLE_CLOCK                (4194304 / SAMPLING_FREQUENCY)
 
@@ -250,9 +250,6 @@ int16_t square_wave(t_sound *s)
         {0,1,1,1,1,1,1,0}
     };
 
-    if (!s->freq)
-        return 0;
-
     uint32_t ticks = 4194304 / (131072 / (2048 - s->freq));
     uint32_t idx = (s->cycles / (ticks >> 3)) & 7;
     return (INT16_MAX/15) * s->volume * duties[s->duty][idx];
@@ -260,9 +257,6 @@ int16_t square_wave(t_sound *s)
 
 int16_t sound_3_wave()
 {
-    if (!s3.freq)
-        return 0;
-
     uint32_t ticks = 4194304 / (65536 / (2048 - s3.freq));
     uint32_t idx = (s3.cycles / (ticks >> 5)) & 31;
     uint8_t nib = gb_mem[_AUD3WAVERAM + (idx >> 1)];

@@ -6,8 +6,10 @@ a.out
 __pycache__
 test
 *.gb
+*.gb*
 *.dSYM
 *.sav
 *.dump
 gbmu
 nohup.out
+extras/

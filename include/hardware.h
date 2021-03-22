@@ -28,8 +28,8 @@
 
 // If all of these are already defined, don't do it again.
 //
-#ifndef HARDWARE_INC_H
-# define HARDWARE_INC_H
+#ifndef HARDWARE_H
+# define HARDWARE_H
 //
 //rev_Check_hardware_inc : MACRO
 //;NOTE: REVISION NUMBER CHANGES MUST BE ADDED
