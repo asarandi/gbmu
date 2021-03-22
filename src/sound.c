@@ -254,8 +254,7 @@ int16_t square_wave(t_sound *s)
         return 0;
 
     uint32_t ticks = 4194304 / (131072 / (2048 - s->freq));
-    uint32_t curr = s->cycles % ticks;
-    uint32_t idx = curr / (ticks / 8);
+    uint32_t idx = (s->cycles / (ticks >> 3)) & 7;
     return (INT16_MAX/15) * s->volume * duties[s->duty][idx];
 }
 
@@ -265,8 +264,7 @@ int16_t sound_3_wave()
         return 0;
 
     uint32_t ticks = 4194304 / (65536 / (2048 - s3.freq));
-    uint32_t curr = s3.cycles % ticks;
-    uint32_t idx = curr / (ticks / 32);
+    uint32_t idx = (s3.cycles / (ticks >> 5)) & 31;
     uint8_t nib = gb_mem[_AUD3WAVERAM + (idx >> 1)];
     nib = (idx & 1) ? (nib & 15) : (nib >> 4);
 
