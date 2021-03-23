@@ -1,5 +1,4 @@
 #include "gb.h"
-#include <SDL.h>
 #include "hardware.h"
 
 /* http://gbdev.gg8.se/wiki/articles/Sound_Controller */
@@ -10,16 +9,9 @@
 #define SWEEP_CLOCK                 (4194304 / 128)
 #define LENGTH_CLOCK                (4194304 / 256)
 #define FREQUENCY_CLOCK             (4194304 / 512)
-
-#define SAMPLING_FREQUENCY          (44100)
-#define NUM_SAMPLES                 (SAMPLING_FREQUENCY / 60)
 #define SAMPLE_CLOCK                (4194304 / SAMPLING_FREQUENCY)
 
-#define NUM_CHANNELS                2
-#define SAMPLE_SIZE                 2
-#define CHANNEL_BUF_SIZE            (NUM_SAMPLES * SAMPLE_SIZE * NUM_CHANNELS)
-
-typedef struct s_sound {
+struct s_sound {
     uint32_t cycles;
     uint32_t on;
     uint32_t sweep_time;
@@ -38,21 +30,214 @@ typedef struct s_sound {
     uint32_t lfsr_shift;
     uint32_t lfsr_width;
     uint32_t lfsr_ratio;
-}               t_sound;
+};
+typedef struct s_sound t_sound;
 
-SDL_AudioSpec                sdl_received_spec;
-SDL_AudioSpec                sdl_wanted_spec;
-SDL_AudioDeviceID            sdl_audio_device = 0;
+t_sound s1, s2, s3, s4; // globals
 
-t_sound   s1;
-t_sound   s2;
-t_sound   s3;
-t_sound   s4;
+static int16_t tone_sample(t_sound *s)
+{
+    uint32_t duties[4][8] = {
+        {0, 0, 0, 0, 0, 0, 0, 1},
+        {1, 0, 0, 0, 0, 0, 0, 1},
+        {1, 0, 0, 0, 0, 1, 1, 1},
+        {0, 1, 1, 1, 1, 1, 1, 0}
+    };
 
-static volatile int32_t audio_done, sample_index;
-uint8_t  sound_buffer[CHANNEL_BUF_SIZE] = {0};
+    uint32_t ticks = 4194304 / (131072 / (2048 - s->freq));
+    uint32_t idx = (s->cycles / (ticks >> 3)) & 7;
+    return (INT16_MAX/15) * s->volume * duties[s->duty][idx];
+}
 
-void sweep_calc();
+static int16_t wave_sample(t_sound *s)
+{
+    uint32_t ticks = 4194304 / (65536 / (2048 - s->freq));
+    uint32_t idx = (s->cycles / (ticks >> 5)) & 31;
+    uint8_t nib = gb_mem[_AUD3WAVERAM + (idx >> 1)];
+    nib = (idx & 1) ? (nib & 15) : (nib >> 4);
+
+    switch (s->volume) {
+    case 0:
+        nib = 0;
+        break;
+    case 2:
+        nib >>= 1;
+        break;
+    case 3:
+        nib >>= 2;
+        break;
+    }
+    return (INT16_MAX/15) * nib;
+}
+
+/*
+    writes int16_t interleaved samples to `buf'
+    returns 1 when `index' is greater than or equal to `size'
+*/
+
+static int write_sounds(uint8_t *buf, uint32_t size)
+{
+    int32_t left, right, sample;
+    static uint32_t index;
+
+    if (!size)
+        return 1;
+
+    index %= size;
+    left = right = 0;
+
+    if (s1.on) {
+        sample = tone_sample(&s1);
+        left += (gb_mem[rAUDTERM] & AUDTERM_1_LEFT) ? sample : 0;
+        right += (gb_mem[rAUDTERM] & AUDTERM_1_RIGHT) ? sample : 0;
+    }
+
+    if (s2.on) {
+        sample = tone_sample(&s2);
+        left += (gb_mem[rAUDTERM] & AUDTERM_2_LEFT) ? sample : 0;
+        right += (gb_mem[rAUDTERM] & AUDTERM_2_RIGHT) ? sample : 0;
+    }
+
+    if (s3.on) {
+        sample = wave_sample(&s3);
+        left += (gb_mem[rAUDTERM] & AUDTERM_3_LEFT) ? sample : 0;
+        right += (gb_mem[rAUDTERM] & AUDTERM_3_RIGHT) ? sample : 0;
+    }
+
+    if (s4.on) {
+        sample = (INT16_MAX/15) * s4.volume;
+        sample *= !(s4.lfsr & 1);
+        left += (gb_mem[rAUDTERM] & AUDTERM_4_LEFT) ? sample : 0;
+        right += (gb_mem[rAUDTERM] & AUDTERM_4_RIGHT) ? sample : 0;
+    }
+
+    left >>= 2;
+    left = (left / 7) * ((gb_mem[rAUDVOL] >> 4) & 7);
+
+    right >>= 2;
+    right = (right / 7) * (gb_mem[rAUDVOL] & 7);
+
+    *(int16_t *)&buf[index] = (int16_t)left;
+    *(int16_t *)&buf[index + 2] = (int16_t)right;
+    index += 4;  /* 2 sixteen bit samples */
+    return index >= size;
+}
+
+static void volume_tick(t_sound *s)
+{
+    if ((!s->on) || (!s->env_sweep))
+        return ;
+    s->env_ctr++;
+    if (s->env_ctr < s->env_sweep)
+        return ;
+    s->env_ctr -= s->env_sweep;
+    if ((s->env_dir) && (s->volume < 15))
+        s->volume++;
+    if ((!s->env_dir) && (s->volume > 0))
+        s->volume--;
+}
+
+static void length_tick(t_sound *s, uint32_t mask)
+{
+    if (!s->is_len_counter) {
+        return ;
+    }
+    s->length = (s->length + 1) & mask;
+    if ((s->on) && (s->length == 0)) {
+        s->on = 0;
+    }
+}
+
+static void sweep_calc(t_sound *s)
+{
+    uint32_t shadow_freq = s->freq;
+    if (s->sweep_dir) {
+        shadow_freq -= shadow_freq >> s->sweep_shift;
+    } else {
+        shadow_freq += shadow_freq >> s->sweep_shift;
+    }
+    if (shadow_freq > 2047) {
+        s->on = 0;
+        shadow_freq = s->freq;
+    }
+    s->freq = shadow_freq;
+    gb_mem[rAUD1HIGH] = (gb_mem[rAUD1HIGH] & 0b11111000) | (s->freq >> 8);
+    gb_mem[rAUD1LOW] = s->freq & 255;
+}
+
+static void sweep_tick(t_sound *s)
+{
+    if ((!s->on) || (!s->sweep_time) || (!s->sweep_shift))
+        return ;
+    s->sweep_ctr++;
+    if (s->sweep_ctr < s->sweep_time)
+        return ;
+    s->sweep_ctr -= s->sweep_time;
+    return sweep_calc(s);
+}
+
+static void lfsr_calc(t_sound *s)
+{
+    uint32_t ticks, new_bit;
+
+    if ((!s->on) || (!s->freq)) {
+        return ;
+    }
+    ticks = 4194304 / s->freq;
+    for (; s->cycles >= ticks; s->cycles -= ticks) {
+        new_bit = ((s->lfsr >> 1) & 1) ^ (s->lfsr & 1);
+        s->lfsr >>= 1;
+        s->lfsr &= ~(1 << 14);
+        s->lfsr |= (new_bit << 14);
+        if (s->lfsr_width) {
+            s->lfsr &= ~(1 << 6);
+            s->lfsr |= (new_bit << 6);
+        }
+    }
+}
+
+int sound_update(uint8_t *gb_mem, t_state *state, int cycles)
+{
+    static uint32_t volume, sweep, length, samples;
+
+    s1.cycles += cycles ;
+    s2.cycles += cycles ;
+    s3.cycles += cycles ;
+    s4.cycles += cycles ;
+    lfsr_calc(&s4);
+
+    volume += cycles ;
+    if (volume >= VOLUME_CLOCK) {
+        volume -= VOLUME_CLOCK ;
+        volume_tick(&s1);
+        volume_tick(&s2);
+        volume_tick(&s4);
+    }
+
+    sweep += cycles ;
+    if (sweep >= SWEEP_CLOCK) {
+        sweep -= SWEEP_CLOCK ;
+        sweep_tick(&s1);
+    }
+
+    length += cycles ;
+    if (length >= LENGTH_CLOCK) {
+        length -= LENGTH_CLOCK ;
+        length_tick(&s1, 63);
+        length_tick(&s2, 63);
+        length_tick(&s3, 255);
+        length_tick(&s4, 63);
+    }
+
+    gb_mem[rAUDENA] = (gb_mem[rAUDENA] & 128) | (s1.on<<0) | (s2.on<<1) | (s3.on<<2) | (s4.on<<3);
+
+    samples += cycles ;
+    if (samples >= SAMPLE_CLOCK) {
+        samples -= SAMPLE_CLOCK ;
+        return write_sounds(&state->sound_buf[0], SOUND_BUF_SIZE);
+    }
+    return 0;
+}
 
 uint8_t sound_read_u8(uint16_t addr)
 {
@@ -64,7 +249,7 @@ uint8_t sound_read_u8(uint16_t addr)
     }
 }
 
-void    sound_write_u8(uint16_t addr, uint8_t data)
+void sound_write_u8(uint16_t addr, uint8_t data)
 {
     if (addr != rAUDENA) {
         if ((gb_mem[rAUDENA] & AUDENA_ON) == 0) {
@@ -112,7 +297,7 @@ void    sound_write_u8(uint16_t addr, uint8_t data)
                 s1.env_ctr = 0;
             }
             if ((s1.sweep_time) && (s1.sweep_shift)) {
-                sweep_calc();
+                sweep_calc(&s1);
             }
             s1.on = (gb_mem[rAUD1ENV] >> 4) != 0;
         }
@@ -239,268 +424,4 @@ void    sound_write_u8(uint16_t addr, uint8_t data)
     default:
         gb_mem[addr] = data;
     }
-}
-
-int16_t square_wave(t_sound *s)
-{
-    uint32_t duties[4][8] = {
-        {0,0,0,0,0,0,0,1},
-        {1,0,0,0,0,0,0,1},
-        {1,0,0,0,0,1,1,1},
-        {0,1,1,1,1,1,1,0}
-    };
-
-    uint32_t ticks = 4194304 / (131072 / (2048 - s->freq));
-    uint32_t idx = (s->cycles / (ticks >> 3)) & 7;
-    return (INT16_MAX/15) * s->volume * duties[s->duty][idx];
-}
-
-int16_t sound_3_wave()
-{
-    uint32_t ticks = 4194304 / (65536 / (2048 - s3.freq));
-    uint32_t idx = (s3.cycles / (ticks >> 5)) & 31;
-    uint8_t nib = gb_mem[_AUD3WAVERAM + (idx >> 1)];
-    nib = (idx & 1) ? (nib & 15) : (nib >> 4);
-
-    switch (s3.volume) {
-    case 0:
-        nib = 0;
-        break;
-    case 2:
-        nib >>= 1;
-        break;
-    case 3:
-        nib >>= 2;
-        break;
-    }
-    return (INT16_MAX/15) * nib;
-}
-
-
-int apu_sync()
-{
-    if (sample_index < CHANNEL_BUF_SIZE) {
-        return 0;
-    }
-    while (!audio_done)
-        SDL_Delay(1);
-    audio_done = 0;
-    sample_index = 0;
-    return 1;
-}
-
-void    write_sample()
-{
-    int32_t left, right, sample;
-
-    left = right = 0;
-
-    if ((s1.on) && (state->sound_channels[0])) {
-        sample = square_wave(&s1);
-        left += (gb_mem[rAUDTERM] & AUDTERM_1_LEFT) ? sample : 0;
-        right += (gb_mem[rAUDTERM] & AUDTERM_1_RIGHT) ? sample : 0;
-    }
-
-    if ((s2.on) && (state->sound_channels[1])) {
-        sample = square_wave(&s2);
-        left += (gb_mem[rAUDTERM] & AUDTERM_2_LEFT) ? sample : 0;
-        right += (gb_mem[rAUDTERM] & AUDTERM_2_RIGHT) ? sample : 0;
-    }
-
-    if ((s3.on) && (state->sound_channels[2])) {
-        sample = sound_3_wave();
-        left += (gb_mem[rAUDTERM] & AUDTERM_3_LEFT) ? sample : 0;
-        right += (gb_mem[rAUDTERM] & AUDTERM_3_RIGHT) ? sample : 0;
-    }
-
-    if ((s4.on) && (state->sound_channels[3])) {
-        sample = (INT16_MAX/15) * s4.volume;
-        sample *= !(s4.lfsr & 1);
-        left += (gb_mem[rAUDTERM] & AUDTERM_4_LEFT) ? sample : 0;
-        right += (gb_mem[rAUDTERM] & AUDTERM_4_RIGHT) ? sample : 0;
-    }
-
-    left >>= 2;
-    left = (left / 7) * ((gb_mem[rAUDVOL] >> 4) & 7);
-
-    right >>= 2;
-    right = (right / 7) * (gb_mem[rAUDVOL] & 7);
-
-    *(int16_t *)&sound_buffer[sample_index] = (int16_t)left;
-    *(int16_t *)&sound_buffer[sample_index + SAMPLE_SIZE] = (int16_t)right;
-    sample_index += (SAMPLE_SIZE * 2);
-    if (sample_index >= CHANNEL_BUF_SIZE) {
-        apu_sync();
-    }
-}
-
-void volume_tick(t_sound *s)
-{
-    if ((!s->on) || (!s->env_sweep))
-        return ;
-    s->env_ctr++;
-    if (s->env_ctr < s->env_sweep)
-        return ;
-    s->env_ctr -= s->env_sweep;
-    if ((s->env_dir) && (s->volume < 15))
-        s->volume++;
-    if ((!s->env_dir) && (s->volume > 0))
-        s->volume--;
-}
-
-void length_tick(t_sound *s, uint32_t mask)
-{
-    if (!s->is_len_counter) {
-        return ;
-    }
-    s->length = (s->length + 1) & mask;
-    if ((s->on) && (s->length == 0)) {
-        s->on = 0;
-    }
-}
-
-void sweep_calc()
-{
-    uint32_t shadow_freq = s1.freq;
-    if (s1.sweep_dir) {
-        shadow_freq -= shadow_freq >> s1.sweep_shift;
-    } else {
-        shadow_freq += shadow_freq >> s1.sweep_shift;
-    }
-    if (shadow_freq > 2047) {
-        s1.on = 0;
-        shadow_freq = s1.freq;
-    }
-    s1.freq = shadow_freq;
-    gb_mem[rAUD1HIGH] = (gb_mem[rAUD1HIGH] & 0b11111000) | (s1.freq >> 8);
-    gb_mem[rAUD1LOW] = s1.freq & 255;
-}
-
-void    sweep_tick()
-{
-    if ((!s1.on) || (!s1.sweep_time) || (!s1.sweep_shift))
-        return ;
-    s1.sweep_ctr++;
-    if (s1.sweep_ctr < s1.sweep_time)
-        return ;
-    s1.sweep_ctr -= s1.sweep_time;
-    sweep_calc();
-}
-
-void lfsr()
-{
-    uint32_t ticks, new_bit;
-
-    if ((!s4.on) || (!s4.freq)) {
-        return ;
-    }
-    ticks = 4194304 / s4.freq;
-    for (; s4.cycles >= ticks; s4.cycles -= ticks) {
-        new_bit = ((s4.lfsr >> 1) & 1) ^ (s4.lfsr & 1);
-        s4.lfsr >>= 1;
-        s4.lfsr &= ~(1 << 14);
-        s4.lfsr |= (new_bit << 14);
-        if (s4.lfsr_width) {
-            s4.lfsr &= ~(1 << 6);
-            s4.lfsr |= (new_bit << 6);
-        }
-    }
-}
-
-void    apu_update(uint8_t *gb_mem, t_state *state, int cycles)
-{
-    static uint32_t volume, sweep, length, samples;
-
-    if (!sdl_audio_device)
-        return ;
-
-    (void)state;
-
-    s1.cycles += cycles ;
-    s2.cycles += cycles ;
-    s3.cycles += cycles ;
-    s4.cycles += cycles ;
-    lfsr();
-
-    volume += cycles ;
-    if (volume >= VOLUME_CLOCK) {
-        volume -= VOLUME_CLOCK ;
-        volume_tick(&s1);
-        volume_tick(&s2);
-        volume_tick(&s4);
-    }
-
-    sweep += cycles ;
-    if (sweep >= SWEEP_CLOCK) {
-        sweep -= SWEEP_CLOCK ;
-        sweep_tick();
-    }
-
-    length += cycles ;
-    if (length >= LENGTH_CLOCK) {
-        length -= LENGTH_CLOCK ;
-        length_tick(&s1, 63);
-        length_tick(&s2, 63);
-        length_tick(&s3, 255);
-        length_tick(&s4, 63);
-    }
-
-    samples += cycles ;
-    if (samples >= SAMPLE_CLOCK) {
-        samples -= SAMPLE_CLOCK ;
-        write_sample();
-    }
-
-    gb_mem[rAUDENA] = (gb_mem[rAUDENA] & 128) | (s1.on<<0) | (s2.on<<1) | (s3.on<<2) | (s4.on<<3);
-}
-
-
-void MyAudioCallback(void *userdata, Uint8 *stream, int len)
-{
-    (void)userdata;
-
-    if (!sdl_audio_device)
-        return ;
-    memcpy(stream, sound_buffer, len);
-    audio_done = 1;
-}
-
-/* gui_init() must be called first because it calls SDL_Init() */
-void    apu_init()
-{
-    uint32_t i, enabled[] = {1, 1, 1, 1};
-
-    SDL_memset(&sdl_received_spec, 0, sizeof(SDL_AudioSpec));
-    SDL_memset(&sdl_wanted_spec, 0, sizeof(SDL_AudioSpec));
-    sdl_wanted_spec.freq     = SAMPLING_FREQUENCY;
-    sdl_wanted_spec.format   = AUDIO_S16;
-    sdl_wanted_spec.channels = NUM_CHANNELS;
-    sdl_wanted_spec.samples  = NUM_SAMPLES;
-    sdl_wanted_spec.callback = MyAudioCallback;
-    sdl_audio_device = SDL_OpenAudioDevice(NULL, 0, &sdl_wanted_spec, &sdl_received_spec, 0);
-
-    if (!sdl_audio_device)
-        return ;
-
-    if (sdl_wanted_spec.freq != sdl_received_spec.freq)
-        printf("    sound freq: wanted = %d, received = %d\n", sdl_wanted_spec.freq,     sdl_received_spec.freq);
-    if (sdl_wanted_spec.format != sdl_received_spec.format)
-        printf("  sound format: wanted = %d, received = %d\n", sdl_wanted_spec.format,   sdl_received_spec.format);
-    if (sdl_wanted_spec.channels != sdl_received_spec.channels)
-        printf("sound channels: wanted = %d, received = %d\n", sdl_wanted_spec.channels, sdl_received_spec.channels);
-    if (sdl_wanted_spec.samples != sdl_received_spec.samples)
-        printf(" sound samples: wanted = %d, received = %d\n", sdl_wanted_spec.samples,  sdl_received_spec.samples);
-
-    SDL_PauseAudioDevice(sdl_audio_device, 0);
-    for (i=0; i<4; i++)
-        state->sound_channels[i] = enabled[i];
-    return ;
-}
-
-void    apu_cleanup()
-{
-    if (!sdl_audio_device)
-        return ;
-    SDL_CloseAudioDevice(sdl_audio_device);
-    sdl_audio_device = 0;
 }

@@ -85,3 +85,61 @@ void    gameboy_init()
     else
         set_initial_register_values();
 }
+
+/* * */
+
+int video_open()
+{
+    return sdl_video_open();
+}
+
+int video_close()
+{
+    return sdl_video_close();
+}
+
+int video_write(uint8_t *data, uint32_t n)
+{
+    return sdl_render_video(data, n);
+}
+
+/* * */
+
+int audio_open()
+{
+    return sdl_audio_open();
+}
+
+int audio_close()
+{
+    return sdl_audio_close();
+}
+
+int audio_write(uint8_t *data, uint32_t n)
+{
+    return sdl_write_audio(data, n);
+}
+
+/* * */
+
+int input_open()
+{
+    return 1;
+}
+
+int input_close()
+{
+    return 1;
+}
+
+int input_read()
+{
+    return sdl_input_read();
+}
+
+/* * */
+
+int av_sync()
+{
+    return sdl_av_sync();
+}

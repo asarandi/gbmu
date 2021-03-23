@@ -18,8 +18,16 @@ bool arg_parse(int ac, char **av)
     state->network_address = &default_network_address[0];
     state->network_port = default_network_port;
 
-    while ((c = getopt(ac, av, "c:s:p:")) != -1) {
+    while ((c = getopt(ac, av, "c:s:p:td:")) != -1) {
         switch (c) {
+        case 't':
+            state->testing = 1;
+            if (!state->test_timeout)
+                state->test_timeout = 15;
+            break ;
+        case 'd':
+            state->test_timeout = atoi(optarg);
+            break ;
         case 'c':
         case 's':
             state->is_client = c == 'c';
@@ -67,7 +75,6 @@ int main(int ac, char **av)
         return 1;
 
     state->rom_file = av[ac-1];
-
     if ((fd = open(state->rom_file, O_RDONLY)) == -1) {
         printf("failed to open file\n");
         return 1;
@@ -98,24 +105,28 @@ int main(int ac, char **av)
     close(fd);
     (void)memcpy(gb_mem, state->file_contents, 0x8000);
 
-    if (!gui_init())
-        state->done = true;
+    if (!state->testing) {
+        video_open();
+        audio_open();
+        input_open();
+    }
 
     state->bootrom_enabled = BOOTROM_ENABLED;
     gameboy_init();
     cartridge_init();
-    apu_init();
     savefile_read();
 
     while (!state->done) {
         serial(op_cycles);
         timers_update(gb_mem, &gb_state, op_cycles);
         if (lcd_update(gb_mem, &gb_state, op_cycles)) {
-            gui_update();
-            gui_render();
-            apu_sync();
+            video_write(state->screen_buf, 160*144);
+            input_read();
+            av_sync();
         }
-        apu_update(gb_mem, &gb_state, op_cycles);
+        if (sound_update(gb_mem, &gb_state, op_cycles)) {
+            audio_write(state->sound_buf, SOUND_BUF_SIZE);
+        }
         interrupts_update(gb_mem, state, &registers);
 
         op = read_u8(r16->PC);
@@ -151,7 +162,6 @@ int main(int ac, char **av)
 
         op_cycles = 4;
         state->cycles += op_cycles;
-//        gb_throttle();
     }
     if (show_pc_history) {
         for (i=pc_idx; i<100; i++) {
@@ -164,8 +174,11 @@ int main(int ac, char **av)
 
     serial_cleanup();
     savefile_write();
-    apu_cleanup();
-    gui_cleanup();
+    if (!state->testing) {
+        input_close();
+        audio_close();
+        video_close();
+    }
     free(state->file_contents);
 
     return 0;

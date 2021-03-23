@@ -4,11 +4,14 @@
 #define WND_WIDTH   160
 #define WND_HEIGHT  144
 
-static int gui_scale_factor = 3;
+static SDL_Window         *gui_window;
+static SDL_Renderer       *gui_renderer;
+static SDL_Texture        *gui_buffer;
+static volatile int       audio_done;
+static SDL_AudioDeviceID  audio_device;
+uint8_t sdl_sound_buffer[SOUND_BUF_SIZE];
 
-static SDL_Window      *gui_window;
-static SDL_Renderer    *gui_renderer;
-static SDL_Texture     *gui_buffer;
+static int                gui_scale_factor = 3;
 
 uint32_t        game_controls[]     = {SDLK_DOWN, SDLK_UP, SDLK_LEFT, SDLK_RIGHT, SDLK_RETURN, SDLK_RSHIFT, SDLK_z, SDLK_x};
 uint32_t        num_game_controls   = sizeof(game_controls) / sizeof(uint32_t);
@@ -93,59 +96,67 @@ void set_window_size()
         SDL_Log("%s: could not create a texture: %s", "set_window_size()",  SDL_GetError());
 }
 
-bool gui_init()
+int sdl_video_open()
 {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0) {
         printf("Failed to initialise SDL\n");
-        return false;
+        return 0;
     }
     if ((gui_window = SDL_CreateWindow("gbmu", 0, 0, WND_WIDTH, WND_HEIGHT, 0)) == NULL) {
         SDL_Log("Could not create a window: %s", SDL_GetError());
-        return false;
+        return 0;
     }
     if ((gui_renderer = SDL_CreateRenderer(gui_window, -1, SDL_RENDERER_ACCELERATED)) == NULL) {
         SDL_Log("Could not create a renderer: %s", SDL_GetError());
-        return false;
+        return 0;
     }
 
     set_window_title();
     set_window_size();
+
     SDL_RenderClear(gui_renderer);
-    return true;
+    return 1;
 }
 
-void gui_cleanup()
+int sdl_video_close()
 {
     SDL_DestroyTexture(gui_buffer);
     SDL_DestroyRenderer(gui_renderer);
     SDL_DestroyWindow(gui_window);
     SDL_Quit();
+    return 1;
 }
 
-void gui_render()
+int sdl_render_video(uint8_t *buf, uint32_t n)
 {
-    uint32_t    *pixels;
-    int         pitch, idx, buf_y, buf_x, gui_y, gui_x;
+    uint32_t    *pixels, *colors;
+    int         pitch, idx, y, x, i, j, f;
 
     if (SDL_LockTexture(gui_buffer, NULL, (void *)&pixels, &pitch) < 0) {
         SDL_Log("Couldn't lock texture: %s\n", SDL_GetError());
-        state->done = true;
+        return 0;
     }
-    for (buf_y = 0; buf_y < 144; buf_y++) {
-        for (buf_x = 0; buf_x < 160; buf_x++) {
-            idx = state->screen_buf[buf_y * 160 + buf_x];
-            for (gui_y = buf_y * gui_scale_factor; gui_y < (buf_y + 1) * gui_scale_factor; gui_y++) {
-                for (gui_x = buf_x * gui_scale_factor; gui_x < (buf_x + 1) * gui_scale_factor; gui_x++) {
-                    pixels[gui_y * gui_scale_factor * WND_WIDTH + gui_x] =
-                        render_palettes[render_palette_idx % num_render_palettes].colors[idx];
+
+    (void) n;
+    f = gui_scale_factor;
+    colors = &(render_palettes[render_palette_idx % num_render_palettes].colors[0]);
+
+    for (y = 0; y < 144; y++) {
+        for (x = 0; x < 160; x++) {
+            idx = buf[y * 160 + x];
+            for (i = y * f; i < (y + 1) * f; i++) {
+                for (j = x * f; j < (x + 1) * f; j++) {
+                    pixels[i * f * 160 + j] = colors[idx];
                 }
             }
         }
     }
+
     SDL_UnlockTexture(gui_buffer);
     SDL_RenderClear(gui_renderer);
     SDL_RenderCopy(gui_renderer, gui_buffer, NULL, NULL);
     SDL_RenderPresent(gui_renderer);
+    return 1;
 }
 
 void gui_set_button_states(uint32_t key, uint8_t value)
@@ -160,7 +171,7 @@ void gui_set_button_states(uint32_t key, uint8_t value)
     }
 }
 
-void gui_update()
+int sdl_input_read()
 {
     int         i, tmp;
     SDL_Event   event;
@@ -221,28 +232,67 @@ void gui_update()
             break ;
         }
     }
+    return 1;
 }
 
-void gb_throttle()
+int sdl_av_sync()
 {
-    static struct timespec tp, last_tp;
-    static unsigned int clock_cycles, current_ms, last_ms;
+    while (!audio_done)
+        SDL_Delay(1);
+    return 1;
+}
 
-    if (clock_gettime(CLOCK_REALTIME, &tp))
-        return ;
+int sdl_write_audio(uint8_t *buf, uint32_t size)
+{
+    audio_done = 0;
+    memcpy(sdl_sound_buffer, buf, size);
+    return 1;
+}
 
-    if (tp.tv_sec > last_tp.tv_sec)
-        last_ms = 0;
+void audio_callback(void *userdata, Uint8 *stream, int len)
+{
+    (void)userdata;
+    memcpy(stream, sdl_sound_buffer, len);
+    audio_done = 1;
+}
 
-    current_ms = tp.tv_nsec / 1000000;
-    if (current_ms <= last_ms)
-        return ;
+/* to be called after SDL_Init() */
+int sdl_audio_open()
+{
+    SDL_AudioSpec want, have;
 
-    if ((state->cycles - clock_cycles) <= (current_ms - last_ms) * (4194304 / 1000))
-        return ;
+    SDL_memset(&have, 0, sizeof(SDL_AudioSpec));
+    SDL_memset(&want, 0, sizeof(SDL_AudioSpec));
+    want.freq     = SAMPLING_FREQUENCY;
+    want.format   = AUDIO_S16;
+    want.channels = NUM_CHANNELS;
+    want.samples  = NUM_SAMPLES;
+    want.callback = audio_callback;
+    audio_device  = SDL_OpenAudioDevice(NULL, 0, &want, &have, 0);
 
-    last_ms = current_ms;
-    memcpy(&last_tp, &tp, sizeof(struct timespec));
-    clock_cycles = state->cycles;
-    SDL_Delay(1);
+    if (!audio_device)
+        return 0;
+
+    int t = 0;
+    if (want.freq != have.freq)
+        t += printf("    sound freq: want = %d, have = %d\n", want.freq,     have.freq);
+    if (want.format != have.format)
+        t += printf("  sound format: want = %d, have = %d\n", want.format,   have.format);
+    if (want.channels != have.channels)
+        t += printf("sound channels: want = %d, have = %d\n", want.channels, have.channels);
+    if (want.samples != have.samples)
+        t += printf(" sound samples: want = %d, have = %d\n", want.samples,  have.samples);
+
+    SDL_PauseAudioDevice(audio_device, 0);
+    return t == 0;
+}
+
+int    sdl_audio_close()
+{
+    if (!audio_device)
+        return 0;
+    SDL_PauseAudioDevice(audio_device, 1);
+    SDL_CloseAudioDevice(audio_device);
+    audio_device = 0;
+    return 1;
 }
