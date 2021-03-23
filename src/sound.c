@@ -35,8 +35,7 @@ typedef struct s_sound t_sound;
 
 t_sound s1, s2, s3, s4; // globals
 
-static int16_t tone_sample(t_sound *s)
-{
+static int16_t tone_sample(t_sound *s) {
     uint32_t duties[4][8] = {
         {0, 0, 0, 0, 0, 0, 0, 1},
         {1, 0, 0, 0, 0, 0, 0, 1},
@@ -46,11 +45,10 @@ static int16_t tone_sample(t_sound *s)
 
     uint32_t ticks = 4194304 / (131072 / (2048 - s->freq));
     uint32_t idx = (s->cycles / (ticks >> 3)) & 7;
-    return (INT16_MAX/15) * s->volume * duties[s->duty][idx];
+    return (INT16_MAX / 15) * s->volume * duties[s->duty][idx];
 }
 
-static int16_t wave_sample(t_sound *s)
-{
+static int16_t wave_sample(t_sound *s) {
     uint32_t ticks = 4194304 / (65536 / (2048 - s->freq));
     uint32_t idx = (s->cycles / (ticks >> 5)) & 31;
     uint8_t nib = gb_mem[_AUD3WAVERAM + (idx >> 1)];
@@ -67,7 +65,7 @@ static int16_t wave_sample(t_sound *s)
         nib >>= 2;
         break;
     }
-    return (INT16_MAX/15) * nib;
+    return (INT16_MAX / 15) * nib;
 }
 
 /*
@@ -75,8 +73,7 @@ static int16_t wave_sample(t_sound *s)
     returns 1 when `index' is greater than or equal to `size'
 */
 
-static int write_sounds(uint8_t *buf, uint32_t size)
-{
+static int write_sounds(uint8_t *buf, uint32_t size) {
     int32_t left, right, sample;
     static uint32_t index;
 
@@ -105,7 +102,7 @@ static int write_sounds(uint8_t *buf, uint32_t size)
     }
 
     if (s4.on) {
-        sample = (INT16_MAX/15) * s4.volume;
+        sample = (INT16_MAX / 15) * s4.volume;
         sample *= !(s4.lfsr & 1);
         left += (gb_mem[rAUDTERM] & AUDTERM_4_LEFT) ? sample : 0;
         right += (gb_mem[rAUDTERM] & AUDTERM_4_RIGHT) ? sample : 0;
@@ -117,19 +114,18 @@ static int write_sounds(uint8_t *buf, uint32_t size)
     right >>= 2;
     right = (right / 7) * (gb_mem[rAUDVOL] & 7);
 
-    *(int16_t *)&buf[index] = (int16_t)left;
-    *(int16_t *)&buf[index + 2] = (int16_t)right;
+    *(int16_t * ) & buf[index] = (int16_t)left;
+    *(int16_t * ) & buf[index + 2] = (int16_t)right;
     index += 4;  /* 2 sixteen bit samples */
     return index >= size;
 }
 
-static void volume_tick(t_sound *s)
-{
+static void volume_tick(t_sound *s) {
     if ((!s->on) || (!s->env_sweep))
-        return ;
+        return;
     s->env_ctr++;
     if (s->env_ctr < s->env_sweep)
-        return ;
+        return;
     s->env_ctr -= s->env_sweep;
     if ((s->env_dir) && (s->volume < 15))
         s->volume++;
@@ -137,10 +133,9 @@ static void volume_tick(t_sound *s)
         s->volume--;
 }
 
-static void length_tick(t_sound *s, uint32_t mask)
-{
+static void length_tick(t_sound *s, uint32_t mask) {
     if (!s->is_len_counter) {
-        return ;
+        return;
     }
     s->length = (s->length + 1) & mask;
     if ((s->on) && (s->length == 0)) {
@@ -148,8 +143,7 @@ static void length_tick(t_sound *s, uint32_t mask)
     }
 }
 
-static void sweep_calc(t_sound *s)
-{
+static void sweep_calc(t_sound *s) {
     uint32_t shadow_freq = s->freq;
     if (s->sweep_dir) {
         shadow_freq -= shadow_freq >> s->sweep_shift;
@@ -165,23 +159,21 @@ static void sweep_calc(t_sound *s)
     gb_mem[rAUD1LOW] = s->freq & 255;
 }
 
-static void sweep_tick(t_sound *s)
-{
+static void sweep_tick(t_sound *s) {
     if ((!s->on) || (!s->sweep_time) || (!s->sweep_shift))
-        return ;
+        return;
     s->sweep_ctr++;
     if (s->sweep_ctr < s->sweep_time)
-        return ;
+        return;
     s->sweep_ctr -= s->sweep_time;
     return sweep_calc(s);
 }
 
-static void lfsr_calc(t_sound *s)
-{
+static void lfsr_calc(t_sound *s) {
     uint32_t ticks, new_bit;
 
     if ((!s->on) || (!s->freq)) {
-        return ;
+        return;
     }
     ticks = 4194304 / s->freq;
     for (; s->cycles >= ticks; s->cycles -= ticks) {
@@ -196,64 +188,61 @@ static void lfsr_calc(t_sound *s)
     }
 }
 
-int sound_update(uint8_t *gb_mem, t_state *state, int cycles)
-{
+int sound_update(uint8_t *gb_mem, t_state *state, int cycles) {
     static uint32_t volume, sweep, length, samples;
 
-    s1.cycles += cycles ;
-    s2.cycles += cycles ;
-    s3.cycles += cycles ;
-    s4.cycles += cycles ;
+    s1.cycles += cycles;
+    s2.cycles += cycles;
+    s3.cycles += cycles;
+    s4.cycles += cycles;
     lfsr_calc(&s4);
 
-    volume += cycles ;
+    volume += cycles;
     if (volume >= VOLUME_CLOCK) {
-        volume -= VOLUME_CLOCK ;
+        volume -= VOLUME_CLOCK;
         volume_tick(&s1);
         volume_tick(&s2);
         volume_tick(&s4);
     }
 
-    sweep += cycles ;
+    sweep += cycles;
     if (sweep >= SWEEP_CLOCK) {
-        sweep -= SWEEP_CLOCK ;
+        sweep -= SWEEP_CLOCK;
         sweep_tick(&s1);
     }
 
-    length += cycles ;
+    length += cycles;
     if (length >= LENGTH_CLOCK) {
-        length -= LENGTH_CLOCK ;
+        length -= LENGTH_CLOCK;
         length_tick(&s1, 63);
         length_tick(&s2, 63);
         length_tick(&s3, 255);
         length_tick(&s4, 63);
     }
 
-    gb_mem[rAUDENA] = (gb_mem[rAUDENA] & 128) | (s1.on<<0) | (s2.on<<1) | (s3.on<<2) | (s4.on<<3);
+    gb_mem[rAUDENA] = (gb_mem[rAUDENA] & 128) | (s1.on << 0) | (s2.on << 1) | (s3.on << 2) | (s4.on << 3);
 
-    samples += cycles ;
+    samples += cycles;
     if (samples >= SAMPLE_CLOCK) {
-        samples -= SAMPLE_CLOCK ;
+        samples -= SAMPLE_CLOCK;
         return write_sounds(&state->sound_buf[0], SOUND_BUF_SIZE);
     }
     return 0;
 }
 
-uint8_t sound_read_u8(uint16_t addr)
-{
+uint8_t sound_read_u8(uint16_t addr) {
     switch (addr) {
     case rAUDENA:
-        return (gb_mem[rAUDENA] & 128) | (s1.on<<0) | (s2.on<<1) | (s3.on<<2) | (s4.on<<3);
+        return (gb_mem[rAUDENA] & 128) | (s1.on << 0) | (s2.on << 1) | (s3.on << 2) | (s4.on << 3);
     default:
         return gb_mem[addr];
     }
 }
 
-void sound_write_u8(uint16_t addr, uint8_t data)
-{
+void sound_write_u8(uint16_t addr, uint8_t data) {
     if (addr != rAUDENA) {
         if ((gb_mem[rAUDENA] & AUDENA_ON) == 0) {
-            return ;      /*ignore all writes when sound off*/
+            return;      /*ignore all writes when sound off*/
         }
     }
 
@@ -264,13 +253,13 @@ void sound_write_u8(uint16_t addr, uint8_t data)
         s1.sweep_time = (data >> 4) & 7;        // 3 bits 6-4
         s1.sweep_dir = (data >> 3) & 1;         // 0 = add, 1 = sub
         s1.sweep_shift = data & 7;              // 3 bits 2-0
-        break ;
+        break;
 
     case rAUD1LEN:      // rNR11
         gb_mem[rAUD1LEN] = data;
         s1.duty = (data >> 6) & 3;              // 2 bits 7-6
         s1.length = data & 63;                  // 6 bits 5-0
-        break ;
+        break;
 
     case rAUD1ENV:      // rNR12
         gb_mem[rAUD1ENV] = data;
@@ -278,12 +267,12 @@ void sound_write_u8(uint16_t addr, uint8_t data)
         s1.env_dir = (data >> 3) & 1;           // 0 = sub, 1 = add
         s1.env_sweep = data & 7;
         s1.on = (gb_mem[rAUD1ENV] >> 4) != 0;
-        break ;
+        break;
 
     case rAUD1LOW:      // rNR13
         gb_mem[rAUD1LOW] = data;
         s1.freq = ((gb_mem[rAUD1HIGH] & 7) << 8) | gb_mem[rAUD1LOW];
-        break ;
+        break;
 
     case rAUD1HIGH:     // rNR14
         gb_mem[rAUD1HIGH] = data;
@@ -301,13 +290,13 @@ void sound_write_u8(uint16_t addr, uint8_t data)
             }
             s1.on = (gb_mem[rAUD1ENV] >> 4) != 0;
         }
-        break ;
+        break;
 
     case rAUD2LEN:      // rNR21
         gb_mem[rAUD2LEN] = data;
         s2.duty = (data >> 6) & 3;              // 2 bits 7-6
         s2.length = data & 63;                  // 6 bits 5-0
-        break ;
+        break;
 
     case rAUD2ENV:      // rNR22
         gb_mem[rAUD2ENV] = data;
@@ -315,12 +304,12 @@ void sound_write_u8(uint16_t addr, uint8_t data)
         s2.env_dir = (data >> 3) & 1;           // 0 = sub, 1 = add
         s2.env_sweep = data & 7;
         s2.on = (gb_mem[rAUD2ENV] >> 4) != 0;
-        break ;
+        break;
 
     case rAUD2LOW:      // rNR23
         gb_mem[rAUD2LOW] = data;
         s2.freq = ((gb_mem[rAUD2HIGH] & 7) << 8) | gb_mem[rAUD2LOW];
-        break ;
+        break;
 
     case rAUD2HIGH:     // rNR24
         gb_mem[rAUD2HIGH] = data;
@@ -334,27 +323,27 @@ void sound_write_u8(uint16_t addr, uint8_t data)
             }
             s2.on = (gb_mem[rAUD2ENV] >> 4) != 0;
         }
-        break ;
+        break;
 
     case rAUD3ENA:      // rNR30
         gb_mem[rAUD3ENA] = data;
         s3.on = (gb_mem[rAUD3ENA] & 128) != 0;
-        break ;
+        break;
 
     case rAUD3LEN:      // rNR31
         gb_mem[rAUD3LEN] = data;
         s3.length = data;
-        break ;
+        break;
 
     case rAUD3LEVEL:    // rNR32
         gb_mem[rAUD3LEVEL] = data;
         s3.volume = (data >> 5) & 3;
-        break ;
+        break;
 
     case rAUD3LOW:      // rNR33
         gb_mem[rAUD3LOW] = data;
         s3.freq = ((gb_mem[rAUD3HIGH] & 7) << 8) | gb_mem[rAUD3LOW];
-        break ;
+        break;
 
     case rAUD3HIGH:     // rNR34
         gb_mem[rAUD3HIGH] = data;
@@ -367,12 +356,12 @@ void sound_write_u8(uint16_t addr, uint8_t data)
             }
             s3.on = (gb_mem[rAUD3ENA] & 128) != 0;
         }
-        break ;
+        break;
 
     case rAUD4LEN:      // rNR41
         gb_mem[rAUD4LEN] = data;
         s4.length = data & 63;
-        break ;
+        break;
 
     case rAUD4ENV:      // rNR42
         gb_mem[rAUD4ENV] = data;
@@ -380,7 +369,7 @@ void sound_write_u8(uint16_t addr, uint8_t data)
         s4.env_dir = (data >> 3) & 1;           // 0 = sub, 1 = add
         s4.env_sweep = data & 7;
         s4.on = (gb_mem[rAUD4ENV] >> 4) != 0;
-        break ;
+        break;
 
     case rAUD4POLY:     // rNR43
         gb_mem[rAUD4POLY] = data;
@@ -388,9 +377,9 @@ void sound_write_u8(uint16_t addr, uint8_t data)
         s4.lfsr_width = (data >> 3) & 1;        // 0 = 15 bits, 1 = 7 bits
         s4.lfsr_ratio = data & 7;
         uint32_t f = 524288;
-        uint32_t tab[] = {f*2, f, f/2, f/3, f/4, f/5, f/6, f/7};
+        uint32_t tab[] = {f * 2, f, f / 2, f / 3, f / 4, f / 5, f / 6, f / 7};
         s4.freq = tab[s4.lfsr_ratio] >> s4.lfsr_shift;
-        break ;
+        break;
 
     case rAUD4GO:       // rNR44
         gb_mem[rAUD4GO] = data;
@@ -404,22 +393,22 @@ void sound_write_u8(uint16_t addr, uint8_t data)
             }
             s4.on = (gb_mem[rAUD4ENV] >> 4) != 0;
         }
-        break ;
+        break;
 
     case rAUDVOL:       // rNR50
         gb_mem[rAUDVOL] = data;
-        break ;
+        break;
 
     case rAUDTERM:      // rNR51
         gb_mem[rAUDTERM] = data;
-        break ;
+        break;
 
     case rAUDENA:       // rNR52
         gb_mem[rAUDENA] = data & 128;
         if ((gb_mem[rAUDENA] & 128) == 0) {
             s1.on = s2.on = s3.on = s4.on = 0;
         }
-        break ;
+        break;
 
     default:
         gb_mem[addr] = data;

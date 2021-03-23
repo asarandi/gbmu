@@ -13,7 +13,7 @@
 #include <sys/select.h>
 
 #ifndef SO_REUSEPORT
-# define SO_REUSEPORT	15
+# define SO_REUSEPORT    15
 #endif
 
 #define                     SOCKET_DEBUG    true
@@ -23,39 +23,46 @@
 #define sock_data_sent      4
 #define sock_data_received  8
 
-typedef struct  s_server {
-    int                     status;
-    int                     server_opt;
-    int                     server_sock;
-    int                     server_sock_flags;
-    struct sockaddr_in      server_address;
-    int                     client_sock;
-    int                     client_sock_flags;
-    int                     client_address_len;
-    bool                    is_blocking;
-    struct sockaddr_in      client_address;
-}   t_server;
+typedef struct s_server {
+    int status;
+    int server_opt;
+    int server_sock;
+    int server_sock_flags;
+    struct sockaddr_in server_address;
+    int client_sock;
+    int client_sock_flags;
+    int client_address_len;
+    bool is_blocking;
+    struct sockaddr_in client_address;
+} t_server;
 
-typedef struct  s_client {
-    int                     status;
-    int                     sock;
-    int                     sock_flags;
-    bool                    is_blocking;
-    fd_set                  fdset;
-    struct timeval          tv;
-    struct sockaddr_in      server_address;
-}   t_client;
+typedef struct s_client {
+    int status;
+    int sock;
+    int sock_flags;
+    bool is_blocking;
+    fd_set fdset;
+    struct timeval tv;
+    struct sockaddr_in server_address;
+} t_client;
 
-bool    client_create(char *network_address, int network_port);
-bool    client_connect();
-bool    client_recv(uint8_t *octet);
-bool    client_send(uint8_t *octet);
-bool    server_create(char *network_address, int network_port);
-bool    server_accept();
-bool    server_recv(uint8_t *octet);
-bool    server_send(uint8_t *octet);
+bool client_create(char *network_address, int network_port);
 
-t_client    client;
-t_server    server;
+bool client_connect();
+
+bool client_recv(uint8_t *octet);
+
+bool client_send(uint8_t *octet);
+
+bool server_create(char *network_address, int network_port);
+
+bool server_accept();
+
+bool server_recv(uint8_t *octet);
+
+bool server_send(uint8_t *octet);
+
+t_client client;
+t_server server;
 
 #endif

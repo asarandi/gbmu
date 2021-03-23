@@ -1,7 +1,6 @@
 #include "gb.h"
 
-void op_88(void *reg, t_state *state, uint8_t *mem)
-{
+void op_88(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: ADC A,B
@@ -11,7 +10,7 @@ void op_88(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     uint32_t calc;
@@ -25,8 +24,7 @@ void op_88(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_89(void *reg, t_state *state, uint8_t *mem)
-{
+void op_89(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: ADC A,C
@@ -36,7 +34,7 @@ void op_89(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     uint32_t calc;
@@ -50,8 +48,7 @@ void op_89(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_8a(void *reg, t_state *state, uint8_t *mem)
-{
+void op_8a(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: ADC A,D
@@ -61,7 +58,7 @@ void op_8a(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     uint32_t calc;
@@ -75,8 +72,7 @@ void op_8a(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_8b(void *reg, t_state *state, uint8_t *mem)
-{
+void op_8b(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: ADC A,E
@@ -86,7 +82,7 @@ void op_8b(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     uint32_t calc;
@@ -100,8 +96,7 @@ void op_8b(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_8c(void *reg, t_state *state, uint8_t *mem)
-{
+void op_8c(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: ADC A,H
@@ -111,7 +106,7 @@ void op_8c(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     uint32_t calc;
@@ -125,8 +120,7 @@ void op_8c(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_8d(void *reg, t_state *state, uint8_t *mem)
-{
+void op_8d(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: ADC A,L
@@ -136,7 +130,7 @@ void op_8d(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     uint32_t calc;
@@ -150,8 +144,7 @@ void op_8d(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_8e(void *reg, t_state *state, uint8_t *mem)
-{
+void op_8e(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: ADC A,(HL)
@@ -161,7 +154,7 @@ void op_8e(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     uint32_t calc;
@@ -175,8 +168,7 @@ void op_8e(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_8f(void *reg, t_state *state, uint8_t *mem)
-{
+void op_8f(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: ADC A,A
@@ -186,7 +178,7 @@ void op_8f(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     uint32_t calc;
@@ -200,8 +192,7 @@ void op_8f(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_ce(void *reg, t_state *state, uint8_t *mem)
-{
+void op_ce(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: ADC A,d8
@@ -211,11 +202,11 @@ void op_ce(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     uint32_t calc;
-    op = read_u8(r16->PC+1);
+    op = read_u8(r16->PC + 1);
     calc = r8->A + op + IS_C_FLAG;
     (calc & 0xff) == 0 ? SET_Z_FLAG : CLEAR_Z_FLAG;
     CLEAR_N_FLAG;
@@ -225,9 +216,7 @@ void op_ce(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-
-void op_09(void *reg, t_state *state, uint8_t *mem)
-{
+void op_09(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 16bit arithmetic/logical instructions
     	 instruction: ADD HL,BC
@@ -237,7 +226,7 @@ void op_09(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint16_t op;
     uint32_t calc;
@@ -250,8 +239,7 @@ void op_09(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_19(void *reg, t_state *state, uint8_t *mem)
-{
+void op_19(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 16bit arithmetic/logical instructions
     	 instruction: ADD HL,DE
@@ -261,7 +249,7 @@ void op_19(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint16_t op;
     uint32_t calc;
@@ -274,8 +262,7 @@ void op_19(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_29(void *reg, t_state *state, uint8_t *mem)
-{
+void op_29(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 16bit arithmetic/logical instructions
     	 instruction: ADD HL,HL
@@ -285,7 +272,7 @@ void op_29(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint16_t op;
     uint32_t calc;
@@ -298,8 +285,7 @@ void op_29(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_39(void *reg, t_state *state, uint8_t *mem)
-{
+void op_39(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 16bit arithmetic/logical instructions
     	 instruction: ADD HL,SP
@@ -309,7 +295,7 @@ void op_39(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint16_t op;
     uint32_t calc;
@@ -322,8 +308,7 @@ void op_39(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_80(void *reg, t_state *state, uint8_t *mem)
-{
+void op_80(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: ADD A,B
@@ -333,7 +318,7 @@ void op_80(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     uint32_t calc;
@@ -347,8 +332,7 @@ void op_80(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_81(void *reg, t_state *state, uint8_t *mem)
-{
+void op_81(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: ADD A,C
@@ -358,7 +342,7 @@ void op_81(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     uint32_t calc;
@@ -372,8 +356,7 @@ void op_81(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_82(void *reg, t_state *state, uint8_t *mem)
-{
+void op_82(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: ADD A,D
@@ -383,7 +366,7 @@ void op_82(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     uint32_t calc;
@@ -397,8 +380,7 @@ void op_82(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_83(void *reg, t_state *state, uint8_t *mem)
-{
+void op_83(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: ADD A,E
@@ -408,7 +390,7 @@ void op_83(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     uint32_t calc;
@@ -422,8 +404,7 @@ void op_83(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_84(void *reg, t_state *state, uint8_t *mem)
-{
+void op_84(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: ADD A,H
@@ -433,7 +414,7 @@ void op_84(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     uint32_t calc;
@@ -447,8 +428,7 @@ void op_84(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_85(void *reg, t_state *state, uint8_t *mem)
-{
+void op_85(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: ADD A,L
@@ -458,7 +438,7 @@ void op_85(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     uint32_t calc;
@@ -472,8 +452,7 @@ void op_85(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_86(void *reg, t_state *state, uint8_t *mem)
-{
+void op_86(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: ADD A,(HL)
@@ -483,7 +462,7 @@ void op_86(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     uint32_t calc;
@@ -497,8 +476,7 @@ void op_86(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_87(void *reg, t_state *state, uint8_t *mem)
-{
+void op_87(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: ADD A,A
@@ -508,7 +486,7 @@ void op_87(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     uint32_t calc;
@@ -522,8 +500,7 @@ void op_87(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_c6(void *reg, t_state *state, uint8_t *mem)
-{
+void op_c6(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: ADD A,d8
@@ -533,11 +510,11 @@ void op_c6(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     uint32_t calc;
-    op = read_u8(r16->PC+1);
+    op = read_u8(r16->PC + 1);
     calc = r8->A + op;
     (calc & 0xff) == 0 ? SET_Z_FLAG : CLEAR_Z_FLAG;
     CLEAR_N_FLAG;
@@ -547,8 +524,7 @@ void op_c6(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_e8(void *reg, t_state *state, uint8_t *mem)
-{
+void op_e8(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 16bit arithmetic/logical instructions
     	 instruction: ADD SP,r8
@@ -558,21 +534,19 @@ void op_e8(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     int16_t op;
     CLEAR_Z_FLAG;
     CLEAR_N_FLAG;
-    op = (int8_t)read_u8(r16->PC+1);
+    op = (int8_t)read_u8(r16->PC + 1);
     (r16->SP & 0xf) + (op & 0xf) > 0xf ? SET_H_FLAG : CLEAR_H_FLAG;
     (r16->SP & 0xff) + (op & 0xff) > 0xff ? SET_C_FLAG : CLEAR_C_FLAG;
     r16->SP += op;
     r16->PC += 2;
 }
 
-
-void op_a0(void *reg, t_state *state, uint8_t *mem)
-{
+void op_a0(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: AND B
@@ -582,7 +556,7 @@ void op_a0(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->B;
@@ -594,8 +568,7 @@ void op_a0(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_a1(void *reg, t_state *state, uint8_t *mem)
-{
+void op_a1(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: AND C
@@ -605,7 +578,7 @@ void op_a1(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->C;
@@ -617,8 +590,7 @@ void op_a1(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_a2(void *reg, t_state *state, uint8_t *mem)
-{
+void op_a2(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: AND D
@@ -628,7 +600,7 @@ void op_a2(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->D;
@@ -640,8 +612,7 @@ void op_a2(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_a3(void *reg, t_state *state, uint8_t *mem)
-{
+void op_a3(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: AND E
@@ -651,7 +622,7 @@ void op_a3(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->E;
@@ -663,8 +634,7 @@ void op_a3(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_a4(void *reg, t_state *state, uint8_t *mem)
-{
+void op_a4(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: AND H
@@ -674,7 +644,7 @@ void op_a4(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->H;
@@ -686,8 +656,7 @@ void op_a4(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_a5(void *reg, t_state *state, uint8_t *mem)
-{
+void op_a5(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: AND L
@@ -697,7 +666,7 @@ void op_a5(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->L;
@@ -709,8 +678,7 @@ void op_a5(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_a6(void *reg, t_state *state, uint8_t *mem)
-{
+void op_a6(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: AND (HL)
@@ -720,7 +688,7 @@ void op_a6(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = read_u8(r16->HL);
@@ -732,8 +700,7 @@ void op_a6(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_a7(void *reg, t_state *state, uint8_t *mem)
-{
+void op_a7(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: AND A
@@ -743,7 +710,7 @@ void op_a7(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->A;
@@ -755,8 +722,7 @@ void op_a7(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_e6(void *reg, t_state *state, uint8_t *mem)
-{
+void op_e6(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: AND d8
@@ -766,10 +732,10 @@ void op_e6(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
-    op = read_u8(r16->PC+1);
+    op = read_u8(r16->PC + 1);
     r8->A &= op;
     r8->A == 0 ? SET_Z_FLAG : CLEAR_Z_FLAG;
     CLEAR_N_FLAG;
@@ -778,9 +744,7 @@ void op_e6(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-
-void op_cb40(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb40(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 0,B
@@ -790,7 +754,7 @@ void op_cb40(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->B;
@@ -800,8 +764,7 @@ void op_cb40(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb41(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb41(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 0,C
@@ -811,7 +774,7 @@ void op_cb41(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->C;
@@ -821,8 +784,7 @@ void op_cb41(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb42(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb42(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 0,D
@@ -832,7 +794,7 @@ void op_cb42(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->D;
@@ -842,8 +804,7 @@ void op_cb42(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb43(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb43(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 0,E
@@ -853,7 +814,7 @@ void op_cb43(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->E;
@@ -863,8 +824,7 @@ void op_cb43(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb44(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb44(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 0,H
@@ -874,7 +834,7 @@ void op_cb44(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->H;
@@ -884,8 +844,7 @@ void op_cb44(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb45(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb45(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 0,L
@@ -895,7 +854,7 @@ void op_cb45(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->L;
@@ -905,8 +864,7 @@ void op_cb45(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb46(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb46(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 0,(HL)
@@ -916,7 +874,7 @@ void op_cb46(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = read_u8(r16->HL);
@@ -926,8 +884,7 @@ void op_cb46(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb47(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb47(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 0,A
@@ -937,7 +894,7 @@ void op_cb47(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->A;
@@ -947,8 +904,7 @@ void op_cb47(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb48(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb48(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 1,B
@@ -958,7 +914,7 @@ void op_cb48(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->B;
@@ -968,8 +924,7 @@ void op_cb48(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb49(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb49(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 1,C
@@ -979,7 +934,7 @@ void op_cb49(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->C;
@@ -989,8 +944,7 @@ void op_cb49(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb4a(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb4a(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 1,D
@@ -1000,7 +954,7 @@ void op_cb4a(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->D;
@@ -1010,8 +964,7 @@ void op_cb4a(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb4b(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb4b(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 1,E
@@ -1021,7 +974,7 @@ void op_cb4b(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->E;
@@ -1031,8 +984,7 @@ void op_cb4b(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb4c(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb4c(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 1,H
@@ -1042,7 +994,7 @@ void op_cb4c(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->H;
@@ -1052,8 +1004,7 @@ void op_cb4c(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb4d(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb4d(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 1,L
@@ -1063,7 +1014,7 @@ void op_cb4d(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->L;
@@ -1073,8 +1024,7 @@ void op_cb4d(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb4e(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb4e(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 1,(HL)
@@ -1084,7 +1034,7 @@ void op_cb4e(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = read_u8(r16->HL);
@@ -1094,8 +1044,7 @@ void op_cb4e(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb4f(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb4f(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 1,A
@@ -1105,7 +1054,7 @@ void op_cb4f(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->A;
@@ -1115,8 +1064,7 @@ void op_cb4f(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb50(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb50(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 2,B
@@ -1126,7 +1074,7 @@ void op_cb50(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->B;
@@ -1136,8 +1084,7 @@ void op_cb50(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb51(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb51(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 2,C
@@ -1147,7 +1094,7 @@ void op_cb51(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->C;
@@ -1157,8 +1104,7 @@ void op_cb51(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb52(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb52(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 2,D
@@ -1168,7 +1114,7 @@ void op_cb52(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->D;
@@ -1178,8 +1124,7 @@ void op_cb52(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb53(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb53(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 2,E
@@ -1189,7 +1134,7 @@ void op_cb53(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->E;
@@ -1199,8 +1144,7 @@ void op_cb53(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb54(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb54(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 2,H
@@ -1210,7 +1154,7 @@ void op_cb54(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->H;
@@ -1220,8 +1164,7 @@ void op_cb54(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb55(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb55(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 2,L
@@ -1231,7 +1174,7 @@ void op_cb55(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->L;
@@ -1241,8 +1184,7 @@ void op_cb55(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb56(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb56(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 2,(HL)
@@ -1252,7 +1194,7 @@ void op_cb56(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = read_u8(r16->HL);
@@ -1262,8 +1204,7 @@ void op_cb56(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb57(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb57(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 2,A
@@ -1273,7 +1214,7 @@ void op_cb57(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->A;
@@ -1283,8 +1224,7 @@ void op_cb57(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb58(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb58(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 3,B
@@ -1294,7 +1234,7 @@ void op_cb58(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->B;
@@ -1304,8 +1244,7 @@ void op_cb58(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb59(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb59(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 3,C
@@ -1315,7 +1254,7 @@ void op_cb59(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->C;
@@ -1325,8 +1264,7 @@ void op_cb59(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb5a(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb5a(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 3,D
@@ -1336,7 +1274,7 @@ void op_cb5a(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->D;
@@ -1346,8 +1284,7 @@ void op_cb5a(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb5b(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb5b(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 3,E
@@ -1357,7 +1294,7 @@ void op_cb5b(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->E;
@@ -1367,8 +1304,7 @@ void op_cb5b(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb5c(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb5c(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 3,H
@@ -1378,7 +1314,7 @@ void op_cb5c(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->H;
@@ -1388,8 +1324,7 @@ void op_cb5c(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb5d(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb5d(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 3,L
@@ -1399,7 +1334,7 @@ void op_cb5d(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->L;
@@ -1409,8 +1344,7 @@ void op_cb5d(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb5e(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb5e(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 3,(HL)
@@ -1420,7 +1354,7 @@ void op_cb5e(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = read_u8(r16->HL);
@@ -1430,8 +1364,7 @@ void op_cb5e(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb5f(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb5f(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 3,A
@@ -1441,7 +1374,7 @@ void op_cb5f(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->A;
@@ -1451,8 +1384,7 @@ void op_cb5f(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb60(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb60(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 4,B
@@ -1462,7 +1394,7 @@ void op_cb60(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->B;
@@ -1472,8 +1404,7 @@ void op_cb60(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb61(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb61(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 4,C
@@ -1483,7 +1414,7 @@ void op_cb61(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->C;
@@ -1493,8 +1424,7 @@ void op_cb61(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb62(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb62(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 4,D
@@ -1504,7 +1434,7 @@ void op_cb62(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->D;
@@ -1514,8 +1444,7 @@ void op_cb62(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb63(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb63(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 4,E
@@ -1525,7 +1454,7 @@ void op_cb63(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->E;
@@ -1535,8 +1464,7 @@ void op_cb63(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb64(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb64(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 4,H
@@ -1546,7 +1474,7 @@ void op_cb64(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->H;
@@ -1556,8 +1484,7 @@ void op_cb64(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb65(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb65(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 4,L
@@ -1567,7 +1494,7 @@ void op_cb65(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->L;
@@ -1577,8 +1504,7 @@ void op_cb65(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb66(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb66(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 4,(HL)
@@ -1588,7 +1514,7 @@ void op_cb66(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = read_u8(r16->HL);
@@ -1598,8 +1524,7 @@ void op_cb66(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb67(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb67(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 4,A
@@ -1609,7 +1534,7 @@ void op_cb67(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->A;
@@ -1619,8 +1544,7 @@ void op_cb67(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb68(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb68(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 5,B
@@ -1630,7 +1554,7 @@ void op_cb68(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->B;
@@ -1640,8 +1564,7 @@ void op_cb68(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb69(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb69(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 5,C
@@ -1651,7 +1574,7 @@ void op_cb69(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->C;
@@ -1661,8 +1584,7 @@ void op_cb69(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb6a(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb6a(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 5,D
@@ -1672,7 +1594,7 @@ void op_cb6a(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->D;
@@ -1682,8 +1604,7 @@ void op_cb6a(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb6b(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb6b(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 5,E
@@ -1693,7 +1614,7 @@ void op_cb6b(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->E;
@@ -1703,8 +1624,7 @@ void op_cb6b(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb6c(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb6c(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 5,H
@@ -1714,7 +1634,7 @@ void op_cb6c(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->H;
@@ -1724,8 +1644,7 @@ void op_cb6c(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb6d(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb6d(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 5,L
@@ -1735,7 +1654,7 @@ void op_cb6d(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->L;
@@ -1745,8 +1664,7 @@ void op_cb6d(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb6e(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb6e(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 5,(HL)
@@ -1756,7 +1674,7 @@ void op_cb6e(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = read_u8(r16->HL);
@@ -1766,8 +1684,7 @@ void op_cb6e(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb6f(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb6f(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 5,A
@@ -1777,7 +1694,7 @@ void op_cb6f(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->A;
@@ -1787,8 +1704,7 @@ void op_cb6f(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb70(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb70(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 6,B
@@ -1798,7 +1714,7 @@ void op_cb70(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->B;
@@ -1808,8 +1724,7 @@ void op_cb70(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb71(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb71(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 6,C
@@ -1819,7 +1734,7 @@ void op_cb71(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->C;
@@ -1829,8 +1744,7 @@ void op_cb71(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb72(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb72(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 6,D
@@ -1840,7 +1754,7 @@ void op_cb72(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->D;
@@ -1850,8 +1764,7 @@ void op_cb72(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb73(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb73(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 6,E
@@ -1861,7 +1774,7 @@ void op_cb73(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->E;
@@ -1871,8 +1784,7 @@ void op_cb73(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb74(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb74(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 6,H
@@ -1882,7 +1794,7 @@ void op_cb74(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->H;
@@ -1892,8 +1804,7 @@ void op_cb74(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb75(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb75(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 6,L
@@ -1903,7 +1814,7 @@ void op_cb75(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->L;
@@ -1913,8 +1824,7 @@ void op_cb75(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb76(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb76(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 6,(HL)
@@ -1924,7 +1834,7 @@ void op_cb76(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = read_u8(r16->HL);
@@ -1934,8 +1844,7 @@ void op_cb76(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb77(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb77(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 6,A
@@ -1945,7 +1854,7 @@ void op_cb77(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->A;
@@ -1955,8 +1864,7 @@ void op_cb77(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb78(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb78(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 7,B
@@ -1966,7 +1874,7 @@ void op_cb78(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->B;
@@ -1976,8 +1884,7 @@ void op_cb78(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb79(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb79(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 7,C
@@ -1987,7 +1894,7 @@ void op_cb79(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->C;
@@ -1997,8 +1904,7 @@ void op_cb79(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb7a(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb7a(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 7,D
@@ -2008,7 +1914,7 @@ void op_cb7a(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->D;
@@ -2018,8 +1924,7 @@ void op_cb7a(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb7b(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb7b(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 7,E
@@ -2029,7 +1934,7 @@ void op_cb7b(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->E;
@@ -2039,8 +1944,7 @@ void op_cb7b(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb7c(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb7c(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 7,H
@@ -2050,7 +1954,7 @@ void op_cb7c(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->H;
@@ -2060,8 +1964,7 @@ void op_cb7c(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb7d(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb7d(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 7,L
@@ -2071,7 +1974,7 @@ void op_cb7d(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->L;
@@ -2081,8 +1984,7 @@ void op_cb7d(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb7e(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb7e(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 7,(HL)
@@ -2092,7 +1994,7 @@ void op_cb7e(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = read_u8(r16->HL);
@@ -2102,8 +2004,7 @@ void op_cb7e(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb7f(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb7f(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: BIT 7,A
@@ -2113,7 +2014,7 @@ void op_cb7f(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->A;
@@ -2123,9 +2024,7 @@ void op_cb7f(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-
-void op_c4(void *reg, t_state *state, uint8_t *mem)
-{
+void op_c4(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: Jumps/calls
     	 instruction: CALL NZ,a16
@@ -2135,9 +2034,9 @@ void op_c4(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
-    if (IS_Z_FLAG)  {
+    if (IS_Z_FLAG) {
         r16->PC += 3;
         return;
     };
@@ -2146,8 +2045,7 @@ void op_c4(void *reg, t_state *state, uint8_t *mem)
     r16->PC = read_u16(r16->PC + 1);
 }
 
-void op_cc(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cc(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: Jumps/calls
     	 instruction: CALL Z,a16
@@ -2157,9 +2055,9 @@ void op_cc(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
-    if (!IS_Z_FLAG)  {
+    if (!IS_Z_FLAG) {
         r16->PC += 3;
         return;
     };
@@ -2168,8 +2066,7 @@ void op_cc(void *reg, t_state *state, uint8_t *mem)
     r16->PC = read_u16(r16->PC + 1);
 }
 
-void op_cd(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cd(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: Jumps/calls
     	 instruction: CALL a16
@@ -2179,15 +2076,14 @@ void op_cd(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->SP -= 2;
     write_u16(r16->SP, r16->PC + 3);
     r16->PC = read_u16(r16->PC + 1);
 }
 
-void op_d4(void *reg, t_state *state, uint8_t *mem)
-{
+void op_d4(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: Jumps/calls
     	 instruction: CALL NC,a16
@@ -2197,9 +2093,9 @@ void op_d4(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
-    if (IS_C_FLAG)  {
+    if (IS_C_FLAG) {
         r16->PC += 3;
         return;
     };
@@ -2208,8 +2104,7 @@ void op_d4(void *reg, t_state *state, uint8_t *mem)
     r16->PC = read_u16(r16->PC + 1);
 }
 
-void op_dc(void *reg, t_state *state, uint8_t *mem)
-{
+void op_dc(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: Jumps/calls
     	 instruction: CALL C,a16
@@ -2219,7 +2114,7 @@ void op_dc(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     if (!IS_C_FLAG) {
         r16->PC += 3;
@@ -2230,9 +2125,7 @@ void op_dc(void *reg, t_state *state, uint8_t *mem)
     r16->PC = read_u16(r16->PC + 1);
 }
 
-
-void op_3f(void *reg, t_state *state, uint8_t *mem)
-{
+void op_3f(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: CCF
@@ -2242,7 +2135,7 @@ void op_3f(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     IS_C_FLAG ? CLEAR_C_FLAG : SET_C_FLAG;
     CLEAR_N_FLAG;
@@ -2250,9 +2143,7 @@ void op_3f(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-
-void op_b8(void *reg, t_state *state, uint8_t *mem)
-{
+void op_b8(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: CP B
@@ -2262,7 +2153,7 @@ void op_b8(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->B;
@@ -2273,8 +2164,7 @@ void op_b8(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_b9(void *reg, t_state *state, uint8_t *mem)
-{
+void op_b9(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: CP C
@@ -2284,7 +2174,7 @@ void op_b9(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->C;
@@ -2295,8 +2185,7 @@ void op_b9(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_ba(void *reg, t_state *state, uint8_t *mem)
-{
+void op_ba(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: CP D
@@ -2306,7 +2195,7 @@ void op_ba(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->D;
@@ -2317,8 +2206,7 @@ void op_ba(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_bb(void *reg, t_state *state, uint8_t *mem)
-{
+void op_bb(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: CP E
@@ -2328,7 +2216,7 @@ void op_bb(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->E;
@@ -2339,8 +2227,7 @@ void op_bb(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_bc(void *reg, t_state *state, uint8_t *mem)
-{
+void op_bc(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: CP H
@@ -2350,7 +2237,7 @@ void op_bc(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->H;
@@ -2361,8 +2248,7 @@ void op_bc(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_bd(void *reg, t_state *state, uint8_t *mem)
-{
+void op_bd(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: CP L
@@ -2372,7 +2258,7 @@ void op_bd(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->L;
@@ -2383,8 +2269,7 @@ void op_bd(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_be(void *reg, t_state *state, uint8_t *mem)
-{
+void op_be(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: CP (HL)
@@ -2394,7 +2279,7 @@ void op_be(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = read_u8(r16->HL);
@@ -2405,8 +2290,7 @@ void op_be(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_bf(void *reg, t_state *state, uint8_t *mem)
-{
+void op_bf(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: CP A
@@ -2416,7 +2300,7 @@ void op_bf(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->A;
@@ -2427,8 +2311,7 @@ void op_bf(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_fe(void *reg, t_state *state, uint8_t *mem)
-{
+void op_fe(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: CP d8
@@ -2438,10 +2321,10 @@ void op_fe(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
-    op = read_u8(r16->PC+1);
+    op = read_u8(r16->PC + 1);
     r8->A == op ? SET_Z_FLAG : CLEAR_Z_FLAG;
     SET_N_FLAG;
     (r8->A & 0xf) < (op & 0xf) ? SET_H_FLAG : CLEAR_H_FLAG;
@@ -2449,9 +2332,7 @@ void op_fe(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-
-void op_2f(void *reg, t_state *state, uint8_t *mem)
-{
+void op_2f(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: CPL
@@ -2461,7 +2342,7 @@ void op_2f(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A = (~r8->A);
     SET_N_FLAG;
@@ -2469,9 +2350,7 @@ void op_2f(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-
-void op_27(void *reg, t_state *state, uint8_t *mem)
-{
+void op_27(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: DAA
@@ -2481,22 +2360,22 @@ void op_27(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     /*  https://forums.nesdev.com/viewtopic.php?f=20&t=15944  */
     if (!IS_N_FLAG) {
-        if ((IS_C_FLAG) || (r8->A > 0x99))              {
+        if ((IS_C_FLAG) || (r8->A > 0x99)) {
             r8->A += 0x60;
             SET_C_FLAG;
         }
-        if ((IS_H_FLAG) || ((r8->A & 0x0f) > 0x09))     {
+        if ((IS_H_FLAG) || ((r8->A & 0x0f) > 0x09)) {
             r8->A += 0x6;
         }
     } else {
-        if (IS_C_FLAG)                                  {
+        if (IS_C_FLAG) {
             r8->A -= 0x60;
         }
-        if (IS_H_FLAG)                                  {
+        if (IS_H_FLAG) {
             r8->A -= 0x6;
         }
     }
@@ -2505,9 +2384,7 @@ void op_27(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-
-void op_05(void *reg, t_state *state, uint8_t *mem)
-{
+void op_05(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: DEC B
@@ -2517,7 +2394,7 @@ void op_05(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->B;
@@ -2529,8 +2406,7 @@ void op_05(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_0b(void *reg, t_state *state, uint8_t *mem)
-{
+void op_0b(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 16bit arithmetic/logical instructions
     	 instruction: DEC BC
@@ -2540,7 +2416,7 @@ void op_0b(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint16_t op;
     op = r16->BC;
@@ -2549,8 +2425,7 @@ void op_0b(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_0d(void *reg, t_state *state, uint8_t *mem)
-{
+void op_0d(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: DEC C
@@ -2560,7 +2435,7 @@ void op_0d(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->C;
@@ -2572,8 +2447,7 @@ void op_0d(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_15(void *reg, t_state *state, uint8_t *mem)
-{
+void op_15(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: DEC D
@@ -2583,7 +2457,7 @@ void op_15(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->D;
@@ -2595,8 +2469,7 @@ void op_15(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_1b(void *reg, t_state *state, uint8_t *mem)
-{
+void op_1b(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 16bit arithmetic/logical instructions
     	 instruction: DEC DE
@@ -2606,7 +2479,7 @@ void op_1b(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint16_t op;
     op = r16->DE;
@@ -2615,8 +2488,7 @@ void op_1b(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_1d(void *reg, t_state *state, uint8_t *mem)
-{
+void op_1d(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: DEC E
@@ -2626,7 +2498,7 @@ void op_1d(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->E;
@@ -2638,8 +2510,7 @@ void op_1d(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_25(void *reg, t_state *state, uint8_t *mem)
-{
+void op_25(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: DEC H
@@ -2649,7 +2520,7 @@ void op_25(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->H;
@@ -2661,8 +2532,7 @@ void op_25(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_2b(void *reg, t_state *state, uint8_t *mem)
-{
+void op_2b(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 16bit arithmetic/logical instructions
     	 instruction: DEC HL
@@ -2672,7 +2542,7 @@ void op_2b(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint16_t op;
     op = r16->HL;
@@ -2681,8 +2551,7 @@ void op_2b(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_2d(void *reg, t_state *state, uint8_t *mem)
-{
+void op_2d(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: DEC L
@@ -2692,7 +2561,7 @@ void op_2d(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->L;
@@ -2704,8 +2573,7 @@ void op_2d(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_35(void *reg, t_state *state, uint8_t *mem)
-{
+void op_35(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: DEC (HL)
@@ -2715,7 +2583,7 @@ void op_35(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = read_u8(r16->HL);
@@ -2727,8 +2595,7 @@ void op_35(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_3b(void *reg, t_state *state, uint8_t *mem)
-{
+void op_3b(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 16bit arithmetic/logical instructions
     	 instruction: DEC SP
@@ -2738,7 +2605,7 @@ void op_3b(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint16_t op;
     op = r16->SP;
@@ -2747,8 +2614,7 @@ void op_3b(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_3d(void *reg, t_state *state, uint8_t *mem)
-{
+void op_3d(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: DEC A
@@ -2758,7 +2624,7 @@ void op_3d(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->A;
@@ -2770,9 +2636,7 @@ void op_3d(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-
-void op_f3(void *reg, t_state *state, uint8_t *mem)
-{
+void op_f3(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: Misc/control instructions
     	 instruction: DI
@@ -2782,15 +2646,13 @@ void op_f3(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     state->interrupts_enabled = false;
     r16->PC += 1;
 }
 
-
-void op_fb(void *reg, t_state *state, uint8_t *mem)
-{
+void op_fb(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: Misc/control instructions
     	 instruction: EI
@@ -2800,15 +2662,13 @@ void op_fb(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     state->interrupts_enabled = true;
     r16->PC += 1;
 }
 
-
-void op_76(void *reg, t_state *state, uint8_t *mem)
-{
+void op_76(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: Misc/control instructions
     	 instruction: HALT
@@ -2818,7 +2678,7 @@ void op_76(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->PC += 1;
     state->halt = true;
@@ -2829,9 +2689,7 @@ void op_76(void *reg, t_state *state, uint8_t *mem)
     }
 }
 
-
-void op_03(void *reg, t_state *state, uint8_t *mem)
-{
+void op_03(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 16bit arithmetic/logical instructions
     	 instruction: INC BC
@@ -2841,7 +2699,7 @@ void op_03(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint16_t op;
     op = r16->BC;
@@ -2850,8 +2708,7 @@ void op_03(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_04(void *reg, t_state *state, uint8_t *mem)
-{
+void op_04(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: INC B
@@ -2861,7 +2718,7 @@ void op_04(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->B;
@@ -2873,8 +2730,7 @@ void op_04(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_0c(void *reg, t_state *state, uint8_t *mem)
-{
+void op_0c(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: INC C
@@ -2884,7 +2740,7 @@ void op_0c(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->C;
@@ -2896,8 +2752,7 @@ void op_0c(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_13(void *reg, t_state *state, uint8_t *mem)
-{
+void op_13(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 16bit arithmetic/logical instructions
     	 instruction: INC DE
@@ -2907,7 +2762,7 @@ void op_13(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint16_t op;
     op = r16->DE;
@@ -2916,8 +2771,7 @@ void op_13(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_14(void *reg, t_state *state, uint8_t *mem)
-{
+void op_14(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: INC D
@@ -2927,7 +2781,7 @@ void op_14(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->D;
@@ -2939,8 +2793,7 @@ void op_14(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_1c(void *reg, t_state *state, uint8_t *mem)
-{
+void op_1c(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: INC E
@@ -2950,7 +2803,7 @@ void op_1c(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->E;
@@ -2962,8 +2815,7 @@ void op_1c(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_23(void *reg, t_state *state, uint8_t *mem)
-{
+void op_23(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 16bit arithmetic/logical instructions
     	 instruction: INC HL
@@ -2973,7 +2825,7 @@ void op_23(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint16_t op;
     op = r16->HL;
@@ -2982,8 +2834,7 @@ void op_23(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_24(void *reg, t_state *state, uint8_t *mem)
-{
+void op_24(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: INC H
@@ -2993,7 +2844,7 @@ void op_24(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->H;
@@ -3005,8 +2856,7 @@ void op_24(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_2c(void *reg, t_state *state, uint8_t *mem)
-{
+void op_2c(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: INC L
@@ -3016,7 +2866,7 @@ void op_2c(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->L;
@@ -3028,8 +2878,7 @@ void op_2c(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_33(void *reg, t_state *state, uint8_t *mem)
-{
+void op_33(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 16bit arithmetic/logical instructions
     	 instruction: INC SP
@@ -3039,7 +2888,7 @@ void op_33(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint16_t op;
     op = r16->SP;
@@ -3048,8 +2897,7 @@ void op_33(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_34(void *reg, t_state *state, uint8_t *mem)
-{
+void op_34(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: INC (HL)
@@ -3059,7 +2907,7 @@ void op_34(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = read_u8(r16->HL);
@@ -3071,8 +2919,7 @@ void op_34(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_3c(void *reg, t_state *state, uint8_t *mem)
-{
+void op_3c(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: INC A
@@ -3082,7 +2929,7 @@ void op_3c(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->A;
@@ -3094,9 +2941,7 @@ void op_3c(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-
-void op_c2(void *reg, t_state *state, uint8_t *mem)
-{
+void op_c2(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: Jumps/calls
     	 instruction: JP NZ,a16
@@ -3106,17 +2951,16 @@ void op_c2(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
-    if (IS_Z_FLAG)  {
+    if (IS_Z_FLAG) {
         r16->PC += 3;
         return;
     };
     r16->PC = read_u16(r16->PC + 1);
 }
 
-void op_c3(void *reg, t_state *state, uint8_t *mem)
-{
+void op_c3(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: Jumps/calls
     	 instruction: JP a16
@@ -3126,13 +2970,12 @@ void op_c3(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->PC = read_u16(r16->PC + 1);
 }
 
-void op_ca(void *reg, t_state *state, uint8_t *mem)
-{
+void op_ca(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: Jumps/calls
     	 instruction: JP Z,a16
@@ -3142,17 +2985,16 @@ void op_ca(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
-    if (!IS_Z_FLAG)  {
+    if (!IS_Z_FLAG) {
         r16->PC += 3;
         return;
     };
     r16->PC = read_u16(r16->PC + 1);
 }
 
-void op_d2(void *reg, t_state *state, uint8_t *mem)
-{
+void op_d2(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: Jumps/calls
     	 instruction: JP NC,a16
@@ -3162,17 +3004,16 @@ void op_d2(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
-    if (IS_C_FLAG)  {
+    if (IS_C_FLAG) {
         r16->PC += 3;
         return;
     };
     r16->PC = read_u16(r16->PC + 1);
 }
 
-void op_da(void *reg, t_state *state, uint8_t *mem)
-{
+void op_da(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: Jumps/calls
     	 instruction: JP C,a16
@@ -3182,7 +3023,7 @@ void op_da(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     if (!IS_C_FLAG) {
         r16->PC += 3;
@@ -3191,8 +3032,7 @@ void op_da(void *reg, t_state *state, uint8_t *mem)
     r16->PC = read_u16(r16->PC + 1);
 }
 
-void op_e9(void *reg, t_state *state, uint8_t *mem)
-{
+void op_e9(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: Jumps/calls
     	 instruction: JP (HL)
@@ -3202,14 +3042,12 @@ void op_e9(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->PC = r16->HL;
 }
 
-
-void op_18(void *reg, t_state *state, uint8_t *mem)
-{
+void op_18(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: Jumps/calls
     	 instruction: JR r8
@@ -3219,14 +3057,13 @@ void op_18(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->PC += (int8_t)read_u8(r16->PC + 1);
     r16->PC += 2;
 }
 
-void op_20(void *reg, t_state *state, uint8_t *mem)
-{
+void op_20(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: Jumps/calls
     	 instruction: JR NZ,r8
@@ -3236,15 +3073,14 @@ void op_20(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     if (!IS_Z_FLAG)
         r16->PC += (int8_t)read_u8(r16->PC + 1);
     r16->PC += 2;
 }
 
-void op_28(void *reg, t_state *state, uint8_t *mem)
-{
+void op_28(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: Jumps/calls
     	 instruction: JR Z,r8
@@ -3254,15 +3090,14 @@ void op_28(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     if (IS_Z_FLAG)
         r16->PC += (int8_t)read_u8(r16->PC + 1);
     r16->PC += 2;
 }
 
-void op_30(void *reg, t_state *state, uint8_t *mem)
-{
+void op_30(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: Jumps/calls
     	 instruction: JR NC,r8
@@ -3272,15 +3107,14 @@ void op_30(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     if (!IS_C_FLAG)
         r16->PC += (int8_t)read_u8(r16->PC + 1);
     r16->PC += 2;
 }
 
-void op_38(void *reg, t_state *state, uint8_t *mem)
-{
+void op_38(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: Jumps/calls
     	 instruction: JR C,r8
@@ -3290,16 +3124,14 @@ void op_38(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     if (IS_C_FLAG)
         r16->PC += (int8_t)read_u8(r16->PC + 1);
     r16->PC += 2;
 }
 
-
-void op_01(void *reg, t_state *state, uint8_t *mem)
-{
+void op_01(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 16bit load/store/move instructions
     	 instruction: LD BC,d16
@@ -3309,14 +3141,13 @@ void op_01(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
-    r16->BC = read_u16(r16->PC+1);
+    r16->BC = read_u16(r16->PC + 1);
     r16->PC += 3;
 }
 
-void op_02(void *reg, t_state *state, uint8_t *mem)
-{
+void op_02(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD (BC),A
@@ -3326,14 +3157,13 @@ void op_02(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     write_u8(r16->BC, r8->A);
     r16->PC += 1;
 }
 
-void op_06(void *reg, t_state *state, uint8_t *mem)
-{
+void op_06(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD B,d8
@@ -3343,14 +3173,13 @@ void op_06(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
-    r8->B = read_u8(r16->PC+1);
+    r8->B = read_u8(r16->PC + 1);
     r16->PC += 2;
 }
 
-void op_08(void *reg, t_state *state, uint8_t *mem)
-{
+void op_08(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 16bit load/store/move instructions
     	 instruction: LD (a16),SP
@@ -3360,16 +3189,15 @@ void op_08(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint16_t a16;
-    a16 = read_u16(r16->PC+1);
+    a16 = read_u16(r16->PC + 1);
     write_u16(a16, r16->SP);
     r16->PC += 3;
 }
 
-void op_0a(void *reg, t_state *state, uint8_t *mem)
-{
+void op_0a(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD A,(BC)
@@ -3379,14 +3207,13 @@ void op_0a(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A = read_u8(r16->BC);
     r16->PC += 1;
 }
 
-void op_0e(void *reg, t_state *state, uint8_t *mem)
-{
+void op_0e(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD C,d8
@@ -3396,14 +3223,13 @@ void op_0e(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
-    r8->C = read_u8(r16->PC+1);
+    r8->C = read_u8(r16->PC + 1);
     r16->PC += 2;
 }
 
-void op_11(void *reg, t_state *state, uint8_t *mem)
-{
+void op_11(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 16bit load/store/move instructions
     	 instruction: LD DE,d16
@@ -3413,14 +3239,13 @@ void op_11(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
-    r16->DE = read_u16(r16->PC+1);
+    r16->DE = read_u16(r16->PC + 1);
     r16->PC += 3;
 }
 
-void op_12(void *reg, t_state *state, uint8_t *mem)
-{
+void op_12(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD (DE),A
@@ -3430,14 +3255,13 @@ void op_12(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     write_u8(r16->DE, r8->A);
     r16->PC += 1;
 }
 
-void op_16(void *reg, t_state *state, uint8_t *mem)
-{
+void op_16(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD D,d8
@@ -3447,14 +3271,13 @@ void op_16(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
-    r8->D = read_u8(r16->PC+1);
+    r8->D = read_u8(r16->PC + 1);
     r16->PC += 2;
 }
 
-void op_1a(void *reg, t_state *state, uint8_t *mem)
-{
+void op_1a(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD A,(DE)
@@ -3464,14 +3287,13 @@ void op_1a(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A = read_u8(r16->DE);
     r16->PC += 1;
 }
 
-void op_1e(void *reg, t_state *state, uint8_t *mem)
-{
+void op_1e(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD E,d8
@@ -3481,14 +3303,13 @@ void op_1e(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
-    r8->E = read_u8(r16->PC+1);
+    r8->E = read_u8(r16->PC + 1);
     r16->PC += 2;
 }
 
-void op_21(void *reg, t_state *state, uint8_t *mem)
-{
+void op_21(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 16bit load/store/move instructions
     	 instruction: LD HL,d16
@@ -3498,14 +3319,13 @@ void op_21(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
-    r16->HL = read_u16(r16->PC+1);
+    r16->HL = read_u16(r16->PC + 1);
     r16->PC += 3;
 }
 
-void op_22(void *reg, t_state *state, uint8_t *mem)
-{
+void op_22(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD (HL+),A
@@ -3515,14 +3335,13 @@ void op_22(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     write_u8(r16->HL++, r8->A);
     r16->PC += 1;
 }
 
-void op_26(void *reg, t_state *state, uint8_t *mem)
-{
+void op_26(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD H,d8
@@ -3532,14 +3351,13 @@ void op_26(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
-    r8->H = read_u8(r16->PC+1);
+    r8->H = read_u8(r16->PC + 1);
     r16->PC += 2;
 }
 
-void op_2a(void *reg, t_state *state, uint8_t *mem)
-{
+void op_2a(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD A,(HL+)
@@ -3549,14 +3367,13 @@ void op_2a(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A = read_u8(r16->HL++);
     r16->PC += 1;
 }
 
-void op_2e(void *reg, t_state *state, uint8_t *mem)
-{
+void op_2e(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD L,d8
@@ -3566,14 +3383,13 @@ void op_2e(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
-    r8->L = read_u8(r16->PC+1);
+    r8->L = read_u8(r16->PC + 1);
     r16->PC += 2;
 }
 
-void op_31(void *reg, t_state *state, uint8_t *mem)
-{
+void op_31(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 16bit load/store/move instructions
     	 instruction: LD SP,d16
@@ -3583,14 +3399,13 @@ void op_31(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
-    r16->SP = read_u16(r16->PC+1);
+    r16->SP = read_u16(r16->PC + 1);
     r16->PC += 3;
 }
 
-void op_32(void *reg, t_state *state, uint8_t *mem)
-{
+void op_32(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD (HL-),A
@@ -3600,14 +3415,13 @@ void op_32(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     write_u8(r16->HL--, r8->A);
     r16->PC += 1;
 }
 
-void op_36(void *reg, t_state *state, uint8_t *mem)
-{
+void op_36(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD (HL),d8
@@ -3617,14 +3431,13 @@ void op_36(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
-    write_u8(r16->HL, read_u8(r16->PC+1));
+    write_u8(r16->HL, read_u8(r16->PC + 1));
     r16->PC += 2;
 }
 
-void op_3a(void *reg, t_state *state, uint8_t *mem)
-{
+void op_3a(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD A,(HL-)
@@ -3634,14 +3447,13 @@ void op_3a(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A = read_u8(r16->HL--);
     r16->PC += 1;
 }
 
-void op_3e(void *reg, t_state *state, uint8_t *mem)
-{
+void op_3e(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD A,d8
@@ -3651,14 +3463,13 @@ void op_3e(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
-    r8->A = read_u8(r16->PC+1);
+    r8->A = read_u8(r16->PC + 1);
     r16->PC += 2;
 }
 
-void op_40(void *reg, t_state *state, uint8_t *mem)
-{
+void op_40(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD B,B
@@ -3668,14 +3479,13 @@ void op_40(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->B = r8->B;
     r16->PC += 1;
 }
 
-void op_41(void *reg, t_state *state, uint8_t *mem)
-{
+void op_41(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD B,C
@@ -3685,14 +3495,13 @@ void op_41(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->B = r8->C;
     r16->PC += 1;
 }
 
-void op_42(void *reg, t_state *state, uint8_t *mem)
-{
+void op_42(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD B,D
@@ -3702,14 +3511,13 @@ void op_42(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->B = r8->D;
     r16->PC += 1;
 }
 
-void op_43(void *reg, t_state *state, uint8_t *mem)
-{
+void op_43(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD B,E
@@ -3719,14 +3527,13 @@ void op_43(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->B = r8->E;
     r16->PC += 1;
 }
 
-void op_44(void *reg, t_state *state, uint8_t *mem)
-{
+void op_44(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD B,H
@@ -3736,14 +3543,13 @@ void op_44(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->B = r8->H;
     r16->PC += 1;
 }
 
-void op_45(void *reg, t_state *state, uint8_t *mem)
-{
+void op_45(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD B,L
@@ -3753,14 +3559,13 @@ void op_45(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->B = r8->L;
     r16->PC += 1;
 }
 
-void op_46(void *reg, t_state *state, uint8_t *mem)
-{
+void op_46(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD B,(HL)
@@ -3770,14 +3575,13 @@ void op_46(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->B = read_u8(r16->HL);
     r16->PC += 1;
 }
 
-void op_47(void *reg, t_state *state, uint8_t *mem)
-{
+void op_47(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD B,A
@@ -3787,14 +3591,13 @@ void op_47(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->B = r8->A;
     r16->PC += 1;
 }
 
-void op_48(void *reg, t_state *state, uint8_t *mem)
-{
+void op_48(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD C,B
@@ -3804,14 +3607,13 @@ void op_48(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->C = r8->B;
     r16->PC += 1;
 }
 
-void op_49(void *reg, t_state *state, uint8_t *mem)
-{
+void op_49(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD C,C
@@ -3821,14 +3623,13 @@ void op_49(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->C = r8->C;
     r16->PC += 1;
 }
 
-void op_4a(void *reg, t_state *state, uint8_t *mem)
-{
+void op_4a(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD C,D
@@ -3838,14 +3639,13 @@ void op_4a(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->C = r8->D;
     r16->PC += 1;
 }
 
-void op_4b(void *reg, t_state *state, uint8_t *mem)
-{
+void op_4b(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD C,E
@@ -3855,14 +3655,13 @@ void op_4b(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->C = r8->E;
     r16->PC += 1;
 }
 
-void op_4c(void *reg, t_state *state, uint8_t *mem)
-{
+void op_4c(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD C,H
@@ -3872,14 +3671,13 @@ void op_4c(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->C = r8->H;
     r16->PC += 1;
 }
 
-void op_4d(void *reg, t_state *state, uint8_t *mem)
-{
+void op_4d(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD C,L
@@ -3889,14 +3687,13 @@ void op_4d(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->C = r8->L;
     r16->PC += 1;
 }
 
-void op_4e(void *reg, t_state *state, uint8_t *mem)
-{
+void op_4e(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD C,(HL)
@@ -3906,14 +3703,13 @@ void op_4e(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->C = read_u8(r16->HL);
     r16->PC += 1;
 }
 
-void op_4f(void *reg, t_state *state, uint8_t *mem)
-{
+void op_4f(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD C,A
@@ -3923,14 +3719,13 @@ void op_4f(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->C = r8->A;
     r16->PC += 1;
 }
 
-void op_50(void *reg, t_state *state, uint8_t *mem)
-{
+void op_50(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD D,B
@@ -3940,14 +3735,13 @@ void op_50(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->D = r8->B;
     r16->PC += 1;
 }
 
-void op_51(void *reg, t_state *state, uint8_t *mem)
-{
+void op_51(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD D,C
@@ -3957,14 +3751,13 @@ void op_51(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->D = r8->C;
     r16->PC += 1;
 }
 
-void op_52(void *reg, t_state *state, uint8_t *mem)
-{
+void op_52(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD D,D
@@ -3974,14 +3767,13 @@ void op_52(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->D = r8->D;
     r16->PC += 1;
 }
 
-void op_53(void *reg, t_state *state, uint8_t *mem)
-{
+void op_53(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD D,E
@@ -3991,14 +3783,13 @@ void op_53(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->D = r8->E;
     r16->PC += 1;
 }
 
-void op_54(void *reg, t_state *state, uint8_t *mem)
-{
+void op_54(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD D,H
@@ -4008,14 +3799,13 @@ void op_54(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->D = r8->H;
     r16->PC += 1;
 }
 
-void op_55(void *reg, t_state *state, uint8_t *mem)
-{
+void op_55(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD D,L
@@ -4025,14 +3815,13 @@ void op_55(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->D = r8->L;
     r16->PC += 1;
 }
 
-void op_56(void *reg, t_state *state, uint8_t *mem)
-{
+void op_56(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD D,(HL)
@@ -4042,14 +3831,13 @@ void op_56(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->D = read_u8(r16->HL);
     r16->PC += 1;
 }
 
-void op_57(void *reg, t_state *state, uint8_t *mem)
-{
+void op_57(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD D,A
@@ -4059,14 +3847,13 @@ void op_57(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->D = r8->A;
     r16->PC += 1;
 }
 
-void op_58(void *reg, t_state *state, uint8_t *mem)
-{
+void op_58(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD E,B
@@ -4076,14 +3863,13 @@ void op_58(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->E = r8->B;
     r16->PC += 1;
 }
 
-void op_59(void *reg, t_state *state, uint8_t *mem)
-{
+void op_59(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD E,C
@@ -4093,14 +3879,13 @@ void op_59(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->E = r8->C;
     r16->PC += 1;
 }
 
-void op_5a(void *reg, t_state *state, uint8_t *mem)
-{
+void op_5a(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD E,D
@@ -4110,14 +3895,13 @@ void op_5a(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->E = r8->D;
     r16->PC += 1;
 }
 
-void op_5b(void *reg, t_state *state, uint8_t *mem)
-{
+void op_5b(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD E,E
@@ -4127,14 +3911,13 @@ void op_5b(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->E = r8->E;
     r16->PC += 1;
 }
 
-void op_5c(void *reg, t_state *state, uint8_t *mem)
-{
+void op_5c(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD E,H
@@ -4144,14 +3927,13 @@ void op_5c(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->E = r8->H;
     r16->PC += 1;
 }
 
-void op_5d(void *reg, t_state *state, uint8_t *mem)
-{
+void op_5d(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD E,L
@@ -4161,14 +3943,13 @@ void op_5d(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->E = r8->L;
     r16->PC += 1;
 }
 
-void op_5e(void *reg, t_state *state, uint8_t *mem)
-{
+void op_5e(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD E,(HL)
@@ -4178,14 +3959,13 @@ void op_5e(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->E = read_u8(r16->HL);
     r16->PC += 1;
 }
 
-void op_5f(void *reg, t_state *state, uint8_t *mem)
-{
+void op_5f(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD E,A
@@ -4195,14 +3975,13 @@ void op_5f(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->E = r8->A;
     r16->PC += 1;
 }
 
-void op_60(void *reg, t_state *state, uint8_t *mem)
-{
+void op_60(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD H,B
@@ -4212,14 +3991,13 @@ void op_60(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->H = r8->B;
     r16->PC += 1;
 }
 
-void op_61(void *reg, t_state *state, uint8_t *mem)
-{
+void op_61(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD H,C
@@ -4229,14 +4007,13 @@ void op_61(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->H = r8->C;
     r16->PC += 1;
 }
 
-void op_62(void *reg, t_state *state, uint8_t *mem)
-{
+void op_62(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD H,D
@@ -4246,14 +4023,13 @@ void op_62(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->H = r8->D;
     r16->PC += 1;
 }
 
-void op_63(void *reg, t_state *state, uint8_t *mem)
-{
+void op_63(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD H,E
@@ -4263,14 +4039,13 @@ void op_63(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->H = r8->E;
     r16->PC += 1;
 }
 
-void op_64(void *reg, t_state *state, uint8_t *mem)
-{
+void op_64(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD H,H
@@ -4280,14 +4055,13 @@ void op_64(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->H = r8->H;
     r16->PC += 1;
 }
 
-void op_65(void *reg, t_state *state, uint8_t *mem)
-{
+void op_65(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD H,L
@@ -4297,14 +4071,13 @@ void op_65(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->H = r8->L;
     r16->PC += 1;
 }
 
-void op_66(void *reg, t_state *state, uint8_t *mem)
-{
+void op_66(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD H,(HL)
@@ -4314,14 +4087,13 @@ void op_66(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->H = read_u8(r16->HL);
     r16->PC += 1;
 }
 
-void op_67(void *reg, t_state *state, uint8_t *mem)
-{
+void op_67(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD H,A
@@ -4331,14 +4103,13 @@ void op_67(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->H = r8->A;
     r16->PC += 1;
 }
 
-void op_68(void *reg, t_state *state, uint8_t *mem)
-{
+void op_68(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD L,B
@@ -4348,14 +4119,13 @@ void op_68(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->L = r8->B;
     r16->PC += 1;
 }
 
-void op_69(void *reg, t_state *state, uint8_t *mem)
-{
+void op_69(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD L,C
@@ -4365,14 +4135,13 @@ void op_69(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->L = r8->C;
     r16->PC += 1;
 }
 
-void op_6a(void *reg, t_state *state, uint8_t *mem)
-{
+void op_6a(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD L,D
@@ -4382,14 +4151,13 @@ void op_6a(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->L = r8->D;
     r16->PC += 1;
 }
 
-void op_6b(void *reg, t_state *state, uint8_t *mem)
-{
+void op_6b(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD L,E
@@ -4399,14 +4167,13 @@ void op_6b(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->L = r8->E;
     r16->PC += 1;
 }
 
-void op_6c(void *reg, t_state *state, uint8_t *mem)
-{
+void op_6c(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD L,H
@@ -4416,14 +4183,13 @@ void op_6c(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->L = r8->H;
     r16->PC += 1;
 }
 
-void op_6d(void *reg, t_state *state, uint8_t *mem)
-{
+void op_6d(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD L,L
@@ -4433,14 +4199,13 @@ void op_6d(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->L = r8->L;
     r16->PC += 1;
 }
 
-void op_6e(void *reg, t_state *state, uint8_t *mem)
-{
+void op_6e(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD L,(HL)
@@ -4450,14 +4215,13 @@ void op_6e(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->L = read_u8(r16->HL);
     r16->PC += 1;
 }
 
-void op_6f(void *reg, t_state *state, uint8_t *mem)
-{
+void op_6f(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD L,A
@@ -4467,14 +4231,13 @@ void op_6f(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->L = r8->A;
     r16->PC += 1;
 }
 
-void op_70(void *reg, t_state *state, uint8_t *mem)
-{
+void op_70(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD (HL),B
@@ -4484,14 +4247,13 @@ void op_70(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     write_u8(r16->HL, r8->B);
     r16->PC += 1;
 }
 
-void op_71(void *reg, t_state *state, uint8_t *mem)
-{
+void op_71(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD (HL),C
@@ -4501,14 +4263,13 @@ void op_71(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     write_u8(r16->HL, r8->C);
     r16->PC += 1;
 }
 
-void op_72(void *reg, t_state *state, uint8_t *mem)
-{
+void op_72(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD (HL),D
@@ -4518,14 +4279,13 @@ void op_72(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     write_u8(r16->HL, r8->D);
     r16->PC += 1;
 }
 
-void op_73(void *reg, t_state *state, uint8_t *mem)
-{
+void op_73(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD (HL),E
@@ -4535,14 +4295,13 @@ void op_73(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     write_u8(r16->HL, r8->E);
     r16->PC += 1;
 }
 
-void op_74(void *reg, t_state *state, uint8_t *mem)
-{
+void op_74(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD (HL),H
@@ -4552,14 +4311,13 @@ void op_74(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     write_u8(r16->HL, r8->H);
     r16->PC += 1;
 }
 
-void op_75(void *reg, t_state *state, uint8_t *mem)
-{
+void op_75(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD (HL),L
@@ -4569,14 +4327,13 @@ void op_75(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     write_u8(r16->HL, r8->L);
     r16->PC += 1;
 }
 
-void op_77(void *reg, t_state *state, uint8_t *mem)
-{
+void op_77(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD (HL),A
@@ -4586,14 +4343,13 @@ void op_77(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     write_u8(r16->HL, r8->A);
     r16->PC += 1;
 }
 
-void op_78(void *reg, t_state *state, uint8_t *mem)
-{
+void op_78(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD A,B
@@ -4603,14 +4359,13 @@ void op_78(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A = r8->B;
     r16->PC += 1;
 }
 
-void op_79(void *reg, t_state *state, uint8_t *mem)
-{
+void op_79(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD A,C
@@ -4620,14 +4375,13 @@ void op_79(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A = r8->C;
     r16->PC += 1;
 }
 
-void op_7a(void *reg, t_state *state, uint8_t *mem)
-{
+void op_7a(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD A,D
@@ -4637,14 +4391,13 @@ void op_7a(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A = r8->D;
     r16->PC += 1;
 }
 
-void op_7b(void *reg, t_state *state, uint8_t *mem)
-{
+void op_7b(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD A,E
@@ -4654,14 +4407,13 @@ void op_7b(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A = r8->E;
     r16->PC += 1;
 }
 
-void op_7c(void *reg, t_state *state, uint8_t *mem)
-{
+void op_7c(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD A,H
@@ -4671,14 +4423,13 @@ void op_7c(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A = r8->H;
     r16->PC += 1;
 }
 
-void op_7d(void *reg, t_state *state, uint8_t *mem)
-{
+void op_7d(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD A,L
@@ -4688,14 +4439,13 @@ void op_7d(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A = r8->L;
     r16->PC += 1;
 }
 
-void op_7e(void *reg, t_state *state, uint8_t *mem)
-{
+void op_7e(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD A,(HL)
@@ -4705,14 +4455,13 @@ void op_7e(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A = read_u8(r16->HL);
     r16->PC += 1;
 }
 
-void op_7f(void *reg, t_state *state, uint8_t *mem)
-{
+void op_7f(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD A,A
@@ -4722,14 +4471,13 @@ void op_7f(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A = r8->A;
     r16->PC += 1;
 }
 
-void op_e2(void *reg, t_state *state, uint8_t *mem)
-{
+void op_e2(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD (C),A
@@ -4739,14 +4487,13 @@ void op_e2(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
-    write_u8(0xff00+r8->C, r8->A);
+    write_u8(0xff00 + r8->C, r8->A);
     r16->PC += 1;
 }
 
-void op_ea(void *reg, t_state *state, uint8_t *mem)
-{
+void op_ea(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD (a16),A
@@ -4756,16 +4503,15 @@ void op_ea(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint16_t a16;
-    a16 = read_u16(r16->PC+1);
+    a16 = read_u16(r16->PC + 1);
     write_u8(a16, r8->A);
     r16->PC += 3;
 }
 
-void op_f2(void *reg, t_state *state, uint8_t *mem)
-{
+void op_f2(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD A,(C)
@@ -4775,14 +4521,13 @@ void op_f2(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
-    r8->A = read_u8(0xff00+r8->C);
+    r8->A = read_u8(0xff00 + r8->C);
     r16->PC += 1;
 }
 
-void op_f8(void *reg, t_state *state, uint8_t *mem)
-{
+void op_f8(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 16bit load/store/move instructions
     	 instruction: LD HL,SP+r8
@@ -4792,9 +4537,9 @@ void op_f8(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
-    int offset = (int8_t)read_u8(r16->PC+1);
+    int offset = (int8_t)read_u8(r16->PC + 1);
     r16->HL = r16->SP + offset;
     CLEAR_Z_FLAG;
     CLEAR_N_FLAG;
@@ -4803,8 +4548,7 @@ void op_f8(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_f9(void *reg, t_state *state, uint8_t *mem)
-{
+void op_f9(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 16bit load/store/move instructions
     	 instruction: LD SP,HL
@@ -4814,14 +4558,13 @@ void op_f9(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->SP = r16->HL;
     r16->PC += 1;
 }
 
-void op_fa(void *reg, t_state *state, uint8_t *mem)
-{
+void op_fa(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LD A,(a16)
@@ -4831,17 +4574,15 @@ void op_fa(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint16_t a16;
-    a16 = read_u16(r16->PC+1);
+    a16 = read_u16(r16->PC + 1);
     r8->A = read_u8(a16);
     r16->PC += 3;
 }
 
-
-void op_e0(void *reg, t_state *state, uint8_t *mem)
-{
+void op_e0(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LDH (a8),A
@@ -4851,16 +4592,15 @@ void op_e0(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t a8;
-    a8 = read_u8(r16->PC+1);
+    a8 = read_u8(r16->PC + 1);
     write_u8(0xff00 + a8, r8->A);
     r16->PC += 2;
 }
 
-void op_f0(void *reg, t_state *state, uint8_t *mem)
-{
+void op_f0(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit load/store/move instructions
     	 instruction: LDH A,(a8)
@@ -4870,17 +4610,15 @@ void op_f0(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t a8;
-    a8 = read_u8(r16->PC+1);
+    a8 = read_u8(r16->PC + 1);
     r8->A = read_u8(0xff00 + a8);
     r16->PC += 2;
 }
 
-
-void op_00(void *reg, t_state *state, uint8_t *mem)
-{
+void op_00(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: Misc/control instructions
     	 instruction: NOP
@@ -4890,14 +4628,12 @@ void op_00(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->PC += 1;
 }
 
-
-void op_b0(void *reg, t_state *state, uint8_t *mem)
-{
+void op_b0(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: OR B
@@ -4907,7 +4643,7 @@ void op_b0(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A |= r8->B;
     r8->A == 0 ? SET_Z_FLAG : CLEAR_Z_FLAG;
@@ -4917,8 +4653,7 @@ void op_b0(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_b1(void *reg, t_state *state, uint8_t *mem)
-{
+void op_b1(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: OR C
@@ -4928,7 +4663,7 @@ void op_b1(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A |= r8->C;
     r8->A == 0 ? SET_Z_FLAG : CLEAR_Z_FLAG;
@@ -4938,8 +4673,7 @@ void op_b1(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_b2(void *reg, t_state *state, uint8_t *mem)
-{
+void op_b2(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: OR D
@@ -4949,7 +4683,7 @@ void op_b2(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A |= r8->D;
     r8->A == 0 ? SET_Z_FLAG : CLEAR_Z_FLAG;
@@ -4959,8 +4693,7 @@ void op_b2(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_b3(void *reg, t_state *state, uint8_t *mem)
-{
+void op_b3(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: OR E
@@ -4970,7 +4703,7 @@ void op_b3(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A |= r8->E;
     r8->A == 0 ? SET_Z_FLAG : CLEAR_Z_FLAG;
@@ -4980,8 +4713,7 @@ void op_b3(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_b4(void *reg, t_state *state, uint8_t *mem)
-{
+void op_b4(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: OR H
@@ -4991,7 +4723,7 @@ void op_b4(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A |= r8->H;
     r8->A == 0 ? SET_Z_FLAG : CLEAR_Z_FLAG;
@@ -5001,8 +4733,7 @@ void op_b4(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_b5(void *reg, t_state *state, uint8_t *mem)
-{
+void op_b5(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: OR L
@@ -5012,7 +4743,7 @@ void op_b5(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A |= r8->L;
     r8->A == 0 ? SET_Z_FLAG : CLEAR_Z_FLAG;
@@ -5022,8 +4753,7 @@ void op_b5(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_b6(void *reg, t_state *state, uint8_t *mem)
-{
+void op_b6(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: OR (HL)
@@ -5033,7 +4763,7 @@ void op_b6(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A |= read_u8(r16->HL);
     r8->A == 0 ? SET_Z_FLAG : CLEAR_Z_FLAG;
@@ -5043,8 +4773,7 @@ void op_b6(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_b7(void *reg, t_state *state, uint8_t *mem)
-{
+void op_b7(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: OR A
@@ -5054,7 +4783,7 @@ void op_b7(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A |= r8->A;
     r8->A == 0 ? SET_Z_FLAG : CLEAR_Z_FLAG;
@@ -5064,8 +4793,7 @@ void op_b7(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_f6(void *reg, t_state *state, uint8_t *mem)
-{
+void op_f6(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: OR d8
@@ -5075,9 +4803,9 @@ void op_f6(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
-    r8->A |= read_u8(r16->PC+1);
+    r8->A |= read_u8(r16->PC + 1);
     r8->A == 0 ? SET_Z_FLAG : CLEAR_Z_FLAG;
     CLEAR_N_FLAG;
     CLEAR_H_FLAG;
@@ -5085,9 +4813,7 @@ void op_f6(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-
-void op_c1(void *reg, t_state *state, uint8_t *mem)
-{
+void op_c1(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 16bit load/store/move instructions
     	 instruction: POP BC
@@ -5097,15 +4823,14 @@ void op_c1(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->BC = read_u16(r16->SP);
     r16->SP += 2;
     r16->PC += 1;
 }
 
-void op_d1(void *reg, t_state *state, uint8_t *mem)
-{
+void op_d1(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 16bit load/store/move instructions
     	 instruction: POP DE
@@ -5115,15 +4840,14 @@ void op_d1(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->DE = read_u16(r16->SP);
     r16->SP += 2;
     r16->PC += 1;
 }
 
-void op_e1(void *reg, t_state *state, uint8_t *mem)
-{
+void op_e1(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 16bit load/store/move instructions
     	 instruction: POP HL
@@ -5133,15 +4857,14 @@ void op_e1(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->HL = read_u16(r16->SP);
     r16->SP += 2;
     r16->PC += 1;
 }
 
-void op_f1(void *reg, t_state *state, uint8_t *mem)
-{
+void op_f1(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 16bit load/store/move instructions
     	 instruction: POP AF
@@ -5151,7 +4874,7 @@ void op_f1(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->AF = read_u16(r16->SP);
     r8->F &= 0xf0;
@@ -5159,9 +4882,7 @@ void op_f1(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-
-void op_cb(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: Misc/control instructions
     	 instruction: PREFIX CB
@@ -5176,9 +4897,7 @@ void op_cb(void *reg, t_state *state, uint8_t *mem)
     state->done = true;
 }
 
-
-void op_c5(void *reg, t_state *state, uint8_t *mem)
-{
+void op_c5(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 16bit load/store/move instructions
     	 instruction: PUSH BC
@@ -5188,15 +4907,14 @@ void op_c5(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->SP -= 2;
     write_u16(r16->SP, r16->BC);
     r16->PC += 1;
 }
 
-void op_d5(void *reg, t_state *state, uint8_t *mem)
-{
+void op_d5(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 16bit load/store/move instructions
     	 instruction: PUSH DE
@@ -5206,15 +4924,14 @@ void op_d5(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->SP -= 2;
     write_u16(r16->SP, r16->DE);
     r16->PC += 1;
 }
 
-void op_e5(void *reg, t_state *state, uint8_t *mem)
-{
+void op_e5(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 16bit load/store/move instructions
     	 instruction: PUSH HL
@@ -5224,15 +4941,14 @@ void op_e5(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->SP -= 2;
     write_u16(r16->SP, r16->HL);
     r16->PC += 1;
 }
 
-void op_f5(void *reg, t_state *state, uint8_t *mem)
-{
+void op_f5(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 16bit load/store/move instructions
     	 instruction: PUSH AF
@@ -5242,16 +4958,14 @@ void op_f5(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->SP -= 2;
     write_u16(r16->SP, r16->AF);
     r16->PC += 1;
 }
 
-
-void op_cb80(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb80(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 0,B
@@ -5261,14 +4975,13 @@ void op_cb80(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->B &= ~(1 << 0);
     r16->PC += 2;
 }
 
-void op_cb81(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb81(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 0,C
@@ -5278,14 +4991,13 @@ void op_cb81(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->C &= ~(1 << 0);
     r16->PC += 2;
 }
 
-void op_cb82(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb82(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 0,D
@@ -5295,14 +5007,13 @@ void op_cb82(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->D &= ~(1 << 0);
     r16->PC += 2;
 }
 
-void op_cb83(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb83(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 0,E
@@ -5312,14 +5023,13 @@ void op_cb83(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->E &= ~(1 << 0);
     r16->PC += 2;
 }
 
-void op_cb84(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb84(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 0,H
@@ -5329,14 +5039,13 @@ void op_cb84(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->H &= ~(1 << 0);
     r16->PC += 2;
 }
 
-void op_cb85(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb85(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 0,L
@@ -5346,14 +5055,13 @@ void op_cb85(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->L &= ~(1 << 0);
     r16->PC += 2;
 }
 
-void op_cb86(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb86(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 0,(HL)
@@ -5363,7 +5071,7 @@ void op_cb86(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = read_u8(r16->HL);
@@ -5372,8 +5080,7 @@ void op_cb86(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb87(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb87(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 0,A
@@ -5383,14 +5090,13 @@ void op_cb87(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A &= ~(1 << 0);
     r16->PC += 2;
 }
 
-void op_cb88(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb88(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 1,B
@@ -5400,14 +5106,13 @@ void op_cb88(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->B &= ~(1 << 1);
     r16->PC += 2;
 }
 
-void op_cb89(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb89(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 1,C
@@ -5417,14 +5122,13 @@ void op_cb89(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->C &= ~(1 << 1);
     r16->PC += 2;
 }
 
-void op_cb8a(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb8a(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 1,D
@@ -5434,14 +5138,13 @@ void op_cb8a(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->D &= ~(1 << 1);
     r16->PC += 2;
 }
 
-void op_cb8b(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb8b(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 1,E
@@ -5451,14 +5154,13 @@ void op_cb8b(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->E &= ~(1 << 1);
     r16->PC += 2;
 }
 
-void op_cb8c(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb8c(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 1,H
@@ -5468,14 +5170,13 @@ void op_cb8c(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->H &= ~(1 << 1);
     r16->PC += 2;
 }
 
-void op_cb8d(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb8d(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 1,L
@@ -5485,14 +5186,13 @@ void op_cb8d(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->L &= ~(1 << 1);
     r16->PC += 2;
 }
 
-void op_cb8e(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb8e(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 1,(HL)
@@ -5502,7 +5202,7 @@ void op_cb8e(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = read_u8(r16->HL);
@@ -5511,8 +5211,7 @@ void op_cb8e(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb8f(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb8f(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 1,A
@@ -5522,14 +5221,13 @@ void op_cb8f(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A &= ~(1 << 1);
     r16->PC += 2;
 }
 
-void op_cb90(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb90(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 2,B
@@ -5539,14 +5237,13 @@ void op_cb90(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->B &= ~(1 << 2);
     r16->PC += 2;
 }
 
-void op_cb91(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb91(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 2,C
@@ -5556,14 +5253,13 @@ void op_cb91(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->C &= ~(1 << 2);
     r16->PC += 2;
 }
 
-void op_cb92(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb92(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 2,D
@@ -5573,14 +5269,13 @@ void op_cb92(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->D &= ~(1 << 2);
     r16->PC += 2;
 }
 
-void op_cb93(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb93(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 2,E
@@ -5590,14 +5285,13 @@ void op_cb93(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->E &= ~(1 << 2);
     r16->PC += 2;
 }
 
-void op_cb94(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb94(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 2,H
@@ -5607,14 +5301,13 @@ void op_cb94(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->H &= ~(1 << 2);
     r16->PC += 2;
 }
 
-void op_cb95(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb95(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 2,L
@@ -5624,14 +5317,13 @@ void op_cb95(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->L &= ~(1 << 2);
     r16->PC += 2;
 }
 
-void op_cb96(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb96(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 2,(HL)
@@ -5641,7 +5333,7 @@ void op_cb96(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = read_u8(r16->HL);
@@ -5650,8 +5342,7 @@ void op_cb96(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb97(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb97(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 2,A
@@ -5661,14 +5352,13 @@ void op_cb97(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A &= ~(1 << 2);
     r16->PC += 2;
 }
 
-void op_cb98(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb98(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 3,B
@@ -5678,14 +5368,13 @@ void op_cb98(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->B &= ~(1 << 3);
     r16->PC += 2;
 }
 
-void op_cb99(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb99(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 3,C
@@ -5695,14 +5384,13 @@ void op_cb99(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->C &= ~(1 << 3);
     r16->PC += 2;
 }
 
-void op_cb9a(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb9a(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 3,D
@@ -5712,14 +5400,13 @@ void op_cb9a(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->D &= ~(1 << 3);
     r16->PC += 2;
 }
 
-void op_cb9b(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb9b(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 3,E
@@ -5729,14 +5416,13 @@ void op_cb9b(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->E &= ~(1 << 3);
     r16->PC += 2;
 }
 
-void op_cb9c(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb9c(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 3,H
@@ -5746,14 +5432,13 @@ void op_cb9c(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->H &= ~(1 << 3);
     r16->PC += 2;
 }
 
-void op_cb9d(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb9d(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 3,L
@@ -5763,14 +5448,13 @@ void op_cb9d(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->L &= ~(1 << 3);
     r16->PC += 2;
 }
 
-void op_cb9e(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb9e(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 3,(HL)
@@ -5780,7 +5464,7 @@ void op_cb9e(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = read_u8(r16->HL);
@@ -5789,8 +5473,7 @@ void op_cb9e(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb9f(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb9f(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 3,A
@@ -5800,14 +5483,13 @@ void op_cb9f(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A &= ~(1 << 3);
     r16->PC += 2;
 }
 
-void op_cba0(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cba0(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 4,B
@@ -5817,14 +5499,13 @@ void op_cba0(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->B &= ~(1 << 4);
     r16->PC += 2;
 }
 
-void op_cba1(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cba1(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 4,C
@@ -5834,14 +5515,13 @@ void op_cba1(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->C &= ~(1 << 4);
     r16->PC += 2;
 }
 
-void op_cba2(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cba2(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 4,D
@@ -5851,14 +5531,13 @@ void op_cba2(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->D &= ~(1 << 4);
     r16->PC += 2;
 }
 
-void op_cba3(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cba3(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 4,E
@@ -5868,14 +5547,13 @@ void op_cba3(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->E &= ~(1 << 4);
     r16->PC += 2;
 }
 
-void op_cba4(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cba4(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 4,H
@@ -5885,14 +5563,13 @@ void op_cba4(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->H &= ~(1 << 4);
     r16->PC += 2;
 }
 
-void op_cba5(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cba5(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 4,L
@@ -5902,14 +5579,13 @@ void op_cba5(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->L &= ~(1 << 4);
     r16->PC += 2;
 }
 
-void op_cba6(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cba6(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 4,(HL)
@@ -5919,7 +5595,7 @@ void op_cba6(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = read_u8(r16->HL);
@@ -5928,8 +5604,7 @@ void op_cba6(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cba7(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cba7(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 4,A
@@ -5939,14 +5614,13 @@ void op_cba7(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A &= ~(1 << 4);
     r16->PC += 2;
 }
 
-void op_cba8(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cba8(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 5,B
@@ -5956,14 +5630,13 @@ void op_cba8(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->B &= ~(1 << 5);
     r16->PC += 2;
 }
 
-void op_cba9(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cba9(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 5,C
@@ -5973,14 +5646,13 @@ void op_cba9(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->C &= ~(1 << 5);
     r16->PC += 2;
 }
 
-void op_cbaa(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbaa(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 5,D
@@ -5990,14 +5662,13 @@ void op_cbaa(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->D &= ~(1 << 5);
     r16->PC += 2;
 }
 
-void op_cbab(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbab(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 5,E
@@ -6007,14 +5678,13 @@ void op_cbab(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->E &= ~(1 << 5);
     r16->PC += 2;
 }
 
-void op_cbac(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbac(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 5,H
@@ -6024,14 +5694,13 @@ void op_cbac(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->H &= ~(1 << 5);
     r16->PC += 2;
 }
 
-void op_cbad(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbad(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 5,L
@@ -6041,14 +5710,13 @@ void op_cbad(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->L &= ~(1 << 5);
     r16->PC += 2;
 }
 
-void op_cbae(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbae(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 5,(HL)
@@ -6058,7 +5726,7 @@ void op_cbae(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = read_u8(r16->HL);
@@ -6067,8 +5735,7 @@ void op_cbae(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cbaf(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbaf(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 5,A
@@ -6078,14 +5745,13 @@ void op_cbaf(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A &= ~(1 << 5);
     r16->PC += 2;
 }
 
-void op_cbb0(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbb0(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 6,B
@@ -6095,14 +5761,13 @@ void op_cbb0(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->B &= ~(1 << 6);
     r16->PC += 2;
 }
 
-void op_cbb1(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbb1(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 6,C
@@ -6112,14 +5777,13 @@ void op_cbb1(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->C &= ~(1 << 6);
     r16->PC += 2;
 }
 
-void op_cbb2(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbb2(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 6,D
@@ -6129,14 +5793,13 @@ void op_cbb2(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->D &= ~(1 << 6);
     r16->PC += 2;
 }
 
-void op_cbb3(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbb3(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 6,E
@@ -6146,14 +5809,13 @@ void op_cbb3(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->E &= ~(1 << 6);
     r16->PC += 2;
 }
 
-void op_cbb4(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbb4(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 6,H
@@ -6163,14 +5825,13 @@ void op_cbb4(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->H &= ~(1 << 6);
     r16->PC += 2;
 }
 
-void op_cbb5(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbb5(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 6,L
@@ -6180,14 +5841,13 @@ void op_cbb5(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->L &= ~(1 << 6);
     r16->PC += 2;
 }
 
-void op_cbb6(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbb6(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 6,(HL)
@@ -6197,7 +5857,7 @@ void op_cbb6(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = read_u8(r16->HL);
@@ -6206,8 +5866,7 @@ void op_cbb6(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cbb7(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbb7(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 6,A
@@ -6217,14 +5876,13 @@ void op_cbb7(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A &= ~(1 << 6);
     r16->PC += 2;
 }
 
-void op_cbb8(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbb8(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 7,B
@@ -6234,14 +5892,13 @@ void op_cbb8(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->B &= ~(1 << 7);
     r16->PC += 2;
 }
 
-void op_cbb9(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbb9(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 7,C
@@ -6251,14 +5908,13 @@ void op_cbb9(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->C &= ~(1 << 7);
     r16->PC += 2;
 }
 
-void op_cbba(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbba(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 7,D
@@ -6268,14 +5924,13 @@ void op_cbba(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->D &= ~(1 << 7);
     r16->PC += 2;
 }
 
-void op_cbbb(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbbb(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 7,E
@@ -6285,14 +5940,13 @@ void op_cbbb(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->E &= ~(1 << 7);
     r16->PC += 2;
 }
 
-void op_cbbc(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbbc(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 7,H
@@ -6302,14 +5956,13 @@ void op_cbbc(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->H &= ~(1 << 7);
     r16->PC += 2;
 }
 
-void op_cbbd(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbbd(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 7,L
@@ -6319,14 +5972,13 @@ void op_cbbd(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->L &= ~(1 << 7);
     r16->PC += 2;
 }
 
-void op_cbbe(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbbe(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 7,(HL)
@@ -6336,7 +5988,7 @@ void op_cbbe(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = read_u8(r16->HL);
@@ -6345,8 +5997,7 @@ void op_cbbe(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cbbf(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbbf(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RES 7,A
@@ -6356,15 +6007,13 @@ void op_cbbf(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A &= ~(1 << 7);
     r16->PC += 2;
 }
 
-
-void op_c0(void *reg, t_state *state, uint8_t *mem)
-{
+void op_c0(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: Jumps/calls
     	 instruction: RET NZ
@@ -6374,18 +6023,17 @@ void op_c0(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     if (!IS_Z_FLAG) {
         r16->PC = read_u16(r16->SP);
         r16->SP += 2;
-        return ;
+        return;
     }
     r16->PC += 1;
 }
 
-void op_c8(void *reg, t_state *state, uint8_t *mem)
-{
+void op_c8(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: Jumps/calls
     	 instruction: RET Z
@@ -6395,18 +6043,17 @@ void op_c8(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     if (IS_Z_FLAG) {
         r16->PC = read_u16(r16->SP);
         r16->SP += 2;
-        return ;
+        return;
     }
     r16->PC += 1;
 }
 
-void op_c9(void *reg, t_state *state, uint8_t *mem)
-{
+void op_c9(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: Jumps/calls
     	 instruction: RET
@@ -6416,15 +6063,14 @@ void op_c9(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->PC = read_u16(r16->SP);
     r16->SP += 2;
-    return ;
+    return;
 }
 
-void op_d0(void *reg, t_state *state, uint8_t *mem)
-{
+void op_d0(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: Jumps/calls
     	 instruction: RET NC
@@ -6434,18 +6080,17 @@ void op_d0(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     if (!IS_C_FLAG) {
         r16->PC = read_u16(r16->SP);
         r16->SP += 2;
-        return ;
+        return;
     }
     r16->PC += 1;
 }
 
-void op_d8(void *reg, t_state *state, uint8_t *mem)
-{
+void op_d8(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: Jumps/calls
     	 instruction: RET C
@@ -6455,19 +6100,17 @@ void op_d8(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     if (IS_C_FLAG) {
         r16->PC = read_u16(r16->SP);
         r16->SP += 2;
-        return ;
+        return;
     }
     r16->PC += 1;
 }
 
-
-void op_d9(void *reg, t_state *state, uint8_t *mem)
-{
+void op_d9(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: Jumps/calls
     	 instruction: RETI
@@ -6477,16 +6120,14 @@ void op_d9(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->PC = read_u16(r16->SP);
     r16->SP += 2;
     state->interrupts_enabled = true;
 }
 
-
-void op_cb10(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb10(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RL B
@@ -6496,7 +6137,7 @@ void op_cb10(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, carry;
     op = r8->B;
@@ -6510,8 +6151,7 @@ void op_cb10(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb11(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb11(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RL C
@@ -6521,7 +6161,7 @@ void op_cb11(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, carry;
     op = r8->C;
@@ -6535,8 +6175,7 @@ void op_cb11(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb12(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb12(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RL D
@@ -6546,7 +6185,7 @@ void op_cb12(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, carry;
     op = r8->D;
@@ -6560,8 +6199,7 @@ void op_cb12(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb13(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb13(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RL E
@@ -6571,7 +6209,7 @@ void op_cb13(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, carry;
     op = r8->E;
@@ -6585,8 +6223,7 @@ void op_cb13(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb14(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb14(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RL H
@@ -6596,7 +6233,7 @@ void op_cb14(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, carry;
     op = r8->H;
@@ -6610,8 +6247,7 @@ void op_cb14(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb15(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb15(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RL L
@@ -6621,7 +6257,7 @@ void op_cb15(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, carry;
     op = r8->L;
@@ -6635,8 +6271,7 @@ void op_cb15(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb16(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb16(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RL (HL)
@@ -6646,7 +6281,7 @@ void op_cb16(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, carry;
     op = read_u8(r16->HL);
@@ -6660,8 +6295,7 @@ void op_cb16(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb17(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb17(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RL A
@@ -6671,7 +6305,7 @@ void op_cb17(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, carry;
     op = r8->A;
@@ -6685,9 +6319,7 @@ void op_cb17(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-
-void op_17(void *reg, t_state *state, uint8_t *mem)
-{
+void op_17(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RLA
@@ -6697,7 +6329,7 @@ void op_17(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t carry;
     carry = IS_C_FLAG;
@@ -6709,9 +6341,7 @@ void op_17(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-
-void op_cb00(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb00(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RLC B
@@ -6721,7 +6351,7 @@ void op_cb00(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->B;
@@ -6734,8 +6364,7 @@ void op_cb00(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb01(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb01(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RLC C
@@ -6745,7 +6374,7 @@ void op_cb01(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->C;
@@ -6758,8 +6387,7 @@ void op_cb01(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb02(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb02(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RLC D
@@ -6769,7 +6397,7 @@ void op_cb02(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->D;
@@ -6782,8 +6410,7 @@ void op_cb02(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb03(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb03(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RLC E
@@ -6793,7 +6420,7 @@ void op_cb03(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->E;
@@ -6806,8 +6433,7 @@ void op_cb03(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb04(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb04(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RLC H
@@ -6817,7 +6443,7 @@ void op_cb04(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->H;
@@ -6830,8 +6456,7 @@ void op_cb04(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb05(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb05(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RLC L
@@ -6841,7 +6466,7 @@ void op_cb05(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->L;
@@ -6854,8 +6479,7 @@ void op_cb05(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb06(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb06(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RLC (HL)
@@ -6865,7 +6489,7 @@ void op_cb06(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = read_u8(r16->HL);
@@ -6878,8 +6502,7 @@ void op_cb06(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb07(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb07(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RLC A
@@ -6889,7 +6512,7 @@ void op_cb07(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->A;
@@ -6902,9 +6525,7 @@ void op_cb07(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-
-void op_07(void *reg, t_state *state, uint8_t *mem)
-{
+void op_07(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RLCA
@@ -6914,7 +6535,7 @@ void op_07(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A = (r8->A << 1) | (r8->A >> 7);
     CLEAR_Z_FLAG;
@@ -6924,9 +6545,7 @@ void op_07(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-
-void op_cb18(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb18(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RR B
@@ -6936,7 +6555,7 @@ void op_cb18(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, carry;
     op = r8->B;
@@ -6950,8 +6569,7 @@ void op_cb18(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb19(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb19(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RR C
@@ -6961,7 +6579,7 @@ void op_cb19(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, carry;
     op = r8->C;
@@ -6975,8 +6593,7 @@ void op_cb19(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb1a(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb1a(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RR D
@@ -6986,7 +6603,7 @@ void op_cb1a(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, carry;
     op = r8->D;
@@ -7000,8 +6617,7 @@ void op_cb1a(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb1b(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb1b(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RR E
@@ -7011,7 +6627,7 @@ void op_cb1b(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, carry;
     op = r8->E;
@@ -7025,8 +6641,7 @@ void op_cb1b(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb1c(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb1c(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RR H
@@ -7036,7 +6651,7 @@ void op_cb1c(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, carry;
     op = r8->H;
@@ -7050,8 +6665,7 @@ void op_cb1c(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb1d(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb1d(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RR L
@@ -7061,7 +6675,7 @@ void op_cb1d(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, carry;
     op = r8->L;
@@ -7075,8 +6689,7 @@ void op_cb1d(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb1e(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb1e(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RR (HL)
@@ -7086,7 +6699,7 @@ void op_cb1e(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, carry;
     op = read_u8(r16->HL);
@@ -7100,8 +6713,7 @@ void op_cb1e(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb1f(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb1f(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RR A
@@ -7111,7 +6723,7 @@ void op_cb1f(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, carry;
     op = r8->A;
@@ -7125,9 +6737,7 @@ void op_cb1f(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-
-void op_1f(void *reg, t_state *state, uint8_t *mem)
-{
+void op_1f(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RRA
@@ -7137,7 +6747,7 @@ void op_1f(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t carry;
     carry = IS_C_FLAG;
@@ -7149,9 +6759,7 @@ void op_1f(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-
-void op_cb08(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb08(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RRC B
@@ -7161,7 +6769,7 @@ void op_cb08(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->B;
@@ -7174,8 +6782,7 @@ void op_cb08(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb09(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb09(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RRC C
@@ -7185,7 +6792,7 @@ void op_cb09(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->C;
@@ -7198,8 +6805,7 @@ void op_cb09(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb0a(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb0a(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RRC D
@@ -7209,7 +6815,7 @@ void op_cb0a(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->D;
@@ -7222,8 +6828,7 @@ void op_cb0a(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb0b(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb0b(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RRC E
@@ -7233,7 +6838,7 @@ void op_cb0b(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->E;
@@ -7246,8 +6851,7 @@ void op_cb0b(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb0c(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb0c(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RRC H
@@ -7257,7 +6861,7 @@ void op_cb0c(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->H;
@@ -7270,8 +6874,7 @@ void op_cb0c(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb0d(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb0d(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RRC L
@@ -7281,7 +6884,7 @@ void op_cb0d(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->L;
@@ -7294,8 +6897,7 @@ void op_cb0d(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb0e(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb0e(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RRC (HL)
@@ -7305,7 +6907,7 @@ void op_cb0e(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = read_u8(r16->HL);
@@ -7318,8 +6920,7 @@ void op_cb0e(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb0f(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb0f(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RRC A
@@ -7329,7 +6930,7 @@ void op_cb0f(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->A;
@@ -7342,9 +6943,7 @@ void op_cb0f(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-
-void op_0f(void *reg, t_state *state, uint8_t *mem)
-{
+void op_0f(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: RRCA
@@ -7354,7 +6953,7 @@ void op_0f(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A = (r8->A >> 1) | ((r8->A & 1) << 7);
     CLEAR_Z_FLAG;
@@ -7364,9 +6963,7 @@ void op_0f(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-
-void op_c7(void *reg, t_state *state, uint8_t *mem)
-{
+void op_c7(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: Jumps/calls
     	 instruction: RST 00H
@@ -7376,15 +6973,14 @@ void op_c7(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->SP -= 2;
     write_u16(r16->SP, r16->PC + 1);
     r16->PC = 0x00;
 }
 
-void op_cf(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cf(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: Jumps/calls
     	 instruction: RST 08H
@@ -7394,15 +6990,14 @@ void op_cf(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->SP -= 2;
     write_u16(r16->SP, r16->PC + 1);
     r16->PC = 0x08;
 }
 
-void op_d7(void *reg, t_state *state, uint8_t *mem)
-{
+void op_d7(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: Jumps/calls
     	 instruction: RST 10H
@@ -7412,15 +7007,14 @@ void op_d7(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->SP -= 2;
     write_u16(r16->SP, r16->PC + 1);
     r16->PC = 0x10;
 }
 
-void op_df(void *reg, t_state *state, uint8_t *mem)
-{
+void op_df(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: Jumps/calls
     	 instruction: RST 18H
@@ -7430,15 +7024,14 @@ void op_df(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->SP -= 2;
     write_u16(r16->SP, r16->PC + 1);
     r16->PC = 0x18;
 }
 
-void op_e7(void *reg, t_state *state, uint8_t *mem)
-{
+void op_e7(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: Jumps/calls
     	 instruction: RST 20H
@@ -7448,15 +7041,14 @@ void op_e7(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->SP -= 2;
     write_u16(r16->SP, r16->PC + 1);
     r16->PC = 0x20;
 }
 
-void op_ef(void *reg, t_state *state, uint8_t *mem)
-{
+void op_ef(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: Jumps/calls
     	 instruction: RST 28H
@@ -7466,15 +7058,14 @@ void op_ef(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->SP -= 2;
     write_u16(r16->SP, r16->PC + 1);
     r16->PC = 0x28;
 }
 
-void op_f7(void *reg, t_state *state, uint8_t *mem)
-{
+void op_f7(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: Jumps/calls
     	 instruction: RST 30H
@@ -7484,15 +7075,14 @@ void op_f7(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->SP -= 2;
     write_u16(r16->SP, r16->PC + 1);
     r16->PC = 0x30;
 }
 
-void op_ff(void *reg, t_state *state, uint8_t *mem)
-{
+void op_ff(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: Jumps/calls
     	 instruction: RST 38H
@@ -7502,16 +7092,14 @@ void op_ff(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->SP -= 2;
     write_u16(r16->SP, r16->PC + 1);
     r16->PC = 0x38;
 }
 
-
-void op_98(void *reg, t_state *state, uint8_t *mem)
-{
+void op_98(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: SBC A,B
@@ -7521,21 +7109,20 @@ void op_98(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, calc;
     op = r8->B;
     calc = r8->A - op - IS_C_FLAG;
     calc == 0 ? SET_Z_FLAG : CLEAR_Z_FLAG;
     SET_N_FLAG;
-    ((r8->A & 0xf)-(op & 0xf)-IS_C_FLAG)<0 ? SET_H_FLAG : CLEAR_H_FLAG;
+    ((r8->A & 0xf) - (op & 0xf) - IS_C_FLAG) < 0 ? SET_H_FLAG : CLEAR_H_FLAG;
     r8->A < (op + IS_C_FLAG) ? SET_C_FLAG : CLEAR_C_FLAG;
     r8->A = calc;
     r16->PC += 1;
 }
 
-void op_99(void *reg, t_state *state, uint8_t *mem)
-{
+void op_99(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: SBC A,C
@@ -7545,21 +7132,20 @@ void op_99(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, calc;
     op = r8->C;
     calc = r8->A - op - IS_C_FLAG;
     calc == 0 ? SET_Z_FLAG : CLEAR_Z_FLAG;
     SET_N_FLAG;
-    ((r8->A & 0xf)-(op & 0xf)-IS_C_FLAG)<0 ? SET_H_FLAG : CLEAR_H_FLAG;
+    ((r8->A & 0xf) - (op & 0xf) - IS_C_FLAG) < 0 ? SET_H_FLAG : CLEAR_H_FLAG;
     r8->A < (op + IS_C_FLAG) ? SET_C_FLAG : CLEAR_C_FLAG;
     r8->A = calc;
     r16->PC += 1;
 }
 
-void op_9a(void *reg, t_state *state, uint8_t *mem)
-{
+void op_9a(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: SBC A,D
@@ -7569,21 +7155,20 @@ void op_9a(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, calc;
     op = r8->D;
     calc = r8->A - op - IS_C_FLAG;
     calc == 0 ? SET_Z_FLAG : CLEAR_Z_FLAG;
     SET_N_FLAG;
-    ((r8->A & 0xf)-(op & 0xf)-IS_C_FLAG)<0 ? SET_H_FLAG : CLEAR_H_FLAG;
+    ((r8->A & 0xf) - (op & 0xf) - IS_C_FLAG) < 0 ? SET_H_FLAG : CLEAR_H_FLAG;
     r8->A < (op + IS_C_FLAG) ? SET_C_FLAG : CLEAR_C_FLAG;
     r8->A = calc;
     r16->PC += 1;
 }
 
-void op_9b(void *reg, t_state *state, uint8_t *mem)
-{
+void op_9b(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: SBC A,E
@@ -7593,21 +7178,20 @@ void op_9b(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, calc;
     op = r8->E;
     calc = r8->A - op - IS_C_FLAG;
     calc == 0 ? SET_Z_FLAG : CLEAR_Z_FLAG;
     SET_N_FLAG;
-    ((r8->A & 0xf)-(op & 0xf)-IS_C_FLAG)<0 ? SET_H_FLAG : CLEAR_H_FLAG;
+    ((r8->A & 0xf) - (op & 0xf) - IS_C_FLAG) < 0 ? SET_H_FLAG : CLEAR_H_FLAG;
     r8->A < (op + IS_C_FLAG) ? SET_C_FLAG : CLEAR_C_FLAG;
     r8->A = calc;
     r16->PC += 1;
 }
 
-void op_9c(void *reg, t_state *state, uint8_t *mem)
-{
+void op_9c(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: SBC A,H
@@ -7617,21 +7201,20 @@ void op_9c(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, calc;
     op = r8->H;
     calc = r8->A - op - IS_C_FLAG;
     calc == 0 ? SET_Z_FLAG : CLEAR_Z_FLAG;
     SET_N_FLAG;
-    ((r8->A & 0xf)-(op & 0xf)-IS_C_FLAG)<0 ? SET_H_FLAG : CLEAR_H_FLAG;
+    ((r8->A & 0xf) - (op & 0xf) - IS_C_FLAG) < 0 ? SET_H_FLAG : CLEAR_H_FLAG;
     r8->A < (op + IS_C_FLAG) ? SET_C_FLAG : CLEAR_C_FLAG;
     r8->A = calc;
     r16->PC += 1;
 }
 
-void op_9d(void *reg, t_state *state, uint8_t *mem)
-{
+void op_9d(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: SBC A,L
@@ -7641,21 +7224,20 @@ void op_9d(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, calc;
     op = r8->L;
     calc = r8->A - op - IS_C_FLAG;
     calc == 0 ? SET_Z_FLAG : CLEAR_Z_FLAG;
     SET_N_FLAG;
-    ((r8->A & 0xf)-(op & 0xf)-IS_C_FLAG)<0 ? SET_H_FLAG : CLEAR_H_FLAG;
+    ((r8->A & 0xf) - (op & 0xf) - IS_C_FLAG) < 0 ? SET_H_FLAG : CLEAR_H_FLAG;
     r8->A < (op + IS_C_FLAG) ? SET_C_FLAG : CLEAR_C_FLAG;
     r8->A = calc;
     r16->PC += 1;
 }
 
-void op_9e(void *reg, t_state *state, uint8_t *mem)
-{
+void op_9e(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: SBC A,(HL)
@@ -7665,21 +7247,20 @@ void op_9e(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, calc;
     op = read_u8(r16->HL);
     calc = r8->A - op - IS_C_FLAG;
     calc == 0 ? SET_Z_FLAG : CLEAR_Z_FLAG;
     SET_N_FLAG;
-    ((r8->A & 0xf)-(op & 0xf)-IS_C_FLAG)<0 ? SET_H_FLAG : CLEAR_H_FLAG;
+    ((r8->A & 0xf) - (op & 0xf) - IS_C_FLAG) < 0 ? SET_H_FLAG : CLEAR_H_FLAG;
     r8->A < (op + IS_C_FLAG) ? SET_C_FLAG : CLEAR_C_FLAG;
     r8->A = calc;
     r16->PC += 1;
 }
 
-void op_9f(void *reg, t_state *state, uint8_t *mem)
-{
+void op_9f(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: SBC A,A
@@ -7689,21 +7270,20 @@ void op_9f(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, calc;
     op = r8->A;
     calc = r8->A - op - IS_C_FLAG;
     calc == 0 ? SET_Z_FLAG : CLEAR_Z_FLAG;
     SET_N_FLAG;
-    ((r8->A & 0xf)-(op & 0xf)-IS_C_FLAG)<0 ? SET_H_FLAG : CLEAR_H_FLAG;
+    ((r8->A & 0xf) - (op & 0xf) - IS_C_FLAG) < 0 ? SET_H_FLAG : CLEAR_H_FLAG;
     r8->A < (op + IS_C_FLAG) ? SET_C_FLAG : CLEAR_C_FLAG;
     r8->A = calc;
     r16->PC += 1;
 }
 
-void op_de(void *reg, t_state *state, uint8_t *mem)
-{
+void op_de(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: SBC A,d8
@@ -7713,22 +7293,20 @@ void op_de(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, calc;
-    op = read_u8(r16->PC+1);
+    op = read_u8(r16->PC + 1);
     calc = r8->A - op - IS_C_FLAG;
     calc == 0 ? SET_Z_FLAG : CLEAR_Z_FLAG;
     SET_N_FLAG;
-    ((r8->A & 0xf)-(op & 0xf)-IS_C_FLAG)<0 ? SET_H_FLAG : CLEAR_H_FLAG;
+    ((r8->A & 0xf) - (op & 0xf) - IS_C_FLAG) < 0 ? SET_H_FLAG : CLEAR_H_FLAG;
     r8->A < (op + IS_C_FLAG) ? SET_C_FLAG : CLEAR_C_FLAG;
     r8->A = calc;
     r16->PC += 2;
 }
 
-
-void op_37(void *reg, t_state *state, uint8_t *mem)
-{
+void op_37(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: SCF
@@ -7738,7 +7316,7 @@ void op_37(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     CLEAR_N_FLAG;
     CLEAR_H_FLAG;
@@ -7746,9 +7324,7 @@ void op_37(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-
-void op_cbc0(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbc0(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 0,B
@@ -7758,14 +7334,13 @@ void op_cbc0(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->B |= (1 << 0);
     r16->PC += 2;
 }
 
-void op_cbc1(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbc1(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 0,C
@@ -7775,14 +7350,13 @@ void op_cbc1(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->C |= (1 << 0);
     r16->PC += 2;
 }
 
-void op_cbc2(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbc2(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 0,D
@@ -7792,14 +7366,13 @@ void op_cbc2(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->D |= (1 << 0);
     r16->PC += 2;
 }
 
-void op_cbc3(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbc3(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 0,E
@@ -7809,14 +7382,13 @@ void op_cbc3(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->E |= (1 << 0);
     r16->PC += 2;
 }
 
-void op_cbc4(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbc4(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 0,H
@@ -7826,14 +7398,13 @@ void op_cbc4(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->H |= (1 << 0);
     r16->PC += 2;
 }
 
-void op_cbc5(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbc5(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 0,L
@@ -7843,14 +7414,13 @@ void op_cbc5(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->L |= (1 << 0);
     r16->PC += 2;
 }
 
-void op_cbc6(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbc6(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 0,(HL)
@@ -7860,7 +7430,7 @@ void op_cbc6(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = read_u8(r16->HL);
@@ -7869,8 +7439,7 @@ void op_cbc6(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cbc7(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbc7(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 0,A
@@ -7880,14 +7449,13 @@ void op_cbc7(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A |= (1 << 0);
     r16->PC += 2;
 }
 
-void op_cbc8(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbc8(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 1,B
@@ -7897,14 +7465,13 @@ void op_cbc8(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->B |= (1 << 1);
     r16->PC += 2;
 }
 
-void op_cbc9(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbc9(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 1,C
@@ -7914,14 +7481,13 @@ void op_cbc9(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->C |= (1 << 1);
     r16->PC += 2;
 }
 
-void op_cbca(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbca(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 1,D
@@ -7931,14 +7497,13 @@ void op_cbca(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->D |= (1 << 1);
     r16->PC += 2;
 }
 
-void op_cbcb(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbcb(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 1,E
@@ -7948,14 +7513,13 @@ void op_cbcb(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->E |= (1 << 1);
     r16->PC += 2;
 }
 
-void op_cbcc(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbcc(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 1,H
@@ -7965,14 +7529,13 @@ void op_cbcc(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->H |= (1 << 1);
     r16->PC += 2;
 }
 
-void op_cbcd(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbcd(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 1,L
@@ -7982,14 +7545,13 @@ void op_cbcd(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->L |= (1 << 1);
     r16->PC += 2;
 }
 
-void op_cbce(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbce(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 1,(HL)
@@ -7999,7 +7561,7 @@ void op_cbce(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = read_u8(r16->HL);
@@ -8008,8 +7570,7 @@ void op_cbce(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cbcf(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbcf(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 1,A
@@ -8019,14 +7580,13 @@ void op_cbcf(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A |= (1 << 1);
     r16->PC += 2;
 }
 
-void op_cbd0(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbd0(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 2,B
@@ -8036,14 +7596,13 @@ void op_cbd0(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->B |= (1 << 2);
     r16->PC += 2;
 }
 
-void op_cbd1(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbd1(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 2,C
@@ -8053,14 +7612,13 @@ void op_cbd1(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->C |= (1 << 2);
     r16->PC += 2;
 }
 
-void op_cbd2(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbd2(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 2,D
@@ -8070,14 +7628,13 @@ void op_cbd2(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->D |= (1 << 2);
     r16->PC += 2;
 }
 
-void op_cbd3(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbd3(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 2,E
@@ -8087,14 +7644,13 @@ void op_cbd3(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->E |= (1 << 2);
     r16->PC += 2;
 }
 
-void op_cbd4(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbd4(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 2,H
@@ -8104,14 +7660,13 @@ void op_cbd4(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->H |= (1 << 2);
     r16->PC += 2;
 }
 
-void op_cbd5(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbd5(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 2,L
@@ -8121,14 +7676,13 @@ void op_cbd5(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->L |= (1 << 2);
     r16->PC += 2;
 }
 
-void op_cbd6(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbd6(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 2,(HL)
@@ -8138,7 +7692,7 @@ void op_cbd6(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = read_u8(r16->HL);
@@ -8147,8 +7701,7 @@ void op_cbd6(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cbd7(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbd7(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 2,A
@@ -8158,14 +7711,13 @@ void op_cbd7(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A |= (1 << 2);
     r16->PC += 2;
 }
 
-void op_cbd8(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbd8(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 3,B
@@ -8175,14 +7727,13 @@ void op_cbd8(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->B |= (1 << 3);
     r16->PC += 2;
 }
 
-void op_cbd9(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbd9(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 3,C
@@ -8192,14 +7743,13 @@ void op_cbd9(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->C |= (1 << 3);
     r16->PC += 2;
 }
 
-void op_cbda(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbda(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 3,D
@@ -8209,14 +7759,13 @@ void op_cbda(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->D |= (1 << 3);
     r16->PC += 2;
 }
 
-void op_cbdb(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbdb(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 3,E
@@ -8226,14 +7775,13 @@ void op_cbdb(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->E |= (1 << 3);
     r16->PC += 2;
 }
 
-void op_cbdc(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbdc(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 3,H
@@ -8243,14 +7791,13 @@ void op_cbdc(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->H |= (1 << 3);
     r16->PC += 2;
 }
 
-void op_cbdd(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbdd(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 3,L
@@ -8260,14 +7807,13 @@ void op_cbdd(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->L |= (1 << 3);
     r16->PC += 2;
 }
 
-void op_cbde(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbde(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 3,(HL)
@@ -8277,7 +7823,7 @@ void op_cbde(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = read_u8(r16->HL);
@@ -8286,8 +7832,7 @@ void op_cbde(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cbdf(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbdf(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 3,A
@@ -8297,14 +7842,13 @@ void op_cbdf(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A |= (1 << 3);
     r16->PC += 2;
 }
 
-void op_cbe0(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbe0(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 4,B
@@ -8314,14 +7858,13 @@ void op_cbe0(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->B |= (1 << 4);
     r16->PC += 2;
 }
 
-void op_cbe1(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbe1(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 4,C
@@ -8331,14 +7874,13 @@ void op_cbe1(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->C |= (1 << 4);
     r16->PC += 2;
 }
 
-void op_cbe2(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbe2(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 4,D
@@ -8348,14 +7890,13 @@ void op_cbe2(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->D |= (1 << 4);
     r16->PC += 2;
 }
 
-void op_cbe3(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbe3(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 4,E
@@ -8365,14 +7906,13 @@ void op_cbe3(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->E |= (1 << 4);
     r16->PC += 2;
 }
 
-void op_cbe4(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbe4(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 4,H
@@ -8382,14 +7922,13 @@ void op_cbe4(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->H |= (1 << 4);
     r16->PC += 2;
 }
 
-void op_cbe5(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbe5(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 4,L
@@ -8399,14 +7938,13 @@ void op_cbe5(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->L |= (1 << 4);
     r16->PC += 2;
 }
 
-void op_cbe6(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbe6(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 4,(HL)
@@ -8416,7 +7954,7 @@ void op_cbe6(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = read_u8(r16->HL);
@@ -8425,8 +7963,7 @@ void op_cbe6(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cbe7(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbe7(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 4,A
@@ -8436,14 +7973,13 @@ void op_cbe7(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A |= (1 << 4);
     r16->PC += 2;
 }
 
-void op_cbe8(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbe8(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 5,B
@@ -8453,14 +7989,13 @@ void op_cbe8(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->B |= (1 << 5);
     r16->PC += 2;
 }
 
-void op_cbe9(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbe9(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 5,C
@@ -8470,14 +8005,13 @@ void op_cbe9(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->C |= (1 << 5);
     r16->PC += 2;
 }
 
-void op_cbea(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbea(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 5,D
@@ -8487,14 +8021,13 @@ void op_cbea(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->D |= (1 << 5);
     r16->PC += 2;
 }
 
-void op_cbeb(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbeb(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 5,E
@@ -8504,14 +8037,13 @@ void op_cbeb(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->E |= (1 << 5);
     r16->PC += 2;
 }
 
-void op_cbec(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbec(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 5,H
@@ -8521,14 +8053,13 @@ void op_cbec(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->H |= (1 << 5);
     r16->PC += 2;
 }
 
-void op_cbed(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbed(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 5,L
@@ -8538,14 +8069,13 @@ void op_cbed(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->L |= (1 << 5);
     r16->PC += 2;
 }
 
-void op_cbee(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbee(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 5,(HL)
@@ -8555,7 +8085,7 @@ void op_cbee(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = read_u8(r16->HL);
@@ -8564,8 +8094,7 @@ void op_cbee(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cbef(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbef(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 5,A
@@ -8575,14 +8104,13 @@ void op_cbef(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A |= (1 << 5);
     r16->PC += 2;
 }
 
-void op_cbf0(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbf0(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 6,B
@@ -8592,14 +8120,13 @@ void op_cbf0(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->B |= (1 << 6);
     r16->PC += 2;
 }
 
-void op_cbf1(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbf1(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 6,C
@@ -8609,14 +8136,13 @@ void op_cbf1(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->C |= (1 << 6);
     r16->PC += 2;
 }
 
-void op_cbf2(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbf2(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 6,D
@@ -8626,14 +8152,13 @@ void op_cbf2(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->D |= (1 << 6);
     r16->PC += 2;
 }
 
-void op_cbf3(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbf3(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 6,E
@@ -8643,14 +8168,13 @@ void op_cbf3(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->E |= (1 << 6);
     r16->PC += 2;
 }
 
-void op_cbf4(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbf4(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 6,H
@@ -8660,14 +8184,13 @@ void op_cbf4(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->H |= (1 << 6);
     r16->PC += 2;
 }
 
-void op_cbf5(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbf5(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 6,L
@@ -8677,14 +8200,13 @@ void op_cbf5(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->L |= (1 << 6);
     r16->PC += 2;
 }
 
-void op_cbf6(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbf6(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 6,(HL)
@@ -8694,7 +8216,7 @@ void op_cbf6(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = read_u8(r16->HL);
@@ -8703,8 +8225,7 @@ void op_cbf6(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cbf7(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbf7(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 6,A
@@ -8714,14 +8235,13 @@ void op_cbf7(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A |= (1 << 6);
     r16->PC += 2;
 }
 
-void op_cbf8(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbf8(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 7,B
@@ -8731,14 +8251,13 @@ void op_cbf8(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->B |= (1 << 7);
     r16->PC += 2;
 }
 
-void op_cbf9(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbf9(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 7,C
@@ -8748,14 +8267,13 @@ void op_cbf9(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->C |= (1 << 7);
     r16->PC += 2;
 }
 
-void op_cbfa(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbfa(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 7,D
@@ -8765,14 +8283,13 @@ void op_cbfa(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->D |= (1 << 7);
     r16->PC += 2;
 }
 
-void op_cbfb(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbfb(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 7,E
@@ -8782,14 +8299,13 @@ void op_cbfb(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->E |= (1 << 7);
     r16->PC += 2;
 }
 
-void op_cbfc(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbfc(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 7,H
@@ -8799,14 +8315,13 @@ void op_cbfc(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->H |= (1 << 7);
     r16->PC += 2;
 }
 
-void op_cbfd(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbfd(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 7,L
@@ -8816,14 +8331,13 @@ void op_cbfd(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->L |= (1 << 7);
     r16->PC += 2;
 }
 
-void op_cbfe(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbfe(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 7,(HL)
@@ -8833,7 +8347,7 @@ void op_cbfe(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = read_u8(r16->HL);
@@ -8842,8 +8356,7 @@ void op_cbfe(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cbff(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cbff(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SET 7,A
@@ -8853,15 +8366,13 @@ void op_cbff(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A |= (1 << 7);
     r16->PC += 2;
 }
 
-
-void op_cb20(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb20(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SLA B
@@ -8871,7 +8382,7 @@ void op_cb20(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->B;
@@ -8884,8 +8395,7 @@ void op_cb20(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb21(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb21(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SLA C
@@ -8895,7 +8405,7 @@ void op_cb21(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->C;
@@ -8908,8 +8418,7 @@ void op_cb21(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb22(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb22(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SLA D
@@ -8919,7 +8428,7 @@ void op_cb22(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->D;
@@ -8932,8 +8441,7 @@ void op_cb22(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb23(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb23(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SLA E
@@ -8943,7 +8451,7 @@ void op_cb23(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->E;
@@ -8956,8 +8464,7 @@ void op_cb23(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb24(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb24(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SLA H
@@ -8967,7 +8474,7 @@ void op_cb24(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->H;
@@ -8980,8 +8487,7 @@ void op_cb24(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb25(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb25(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SLA L
@@ -8991,7 +8497,7 @@ void op_cb25(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->L;
@@ -9004,8 +8510,7 @@ void op_cb25(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb26(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb26(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SLA (HL)
@@ -9015,7 +8520,7 @@ void op_cb26(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = read_u8(r16->HL);
@@ -9028,8 +8533,7 @@ void op_cb26(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb27(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb27(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SLA A
@@ -9039,7 +8543,7 @@ void op_cb27(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->A;
@@ -9052,9 +8556,7 @@ void op_cb27(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-
-void op_cb28(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb28(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SRA B
@@ -9064,21 +8566,20 @@ void op_cb28(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->B;
     CLEAR_N_FLAG;
     CLEAR_H_FLAG;
     op & 1 ? SET_C_FLAG : CLEAR_C_FLAG;
-    op = (op & 0x80) | (op >> 1) ;
+    op = (op & 0x80) | (op >> 1);
     op == 0 ? SET_Z_FLAG : CLEAR_Z_FLAG;
     r8->B = op;
     r16->PC += 2;
 }
 
-void op_cb29(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb29(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SRA C
@@ -9088,21 +8589,20 @@ void op_cb29(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->C;
     CLEAR_N_FLAG;
     CLEAR_H_FLAG;
     op & 1 ? SET_C_FLAG : CLEAR_C_FLAG;
-    op = (op & 0x80) | (op >> 1) ;
+    op = (op & 0x80) | (op >> 1);
     op == 0 ? SET_Z_FLAG : CLEAR_Z_FLAG;
     r8->C = op;
     r16->PC += 2;
 }
 
-void op_cb2a(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb2a(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SRA D
@@ -9112,21 +8612,20 @@ void op_cb2a(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->D;
     CLEAR_N_FLAG;
     CLEAR_H_FLAG;
     op & 1 ? SET_C_FLAG : CLEAR_C_FLAG;
-    op = (op & 0x80) | (op >> 1) ;
+    op = (op & 0x80) | (op >> 1);
     op == 0 ? SET_Z_FLAG : CLEAR_Z_FLAG;
     r8->D = op;
     r16->PC += 2;
 }
 
-void op_cb2b(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb2b(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SRA E
@@ -9136,21 +8635,20 @@ void op_cb2b(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->E;
     CLEAR_N_FLAG;
     CLEAR_H_FLAG;
     op & 1 ? SET_C_FLAG : CLEAR_C_FLAG;
-    op = (op & 0x80) | (op >> 1) ;
+    op = (op & 0x80) | (op >> 1);
     op == 0 ? SET_Z_FLAG : CLEAR_Z_FLAG;
     r8->E = op;
     r16->PC += 2;
 }
 
-void op_cb2c(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb2c(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SRA H
@@ -9160,21 +8658,20 @@ void op_cb2c(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->H;
     CLEAR_N_FLAG;
     CLEAR_H_FLAG;
     op & 1 ? SET_C_FLAG : CLEAR_C_FLAG;
-    op = (op & 0x80) | (op >> 1) ;
+    op = (op & 0x80) | (op >> 1);
     op == 0 ? SET_Z_FLAG : CLEAR_Z_FLAG;
     r8->H = op;
     r16->PC += 2;
 }
 
-void op_cb2d(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb2d(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SRA L
@@ -9184,21 +8681,20 @@ void op_cb2d(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->L;
     CLEAR_N_FLAG;
     CLEAR_H_FLAG;
     op & 1 ? SET_C_FLAG : CLEAR_C_FLAG;
-    op = (op & 0x80) | (op >> 1) ;
+    op = (op & 0x80) | (op >> 1);
     op == 0 ? SET_Z_FLAG : CLEAR_Z_FLAG;
     r8->L = op;
     r16->PC += 2;
 }
 
-void op_cb2e(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb2e(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SRA (HL)
@@ -9208,21 +8704,20 @@ void op_cb2e(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = read_u8(r16->HL);
     CLEAR_N_FLAG;
     CLEAR_H_FLAG;
     op & 1 ? SET_C_FLAG : CLEAR_C_FLAG;
-    op = (op & 0x80) | (op >> 1) ;
+    op = (op & 0x80) | (op >> 1);
     op == 0 ? SET_Z_FLAG : CLEAR_Z_FLAG;
     write_u8(r16->HL, op);
     r16->PC += 2;
 }
 
-void op_cb2f(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb2f(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SRA A
@@ -9232,22 +8727,20 @@ void op_cb2f(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->A;
     CLEAR_N_FLAG;
     CLEAR_H_FLAG;
     op & 1 ? SET_C_FLAG : CLEAR_C_FLAG;
-    op = (op & 0x80) | (op >> 1) ;
+    op = (op & 0x80) | (op >> 1);
     op == 0 ? SET_Z_FLAG : CLEAR_Z_FLAG;
     r8->A = op;
     r16->PC += 2;
 }
 
-
-void op_cb38(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb38(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SRL B
@@ -9257,7 +8750,7 @@ void op_cb38(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->B;
@@ -9270,8 +8763,7 @@ void op_cb38(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb39(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb39(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SRL C
@@ -9281,7 +8773,7 @@ void op_cb39(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->C;
@@ -9294,8 +8786,7 @@ void op_cb39(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb3a(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb3a(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SRL D
@@ -9305,7 +8796,7 @@ void op_cb3a(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->D;
@@ -9318,8 +8809,7 @@ void op_cb3a(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb3b(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb3b(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SRL E
@@ -9329,7 +8819,7 @@ void op_cb3b(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->E;
@@ -9342,8 +8832,7 @@ void op_cb3b(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb3c(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb3c(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SRL H
@@ -9353,7 +8842,7 @@ void op_cb3c(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->H;
@@ -9366,8 +8855,7 @@ void op_cb3c(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb3d(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb3d(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SRL L
@@ -9377,7 +8865,7 @@ void op_cb3d(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->L;
@@ -9390,8 +8878,7 @@ void op_cb3d(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb3e(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb3e(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SRL (HL)
@@ -9401,7 +8888,7 @@ void op_cb3e(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = read_u8(r16->HL);
@@ -9414,8 +8901,7 @@ void op_cb3e(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb3f(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb3f(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SRL A
@@ -9425,7 +8911,7 @@ void op_cb3f(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->A;
@@ -9438,9 +8924,7 @@ void op_cb3f(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-
-void op_10(void *reg, t_state *state, uint8_t *mem)
-{
+void op_10(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: Misc/control instructions
     	 instruction: STOP 0
@@ -9450,15 +8934,13 @@ void op_10(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->PC += 2;
     state->stop = true;
 }
 
-
-void op_90(void *reg, t_state *state, uint8_t *mem)
-{
+void op_90(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: SUB B
@@ -9468,7 +8950,7 @@ void op_90(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->B;
@@ -9480,8 +8962,7 @@ void op_90(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_91(void *reg, t_state *state, uint8_t *mem)
-{
+void op_91(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: SUB C
@@ -9491,7 +8972,7 @@ void op_91(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->C;
@@ -9503,8 +8984,7 @@ void op_91(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_92(void *reg, t_state *state, uint8_t *mem)
-{
+void op_92(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: SUB D
@@ -9514,7 +8994,7 @@ void op_92(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->D;
@@ -9526,8 +9006,7 @@ void op_92(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_93(void *reg, t_state *state, uint8_t *mem)
-{
+void op_93(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: SUB E
@@ -9537,7 +9016,7 @@ void op_93(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->E;
@@ -9549,8 +9028,7 @@ void op_93(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_94(void *reg, t_state *state, uint8_t *mem)
-{
+void op_94(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: SUB H
@@ -9560,7 +9038,7 @@ void op_94(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->H;
@@ -9572,8 +9050,7 @@ void op_94(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_95(void *reg, t_state *state, uint8_t *mem)
-{
+void op_95(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: SUB L
@@ -9583,7 +9060,7 @@ void op_95(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->L;
@@ -9595,8 +9072,7 @@ void op_95(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_96(void *reg, t_state *state, uint8_t *mem)
-{
+void op_96(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: SUB (HL)
@@ -9606,7 +9082,7 @@ void op_96(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = read_u8(r16->HL);
@@ -9618,8 +9094,7 @@ void op_96(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_97(void *reg, t_state *state, uint8_t *mem)
-{
+void op_97(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: SUB A
@@ -9629,7 +9104,7 @@ void op_97(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->A;
@@ -9641,8 +9116,7 @@ void op_97(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_d6(void *reg, t_state *state, uint8_t *mem)
-{
+void op_d6(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: SUB d8
@@ -9652,10 +9126,10 @@ void op_d6(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
-    op = read_u8(r16->PC+1);
+    op = read_u8(r16->PC + 1);
     r8->A == op ? SET_Z_FLAG : CLEAR_Z_FLAG;
     SET_N_FLAG;
     (r8->A & 0xf) < (op & 0xf) ? SET_H_FLAG : CLEAR_H_FLAG;
@@ -9664,9 +9138,7 @@ void op_d6(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-
-void op_cb30(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb30(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SWAP B
@@ -9676,7 +9148,7 @@ void op_cb30(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->B;
@@ -9689,8 +9161,7 @@ void op_cb30(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb31(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb31(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SWAP C
@@ -9700,7 +9171,7 @@ void op_cb31(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->C;
@@ -9713,8 +9184,7 @@ void op_cb31(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb32(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb32(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SWAP D
@@ -9724,7 +9194,7 @@ void op_cb32(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->D;
@@ -9737,8 +9207,7 @@ void op_cb32(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb33(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb33(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SWAP E
@@ -9748,7 +9217,7 @@ void op_cb33(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->E;
@@ -9761,8 +9230,7 @@ void op_cb33(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb34(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb34(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SWAP H
@@ -9772,7 +9240,7 @@ void op_cb34(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->H;
@@ -9785,8 +9253,7 @@ void op_cb34(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb35(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb35(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SWAP L
@@ -9796,7 +9263,7 @@ void op_cb35(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->L;
@@ -9809,8 +9276,7 @@ void op_cb35(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb36(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb36(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SWAP (HL)
@@ -9820,7 +9286,7 @@ void op_cb36(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = read_u8(r16->HL);
@@ -9833,8 +9299,7 @@ void op_cb36(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-void op_cb37(void *reg, t_state *state, uint8_t *mem)
-{
+void op_cb37(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit rotations/shifts and bit instructions
     	 instruction: SWAP A
@@ -9844,7 +9309,7 @@ void op_cb37(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
     op = r8->A;
@@ -9857,9 +9322,7 @@ void op_cb37(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-
-void op_a8(void *reg, t_state *state, uint8_t *mem)
-{
+void op_a8(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: XOR B
@@ -9869,7 +9332,7 @@ void op_a8(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A ^= r8->B;
     r8->A == 0 ? SET_Z_FLAG : CLEAR_Z_FLAG;
@@ -9879,8 +9342,7 @@ void op_a8(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_a9(void *reg, t_state *state, uint8_t *mem)
-{
+void op_a9(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: XOR C
@@ -9890,7 +9352,7 @@ void op_a9(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A ^= r8->C;
     r8->A == 0 ? SET_Z_FLAG : CLEAR_Z_FLAG;
@@ -9900,8 +9362,7 @@ void op_a9(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_aa(void *reg, t_state *state, uint8_t *mem)
-{
+void op_aa(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: XOR D
@@ -9911,7 +9372,7 @@ void op_aa(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A ^= r8->D;
     r8->A == 0 ? SET_Z_FLAG : CLEAR_Z_FLAG;
@@ -9921,8 +9382,7 @@ void op_aa(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_ab(void *reg, t_state *state, uint8_t *mem)
-{
+void op_ab(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: XOR E
@@ -9932,7 +9392,7 @@ void op_ab(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A ^= r8->E;
     r8->A == 0 ? SET_Z_FLAG : CLEAR_Z_FLAG;
@@ -9942,8 +9402,7 @@ void op_ab(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_ac(void *reg, t_state *state, uint8_t *mem)
-{
+void op_ac(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: XOR H
@@ -9953,7 +9412,7 @@ void op_ac(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A ^= r8->H;
     r8->A == 0 ? SET_Z_FLAG : CLEAR_Z_FLAG;
@@ -9963,8 +9422,7 @@ void op_ac(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_ad(void *reg, t_state *state, uint8_t *mem)
-{
+void op_ad(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: XOR L
@@ -9974,7 +9432,7 @@ void op_ad(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A ^= r8->L;
     r8->A == 0 ? SET_Z_FLAG : CLEAR_Z_FLAG;
@@ -9984,8 +9442,7 @@ void op_ad(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_ae(void *reg, t_state *state, uint8_t *mem)
-{
+void op_ae(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: XOR (HL)
@@ -9995,7 +9452,7 @@ void op_ae(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A ^= read_u8(r16->HL);
     r8->A == 0 ? SET_Z_FLAG : CLEAR_Z_FLAG;
@@ -10005,8 +9462,7 @@ void op_ae(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_af(void *reg, t_state *state, uint8_t *mem)
-{
+void op_af(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: XOR A
@@ -10016,7 +9472,7 @@ void op_af(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A ^= r8->A;
     r8->A == 0 ? SET_Z_FLAG : CLEAR_Z_FLAG;
@@ -10026,8 +9482,7 @@ void op_af(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 1;
 }
 
-void op_ee(void *reg, t_state *state, uint8_t *mem)
-{
+void op_ee(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: 8bit arithmetic/logical instructions
     	 instruction: XOR d8
@@ -10037,9 +9492,9 @@ void op_ee(void *reg, t_state *state, uint8_t *mem)
     */
 
 
-    t_r8  *r8  = reg;
+    t_r8 *r8 = reg;
     t_r16 *r16 = reg;
-    r8->A ^= read_u8(r16->PC+1);
+    r8->A ^= read_u8(r16->PC + 1);
     r8->A == 0 ? SET_Z_FLAG : CLEAR_Z_FLAG;
     CLEAR_N_FLAG;
     CLEAR_H_FLAG;
@@ -10047,9 +9502,7 @@ void op_ee(void *reg, t_state *state, uint8_t *mem)
     r16->PC += 2;
 }
 
-
-void op_d3(void *reg, t_state *state, uint8_t *mem)
-{
+void op_d3(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: UNDEFINED XXX
     	 instruction: undefined
@@ -10064,8 +9517,7 @@ void op_d3(void *reg, t_state *state, uint8_t *mem)
     state->done = true;
 }
 
-void op_db(void *reg, t_state *state, uint8_t *mem)
-{
+void op_db(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: UNDEFINED XXX
     	 instruction: undefined
@@ -10080,8 +9532,7 @@ void op_db(void *reg, t_state *state, uint8_t *mem)
     state->done = true;
 }
 
-void op_dd(void *reg, t_state *state, uint8_t *mem)
-{
+void op_dd(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: UNDEFINED XXX
     	 instruction: undefined
@@ -10096,8 +9547,7 @@ void op_dd(void *reg, t_state *state, uint8_t *mem)
     state->done = true;
 }
 
-void op_e3(void *reg, t_state *state, uint8_t *mem)
-{
+void op_e3(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: UNDEFINED XXX
     	 instruction: undefined
@@ -10112,8 +9562,7 @@ void op_e3(void *reg, t_state *state, uint8_t *mem)
     state->done = true;
 }
 
-void op_e4(void *reg, t_state *state, uint8_t *mem)
-{
+void op_e4(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: UNDEFINED XXX
     	 instruction: undefined
@@ -10128,8 +9577,7 @@ void op_e4(void *reg, t_state *state, uint8_t *mem)
     state->done = true;
 }
 
-void op_eb(void *reg, t_state *state, uint8_t *mem)
-{
+void op_eb(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: UNDEFINED XXX
     	 instruction: undefined
@@ -10144,8 +9592,7 @@ void op_eb(void *reg, t_state *state, uint8_t *mem)
     state->done = true;
 }
 
-void op_ec(void *reg, t_state *state, uint8_t *mem)
-{
+void op_ec(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: UNDEFINED XXX
     	 instruction: undefined
@@ -10160,8 +9607,7 @@ void op_ec(void *reg, t_state *state, uint8_t *mem)
     state->done = true;
 }
 
-void op_ed(void *reg, t_state *state, uint8_t *mem)
-{
+void op_ed(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: UNDEFINED XXX
     	 instruction: undefined
@@ -10176,8 +9622,7 @@ void op_ed(void *reg, t_state *state, uint8_t *mem)
     state->done = true;
 }
 
-void op_f4(void *reg, t_state *state, uint8_t *mem)
-{
+void op_f4(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: UNDEFINED XXX
     	 instruction: undefined
@@ -10192,8 +9637,7 @@ void op_f4(void *reg, t_state *state, uint8_t *mem)
     state->done = true;
 }
 
-void op_fc(void *reg, t_state *state, uint8_t *mem)
-{
+void op_fc(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: UNDEFINED XXX
     	 instruction: undefined
@@ -10208,8 +9652,7 @@ void op_fc(void *reg, t_state *state, uint8_t *mem)
     state->done = true;
 }
 
-void op_fd(void *reg, t_state *state, uint8_t *mem)
-{
+void op_fd(void *reg, t_state *state, uint8_t *mem) {
     /*
     	    category: UNDEFINED XXX
     	 instruction: undefined

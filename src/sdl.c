@@ -4,17 +4,17 @@
 #define WND_WIDTH   160
 #define WND_HEIGHT  144
 
-static SDL_Window         *gui_window;
-static SDL_Renderer       *gui_renderer;
-static SDL_Texture        *gui_buffer;
-static volatile int       audio_done;
-static SDL_AudioDeviceID  audio_device;
+static SDL_Window *gui_window;
+static SDL_Renderer *gui_renderer;
+static SDL_Texture *gui_buffer;
+static volatile int audio_done;
+static SDL_AudioDeviceID audio_device;
 uint8_t sdl_sound_buffer[SOUND_BUF_SIZE];
 
-static int                gui_scale_factor = 3;
+static int gui_scale_factor = 3;
 
-uint32_t        game_controls[]     = {SDLK_DOWN, SDLK_UP, SDLK_LEFT, SDLK_RIGHT, SDLK_RETURN, SDLK_RSHIFT, SDLK_z, SDLK_x};
-uint32_t        num_game_controls   = sizeof(game_controls) / sizeof(uint32_t);
+uint32_t game_controls[] = {SDLK_DOWN, SDLK_UP, SDLK_LEFT, SDLK_RIGHT, SDLK_RETURN, SDLK_RSHIFT, SDLK_z, SDLK_x};
+uint32_t num_game_controls = sizeof(game_controls) / sizeof(uint32_t);
 
 struct s_render_palette {
     uint32_t colors[4];
@@ -67,14 +67,13 @@ struct s_render_palette render_palettes[] = {
 
 static unsigned int render_palette_idx = num_render_palettes * 0x10000 + 6;
 
-void set_window_title()
-{
+void set_window_title() {
     char *t, *s = render_palettes[render_palette_idx % num_render_palettes].name;
     char *title1 = "gbmu";
     char *title2 = "gbmu: ";
     if ((!s) || (!strlen(s))) {
         (void)SDL_SetWindowTitle(gui_window, title1);
-        return ;
+        return;
     }
     t = malloc(strlen(title2) + strlen(s) + 1);
     (void)strcpy(t, title2);
@@ -83,8 +82,7 @@ void set_window_title()
     free(t);
 }
 
-void set_window_size()
-{
+void set_window_size() {
     int width = WND_WIDTH * gui_scale_factor;
     int height = WND_HEIGHT * gui_scale_factor;
 
@@ -92,12 +90,12 @@ void set_window_size()
         SDL_DestroyTexture(gui_buffer);
     SDL_SetWindowSize(gui_window, width, height);
     SDL_SetWindowPosition(gui_window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
-    if ((gui_buffer = SDL_CreateTexture(gui_renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, width, height)) == NULL)
-        SDL_Log("%s: could not create a texture: %s", "set_window_size()",  SDL_GetError());
+    if ((gui_buffer = SDL_CreateTexture(gui_renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, width,
+                                        height)) == NULL)
+        SDL_Log("%s: could not create a texture: %s", "set_window_size()", SDL_GetError());
 }
 
-int sdl_video_open()
-{
+int sdl_video_open() {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0) {
         printf("Failed to initialise SDL\n");
         return 0;
@@ -118,8 +116,7 @@ int sdl_video_open()
     return 1;
 }
 
-int sdl_video_close()
-{
+int sdl_video_close() {
     SDL_DestroyTexture(gui_buffer);
     SDL_DestroyRenderer(gui_renderer);
     SDL_DestroyWindow(gui_window);
@@ -127,17 +124,16 @@ int sdl_video_close()
     return 1;
 }
 
-int sdl_render_video(uint8_t *buf, uint32_t n)
-{
-    uint32_t    *pixels, *colors;
-    int         pitch, idx, y, x, i, j, f;
+int sdl_render_video(uint8_t *buf, uint32_t n) {
+    uint32_t *pixels, *colors;
+    int pitch, idx, y, x, i, j, f;
 
     if (SDL_LockTexture(gui_buffer, NULL, (void *)&pixels, &pitch) < 0) {
         SDL_Log("Couldn't lock texture: %s\n", SDL_GetError());
         return 0;
     }
 
-    (void) n;
+    (void)n;
     f = gui_scale_factor;
     colors = &(render_palettes[render_palette_idx % num_render_palettes].colors[0]);
 
@@ -159,11 +155,10 @@ int sdl_render_video(uint8_t *buf, uint32_t n)
     return 1;
 }
 
-void gui_set_button_states(uint32_t key, uint8_t value)
-{
+void gui_set_button_states(uint32_t key, uint8_t value) {
     uint32_t i;
 
-    for (i=0; i < num_game_controls; i++) {
+    for (i = 0; i < num_game_controls; i++) {
         if (game_controls[i] == key) {
             state->buttons[i] = value;
             joypad_request_interrupt();
@@ -171,16 +166,15 @@ void gui_set_button_states(uint32_t key, uint8_t value)
     }
 }
 
-int sdl_input_read()
-{
-    int         i, tmp;
-    SDL_Event   event;
+int sdl_input_read() {
+    int i, tmp;
+    SDL_Event event;
 
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
         case SDL_QUIT:
             state->done = true;
-            break ;
+            break;
         case SDL_KEYDOWN:
             gui_set_button_states(event.key.keysym.sym, 1);
             if (event.key.keysym.sym == SDLK_ESCAPE)
@@ -205,7 +199,7 @@ int sdl_input_read()
             if ((event.key.keysym.sym == SDLK_MINUS) && (state->volume < 16))
                 state->volume++;
 
-            for (i=tmp=0; i<4; i++) {
+            for (i = tmp = 0; i < 4; i++) {
                 if (event.key.keysym.sym == (int[]) {
                 SDLK_u, SDLK_i, SDLK_o, SDLK_p
             }[i]) {
@@ -214,7 +208,7 @@ int sdl_input_read()
                 }
             }
 
-            for (i=0; tmp && i<4; i++) {
+            for (i = 0; tmp && i < 4; i++) {
                 printf("nr%d [%s]%s", i + 1,
                        state->sound_channels[i] ? "on" : "off",
                        i + 1 < 4 ? ", " : "\n");
@@ -226,24 +220,22 @@ int sdl_input_read()
                 render_palette_idx++;
             if ((event.key.keysym.sym == SDLK_q) || (event.key.keysym.sym == SDLK_w))
                 set_window_title();
-            break ;
+            break;
         case SDL_KEYUP:
             gui_set_button_states(event.key.keysym.sym, 0);
-            break ;
+            break;
         }
     }
     return 1;
 }
 
-int sdl_av_sync()
-{
+int sdl_av_sync() {
     while (!audio_done)
         SDL_Delay(1);
     return 1;
 }
 
-int sdl_write_audio(uint8_t *buf, uint32_t size)
-{
+int sdl_write_audio(uint8_t *buf, uint32_t size) {
     audio_done = 0;
     memcpy(sdl_sound_buffer, buf, size);
     while (!audio_done)
@@ -251,46 +243,43 @@ int sdl_write_audio(uint8_t *buf, uint32_t size)
     return 1;
 }
 
-void audio_callback(void *userdata, Uint8 *stream, int len)
-{
+void audio_callback(void *userdata, Uint8 *stream, int len) {
     (void)userdata;
     memcpy(stream, sdl_sound_buffer, len);
     audio_done = 1;
 }
 
 /* to be called after SDL_Init() */
-int sdl_audio_open()
-{
+int sdl_audio_open() {
     SDL_AudioSpec want, have;
 
     SDL_memset(&have, 0, sizeof(SDL_AudioSpec));
     SDL_memset(&want, 0, sizeof(SDL_AudioSpec));
-    want.freq     = SAMPLING_FREQUENCY;
-    want.format   = AUDIO_S16;
+    want.freq = SAMPLING_FREQUENCY;
+    want.format = AUDIO_S16;
     want.channels = NUM_CHANNELS;
-    want.samples  = NUM_SAMPLES;
+    want.samples = NUM_SAMPLES;
     want.callback = audio_callback;
-    audio_device  = SDL_OpenAudioDevice(NULL, 0, &want, &have, 0);
+    audio_device = SDL_OpenAudioDevice(NULL, 0, &want, &have, 0);
 
     if (!audio_device)
         return 0;
 
     int t = 0;
     if (want.freq != have.freq)
-        t += printf("    sound freq: want = %d, have = %d\n", want.freq,     have.freq);
+        t += printf("    sound freq: want = %d, have = %d\n", want.freq, have.freq);
     if (want.format != have.format)
-        t += printf("  sound format: want = %d, have = %d\n", want.format,   have.format);
+        t += printf("  sound format: want = %d, have = %d\n", want.format, have.format);
     if (want.channels != have.channels)
         t += printf("sound channels: want = %d, have = %d\n", want.channels, have.channels);
     if (want.samples != have.samples)
-        t += printf(" sound samples: want = %d, have = %d\n", want.samples,  have.samples);
+        t += printf(" sound samples: want = %d, have = %d\n", want.samples, have.samples);
 
     SDL_PauseAudioDevice(audio_device, 0);
     return t == 0;
 }
 
-int    sdl_audio_close()
-{
+int sdl_audio_close() {
     if (!audio_device)
         return 0;
     SDL_PauseAudioDevice(audio_device, 1);

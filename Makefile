@@ -19,4 +19,4 @@ fclean: clean
 re: fclean gbmu
 
 format:
-	astyle -A3 -n src/*.c include/*.h
+	astyle -A14 -n src/*.c include/*.h
