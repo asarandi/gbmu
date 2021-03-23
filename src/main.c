@@ -122,7 +122,6 @@ int main(int ac, char **av)
         if (lcd_update(gb_mem, &gb_state, op_cycles)) {
             video_write(state->screen_buf, 160*144);
             input_read();
-            av_sync();
         }
         if (sound_update(gb_mem, &gb_state, op_cycles)) {
             audio_write(state->sound_buf, SOUND_BUF_SIZE);
