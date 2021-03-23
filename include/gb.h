@@ -40,43 +40,55 @@ typedef struct  s_r8 {
     uint16_t    PC;
 }               t_r8;
 
-typedef struct  s_state {
-    void            *gameboy_memory;
-    void            *gameboy_registers;
-    bool            interrupts_enabled;
-    bool            halt;
-    bool            halt_bug;
-    bool            stop;
-    bool            ram_enabled;
-    bool            bootrom_enabled;
-    bool            debug;
-    bool            done;
-    bool            dma_update;
-    int             volume;
-    int             screen_mask;
-    char            *rom_file;
-    char            *ram_file;
-    size_t          file_size;
-    uint8_t         *file_contents;
-    uint8_t         ram_banks[RAM_SIZE * 16];
-    unsigned int    interrupt_cycles;
-    unsigned int    div_cycles;
-    unsigned int    cycles;
-    uint8_t         screen_buf[144*160];
-    uint8_t         buttons[8];
-    uint8_t         sound_channels[4];
-    uint8_t         (*ram_read_u8)(uint16_t);
-    void            (*ram_write_u8)(uint16_t, uint8_t);
-    uint8_t         (*rom_read_u8)(uint16_t);
-    void            (*rom_write_u8)(uint16_t, uint8_t);
+
+
+#define        SAMPLING_FREQUENCY (44100)
+#define        NUM_SAMPLES        (SAMPLING_FREQUENCY / 60)
+#define        NUM_CHANNELS       2
+#define        SAMPLE_SIZE        2
+#define        SOUND_BUF_SIZE     (NUM_SAMPLES * SAMPLE_SIZE * NUM_CHANNELS)
+
+typedef struct s_state {
+    void       *gameboy_memory;
+    void       *gameboy_registers;
+    bool       interrupts_enabled;
+    bool       halt;
+    bool       halt_bug;
+    bool       stop;
+    bool       ram_enabled;
+    bool       bootrom_enabled;
+    bool       debug;
+    bool       done;
+    bool       dma_update;
+    bool       testing;
+    bool       test_timeout;
+    int        volume;
+    int        screen_mask;
+    char       *rom_file;
+    char       *ram_file;
+    size_t     file_size;
+    uint8_t    *file_contents;
+    uint8_t    ram_banks[RAM_SIZE * 16];
+    uint32_t   interrupt_cycles;
+    uint32_t   div_cycles;
+    uint32_t   cycles;
+    uint8_t    screen_buf[144*160];
+    uint8_t    sound_buf[SOUND_BUF_SIZE];
+    uint8_t    buttons[8];
+    uint8_t    sound_channels[4];
+    uint8_t    (*ram_read_u8)(uint16_t);
+    void       (*ram_write_u8)(uint16_t, uint8_t);
+    uint8_t    (*rom_read_u8)(uint16_t);
+    void       (*rom_write_u8)(uint16_t, uint8_t);
+
     /*    serial/tcp    */
-    char            *network_address;
-    int             network_port;
-    bool            is_server;
-    bool            is_client;
-    bool            is_transfer;
-    uint8_t         serial_data;
-    unsigned int    serial_cycles;
+    char       *network_address;
+    int        network_port;
+    bool       is_server;
+    bool       is_client;
+    bool       is_transfer;
+    uint8_t    serial_data;
+    uint32_t   serial_cycles;
 } t_state;
 
 extern uint8_t gb_mem[];
@@ -107,25 +119,36 @@ int         lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles);
 void        interrupts_update(uint8_t *gb_mem, t_state *state, void *registers);
 void        timers_update(uint8_t *gb_mem, t_state *state, int current_cycles);
 
-void        apu_init();
-void        apu_cleanup();
-void        apu_update(uint8_t *gb_mem, t_state *state, int current_cycles);
-void        write_sample();
+int         sound_update(uint8_t *gb_mem, t_state *state, int current_cycles);
 void        sound_write_u8(uint16_t addr, uint8_t data);
 uint8_t     sound_read_u8(uint16_t addr);
-int         apu_sync();
 
-bool        gui_init();
-void        gui_cleanup();
-void        gui_render();
-void        gui_update();
+int         video_open();
+int         video_close();
+int         video_write();
+int         audio_open();
+int         audio_close();
+int         audio_write();
+int         input_open();
+int         input_close();
+int         input_read();
+int         av_sync();
+
+int         sdl_video_open();
+int         sdl_video_close();
+int         sdl_audio_open();
+int         sdl_audio_close();
+int         sdl_input_read();
+int         sdl_av_sync();
+
+int         sdl_render_video(uint8_t *data, uint32_t n);
+int         sdl_write_audio(uint8_t *data, uint32_t n);
 
 uint8_t     joypad_read();
 void        joypad_write(uint8_t data);
 void        joypad_request_interrupt();
 
 void        gameboy_init();
-void        gb_throttle();
 
 uint8_t     read_u8(uint16_t addr);
 uint16_t    read_u16(uint16_t addr);
