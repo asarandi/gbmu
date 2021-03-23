@@ -2,20 +2,18 @@
 
 #define IS_SGB      ((gb_mem[0x146] == 3) && (gb_mem[0x14b] == 0x33))
 
-void    joypad_request_interrupt()
-{
+void joypad_request_interrupt() {
     gb_mem[0xff0f] |= 0x10;
 }
 
-uint8_t    joypad_read()
-{
+uint8_t joypad_read() {
     uint8_t joypad = gb_mem[0xff00];
-    int     i, val;
+    int i, val;
 
     if ((joypad & 0x10) == 0) {
         for (i = 0; i < 4; i++) {
             val = (state->buttons[i] & 1) ^ 1;
-            joypad &=  ~(1 << (3 - i));
+            joypad &= ~(1 << (3 - i));
             joypad |= val << (3 - i);
         }
     }
@@ -23,7 +21,7 @@ uint8_t    joypad_read()
     if ((joypad & 0x20) == 0) {
         for (i = 0; i < 4; i++) {
             val = (state->buttons[i + 4] & 1) ^ 1;
-            joypad &=  ~(1 << (3 - i));
+            joypad &= ~(1 << (3 - i));
             joypad |= val << (3 - i);
         }
     }
@@ -33,10 +31,10 @@ uint8_t    joypad_read()
 
 typedef struct s_sgb_cmd {
     uint8_t code;
-    char    *info;
-}              t_sgb_cmd;
+    char *info;
+} t_sgb_cmd;
 
-t_sgb_cmd   sgb_commands[] = {
+t_sgb_cmd sgb_commands[] = {
     {0x00, "PAL01     Set SGB Palette 0,1 Data"},
     {0x01, "PAL23     Set SGB Palette 2,3 Data"},
     {0x02, "PAL03     Set SGB Palette 0,3 Data"},
@@ -71,26 +69,25 @@ t_sgb_cmd   sgb_commands[] = {
     {0x1f, "undefined 0x1f wtf"}
 };
 
-void        joypad_write(uint8_t data)
-{
-    static uint8_t  packet[256];
-    static int      idx;
+void joypad_write(uint8_t data) {
+    static uint8_t packet[256];
+    static int idx;
 
     data &= 0x30;
     gb_mem[0xff00] = (gb_mem[0xff00] & 15) | data;
     if (!IS_SGB)
-        return ;
+        return;
     data >>= 4;
     if (data == 3)              /* both high between pulses */
-        return ;
+        return;
     if (!data) {                /* both low: reset */
         /*        printf("joypad reset "); */
         for (idx = 0; idx < 256; idx++)
             packet[idx] = 0;
         idx = 0;
-        return ;
+        return;
     }
-    packet[idx>>3] = (packet[idx>>3] & ~(1<<(idx&7))) | ((data&1) << (idx&7));
+    packet[idx >> 3] = (packet[idx >> 3] & ~(1 << (idx & 7))) | ((data & 1) << (idx & 7));
     idx++;
     idx &= 0x7ff;
     if (idx == 128) {

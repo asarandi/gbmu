@@ -29,10 +29,10 @@
 #define     IS_HuC3                                  (gb_mem[0x0147] == 0xFE ? 1:0)
 #define     IS_HuC1_RAM_BATTERY                      (gb_mem[0x0147] == 0xFF ? 1:0)
 
-typedef struct  s_cartridge {
-    uint8_t     id;
-    char        *name;
-}               t_cartridge;
+typedef struct s_cartridge {
+    uint8_t id;
+    char *name;
+} t_cartridge;
 
 t_cartridge cartridge_types[] = {
     {0x00, "ROM ONLY"},
@@ -65,28 +65,26 @@ t_cartridge cartridge_types[] = {
     {0xFF, "HuC1+RAM+BATTERY"}
 };
 
-bool    is_savefile_enabled()
-{
-    if (IS_MBC1_RAM_BATTERY)                return true;
-    if (IS_MBC2_BATTERY)                    return true;
-    if (IS_ROM_RAM_BATTERY)                 return true;
-    if (IS_MMM01_RAM_BATTERY)               return true;
-    if (IS_MBC3_TIMER_BATTERY)              return true;
-    if (IS_MBC3_TIMER_RAM_BATTERY)          return true;
-    if (IS_MBC3_RAM_BATTERY)                return true;
-    if (IS_MBC5_RAM_BATTERY)                return true;
-    if (IS_MBC5_RUMBLE_RAM_BATTERY)         return true;
-    if (IS_MBC7_SENSOR_RUMBLE_RAM_BATTERY)  return true;
-    if (IS_HuC1_RAM_BATTERY)                return true;
+bool is_savefile_enabled() {
+    if (IS_MBC1_RAM_BATTERY) return true;
+    if (IS_MBC2_BATTERY) return true;
+    if (IS_ROM_RAM_BATTERY) return true;
+    if (IS_MMM01_RAM_BATTERY) return true;
+    if (IS_MBC3_TIMER_BATTERY) return true;
+    if (IS_MBC3_TIMER_RAM_BATTERY) return true;
+    if (IS_MBC3_RAM_BATTERY) return true;
+    if (IS_MBC5_RAM_BATTERY) return true;
+    if (IS_MBC5_RUMBLE_RAM_BATTERY) return true;
+    if (IS_MBC7_SENSOR_RUMBLE_RAM_BATTERY) return true;
+    if (IS_HuC1_RAM_BATTERY) return true;
     return false;
 }
 
-void    savefile_read()
-{
+void savefile_read() {
     int len, offset, fd;
 
     if (!is_savefile_enabled())
-        return ;
+        return;
 
     len = strlen(state->rom_file);
     state->ram_file = malloc(len + 6);
@@ -102,31 +100,30 @@ void    savefile_read()
 
     if ((fd = open(state->ram_file, O_RDONLY)) == -1) {
         printf("%s: open() failed\n", "savefile_read()");
-        return ;
+        return;
     }
     if ((read(fd, state->ram_banks, RAM_SIZE * 16)) == -1) {
         close(fd);
         printf("%s: read() failed\n", "savefile_read()");
-        return ;
+        return;
     }
     close(fd);
     printf("ramfile loaded\n");
 }
 
-void    savefile_write()
-{
+void savefile_write() {
     int fd, size;
 
     if (!is_savefile_enabled())
-        return ;
-    size = (RAM_SIZE * 16)-1;
+        return;
+    size = (RAM_SIZE * 16) - 1;
     while ((size >= 0) && (!state->ram_banks[size]))
         size--;
     size++;
-    if (!size) return ; /* game did not use ram? */
+    if (!size) return; /* game did not use ram? */
     if ((fd = open(state->ram_file, O_CREAT | O_WRONLY, 0644)) == -1) {
         printf("%s: open() failed\n", "savefile_write()");
-        return ;
+        return;
     }
     if (write(fd, state->ram_banks, size) == -1) {
         printf("%s: write() failed\n", "savefile_write()");
@@ -135,64 +132,60 @@ void    savefile_write()
     printf("ramfile saved\n");
 }
 
-void    default_ram_write_u8(uint16_t addr, uint8_t data)
-{
+void default_ram_write_u8(uint16_t addr, uint8_t data) {
     (void)addr;
     (void)data;
-    return ;
+    return;
 }
 
-uint8_t default_ram_read_u8(uint16_t addr)
-{
+uint8_t default_ram_read_u8(uint16_t addr) {
     (void)addr;
-    return 0xff ;
+    return 0xff;
 }
 
-uint8_t default_rom_read_u8(uint16_t addr)
-{
+uint8_t default_rom_read_u8(uint16_t addr) {
     (void)addr;
     return state->file_contents[addr & 0x7fff];
 }
 
-void    default_rom_write_u8(uint16_t addr, uint8_t data)
-{
+void default_rom_write_u8(uint16_t addr, uint8_t data) {
     (void)addr;
     (void)data;
-    return ;
+    return;
 }
 
-void    cartridge_init()
-{
-    state->ram_read_u8  = &default_ram_read_u8;
+void cartridge_init() {
+    state->ram_read_u8 = &default_ram_read_u8;
     state->ram_write_u8 = &default_ram_write_u8;
-    state->rom_read_u8  = &default_rom_read_u8;
+    state->rom_read_u8 = &default_rom_read_u8;
     state->rom_write_u8 = &default_rom_write_u8;
 
     if ((IS_MBC1) || (IS_MBC1_RAM) || (IS_MBC1_RAM_BATTERY)) {
-        state->ram_read_u8  = &mbc1_ram_read_u8;
+        state->ram_read_u8 = &mbc1_ram_read_u8;
         state->ram_write_u8 = &mbc1_ram_write_u8;
-        state->rom_read_u8  = &mbc1_rom_read_u8;
+        state->rom_read_u8 = &mbc1_rom_read_u8;
         state->rom_write_u8 = &mbc1_rom_write_u8;
     }
 
     if ((IS_MBC2) || (IS_MBC2_BATTERY)) {
-        state->ram_read_u8  = &mbc2_ram_read_u8;
+        state->ram_read_u8 = &mbc2_ram_read_u8;
         state->ram_write_u8 = &mbc2_ram_write_u8;
-        state->rom_read_u8  = &mbc2_rom_read_u8;
+        state->rom_read_u8 = &mbc2_rom_read_u8;
         state->rom_write_u8 = &mbc2_rom_write_u8;
     }
 
     if ((IS_MBC3_TIMER_BATTERY) || (IS_MBC3_TIMER_RAM_BATTERY) || (IS_MBC3) || (IS_MBC3_RAM) || (IS_MBC3_RAM_BATTERY)) {
-        state->ram_read_u8  = &mbc3_ram_read_u8;
+        state->ram_read_u8 = &mbc3_ram_read_u8;
         state->ram_write_u8 = &mbc3_ram_write_u8;
-        state->rom_read_u8  = &mbc3_rom_read_u8;
+        state->rom_read_u8 = &mbc3_rom_read_u8;
         state->rom_write_u8 = &mbc3_rom_write_u8;
     }
 
-    if ((IS_MBC5) || (IS_MBC5_RAM) || (IS_MBC5_RAM_BATTERY) || (IS_MBC5_RUMBLE) || (IS_MBC5_RUMBLE_RAM) || (IS_MBC5_RUMBLE_RAM_BATTERY)) {
-        state->ram_read_u8  = &mbc5_ram_read_u8;
+    if ((IS_MBC5) || (IS_MBC5_RAM) || (IS_MBC5_RAM_BATTERY) || (IS_MBC5_RUMBLE) || (IS_MBC5_RUMBLE_RAM) ||
+            (IS_MBC5_RUMBLE_RAM_BATTERY)) {
+        state->ram_read_u8 = &mbc5_ram_read_u8;
         state->ram_write_u8 = &mbc5_ram_write_u8;
-        state->rom_read_u8  = &mbc5_rom_read_u8;
+        state->rom_read_u8 = &mbc5_rom_read_u8;
         state->rom_write_u8 = &mbc5_rom_write_u8;
     }
 }

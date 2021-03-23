@@ -1,11 +1,10 @@
 #include "gb.h"
 
-void    timers_update(uint8_t *gb_mem, t_state *state, int current_cycles)
-{
-    static  uint8_t     tima, counter;
-    static bool         current, prev, overflow;
-    uint8_t             shifts[] = {9, 3, 5, 7};
-    int                 f;
+void timers_update(uint8_t *gb_mem, t_state *state, int current_cycles) {
+    static uint8_t tima, counter;
+    static bool current, prev, overflow;
+    uint8_t shifts[] = {9, 3, 5, 7};
+    int f;
 
     state->div_cycles += current_cycles;
     state->div_cycles &= 0xffff;
@@ -17,15 +16,15 @@ void    timers_update(uint8_t *gb_mem, t_state *state, int current_cycles)
 
     if (overflow) {
         counter++;
-        if ((tima != gb_mem[0xff05]) && (counter==1))
-            overflow = false ;
+        if ((tima != gb_mem[0xff05]) && (counter == 1))
+            overflow = false;
     }
 
     if (overflow) {
         gb_mem[0xff05] = gb_mem[0xff06];
-        if (counter==1)
+        if (counter == 1)
             gb_mem[0xff0f] |= 4;
-        if (counter>1)
+        if (counter > 1)
             overflow = false;
     }
 

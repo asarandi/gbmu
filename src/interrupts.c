@@ -12,11 +12,10 @@
 #define IS_INT58_REQUESTED (gb_mem[0xff0f] &  8 ? 1:0)
 #define IS_INT60_REQUESTED (gb_mem[0xff0f] & 16 ? 1:0)
 
-void    service_interrupt(uint8_t *gb_mem, t_state *state, void *registers,
-                          uint16_t interrupt_address, uint8_t clear_bit)
-{
-    t_r16   *r16    = registers;
-    r16->SP         -= 2 ;
+void service_interrupt(uint8_t *gb_mem, t_state *state, void *registers,
+                       uint16_t interrupt_address, uint8_t clear_bit) {
+    t_r16 *r16 = registers;
+    r16->SP -= 2;
 
     write_u16(r16->SP, r16->PC);
 
@@ -29,11 +28,10 @@ void    service_interrupt(uint8_t *gb_mem, t_state *state, void *registers,
     /*    printf("interrupt %04x\n", r16->PC); */
 }
 
-void    interrupts_update(uint8_t *gb_mem, t_state *state, void *registers)
-{
+void interrupts_update(uint8_t *gb_mem, t_state *state, void *registers) {
     if (state->interrupt_cycles) {
         state->interrupt_cycles -= 4;
-        return ;
+        return;
     }
     if (gb_mem[0xffff] & gb_mem[0xff0f] & 0x1f) {
         state->halt = false;
@@ -41,16 +39,16 @@ void    interrupts_update(uint8_t *gb_mem, t_state *state, void *registers)
                 state->debug = true ;   */
     }
     if (!state->interrupts_enabled)
-        return ;
+        return;
 
     if (IS_INT40_ENABLED && IS_INT40_REQUESTED)
-        (void)service_interrupt(gb_mem, state, registers, 0x40,  1);
+        (void)service_interrupt(gb_mem, state, registers, 0x40, 1);
     else if (IS_INT48_ENABLED && IS_INT48_REQUESTED)
-        (void)service_interrupt(gb_mem, state, registers, 0x48,  2);
+        (void)service_interrupt(gb_mem, state, registers, 0x48, 2);
     else if (IS_INT50_ENABLED && IS_INT50_REQUESTED)
-        (void)service_interrupt(gb_mem, state, registers, 0x50,  4);
+        (void)service_interrupt(gb_mem, state, registers, 0x50, 4);
     else if (IS_INT58_ENABLED && IS_INT58_REQUESTED)
-        (void)service_interrupt(gb_mem, state, registers, 0x58,  8);
+        (void)service_interrupt(gb_mem, state, registers, 0x58, 8);
     else if (IS_INT60_ENABLED && IS_INT60_REQUESTED)
         (void)service_interrupt(gb_mem, state, registers, 0x60, 16);
 }

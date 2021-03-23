@@ -5,14 +5,12 @@
 static char *default_network_address = "0.0.0.0";
 static int default_network_port = 4242;
 
-bool is_valid_ip(char *s)
-{
+bool is_valid_ip(char *s) {
     struct sockaddr_in sa;
     return inet_pton(AF_INET, s, &(sa.sin_addr)) == 1;
 }
 
-bool arg_parse(int ac, char **av)
-{
+bool arg_parse(int ac, char **av) {
     int c;
 
     state->network_address = &default_network_address[0];
@@ -24,10 +22,10 @@ bool arg_parse(int ac, char **av)
             state->testing = 1;
             if (!state->test_timeout)
                 state->test_timeout = 15;
-            break ;
+            break;
         case 'd':
             state->test_timeout = atoi(optarg);
-            break ;
+            break;
         case 'c':
         case 's':
             state->is_client = c == 'c';
@@ -36,10 +34,10 @@ bool arg_parse(int ac, char **av)
                 state->network_address = optarg;
             else
                 optind--;
-            break ;
+            break;
         case 'p':
             state->network_port = atoi(optarg);
-            break ;
+            break;
         case '?':
         default:
             printf("failed to parse options");
@@ -47,34 +45,33 @@ bool arg_parse(int ac, char **av)
         }
     }
     if (state->is_client || state->is_server)
-        printf("netplay %s: %s:%d\n", state->is_client ? "client" : "server", state->network_address, state->network_port);
+        printf("netplay %s: %s:%d\n", state->is_client ? "client" : "server", state->network_address,
+               state->network_port);
     return true;
 }
 
-uint8_t     gb_mem[0x10000];
-t_state     gb_state;
-t_state     *state = &gb_state;
-t_r16       registers;
-t_r16       *r16 = &registers;
+uint8_t gb_mem[0x10000];
+t_state gb_state;
+t_state *state = &gb_state;
+t_r16 registers;
+t_r16 *r16 = &registers;
 
-
-int main(int ac, char **av)
-{
-    int         fd;
-    uint8_t     op;
+int main(int ac, char **av) {
+    int fd;
+    uint8_t op;
     struct stat stat_buf;
-    void        (*f)(void *, t_state *, uint8_t *);
-    int         i, op_cycles = 4;
-    uint8_t     dbgcmd = 0;
-    uint16_t    pc_history[100] = {0};
-    int         pc_idx = 0;
-    bool        show_pc_history = false;
-    static int  instr_cycles;
+    void (*f)(void *, t_state *, uint8_t *);
+    int i, op_cycles = 4;
+    uint8_t dbgcmd = 0;
+    uint16_t pc_history[100] = {0};
+    int pc_idx = 0;
+    bool show_pc_history = false;
+    static int instr_cycles;
 
     if (!arg_parse(ac, av))
         return 1;
 
-    state->rom_file = av[ac-1];
+    state->rom_file = av[ac - 1];
     if ((fd = open(state->rom_file, O_RDONLY)) == -1) {
         printf("failed to open file\n");
         return 1;
@@ -120,7 +117,7 @@ int main(int ac, char **av)
         serial(op_cycles);
         timers_update(gb_mem, &gb_state, op_cycles);
         if (lcd_update(gb_mem, &gb_state, op_cycles)) {
-            video_write(state->screen_buf, 160*144);
+            video_write(state->screen_buf, 160 * 144);
             input_read();
         }
         if (sound_update(gb_mem, &gb_state, op_cycles)) {
@@ -163,10 +160,10 @@ int main(int ac, char **av)
         state->cycles += op_cycles;
     }
     if (show_pc_history) {
-        for (i=pc_idx; i<100; i++) {
+        for (i = pc_idx; i < 100; i++) {
             printf("PC %02d: %04x\n", i, pc_history[i]);
         };
-        for (i=0; i<pc_idx; i++) {
+        for (i = 0; i < pc_idx; i++) {
             printf("PC %02d: %04x\n", i, pc_history[i]);
         };
     }

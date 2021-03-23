@@ -9,8 +9,7 @@
 #define is_lcd_mode_2   ((gb_mem[0xff41] & 3) == 2 ? 1:0)
 #define is_lcd_mode_3   ((gb_mem[0xff41] & 3) == 3 ? 1:0)
 
-uint8_t read_u8(uint16_t addr)
-{
+uint8_t read_u8(uint16_t addr) {
     if (addr <= 0x7fff)                                 /* ROM */
         return state->rom_read_u8(addr);
     if ((addr >= 0xa000) && (addr <= 0xbfff))           /* RAM */
@@ -44,44 +43,42 @@ uint8_t read_u8(uint16_t addr)
     return gb_mem[addr];
 }
 
-uint16_t read_u16(uint16_t addr)
-{
-    return ((read_u8(addr+1) << 8) | read_u8(addr));
+uint16_t read_u16(uint16_t addr) {
+    return ((read_u8(addr + 1) << 8) | read_u8(addr));
 }
 
-void    write_u8(uint16_t addr, uint8_t data)
-{
+void write_u8(uint16_t addr, uint8_t data) {
     if (addr <= 0x7fff) {                                /* ROM */
         (void)state->rom_write_u8(addr, data);
-        return ;
+        return;
     }
     if ((addr >= 0x8000) && (addr <= 0x9fff) && (is_lcd_mode_3))
-        return ;
-    if ((addr >= 0xa000) && (addr < 0xbfff))  {           /* RAM */
+        return;
+    if ((addr >= 0xa000) && (addr < 0xbfff)) {           /* RAM */
         (void)state->ram_write_u8(addr, data);
-        return ;
+        return;
     }
     if ((addr >= 0xc000) && (addr <= 0xddff))           /* ECHO */
-        gb_mem[addr+0x2000] = data;
+        gb_mem[addr + 0x2000] = data;
 
     /* ignore writes to oam in lcd-mode-2 and lcd-mode-3 */
     if ((addr >= 0xfe00) && (addr <= 0xfe9f) && ((is_lcd_mode_2) || (is_lcd_mode_3)))
-        return ;
+        return;
     if (addr >= 0xfea0 && addr < 0xff00)
-        return ;
+        return;
     /* ignore writes to vram in lcd-mode-3 */
 
     if (addr == 0xff00) {                                                    /* joypad */
         joypad_write(data);
-        return ;
+        return;
     }
     if (addr == 0xff01) {                                                    /* SB */
         serial_data(data);
-        return ;
+        return;
     }
     if (addr == 0xff02) {                                                    /* SC */
         serial_control(data);
-        return ;
+        return;
     }
 
     if (addr == 0xff04) {
@@ -110,15 +107,14 @@ void    write_u8(uint16_t addr, uint8_t data)
         state->dma_update = true;    /* DMA */
     }
     if (addr == 0xff76)                                                     /* read only as per pandocs */
-        return ;
+        return;
     if (addr == 0xff77)                                                     /* read only as per pandocs */
-        return ;
+        return;
 
     gb_mem[addr] = data;                                                    /* finally */
 }
 
-void    write_u16(uint16_t addr, uint16_t data)
-{
-    (void)write_u8(addr, (uint8_t) data & 0xff);
-    (void)write_u8(addr + 1, (uint8_t) (data >> 8));
+void write_u16(uint16_t addr, uint16_t data) {
+    (void)write_u8(addr, (uint8_t)data & 0xff);
+    (void)write_u8(addr + 1, (uint8_t)(data >> 8));
 }

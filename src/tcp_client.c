@@ -1,7 +1,6 @@
 #include "tcp.h"
 
-bool    client_create(char *network_address, int network_port)
-{
+bool client_create(char *network_address, int network_port) {
     (void)memset(&client, 0, sizeof(t_client));
 
     if ((client.sock = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
@@ -37,36 +36,36 @@ bool    client_create(char *network_address, int network_port)
 
     client.status |= sock_created;
     errno = 0;
-    if (connect(client.sock, (struct sockaddr *)&client.server_address, (socklen_t)sizeof(client.server_address)) == -1) {
+    if (connect(client.sock, (struct sockaddr *)&client.server_address, (socklen_t)
+                sizeof(client.server_address)) == -1) {
         if (errno == EINPROGRESS)
-            return true ;
+            return true;
         if (SOCKET_DEBUG)
             printf("%s: connect() failed\n", "client_create()");
         client.status &= ~sock_created;
         (void)close(client.sock);
-        return false ;
+        return false;
     }
 
     client.status |= sock_connected;
     return true;
 }
 
-bool client_connect()
-{
+bool client_connect() {
     int ret, sock_error, sock_len;
 
-    FD_ZERO((fd_set *)&client.fdset);
-    FD_SET(client.sock, (fd_set *)&client.fdset);
+    FD_ZERO((fd_set * ) & client.fdset);
+    FD_SET(client.sock, (fd_set * ) & client.fdset);
     client.tv.tv_sec = 0;
     client.tv.tv_usec = 1000;
-    ret = select(client.sock + 1, NULL, (fd_set *)&client.fdset, NULL, &client.tv);
+    ret = select(client.sock + 1, NULL, (fd_set * ) & client.fdset, NULL, &client.tv);
     if (ret == 0)
-        return false ;                              /* select timed out, wait? */
+        return false;                              /* select timed out, wait? */
     if (ret == 1) {
         sock_error = -1;
         sock_len = sizeof(sock_error);
 
-        if (getsockopt(client.sock, SOL_SOCKET, SO_ERROR, &sock_error, (socklen_t *)&sock_len) == 0) {
+        if (getsockopt(client.sock, SOL_SOCKET, SO_ERROR, &sock_error, (socklen_t * ) & sock_len) == 0) {
             if (sock_error == 0) {
                 client.status |= sock_connected;    /* ok */
                 return true;
@@ -77,31 +76,29 @@ bool client_connect()
     }
     client.status &= ~sock_created;                 /* fail */
     close(client.sock);
-    return false ;
+    return false;
 }
 
-bool client_send(uint8_t *octet)
-{
+bool client_send(uint8_t *octet) {
     errno = 0;
     if (write(client.sock, octet, 1) != 1) {
         if ((errno == EWOULDBLOCK) || (errno == EAGAIN))
-            return false ;                          /* wait */
+            return false;                          /* wait */
         client.status &= ~sock_connected;           /* fail */
-        return false ;
+        return false;
     }
     client.status |= sock_data_sent;                /* ok */
-    return true ;
+    return true;
 }
 
-bool client_recv(uint8_t *octet)
-{
+bool client_recv(uint8_t *octet) {
     errno = 0;
     if (read(client.sock, octet, 1) != 1) {
         if ((errno == EWOULDBLOCK) || (errno == EAGAIN))
-            return false ;                          /* wait */
+            return false;                          /* wait */
         client.status &= ~sock_connected;           /* fail */
-        return false ;
+        return false;
     }
     client.status |= sock_data_received;            /* ok */
-    return true ;
+    return true;
 }
