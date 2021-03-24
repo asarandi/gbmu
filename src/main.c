@@ -123,6 +123,7 @@ int main(int ac, char **av) {
         if (sound_update(gb_mem, &gb_state, op_cycles)) {
             audio_write(state->sound_buf, SOUND_BUF_SIZE);
         }
+        av_sync();
         interrupts_update(gb_mem, state, &registers);
 
         op = read_u8(r16->PC);

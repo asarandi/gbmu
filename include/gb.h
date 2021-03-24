@@ -139,13 +139,13 @@ int video_open();
 
 int video_close();
 
-int video_write();
+int video_write(uint8_t *data, uint32_t size);
 
 int audio_open();
 
 int audio_close();
 
-int audio_write();
+int audio_write(uint8_t *data, uint32_t size);
 
 int input_open();
 
@@ -154,22 +154,6 @@ int input_close();
 int input_read();
 
 int av_sync();
-
-int sdl_video_open();
-
-int sdl_video_close();
-
-int sdl_audio_open();
-
-int sdl_audio_close();
-
-int sdl_input_read();
-
-int sdl_av_sync();
-
-int sdl_render_video(uint8_t *data, uint32_t n);
-
-int sdl_write_audio(uint8_t *data, uint32_t n);
 
 uint8_t joypad_read();
 

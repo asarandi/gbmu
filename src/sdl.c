@@ -95,7 +95,7 @@ void set_window_size() {
         SDL_Log("%s: could not create a texture: %s", "set_window_size()", SDL_GetError());
 }
 
-int sdl_video_open() {
+int video_open() {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0) {
         printf("Failed to initialise SDL\n");
         return 0;
@@ -116,7 +116,7 @@ int sdl_video_open() {
     return 1;
 }
 
-int sdl_video_close() {
+int video_close() {
     SDL_DestroyTexture(gui_buffer);
     SDL_DestroyRenderer(gui_renderer);
     SDL_DestroyWindow(gui_window);
@@ -124,7 +124,7 @@ int sdl_video_close() {
     return 1;
 }
 
-int sdl_render_video(uint8_t *buf, uint32_t n) {
+int video_write(uint8_t *data, uint32_t size) {
     uint32_t *pixels, *colors;
     int pitch, idx, y, x, i, j, f;
 
@@ -133,13 +133,13 @@ int sdl_render_video(uint8_t *buf, uint32_t n) {
         return 0;
     }
 
-    (void)n;
+    (void)size;
     f = gui_scale_factor;
     colors = &(render_palettes[render_palette_idx % num_render_palettes].colors[0]);
 
     for (y = 0; y < 144; y++) {
         for (x = 0; x < 160; x++) {
-            idx = buf[y * 160 + x];
+            idx = data[y * 160 + x];
             for (i = y * f; i < (y + 1) * f; i++) {
                 for (j = x * f; j < (x + 1) * f; j++) {
                     pixels[i * f * 160 + j] = colors[idx];
@@ -166,7 +166,15 @@ void gui_set_button_states(uint32_t key, uint8_t value) {
     }
 }
 
-int sdl_input_read() {
+int input_open() {
+    return 1;
+}
+
+int input_close() {
+    return 1;
+}
+
+int input_read() {
     int i, tmp;
     SDL_Event event;
 
@@ -229,28 +237,26 @@ int sdl_input_read() {
     return 1;
 }
 
-int sdl_av_sync() {
-    while (!audio_done)
-        SDL_Delay(1);
+int av_sync() {
     return 1;
 }
 
-int sdl_write_audio(uint8_t *buf, uint32_t size) {
+int audio_write(uint8_t *data, uint32_t size) {
     audio_done = 0;
-    memcpy(sdl_sound_buffer, buf, size);
+    memcpy(sdl_sound_buffer, data, size);
     while (!audio_done)
         SDL_Delay(1);
     return 1;
 }
 
-void audio_callback(void *userdata, Uint8 *stream, int len) {
+static void audio_callback(void *userdata, Uint8 *stream, int len) {
     (void)userdata;
     memcpy(stream, sdl_sound_buffer, len);
     audio_done = 1;
 }
 
 /* to be called after SDL_Init() */
-int sdl_audio_open() {
+int audio_open() {
     SDL_AudioSpec want, have;
 
     SDL_memset(&have, 0, sizeof(SDL_AudioSpec));
@@ -279,7 +285,7 @@ int sdl_audio_open() {
     return t == 0;
 }
 
-int sdl_audio_close() {
+int audio_close() {
     if (!audio_device)
         return 0;
     SDL_PauseAudioDevice(audio_device, 1);
