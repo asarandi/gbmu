@@ -11,5 +11,7 @@ test
 *.sav
 *.dump
 gbmu
+gbmu-sdl
+gbmu-sfml
 nohup.out
 extras/
