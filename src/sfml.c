@@ -12,7 +12,7 @@ static sfTexture* texture;
 static sfSoundStream* sound_stream;
 static uint8_t sound_buffer[SOUND_BUF_SIZE];
 static uint32_t num_samples = SOUND_BUF_SIZE / SAMPLE_SIZE;
-static volatile uint32_t audio_frame_count;
+static volatile uint32_t audio_ready;
 
 int video_open() {
     sfVideoMode mode = {WIDTH, HEIGHT, 32};
@@ -67,11 +67,22 @@ int video_write(uint8_t *data, uint32_t size) {
     return 1;
 }
 
+int audio_write(uint8_t *data, uint32_t size) {
+    (void)memcpy(sound_buffer, data, size);
+    num_samples = size / SAMPLE_SIZE;
+    audio_ready = 0;
+    while (!audio_ready) {
+        struct timespec ts = {0, 999};
+        nanosleep(&ts, NULL);
+    }
+    return 1;
+}
+
 sfBool getDataCallback(sfSoundStreamChunk *chunk, void *userdata) {
     (void)userdata;
+    audio_ready = 1;
     chunk->samples = (sfInt16*)sound_buffer;
     chunk->sampleCount = num_samples;
-    audio_frame_count++;
     return sfTrue;
 }
 
@@ -81,7 +92,7 @@ void seekCallback(sfTime time, void *userdata) {
 }
 
 int audio_open() {
-    sound_stream = sfSoundStream_create(&getDataCallback, seekCallback, NUM_CHANNELS, SAMPLING_FREQUENCY, NULL);
+    sound_stream = sfSoundStream_create(&getDataCallback, NULL, NUM_CHANNELS, SAMPLING_FREQUENCY, NULL);
     if (sound_stream == NULL)
         return 0;
     sfSoundStream_play(sound_stream);
@@ -93,12 +104,6 @@ int audio_close() {
         sfSoundStream_stop(sound_stream);
         sfSoundStream_destroy(sound_stream);
     }
-    return 1;
-}
-
-int audio_write(uint8_t *data, uint32_t size) {
-    (void)memcpy(sound_buffer, data, size);
-    num_samples = size / SAMPLE_SIZE;
     return 1;
 }
 
@@ -137,31 +142,6 @@ int input_read() {
     return 1;
 }
 
-void throttle() {
-    static struct timespec tp, last_tp; //, sleep = {0, 99};
-    static uint64_t clock_cycles, current_ms, last_ms;
-
-    if (clock_gettime(CLOCK_REALTIME, &tp))
-        return ;
-
-    if (tp.tv_sec > last_tp.tv_sec)
-        last_ms = 0;
-
-    current_ms = tp.tv_nsec / 1000000;
-    if (current_ms <= last_ms)
-        return ;
-
-    if ((state->cycles - clock_cycles) <= (current_ms - last_ms) * (4194304 / 1000))
-        return ;
-
-    last_ms = current_ms;
-    memcpy(&last_tp, &tp, sizeof(struct timespec));
-    clock_cycles = state->cycles;
-    sfSleep(sfMilliseconds(1));
-}
-
 int av_sync() {
-    throttle();
     return 1;
 }
-
