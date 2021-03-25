@@ -103,9 +103,12 @@ int main(int ac, char **av) {
     (void)memcpy(gb_mem, state->file_contents, 0x8000);
 
     if (!state->testing) {
-        video_open();
-        audio_open();
-        input_open();
+        if (!video_open())
+            printf("video_open() failed\n");
+        if (!audio_open())
+            printf("audio_open() failed\n");
+        if (!input_open())
+            printf("input_open() failed\n");
     }
 
     state->bootrom_enabled = BOOTROM_ENABLED;
@@ -122,7 +125,6 @@ int main(int ac, char **av) {
         }
         if (sound_update(gb_mem, &gb_state, op_cycles)) {
             audio_write(state->sound_buf, SOUND_BUF_SIZE);
-            av_sync();
         }
         interrupts_update(gb_mem, state, &registers);
 
@@ -172,9 +174,12 @@ int main(int ac, char **av) {
     serial_cleanup();
     savefile_write();
     if (!state->testing) {
-        input_close();
-        audio_close();
-        video_close();
+        if (!input_close())
+            printf("input_close() failed\n");
+        if (!audio_close())
+            printf("audio_close() failed\n");
+        if (!video_close())
+            printf("video_close() failed\n");
     }
     free(state->file_contents);
 

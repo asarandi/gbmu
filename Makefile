@@ -22,7 +22,7 @@ SRC := \
     src/timers.c
 
 SDL_SRC      := src/sdl.c
-SFML_SRC     := src/sfml.c
+SFML_SRC     := src/sfml.c src/sync.c
 
 src/debug.o: CFLAGS += -Wno-unused-result
 src/ops.o:   CFLAGS += -Wno-unused-variable -Wno-unused-parameter
@@ -36,7 +36,7 @@ gbmu-sdl: LDFLAGS += $(shell sdl2-config --libs)
 gbmu-sdl: $(SRC:.c=.o) $(SDL_SRC:.c=.o)
 	$(CC) $(CFLAGS) $^ $(LDFLAGS) -o $@
 
-gbmu-sfml: LDFLAGS += -lcsfml-audio -lcsfml-graphics -lcsfml-network -lcsfml-system -lcsfml-window
+gbmu-sfml: LDFLAGS += -lcsfml-audio -lcsfml-graphics -lcsfml-network -lcsfml-system -lcsfml-window -lpthread
 gbmu-sfml: $(SRC:.c=.o) $(SFML_SRC:.c=.o)
 	$(CC) $(CFLAGS) $^ $(LDFLAGS) -o $@
 

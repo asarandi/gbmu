@@ -12,7 +12,6 @@ static sfTexture* texture;
 static sfSoundStream* sound_stream;
 static uint8_t sound_buffer[SOUND_BUF_SIZE];
 static uint32_t num_samples = SOUND_BUF_SIZE / SAMPLE_SIZE;
-static volatile uint32_t audio_ready;
 
 int video_open() {
     sfVideoMode mode = {WIDTH, HEIGHT, 32};
@@ -70,17 +69,13 @@ int video_write(uint8_t *data, uint32_t size) {
 int audio_write(uint8_t *data, uint32_t size) {
     (void)memcpy(sound_buffer, data, size);
     num_samples = size / SAMPLE_SIZE;
-    audio_ready = 0;
-    while (!audio_ready) {
-        struct timespec ts = {0, 999};
-        nanosleep(&ts, NULL);
-    }
+    sync_wait();
     return 1;
 }
 
 sfBool getDataCallback(sfSoundStreamChunk *chunk, void *userdata) {
     (void)userdata;
-    audio_ready = 1;
+    sync_signal();
     chunk->samples = (sfInt16*)sound_buffer;
     chunk->sampleCount = num_samples;
     return sfTrue;
@@ -95,6 +90,9 @@ int audio_open() {
     sound_stream = sfSoundStream_create(&getDataCallback, NULL, NUM_CHANNELS, SAMPLING_FREQUENCY, NULL);
     if (sound_stream == NULL)
         return 0;
+    if (!sync_open()) {
+        return 0;
+    }
     sfSoundStream_play(sound_stream);
     return 1;
 }
@@ -104,7 +102,7 @@ int audio_close() {
         sfSoundStream_stop(sound_stream);
         sfSoundStream_destroy(sound_stream);
     }
-    return 1;
+    return sync_close();
 }
 
 int input_open() {
