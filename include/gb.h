@@ -155,6 +155,14 @@ int input_read();
 
 int av_sync();
 
+int sync_open();
+
+int sync_close();
+
+int sync_signal();
+
+int sync_wait();
+
 uint8_t joypad_read();
 
 void joypad_write(uint8_t data);
