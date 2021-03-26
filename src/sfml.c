@@ -11,7 +11,6 @@ static sfSprite* sprite;
 static sfTexture* texture;
 static sfSoundStream* sound_stream;
 static uint8_t sound_buffer[SOUND_BUF_SIZE];
-static uint32_t num_samples = SOUND_BUF_SIZE / SAMPLE_SIZE;
 
 int video_open() {
     sfVideoMode mode = {WIDTH, HEIGHT, 32};
@@ -68,16 +67,15 @@ int video_write(uint8_t *data, uint32_t size) {
 
 int audio_write(uint8_t *data, uint32_t size) {
     (void)memcpy(sound_buffer, data, size);
-    num_samples = size / SAMPLE_SIZE;
     sync_wait();
     return 1;
 }
 
 sfBool getDataCallback(sfSoundStreamChunk *chunk, void *userdata) {
     (void)userdata;
-    sync_signal();
     chunk->samples = (sfInt16*)sound_buffer;
-    chunk->sampleCount = num_samples;
+    chunk->sampleCount = SOUND_BUF_SIZE / SAMPLE_SIZE;
+    sync_signal();
     return sfTrue;
 }
 

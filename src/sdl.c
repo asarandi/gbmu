@@ -264,7 +264,7 @@ int audio_open() {
     want.freq = SAMPLING_FREQUENCY;
     want.format = AUDIO_S16;
     want.channels = NUM_CHANNELS;
-    want.samples = NUM_SAMPLES;
+    want.samples = NUM_FRAMES;
     want.callback = audio_callback;
     audio_device = SDL_OpenAudioDevice(NULL, 0, &want, &have, 0);
 
