@@ -116,7 +116,7 @@ static int write_sounds(uint8_t *buf, uint32_t size) {
 
     *(int16_t * ) & buf[index] = (int16_t)left;
     *(int16_t * ) & buf[index + 2] = (int16_t)right;
-    index += 4;  /* 2 sixteen bit samples */
+    index += 4;  /* one frame == 2 sixteen bit samples: L, R */
     return index >= size;
 }
 
