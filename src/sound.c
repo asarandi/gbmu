@@ -225,7 +225,7 @@ int sound_update(uint8_t *gb_mem, t_state *state, int cycles) {
     samples += cycles;
     if (samples >= SAMPLE_CLOCK) {
         samples -= SAMPLE_CLOCK;
-        return write_sounds(&state->sound_buf[0], SOUND_BUF_SIZE);
+        return write_sounds(state->sound_buf, SOUND_BUF_SIZE);
     }
     return 0;
 }
