@@ -25,26 +25,30 @@ SDL_SRC      := src/sdl.c
 SFML_SRC     := src/sfml.c src/sync.c
 TUI_SRC      := src/tui.c src/sync.c
 
+BIN          := gbmu-sdl gbmu-sfml gbmu-tui
+OBJ          := $(patsubst %.c,%.o,$(wildcard src/*.c))
+
 src/debug.o: CFLAGS += -Wno-unused-result
 src/ops.o:   CFLAGS += -Wno-unused-variable -Wno-unused-parameter
-src/sdl.o:   CFLAGS += $(shell sdl2-config --cflags) -Wno-unused-result
-src/sfml.o:  CFLAGS += -Wno-deprecated-declarations
-src/tui.o:   CFLAGS += -I miniaudio/
 
-BIN := gbmu-sdl gbmu-sfml gbmu-tui
-OBJ := $(patsubst %.c,%.o,$(wildcard src/*.c))
+src/sdl.o:   CFLAGS += $(shell sdl2-config --cflags) -Wno-unused-result
+gbmu-sdl:    LDFLAGS += $(shell sdl2-config --libs)
+
+src/sfml.o:  CFLAGS += -Wno-deprecated-declarations
+gbmu-sfml:   LDFLAGS += -lcsfml-audio -lcsfml-graphics -lcsfml-network -lcsfml-system -lcsfml-window -lpthread
+
+src/tui.o:   CFLAGS += -I miniaudio/
+gbmu-tui:    LDFLAGS += -ldl -lpthread -lm -lcaca
+
 
 all: $(BIN)
 
-gbmu-sdl: LDFLAGS += $(shell sdl2-config --libs)
 gbmu-sdl: $(SRC:.c=.o) $(SDL_SRC:.c=.o)
 	$(CC) $(CFLAGS) $^ $(LDFLAGS) -o $@
 
-gbmu-sfml: LDFLAGS += -lcsfml-audio -lcsfml-graphics -lcsfml-network -lcsfml-system -lcsfml-window -lpthread
 gbmu-sfml: $(SRC:.c=.o) $(SFML_SRC:.c=.o)
 	$(CC) $(CFLAGS) $^ $(LDFLAGS) -o $@
 
-gbmu-tui: LDFLAGS += -ldl -lpthread -lm
 gbmu-tui: $(SRC:.c=.o) $(TUI_SRC:.c=.o)
 	$(CC) $(CFLAGS) $^ $(LDFLAGS) -o $@
 
