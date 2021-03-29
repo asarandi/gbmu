@@ -50,11 +50,16 @@ bool arg_parse(int ac, char **av) {
     return true;
 }
 
+
+
+
 uint8_t gb_mem[0x10000];
 t_state gb_state;
 t_state *state = &gb_state;
 t_r16 registers;
 t_r16 *r16 = &registers;
+
+static int cleanup();
 
 int main(int ac, char **av) {
     int fd;
@@ -103,12 +108,20 @@ int main(int ac, char **av) {
     (void)memcpy(gb_mem, state->file_contents, 0x8000);
 
     if (!state->testing) {
-        if (!video_open())
-            printf("video_open() failed\n");
-        if (!audio_open())
-            printf("audio_open() failed\n");
-        if (!input_open())
-            printf("input_open() failed\n");
+        struct fn {
+            int(*f)();
+            char *n;
+        } fn[] = {
+            {&video_open, "video_open"},
+            {&audio_open, "audio_open"},
+            {&input_open, "input_open"},
+        };
+        for (i = 0; i < 3; i++) {
+            if (!fn[i].f()) {
+                perror(fn[i].n);
+                return cleanup();
+            }
+        }
     }
 
     state->bootrom_enabled = BOOTROM_ENABLED;
@@ -170,7 +183,10 @@ int main(int ac, char **av) {
             printf("PC %02d: %04x\n", i, pc_history[i]);
         };
     }
+    return cleanup();
+}
 
+static int cleanup() {
     serial_cleanup();
     savefile_write();
     if (!state->testing) {
@@ -181,7 +197,9 @@ int main(int ac, char **av) {
         if (!video_close())
             printf("video_close() failed\n");
     }
-    free(state->file_contents);
-
+    if (state->file_contents) {
+        free(state->file_contents);
+        state->file_contents = NULL;
+    }
     return 0;
 }
