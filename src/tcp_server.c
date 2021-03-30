@@ -1,5 +1,7 @@
 #include "tcp.h"
 
+t_server server;
+
 bool server_create(char *network_address, int network_port) {
     (void)memset(&server, 0, sizeof(t_server));
 

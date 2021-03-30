@@ -242,17 +242,17 @@ int av_sync() {
 }
 
 int audio_write(uint8_t *data, uint32_t size) {
-    audio_done = 0;
     memcpy(sdl_sound_buffer, data, size);
+    audio_done = 0;
     while (!audio_done)
-        SDL_Delay(1);
+        ; /* wait */
     return 1;
 }
 
 static void audio_callback(void *userdata, Uint8 *stream, int len) {
     (void)userdata;
     memcpy(stream, sdl_sound_buffer, len);
-    audio_done = 1;
+    audio_done = 1; /* signal */
 }
 
 /* to be called after SDL_Init() */

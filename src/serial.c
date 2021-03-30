@@ -8,6 +8,9 @@
 #define BIT_TRANSFER_CYCLES                 (GAMEBOY_CLOCK_SPEED / SERIAL_CLOCK_SPEED)
 #define BYTE_TRANSFER_CYCLES                (BIT_TRANSFER_CYCLES * 8)
 
+extern t_server server;
+extern t_client client;
+
 bool is_online() {
     if ((state->is_server) && (server.status & sock_created) && (server.status & sock_connected)) return true;
     if ((state->is_client) && (client.status & sock_created) && (client.status & sock_connected)) return true;
