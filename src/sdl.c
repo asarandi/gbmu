@@ -65,7 +65,7 @@ struct s_render_palette render_palettes[] = {
 
 #define num_render_palettes (sizeof(render_palettes) / sizeof(struct s_render_palette))
 
-static unsigned int render_palette_idx = num_render_palettes * 0x10000 + 6;
+static unsigned int render_palette_idx = num_render_palettes * 0x10000 + 14;
 
 void set_window_title() {
     char *t, *s = render_palettes[render_palette_idx % num_render_palettes].name;

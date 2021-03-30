@@ -19,44 +19,24 @@ SRC := \
     src/sound.c \
     src/tcp_client.c \
     src/tcp_server.c \
-    src/timers.c
+    src/timers.c \
+    src/sdl.c
 
-SDL_SRC      := src/sdl.c
-SFML_SRC     := src/sfml.c
-TUI_SRC      := src/tui.c
+src/debug.o: CFLAGS  += -Wno-unused-result
+src/ops.o:   CFLAGS  += -Wno-unused-variable -Wno-unused-parameter
+src/sdl.o:   CFLAGS  += $(shell sdl2-config --cflags) -Wno-unused-result
+gbmu:        LDFLAGS += $(shell sdl2-config --libs)
 
-BIN          := gbmu-sdl gbmu-sfml gbmu-tui
-OBJ          := $(patsubst %.c,%.o,$(wildcard src/*.c))
+all: gbmu
 
-src/debug.o: CFLAGS += -Wno-unused-result
-src/ops.o:   CFLAGS += -Wno-unused-variable -Wno-unused-parameter
-
-src/sdl.o:   CFLAGS += $(shell sdl2-config --cflags) -Wno-unused-result
-gbmu-sdl:    LDFLAGS += $(shell sdl2-config --libs)
-
-src/sfml.o:  CFLAGS += -Wno-deprecated-declarations
-gbmu-sfml:   LDFLAGS += -lcsfml-audio -lcsfml-graphics -lcsfml-network -lcsfml-system -lcsfml-window
-
-src/tui.o:   CFLAGS += -I miniaudio/
-gbmu-tui:    LDFLAGS += -ldl -lpthread -lm -lcaca
-
-
-all: $(BIN)
-
-gbmu-sdl: $(SRC:.c=.o) $(SDL_SRC:.c=.o)
-	$(CC) $(CFLAGS) $^ $(LDFLAGS) -o $@
-
-gbmu-sfml: $(SRC:.c=.o) $(SFML_SRC:.c=.o)
-	$(CC) $(CFLAGS) $^ $(LDFLAGS) -o $@
-
-gbmu-tui: $(SRC:.c=.o) $(TUI_SRC:.c=.o)
+gbmu: $(SRC:.c=.o)
 	$(CC) $(CFLAGS) $^ $(LDFLAGS) -o $@
 
 clean:
-	$(RM) $(OBJ)
+	$(RM) $(SRC:.c=.o)
 
 fclean: clean
-	$(RM) $(BIN)
+	$(RM) gbmu
 
 re: fclean all
 
