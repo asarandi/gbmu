@@ -62,7 +62,4 @@ bool server_recv(uint8_t *octet);
 
 bool server_send(uint8_t *octet);
 
-t_client client;
-t_server server;
-
 #endif

@@ -22,7 +22,7 @@ int video_open() {
     canvas_width = caca_get_canvas_width(canvas),
     canvas_height = caca_get_canvas_height(canvas),
     dither = caca_create_dither(32, 160, 144, 4 * 160, 255<<16, 255<<8, 255, 0);
-//    caca_set_dither_algorithm(dither, "none");
+    caca_set_dither_algorithm(dither, "none");
 //    caca_set_dither_antialias(dither, "default");
 //    caca_set_dither_charset(dither, "default");
 //    caca_set_dither_color(dither, "default");

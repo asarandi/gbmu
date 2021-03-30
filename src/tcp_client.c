@@ -1,5 +1,7 @@
 #include "tcp.h"
 
+t_client client;
+
 bool client_create(char *network_address, int network_port) {
     (void)memset(&client, 0, sizeof(t_client));
 

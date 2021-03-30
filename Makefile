@@ -22,8 +22,8 @@ SRC := \
     src/timers.c
 
 SDL_SRC      := src/sdl.c
-SFML_SRC     := src/sfml.c src/sync.c
-TUI_SRC      := src/tui.c src/sync.c
+SFML_SRC     := src/sfml.c
+TUI_SRC      := src/tui.c
 
 BIN          := gbmu-sdl gbmu-sfml gbmu-tui
 OBJ          := $(patsubst %.c,%.o,$(wildcard src/*.c))
@@ -35,7 +35,7 @@ src/sdl.o:   CFLAGS += $(shell sdl2-config --cflags) -Wno-unused-result
 gbmu-sdl:    LDFLAGS += $(shell sdl2-config --libs)
 
 src/sfml.o:  CFLAGS += -Wno-deprecated-declarations
-gbmu-sfml:   LDFLAGS += -lcsfml-audio -lcsfml-graphics -lcsfml-network -lcsfml-system -lcsfml-window -lpthread
+gbmu-sfml:   LDFLAGS += -lcsfml-audio -lcsfml-graphics -lcsfml-network -lcsfml-system -lcsfml-window
 
 src/tui.o:   CFLAGS += -I miniaudio/
 gbmu-tui:    LDFLAGS += -ldl -lpthread -lm -lcaca

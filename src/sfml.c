@@ -11,6 +11,7 @@ static sfSprite* sprite;
 static sfTexture* texture;
 static sfSoundStream* sound_stream;
 static uint8_t sound_buffer[SOUND_BUF_SIZE];
+static volatile int audio_done = 0;
 
 int video_open() {
     sfVideoMode mode = {WIDTH, HEIGHT, 32};
@@ -67,30 +68,25 @@ int video_write(uint8_t *data, uint32_t size) {
 
 int audio_write(uint8_t *data, uint32_t size) {
     (void)memcpy(sound_buffer, data, size);
-    sync_wait();
+    audio_done = 0;
+    while (!audio_done)
+        ; /* wait */
     return 1;
 }
 
-sfBool getDataCallback(sfSoundStreamChunk *chunk, void *userdata) {
+sfBool callback(sfSoundStreamChunk *chunk, void *userdata) {
     (void)userdata;
     chunk->samples = (sfInt16*)sound_buffer;
     chunk->sampleCount = SOUND_BUF_SIZE / SAMPLE_SIZE;
-    sync_signal();
+    audio_done = 1; /* signal */
     return sfTrue;
 }
 
-void seekCallback(sfTime time, void *userdata) {
-    (void)time;
-    (void)userdata;
-}
-
 int audio_open() {
-    sound_stream = sfSoundStream_create(&getDataCallback, NULL, NUM_CHANNELS, SAMPLING_FREQUENCY, NULL);
+    sound_stream = sfSoundStream_create(&callback, NULL,
+                                        NUM_CHANNELS, SAMPLING_FREQUENCY, NULL);
     if (sound_stream == NULL)
         return 0;
-    if (!sync_open()) {
-        return 0;
-    }
     sfSoundStream_play(sound_stream);
     return 1;
 }
@@ -100,7 +96,7 @@ int audio_close() {
         sfSoundStream_stop(sound_stream);
         sfSoundStream_destroy(sound_stream);
     }
-    return sync_close();
+    return 1;
 }
 
 int input_open() {
@@ -112,9 +108,11 @@ int input_close() {
 }
 
 int input_read() {
-    sfKeyCode keys[] = {sfKeyDown, sfKeyUp, sfKeyLeft, sfKeyRight, sfKeyEnter, sfKeyRShift, sfKeyZ, sfKeyX};
+    sfKeyCode keys[] = {sfKeyDown, sfKeyUp, sfKeyLeft, sfKeyRight,
+                        sfKeyEnter, sfKeyRShift, sfKeyZ, sfKeyX
+                       };
     sfEvent event;
-    int i;
+    int key, i;
 
     while (sfRenderWindow_pollEvent(window, &event)) {
         switch (event.type) {
@@ -123,9 +121,10 @@ int input_read() {
             break;
         case sfEvtKeyPressed:
         case sfEvtKeyReleased:
-            state->done = (event.key.code == sfKeyEscape) || (event.key.code == sfKeyQ);
+            key = event.key.code;
+            state->done = (key == sfKeyEscape) || (key == sfKeyQ);
             for (i = 0; i < 8; i++) {
-                if (event.key.code == keys[i]) {
+                if (key == keys[i]) {
                     state->buttons[i] = (event.type == sfEvtKeyPressed);
                     joypad_request_interrupt();
                 }
