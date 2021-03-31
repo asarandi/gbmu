@@ -68,6 +68,28 @@ static int16_t wave_sample(t_sound *s) {
     return (INT16_MAX / 15) * nib;
 }
 
+static void lfsr_calc(t_sound *s) {
+    uint32_t ticks, new_bit;
+
+    if ((!s->on) || (!s->freq)) {
+        return;
+    }
+    ticks = 4194304 / s->freq;
+    if (!s->lfsr) s->lfsr = 0x7fff;
+    while (s->cycles >= ticks) {
+        s->cycles -= ticks;
+        new_bit = ((s->lfsr >> 1) ^ s->lfsr) & 1;
+        s->lfsr >>= 1;
+        if (s->lfsr_width) {
+            s->lfsr &= ~(1 << 6);
+            s->lfsr |= (new_bit << 6);
+        } else {
+            s->lfsr &= ~(1 << 14);
+            s->lfsr |= (new_bit << 14);
+        }
+    }
+}
+
 /*
     writes int16_t interleaved samples to `buf'
     returns 1 when `index' is greater than or equal to `size'
@@ -82,6 +104,7 @@ static int write_sounds(uint8_t *buf, uint32_t size) {
 
     index %= size;
     left = right = 0;
+    //s1.on = s2.on = s3.on = 0;
 
     if (s1.on) {
         sample = tone_sample(&s1);
@@ -102,8 +125,13 @@ static int write_sounds(uint8_t *buf, uint32_t size) {
     }
 
     if (s4.on) {
+//        printf("s4.freq   = %d s4.width   = %d\n",   s4.freq,   s4.lfsr_width ? 7 : 15);
+//        printf("s4.volume = %d s4.env_dir = %s\n",   s4.volume, s4.env_dir ? "add":"sub");
+//        printf("s4.length = %d s4.lfsr    = %04x\n", s4.length, s4.lfsr);
+//        printf("s4.cycles = %d s4.on      = %d\n",   s4.cycles, s4.on);
+//        fflush(stdout);
         sample = (INT16_MAX / 15) * s4.volume;
-        sample *= !(s4.lfsr & 1);
+        sample *= (~s4.lfsr) & 1;
         left += (gb_mem[rAUDTERM] & AUDTERM_4_LEFT) ? sample : 0;
         right += (gb_mem[rAUDTERM] & AUDTERM_4_RIGHT) ? sample : 0;
     }
@@ -167,25 +195,6 @@ static void sweep_tick(t_sound *s) {
         return;
     s->sweep_ctr -= s->sweep_time;
     return sweep_calc(s);
-}
-
-static void lfsr_calc(t_sound *s) {
-    uint32_t ticks, new_bit;
-
-    if ((!s->on) || (!s->freq)) {
-        return;
-    }
-    ticks = 4194304 / s->freq;
-    for (; s->cycles >= ticks; s->cycles -= ticks) {
-        new_bit = ((s->lfsr >> 1) & 1) ^ (s->lfsr & 1);
-        s->lfsr >>= 1;
-        s->lfsr &= ~(1 << 14);
-        s->lfsr |= (new_bit << 14);
-        if (s->lfsr_width) {
-            s->lfsr &= ~(1 << 6);
-            s->lfsr |= (new_bit << 6);
-        }
-    }
 }
 
 int sound_update(uint8_t *gb_mem, t_state *state, int cycles) {
@@ -378,7 +387,7 @@ void sound_write_u8(uint16_t addr, uint8_t data) {
         s4.lfsr_ratio = data & 7;
         uint32_t f = 524288;
         uint32_t tab[] = {f * 2, f, f / 2, f / 3, f / 4, f / 5, f / 6, f / 7};
-        s4.freq = tab[s4.lfsr_ratio] >> s4.lfsr_shift;
+        s4.freq = tab[s4.lfsr_ratio] >> (s4.lfsr_shift + 1);
         break;
 
     case rAUD4GO:       // rNR44
