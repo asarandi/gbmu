@@ -245,7 +245,7 @@ int audio_write(uint8_t *data, uint32_t size) {
     memcpy(sdl_sound_buffer, data, size);
     audio_done = 0;
     while (!audio_done)
-        ; /* wait */
+        SDL_Delay(1); /* wait */
     return 1;
 }
 
