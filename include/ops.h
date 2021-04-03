@@ -1,3 +1,6 @@
+#ifndef OPS_H
+# define OPS_H
+
 #include "gb.h"
 
 void op_00(void *reg, t_state *state, uint8_t *mem);
@@ -512,3 +515,5 @@ void op_cbfc(void *reg, t_state *state, uint8_t *mem);
 void op_cbfd(void *reg, t_state *state, uint8_t *mem);
 void op_cbfe(void *reg, t_state *state, uint8_t *mem);
 void op_cbff(void *reg, t_state *state, uint8_t *mem);
+
+#endif
