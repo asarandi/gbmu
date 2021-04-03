@@ -7,27 +7,27 @@ work in progress; gameboy emulator in c;
 
 ## building
 
-### on linux:
+### on linux
 
 ```
     apt install libsdl2-dev
     make
 ```
 
-### on macOS:
+### on macOS
 
 ```
     brew install sdl2
     make
 ```
 
-## usage:
+## usage
 
 ```
     ./gbmu rom_file.gb
 ```
 
-## controls:
+## controls
 
 |gameboy|gbmu|
 |-|-|
