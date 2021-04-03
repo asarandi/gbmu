@@ -11,8 +11,6 @@
 #include <unistd.h>
 #include <time.h>
 
-#define BOOTROM_ENABLED     false
-
 #define ROM_ADDRESS 0x4000
 #define ROM_SIZE    0x4000
 #define RAM_ADDRESS 0xa000
@@ -54,8 +52,6 @@ typedef struct s_state {
     bool halt_bug;
     bool stop;
     bool ram_enabled;
-    bool bootrom_enabled;
-    bool debug;
     bool done;
     bool dma_update;
     bool testing;
@@ -82,6 +78,7 @@ typedef struct s_state {
     uint8_t (*rom_read_u8)(uint16_t);
 
     void (*rom_write_u8)(uint16_t, uint8_t);
+
 } t_state;
 
 extern uint8_t gb_mem[];
@@ -103,14 +100,6 @@ extern t_state *state;
 #define IS_C_FLAG        (r8->F & 0x10 ? 1:0)
 
 int get_num_cycles(void *gb_reg, void *gb_mem);
-
-void dump_background2(uint8_t *gb_mem, t_state *state);
-
-void dump_background(uint8_t *gb_mem);
-
-void dump_ram(void *ram);
-
-void dump_registers(void *registers, void *gb_state, uint8_t *gb_mem);
 
 void *gui(void *arg);
 
@@ -146,21 +135,13 @@ int input_read();
 
 int av_sync();
 
-int sync_open();
-
-int sync_close();
-
-int sync_signal();
-
-int sync_wait();
-
 uint8_t joypad_read();
 
 void joypad_write(uint8_t data);
 
 void joypad_request_interrupt();
 
-void gameboy_init();
+void set_initial_register_values();
 
 uint8_t read_u8(uint16_t addr);
 
@@ -169,6 +150,8 @@ uint16_t read_u16(uint16_t addr);
 void write_u8(uint16_t addr, uint8_t data);
 
 void write_u16(uint16_t addr, uint16_t data);
+
+/* cartridge/mbc */
 
 void cartridge_init();
 
@@ -209,6 +192,8 @@ bool is_savefile_enabled();
 void savefile_read();
 
 void savefile_write();
+
+/* jump tables */
 
 extern void (*ops0[])(void *, t_state *, uint8_t *);
 

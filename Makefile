@@ -1,7 +1,6 @@
 CFLAGS  += -O2 -Wall -Werror -Wextra -I include/
 SRC := \
     src/cycles.c \
-    src/debug.c \
     src/init.c \
     src/interrupts.c \
     src/joypad.c \
