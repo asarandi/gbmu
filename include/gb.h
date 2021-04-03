@@ -206,8 +206,8 @@ extern char *op_names1[];
 
 /*  serial  */
 
-void serial_data(uint8_t data);
+uint8_t serial_read_u8(uint16_t addr);
 
-void serial_control(uint8_t data);
+void serial_write_u8(uint16_t addr, uint8_t data);
 
 #endif
