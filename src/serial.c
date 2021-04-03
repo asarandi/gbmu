@@ -1,14 +1,27 @@
 #include "gb.h"
+#include "hardware.h"
 
-void serial_data(uint8_t data) {
-    gb_mem[0xff01] = data;
+uint8_t serial_read_u8(uint16_t addr) {
+    uint8_t res = 0xff;
+
+    if (addr == rSB) {
+        res = gb_mem[rSB];
+    } else if (addr == rSC) {
+        res = ((gb_mem[rSC] & 0x81) | 0x7e);
+    }
+    return res;
 }
 
-void serial_control(uint8_t data) {
-    gb_mem[0xff02] = data & 0x81;
-    if ((gb_mem[0xff02] & 0x81) == 0x81) {
-        gb_mem[0xff01] = 0xff;
-        gb_mem[0xff02] &= 1;
-        gb_mem[0xff0f] |= 8;
+void serial_write_u8(uint16_t addr, uint8_t data) {
+    if (addr == rSB) {
+        gb_mem[rSB] = data;
+    } else if (addr == rSC) {
+        gb_mem[rSC] = data & 0x81;
+        if ((gb_mem[rSC] & 0x81) == 0x81) {
+            /* set interrupt */
+            gb_mem[rSC] &= 1;
+            gb_mem[rIF] |= 8;
+            gb_mem[rSB] = 0xff;
+        }
     }
 }

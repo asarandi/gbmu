@@ -1,4 +1,5 @@
 #include "gb.h"
+#include "hardware.h"
 
 /*
     the purpose of read_memory() and write_memory()
@@ -14,8 +15,8 @@ uint8_t read_u8(uint16_t addr) {
         return state->rom_read_u8(addr);
     if ((addr >= 0xa000) && (addr <= 0xbfff))           /* RAM */
         return state->ram_read_u8(addr);
-    if (addr == 0xff02)
-        return ((gb_mem[0xff02] & 0x81) | 0x7e);
+    if ((addr == rSB) || (addr == rSC))
+        return serial_read_u8(addr);
     if ((addr >= 0xff10) && (addr < 0xff40)) {
         return sound_read_u8(addr);
     }
@@ -72,15 +73,9 @@ void write_u8(uint16_t addr, uint8_t data) {
         joypad_write(data);
         return;
     }
-    if (addr == 0xff01) {                                                    /* SB */
-        serial_data(data);
-        return;
+    if ((addr == rSB) || (addr == rSC)) {
+        return serial_write_u8(addr, data);
     }
-    if (addr == 0xff02) {                                                    /* SC */
-        serial_control(data);
-        return;
-    }
-
     if (addr == 0xff04) {
         state->div_cycles = 0;    /* reset DIV if written to */
         data = 0;
