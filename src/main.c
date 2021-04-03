@@ -1,42 +1,13 @@
 #include "gb.h"
-#include <arpa/inet.h>
-#include <getopt.h>
-
-static char *default_network_address = "0.0.0.0";
-static int default_network_port = 4242;
-
-bool is_valid_ip(char *s) {
-    struct sockaddr_in sa;
-    return inet_pton(AF_INET, s, &(sa.sin_addr)) == 1;
-}
 
 bool arg_parse(int ac, char **av) {
     int c;
 
-    state->network_address = &default_network_address[0];
-    state->network_port = default_network_port;
-
-    while ((c = getopt(ac, av, "c:s:p:td:")) != -1) {
+    while ((c = getopt(ac, av, "t")) != -1) {
         switch (c) {
         case 't':
             state->testing = 1;
-            if (!state->test_timeout)
-                state->test_timeout = 15;
-            break;
-        case 'd':
-            state->test_timeout = atoi(optarg);
-            break;
-        case 'c':
-        case 's':
-            state->is_client = c == 'c';
-            state->is_server = c == 's';
-            if (is_valid_ip(optarg))
-                state->network_address = optarg;
-            else
-                optind--;
-            break;
-        case 'p':
-            state->network_port = atoi(optarg);
+            state->test_timeout = 15;
             break;
         case '?':
         default:
@@ -44,14 +15,8 @@ bool arg_parse(int ac, char **av) {
             return false;
         }
     }
-    if (state->is_client || state->is_server)
-        printf("netplay %s: %s:%d\n", state->is_client ? "client" : "server", state->network_address,
-               state->network_port);
     return true;
 }
-
-
-
 
 uint8_t gb_mem[0x10000];
 t_state gb_state;
@@ -96,7 +61,6 @@ int main(int ac, char **av) {
         return 1;
     }
 
-    state->serial_data = 0xff;
     state->gameboy_registers = &registers;
     state->file_contents = malloc(stat_buf.st_size);
     state->file_size = stat_buf.st_size;
@@ -130,7 +94,6 @@ int main(int ac, char **av) {
     savefile_read();
 
     while (!state->done) {
-        serial(op_cycles);
         timers_update(gb_mem, &gb_state, op_cycles);
         if (lcd_update(gb_mem, &gb_state, op_cycles)) {
             video_write(state->screen_buf, 160 * 144);
@@ -187,7 +150,6 @@ int main(int ac, char **av) {
 }
 
 static int cleanup() {
-    serial_cleanup();
     savefile_write();
     if (!state->testing) {
         if (!input_close())
