@@ -1,4 +1,5 @@
 #include "gb.h"
+#include "hardware.h"
 
 /* http://gbdev.gg8.se/wiki/articles/Power_Up_Sequence */
 
@@ -34,6 +35,7 @@ void set_initial_register_values() {
     r16->PC = 0x0100;
 
     gb_mem[0xff00] = 0xcf;  /* P1   */
+    gb_mem[rSB] = 0xff;
 
     gb_mem[0xff04] = 0x42;  /* DIV  */
     gb_mem[0xff05] = 0x00;  /* TIMA */

@@ -82,15 +82,6 @@ typedef struct s_state {
     uint8_t (*rom_read_u8)(uint16_t);
 
     void (*rom_write_u8)(uint16_t, uint8_t);
-
-    /*    serial/tcp    */
-    char *network_address;
-    int network_port;
-    bool is_server;
-    bool is_client;
-    bool is_transfer;
-    uint8_t serial_data;
-    uint32_t serial_cycles;
 } t_state;
 
 extern uint8_t gb_mem[];
@@ -228,41 +219,7 @@ extern int byte_lens1[];
 extern char *op_names0[];
 extern char *op_names1[];
 
-/*  serial/tcp  */
-
-bool is_online();
-
-bool socket_send(uint8_t *octet);
-
-bool socket_receive(uint8_t *octet);
-
-void serial_cleanup();
-
-void set_blocking();
-
-void set_nonblocking();
-
-void serial_connect();
-
-void bit_transfer_ok(uint8_t octet_recv);
-
-void byte_transfer_ok(uint8_t octet_recv);
-
-void master_offline();
-
-void master_init();
-
-void slave_init();
-
-void master_bit_transfer();
-
-void master_byte_transfer();
-
-void slave_bit_transfer();
-
-void slave_byte_transfer();
-
-void serial(uint8_t current_cycles);
+/*  serial  */
 
 void serial_data(uint8_t data);
 

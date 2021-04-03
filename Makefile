@@ -17,8 +17,6 @@ SRC := \
     src/ops.c \
     src/serial.c \
     src/sound.c \
-    src/tcp_client.c \
-    src/tcp_server.c \
     src/timers.c \
     src/sdl.c
 
