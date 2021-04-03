@@ -27,16 +27,9 @@ t_r16 *r16 = &registers;
 static int cleanup();
 
 int main(int ac, char **av) {
-    int fd;
-    uint8_t op;
-    struct stat stat_buf;
+    static int fd, i, op, instr_cycles, op_cycles = 4;
     void (*f)(void *, t_state *, uint8_t *);
-    int i, op_cycles = 4;
-    uint8_t dbgcmd = 0;
-    uint16_t pc_history[100] = {0};
-    int pc_idx = 0;
-    bool show_pc_history = false;
-    static int instr_cycles;
+    struct stat stat_buf;
 
     if (!arg_parse(ac, av))
         return 1;
@@ -88,8 +81,7 @@ int main(int ac, char **av) {
         }
     }
 
-    state->bootrom_enabled = BOOTROM_ENABLED;
-    gameboy_init();
+    set_initial_register_values();
     cartridge_init();
     savefile_read();
 
@@ -109,23 +101,6 @@ int main(int ac, char **av) {
         if (op == 0xcb)
             f = ops1[read_u8(r16->PC + 1)];
 
-        if (r16->PC == 0x100 && state->bootrom_enabled) {
-            (void)memcpy(gb_mem, state->file_contents, 0x100);
-            state->bootrom_enabled = false;
-        }
-
-        if (state->debug) {
-            printf("state->cycles = %u\n", state->cycles);
-            dump_registers(&registers, state, gb_mem);
-            if ((read(0, &dbgcmd, 1) == 1) && (dbgcmd == 'c')) {
-                state->cycles = 0;
-                state->debug = false;
-                dbgcmd = 0;
-            }
-        }
-        pc_history[pc_idx++] = r16->PC;
-        pc_idx %= 100;
-
         if ((!state->halt) && (!state->interrupt_cycles)) {
             if (!instr_cycles)
                 instr_cycles = get_num_cycles(&registers, gb_mem);
@@ -137,14 +112,6 @@ int main(int ac, char **av) {
 
         op_cycles = 4;
         state->cycles += op_cycles;
-    }
-    if (show_pc_history) {
-        for (i = pc_idx; i < 100; i++) {
-            printf("PC %02d: %04x\n", i, pc_history[i]);
-        };
-        for (i = 0; i < pc_idx; i++) {
-            printf("PC %02d: %04x\n", i, pc_history[i]);
-        };
     }
     return cleanup();
 }
