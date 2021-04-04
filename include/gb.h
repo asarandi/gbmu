@@ -56,7 +56,6 @@ typedef struct s_state {
     bool dma_update;
     bool testing;
     bool test_timeout;
-    int volume;
     int screen_mask;
     char *rom_file;
     char *ram_file;
@@ -69,7 +68,6 @@ typedef struct s_state {
     uint8_t screen_buf[144 * 160];
     uint8_t sound_buf[SOUND_BUF_SIZE];
     uint8_t buttons[8];
-    uint8_t sound_channels[4];
 
     uint8_t (*ram_read_u8)(uint16_t);
 
