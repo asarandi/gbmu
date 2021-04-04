@@ -5,11 +5,11 @@
 /* http://gbdev.gg8.se/wiki/articles/Gameboy_sound_hardware */
 /* https://ia801906.us.archive.org/19/items/GameBoyProgManVer1.1/GameBoyProgManVer1.1.pdf */
 
-#define VOLUME_CLOCK                (4194304 /  64)
-#define SWEEP_CLOCK                 (4194304 / 128)
-#define LENGTH_CLOCK                (4194304 / 256)
-#define FREQUENCY_CLOCK             (4194304 / 512)
-#define SAMPLE_CLOCK                (4194304 / SAMPLING_FREQUENCY)
+#define VOLUME_CLOCK            (4194304 /  64)
+#define SWEEP_CLOCK             (4194304 / 128)
+#define LENGTH_CLOCK            (4194304 / 256)
+#define FREQUENCY_CLOCK         (4194304 / 512)
+#define SAMPLE_CLOCK            (4194304 / SAMPLING_FREQUENCY)
 
 struct s_sound {
     uint32_t cycles;
@@ -30,7 +30,7 @@ struct s_sound {
 };
 typedef struct s_sound t_sound;
 
-t_sound s1, s2, s3, s4; // globals
+t_sound s1, s2, s3, s4;         //globals
 
 static int16_t tone_sample(t_sound *s) {
     uint32_t duties[4][8] = {
@@ -39,7 +39,6 @@ static int16_t tone_sample(t_sound *s) {
         {1, 0, 0, 0, 0, 1, 1, 1},
         {0, 1, 1, 1, 1, 1, 1, 0}
     };
-
     uint32_t ticks = 4194304 / (131072 / (2048 - s->freq));
     uint32_t idx = (s->cycles / (ticks >> 3)) & 7;
     return (INT16_MAX / 15) * s->volume * duties[s->duty][idx];
@@ -55,27 +54,31 @@ static int16_t wave_sample(t_sound *s) {
     case 0:
         nib = 0;
         break;
+
     case 2:
         nib >>= 1;
         break;
+
     case 3:
         nib >>= 2;
         break;
     }
+
     return (INT16_MAX / 15) * nib;
 }
 
 static int16_t noise_sample(t_sound *s) {
     extern unsigned char noise7[], noise15[];
-
     uint32_t ticks, idx;
     int16_t sample;
     uint8_t *tab;
 
-    if (!s->freq)
+    if (!s->freq) {
         return 0;
+    }
 
     ticks = 4194304 / s->freq;
+
     if (s->lfsr_width) {
         idx = (s->cycles / ticks) & 127;
         tab = noise7;
@@ -83,6 +86,7 @@ static int16_t noise_sample(t_sound *s) {
         idx = (s->cycles / ticks) & 32767;
         tab = noise15;
     }
+
     sample = (tab[idx >> 3] >> (7 - (idx & 7))) & 1;
     return (INT16_MAX / 15) * s->volume * sample;
 }
@@ -96,8 +100,9 @@ static int write_sounds(uint8_t *buf, uint32_t size) {
     int32_t left, right, sample;
     static uint32_t index;
 
-    if (!size)
+    if (!size) {
         return 1;
+    }
 
     index %= size;
     left = right = 0;
@@ -128,34 +133,44 @@ static int write_sounds(uint8_t *buf, uint32_t size) {
 
     left >>= 2;
     left = (left / 7) * ((gb_mem[rAUDVOL] >> 4) & 7);
-
     right >>= 2;
     right = (right / 7) * (gb_mem[rAUDVOL] & 7);
-
-    *(int16_t * ) & buf[index] = (int16_t)left;
-    *(int16_t * ) & buf[index + 2] = (int16_t)right;
-    index += 4;  /* one frame == 2 sixteen bit samples: L, R */
+    *(int16_t *) &buf[index] = (int16_t)left;
+    *(int16_t *) &buf[index + 2] = (int16_t)right;
+    /* one frame == 2 sixteen bit samples: L, R */
+    index += 4;
     return index >= size;
 }
 
 static void volume_tick(t_sound *s) {
-    if ((!s->on) || (!s->env_sweep))
+    if ((!s->on) || (!s->env_sweep)) {
         return;
+    }
+
     s->env_ctr++;
-    if (s->env_ctr < s->env_sweep)
+
+    if (s->env_ctr < s->env_sweep) {
         return;
+    }
+
     s->env_ctr -= s->env_sweep;
-    if ((s->env_dir) && (s->volume < 15))
+
+    if ((s->env_dir) && (s->volume < 15)) {
         s->volume++;
-    if ((!s->env_dir) && (s->volume > 0))
+    }
+
+    if ((!s->env_dir) && (s->volume > 0)) {
         s->volume--;
+    }
 }
 
 static void length_tick(t_sound *s, uint32_t mask) {
     if (!s->is_len_counter) {
         return;
     }
+
     s->length = (s->length + 1) & mask;
+
     if ((s->on) && (s->length == 0)) {
         s->on = 0;
     }
@@ -163,39 +178,46 @@ static void length_tick(t_sound *s, uint32_t mask) {
 
 static void sweep_calc(t_sound *s) {
     uint32_t shadow_freq = s->freq;
+
     if (s->sweep_dir) {
         shadow_freq -= shadow_freq >> s->sweep_shift;
     } else {
         shadow_freq += shadow_freq >> s->sweep_shift;
     }
+
     if (shadow_freq > 2047) {
         s->on = 0;
         shadow_freq = s->freq;
     }
+
     s->freq = shadow_freq;
     gb_mem[rAUD1HIGH] = (gb_mem[rAUD1HIGH] & 0b11111000) | (s->freq >> 8);
     gb_mem[rAUD1LOW] = s->freq & 255;
 }
 
 static void sweep_tick(t_sound *s) {
-    if ((!s->on) || (!s->sweep_time) || (!s->sweep_shift))
+    if ((!s->on) || (!s->sweep_time) || (!s->sweep_shift)) {
         return;
+    }
+
     s->sweep_ctr++;
-    if (s->sweep_ctr < s->sweep_time)
+
+    if (s->sweep_ctr < s->sweep_time) {
         return;
+    }
+
     s->sweep_ctr -= s->sweep_time;
     return sweep_calc(s);
 }
 
 int sound_update(uint8_t *gb_mem, t_state *state, int cycles) {
     static uint32_t volume, sweep, length, samples;
-
     s1.cycles += cycles;
     s2.cycles += cycles;
     s3.cycles += cycles;
     s4.cycles += cycles;
-
     volume += cycles;
+
     if (volume >= VOLUME_CLOCK) {
         volume -= VOLUME_CLOCK;
         volume_tick(&s1);
@@ -204,12 +226,14 @@ int sound_update(uint8_t *gb_mem, t_state *state, int cycles) {
     }
 
     sweep += cycles;
+
     if (sweep >= SWEEP_CLOCK) {
         sweep -= SWEEP_CLOCK;
         sweep_tick(&s1);
     }
 
     length += cycles;
+
     if (length >= LENGTH_CLOCK) {
         length -= LENGTH_CLOCK;
         length_tick(&s1, 63);
@@ -218,20 +242,24 @@ int sound_update(uint8_t *gb_mem, t_state *state, int cycles) {
         length_tick(&s4, 63);
     }
 
-    gb_mem[rAUDENA] = (gb_mem[rAUDENA] & 128) | (s1.on << 0) | (s2.on << 1) | (s3.on << 2) | (s4.on << 3);
-
+    gb_mem[rAUDENA] = (gb_mem[rAUDENA] & 128) | (s1.on << 0) | (s2.on << 1) |
+                      (s3.on << 2) | (s4.on << 3);
     samples += cycles;
+
     if (samples >= SAMPLE_CLOCK) {
         samples -= SAMPLE_CLOCK;
         return write_sounds(state->sound_buf, SOUND_BUF_SIZE);
     }
+
     return 0;
 }
 
 uint8_t sound_read_u8(uint16_t addr) {
     switch (addr) {
     case rAUDENA:
-        return (gb_mem[rAUDENA] & 128) | (s1.on << 0) | (s2.on << 1) | (s3.on << 2) | (s4.on << 3);
+        return (gb_mem[rAUDENA] & 128) | (s1.on << 0) | (s2.on << 1) | (s3.on << 2) |
+               (s4.on << 3);
+
     default:
         return gb_mem[addr];
     }
@@ -245,7 +273,6 @@ void sound_write_u8(uint16_t addr, uint8_t data) {
     }
 
     switch (addr) {
-
     case rAUD1SWEEP:    // rNR10
         gb_mem[rAUD1SWEEP] = data;
         s1.sweep_time = (data >> 4) & 7;        // 3 bits 6-4
@@ -261,7 +288,7 @@ void sound_write_u8(uint16_t addr, uint8_t data) {
 
     case rAUD1ENV:      // rNR12
         gb_mem[rAUD1ENV] = data;
-        s1.volume = (data >> 4) & 15;       // 4 bits 7-4
+        s1.volume = (data >> 4) & 15;           // 4 bits 7-4
         s1.env_dir = (data >> 3) & 1;           // 0 = sub, 1 = add
         s1.env_sweep = data & 7;
         s1.on = (gb_mem[rAUD1ENV] >> 4) != 0;
@@ -275,7 +302,8 @@ void sound_write_u8(uint16_t addr, uint8_t data) {
     case rAUD1HIGH:     // rNR14
         gb_mem[rAUD1HIGH] = data;
         s1.freq = ((gb_mem[rAUD1HIGH] & 7) << 8) | gb_mem[rAUD1LOW];
-        s1.is_len_counter = (data >> 6) & 1;        // 1 = counter, 0 = continuous
+        s1.is_len_counter = (data >> 6) & 1;    // 1 = counter, 0 = continuous
+
         if (data & 128) {
             // trigger
             if (!s1.on) {
@@ -283,11 +311,14 @@ void sound_write_u8(uint16_t addr, uint8_t data) {
                 s1.sweep_ctr = 0;
                 s1.env_ctr = 0;
             }
+
             if ((s1.sweep_time) && (s1.sweep_shift)) {
                 sweep_calc(&s1);
             }
+
             s1.on = (gb_mem[rAUD1ENV] >> 4) != 0;
         }
+
         break;
 
     case rAUD2LEN:      // rNR21
@@ -313,14 +344,17 @@ void sound_write_u8(uint16_t addr, uint8_t data) {
         gb_mem[rAUD2HIGH] = data;
         s2.freq = ((gb_mem[rAUD2HIGH] & 7) << 8) | gb_mem[rAUD2LOW];
         s2.is_len_counter = (data >> 6) & 1;
+
         if (data & 128) {
             // trigger
             if (!s2.on) {
                 s2.cycles = 0;
                 s2.env_ctr = 0;
             }
+
             s2.on = (gb_mem[rAUD2ENV] >> 4) != 0;
         }
+
         break;
 
     case rAUD3ENA:      // rNR30
@@ -347,13 +381,16 @@ void sound_write_u8(uint16_t addr, uint8_t data) {
         gb_mem[rAUD3HIGH] = data;
         s3.freq = ((gb_mem[rAUD3HIGH] & 7) << 8) | gb_mem[rAUD3LOW];
         s3.is_len_counter = (data >> 6) & 1;
+
         if (data & 128) {
             // trigger
             if (!s3.on) {
                 s3.cycles = 0;
             }
+
             s3.on = (gb_mem[rAUD3ENA] & 128) != 0;
         }
+
         break;
 
     case rAUD4LEN:      // rNR41
@@ -377,18 +414,23 @@ void sound_write_u8(uint16_t addr, uint8_t data) {
         shift = (data >> 4) & 15;
         ratio = data & 7;
         s4.freq = tab[ratio] >> (shift + 1);
-        if (shift >= 14)
+
+        if (shift >= 14) {
             s4.freq = 0;
+        }
+
         break;
 
     case rAUD4GO:       // rNR44
         gb_mem[rAUD4GO] = data;
         s4.is_len_counter = (data >> 6) & 1;
+
         if (data & 128) {
             s4.env_ctr = 0;
             s4.cycles = 0;
             s4.on = (gb_mem[rAUD4ENV] >> 4) != 0;
         }
+
         break;
 
     case rAUDVOL:       // rNR50
@@ -401,9 +443,11 @@ void sound_write_u8(uint16_t addr, uint8_t data) {
 
     case rAUDENA:       // rNR52
         gb_mem[rAUDENA] = data & 128;
+
         if ((gb_mem[rAUDENA] & 128) == 0) {
             s1.on = s2.on = s3.on = s4.on = 0;
         }
+
         break;
 
     default:

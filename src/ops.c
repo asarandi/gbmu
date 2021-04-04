@@ -8,8 +8,6 @@ void op_88(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 0 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -32,8 +30,6 @@ void op_89(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 0 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -56,8 +52,6 @@ void op_8a(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 0 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -80,8 +74,6 @@ void op_8b(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 0 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -104,8 +96,6 @@ void op_8c(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 0 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -128,8 +118,6 @@ void op_8d(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 0 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -152,8 +140,6 @@ void op_8e(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -176,8 +162,6 @@ void op_8f(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 0 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -200,8 +184,6 @@ void op_ce(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -224,8 +206,6 @@ void op_09(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - 0 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint16_t op;
@@ -247,8 +227,6 @@ void op_19(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - 0 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint16_t op;
@@ -270,8 +248,6 @@ void op_29(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - 0 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint16_t op;
@@ -293,8 +269,6 @@ void op_39(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - 0 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint16_t op;
@@ -316,8 +290,6 @@ void op_80(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 0 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -340,8 +312,6 @@ void op_81(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 0 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -364,8 +334,6 @@ void op_82(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 0 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -388,8 +356,6 @@ void op_83(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 0 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -412,8 +378,6 @@ void op_84(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 0 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -436,8 +400,6 @@ void op_85(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 0 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -460,8 +422,6 @@ void op_86(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -484,8 +444,6 @@ void op_87(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 0 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -508,8 +466,6 @@ void op_c6(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -532,8 +488,6 @@ void op_e8(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: 0 0 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     int16_t op;
@@ -554,8 +508,6 @@ void op_a0(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 0 1 0
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -576,8 +528,6 @@ void op_a1(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 0 1 0
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -598,8 +548,6 @@ void op_a2(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 0 1 0
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -620,8 +568,6 @@ void op_a3(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 0 1 0
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -642,8 +588,6 @@ void op_a4(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 0 1 0
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -664,8 +608,6 @@ void op_a5(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 0 1 0
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -686,8 +628,6 @@ void op_a6(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 0
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -708,8 +648,6 @@ void op_a7(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 0 1 0
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -730,8 +668,6 @@ void op_e6(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 0
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -752,8 +688,6 @@ void op_cb40(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -772,8 +706,6 @@ void op_cb41(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -792,8 +724,6 @@ void op_cb42(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -812,8 +742,6 @@ void op_cb43(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -832,8 +760,6 @@ void op_cb44(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -852,8 +778,6 @@ void op_cb45(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -872,8 +796,6 @@ void op_cb46(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -892,8 +814,6 @@ void op_cb47(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -912,8 +832,6 @@ void op_cb48(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -932,8 +850,6 @@ void op_cb49(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -952,8 +868,6 @@ void op_cb4a(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -972,8 +886,6 @@ void op_cb4b(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -992,8 +904,6 @@ void op_cb4c(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1012,8 +922,6 @@ void op_cb4d(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1032,8 +940,6 @@ void op_cb4e(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1052,8 +958,6 @@ void op_cb4f(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1072,8 +976,6 @@ void op_cb50(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1092,8 +994,6 @@ void op_cb51(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1112,8 +1012,6 @@ void op_cb52(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1132,8 +1030,6 @@ void op_cb53(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1152,8 +1048,6 @@ void op_cb54(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1172,8 +1066,6 @@ void op_cb55(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1192,8 +1084,6 @@ void op_cb56(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1212,8 +1102,6 @@ void op_cb57(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1232,8 +1120,6 @@ void op_cb58(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1252,8 +1138,6 @@ void op_cb59(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1272,8 +1156,6 @@ void op_cb5a(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1292,8 +1174,6 @@ void op_cb5b(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1312,8 +1192,6 @@ void op_cb5c(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1332,8 +1210,6 @@ void op_cb5d(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1352,8 +1228,6 @@ void op_cb5e(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1372,8 +1246,6 @@ void op_cb5f(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1392,8 +1264,6 @@ void op_cb60(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1412,8 +1282,6 @@ void op_cb61(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1432,8 +1300,6 @@ void op_cb62(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1452,8 +1318,6 @@ void op_cb63(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1472,8 +1336,6 @@ void op_cb64(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1492,8 +1354,6 @@ void op_cb65(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1512,8 +1372,6 @@ void op_cb66(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1532,8 +1390,6 @@ void op_cb67(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1552,8 +1408,6 @@ void op_cb68(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1572,8 +1426,6 @@ void op_cb69(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1592,8 +1444,6 @@ void op_cb6a(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1612,8 +1462,6 @@ void op_cb6b(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1632,8 +1480,6 @@ void op_cb6c(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1652,8 +1498,6 @@ void op_cb6d(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1672,8 +1516,6 @@ void op_cb6e(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1692,8 +1534,6 @@ void op_cb6f(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1712,8 +1552,6 @@ void op_cb70(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1732,8 +1570,6 @@ void op_cb71(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1752,8 +1588,6 @@ void op_cb72(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1772,8 +1606,6 @@ void op_cb73(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1792,8 +1624,6 @@ void op_cb74(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1812,8 +1642,6 @@ void op_cb75(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1832,8 +1660,6 @@ void op_cb76(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1852,8 +1678,6 @@ void op_cb77(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1872,8 +1696,6 @@ void op_cb78(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1892,8 +1714,6 @@ void op_cb79(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1912,8 +1732,6 @@ void op_cb7a(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1932,8 +1750,6 @@ void op_cb7b(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1952,8 +1768,6 @@ void op_cb7c(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1972,8 +1786,6 @@ void op_cb7d(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -1992,8 +1804,6 @@ void op_cb7e(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -2012,8 +1822,6 @@ void op_cb7f(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -2032,16 +1840,18 @@ void op_c4(void *reg, t_state *state, uint8_t *mem) {
               cycles: 24/12
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
+
     if (IS_Z_FLAG) {
         r16->PC += 3;
         return;
     };
+
     r16->SP -= 2;
+
     write_u16(r16->SP, r16->PC + 3);
+
     r16->PC = read_u16(r16->PC + 1);
 }
 
@@ -2053,16 +1863,18 @@ void op_cc(void *reg, t_state *state, uint8_t *mem) {
               cycles: 24/12
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
+
     if (!IS_Z_FLAG) {
         r16->PC += 3;
         return;
     };
+
     r16->SP -= 2;
+
     write_u16(r16->SP, r16->PC + 3);
+
     r16->PC = read_u16(r16->PC + 1);
 }
 
@@ -2074,8 +1886,6 @@ void op_cd(void *reg, t_state *state, uint8_t *mem) {
               cycles: 24
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->SP -= 2;
@@ -2091,16 +1901,18 @@ void op_d4(void *reg, t_state *state, uint8_t *mem) {
               cycles: 24/12
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
+
     if (IS_C_FLAG) {
         r16->PC += 3;
         return;
     };
+
     r16->SP -= 2;
+
     write_u16(r16->SP, r16->PC + 3);
+
     r16->PC = read_u16(r16->PC + 1);
 }
 
@@ -2112,16 +1924,18 @@ void op_dc(void *reg, t_state *state, uint8_t *mem) {
               cycles: 24/12
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
+
     if (!IS_C_FLAG) {
         r16->PC += 3;
         return;
     };
+
     r16->SP -= 2;
+
     write_u16(r16->SP, r16->PC + 3);
+
     r16->PC = read_u16(r16->PC + 1);
 }
 
@@ -2133,8 +1947,6 @@ void op_3f(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     IS_C_FLAG ? CLEAR_C_FLAG : SET_C_FLAG;
@@ -2151,8 +1963,6 @@ void op_b8(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 1 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -2172,8 +1982,6 @@ void op_b9(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 1 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -2193,8 +2001,6 @@ void op_ba(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 1 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -2214,8 +2020,6 @@ void op_bb(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 1 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -2235,8 +2039,6 @@ void op_bc(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 1 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -2256,8 +2058,6 @@ void op_bd(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 1 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -2277,8 +2077,6 @@ void op_be(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 1 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -2298,8 +2096,6 @@ void op_bf(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 1 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -2319,8 +2115,6 @@ void op_fe(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 1 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -2340,8 +2134,6 @@ void op_2f(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - 1 1 -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A = (~r8->A);
@@ -2358,16 +2150,16 @@ void op_27(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z - 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
+
     /*  https://forums.nesdev.com/viewtopic.php?f=20&t=15944  */
     if (!IS_N_FLAG) {
         if ((IS_C_FLAG) || (r8->A > 0x99)) {
             r8->A += 0x60;
             SET_C_FLAG;
         }
+
         if ((IS_H_FLAG) || ((r8->A & 0x0f) > 0x09)) {
             r8->A += 0x6;
         }
@@ -2375,10 +2167,12 @@ void op_27(void *reg, t_state *state, uint8_t *mem) {
         if (IS_C_FLAG) {
             r8->A -= 0x60;
         }
+
         if (IS_H_FLAG) {
             r8->A -= 0x6;
         }
     }
+
     r8->A == 0 ? SET_Z_FLAG : CLEAR_Z_FLAG;
     CLEAR_H_FLAG;
     r16->PC += 1;
@@ -2392,8 +2186,6 @@ void op_05(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 1 H -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -2414,8 +2206,6 @@ void op_0b(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint16_t op;
@@ -2433,8 +2223,6 @@ void op_0d(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 1 H -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -2455,8 +2243,6 @@ void op_15(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 1 H -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -2477,8 +2263,6 @@ void op_1b(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint16_t op;
@@ -2496,8 +2280,6 @@ void op_1d(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 1 H -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -2518,8 +2300,6 @@ void op_25(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 1 H -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -2540,8 +2320,6 @@ void op_2b(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint16_t op;
@@ -2559,8 +2337,6 @@ void op_2d(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 1 H -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -2581,8 +2357,6 @@ void op_35(void *reg, t_state *state, uint8_t *mem) {
               cycles: 12
                flags: Z 1 H -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -2603,8 +2377,6 @@ void op_3b(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint16_t op;
@@ -2622,8 +2394,6 @@ void op_3d(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 1 H -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -2644,8 +2414,6 @@ void op_f3(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     state->interrupts_enabled = false;
@@ -2660,8 +2428,6 @@ void op_fb(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     state->interrupts_enabled = true;
@@ -2676,12 +2442,11 @@ void op_76(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->PC += 1;
     state->halt = true;
+
     if (state->interrupts_enabled == false) {
         if (read_u8(0xffff) & read_u8(0xff0f) & 0x1f) {
             state->halt_bug = true;
@@ -2697,8 +2462,6 @@ void op_03(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint16_t op;
@@ -2716,8 +2479,6 @@ void op_04(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 0 H -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -2738,8 +2499,6 @@ void op_0c(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 0 H -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -2760,8 +2519,6 @@ void op_13(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint16_t op;
@@ -2779,8 +2536,6 @@ void op_14(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 0 H -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -2801,8 +2556,6 @@ void op_1c(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 0 H -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -2823,8 +2576,6 @@ void op_23(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint16_t op;
@@ -2842,8 +2593,6 @@ void op_24(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 0 H -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -2864,8 +2613,6 @@ void op_2c(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 0 H -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -2886,8 +2633,6 @@ void op_33(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint16_t op;
@@ -2905,8 +2650,6 @@ void op_34(void *reg, t_state *state, uint8_t *mem) {
               cycles: 12
                flags: Z 0 H -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -2927,8 +2670,6 @@ void op_3c(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 0 H -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -2949,14 +2690,14 @@ void op_c2(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16/12
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
+
     if (IS_Z_FLAG) {
         r16->PC += 3;
         return;
     };
+
     r16->PC = read_u16(r16->PC + 1);
 }
 
@@ -2968,8 +2709,6 @@ void op_c3(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->PC = read_u16(r16->PC + 1);
@@ -2983,14 +2722,14 @@ void op_ca(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16/12
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
+
     if (!IS_Z_FLAG) {
         r16->PC += 3;
         return;
     };
+
     r16->PC = read_u16(r16->PC + 1);
 }
 
@@ -3002,14 +2741,14 @@ void op_d2(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16/12
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
+
     if (IS_C_FLAG) {
         r16->PC += 3;
         return;
     };
+
     r16->PC = read_u16(r16->PC + 1);
 }
 
@@ -3021,14 +2760,14 @@ void op_da(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16/12
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
+
     if (!IS_C_FLAG) {
         r16->PC += 3;
         return;
     };
+
     r16->PC = read_u16(r16->PC + 1);
 }
 
@@ -3040,8 +2779,6 @@ void op_e9(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->PC = r16->HL;
@@ -3055,8 +2792,6 @@ void op_18(void *reg, t_state *state, uint8_t *mem) {
               cycles: 12
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->PC += (int8_t)read_u8(r16->PC + 1);
@@ -3071,12 +2806,13 @@ void op_20(void *reg, t_state *state, uint8_t *mem) {
               cycles: 12/8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
-    if (!IS_Z_FLAG)
+
+    if (!IS_Z_FLAG) {
         r16->PC += (int8_t)read_u8(r16->PC + 1);
+    }
+
     r16->PC += 2;
 }
 
@@ -3088,12 +2824,13 @@ void op_28(void *reg, t_state *state, uint8_t *mem) {
               cycles: 12/8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
-    if (IS_Z_FLAG)
+
+    if (IS_Z_FLAG) {
         r16->PC += (int8_t)read_u8(r16->PC + 1);
+    }
+
     r16->PC += 2;
 }
 
@@ -3105,12 +2842,13 @@ void op_30(void *reg, t_state *state, uint8_t *mem) {
               cycles: 12/8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
-    if (!IS_C_FLAG)
+
+    if (!IS_C_FLAG) {
         r16->PC += (int8_t)read_u8(r16->PC + 1);
+    }
+
     r16->PC += 2;
 }
 
@@ -3122,12 +2860,13 @@ void op_38(void *reg, t_state *state, uint8_t *mem) {
               cycles: 12/8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
-    if (IS_C_FLAG)
+
+    if (IS_C_FLAG) {
         r16->PC += (int8_t)read_u8(r16->PC + 1);
+    }
+
     r16->PC += 2;
 }
 
@@ -3139,8 +2878,6 @@ void op_01(void *reg, t_state *state, uint8_t *mem) {
               cycles: 12
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->BC = read_u16(r16->PC + 1);
@@ -3155,8 +2892,6 @@ void op_02(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     write_u8(r16->BC, r8->A);
@@ -3171,8 +2906,6 @@ void op_06(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->B = read_u8(r16->PC + 1);
@@ -3187,8 +2920,6 @@ void op_08(void *reg, t_state *state, uint8_t *mem) {
               cycles: 20
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint16_t a16;
@@ -3205,8 +2936,6 @@ void op_0a(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A = read_u8(r16->BC);
@@ -3221,8 +2950,6 @@ void op_0e(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->C = read_u8(r16->PC + 1);
@@ -3237,8 +2964,6 @@ void op_11(void *reg, t_state *state, uint8_t *mem) {
               cycles: 12
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->DE = read_u16(r16->PC + 1);
@@ -3253,8 +2978,6 @@ void op_12(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     write_u8(r16->DE, r8->A);
@@ -3269,8 +2992,6 @@ void op_16(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->D = read_u8(r16->PC + 1);
@@ -3285,8 +3006,6 @@ void op_1a(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A = read_u8(r16->DE);
@@ -3301,8 +3020,6 @@ void op_1e(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->E = read_u8(r16->PC + 1);
@@ -3317,8 +3034,6 @@ void op_21(void *reg, t_state *state, uint8_t *mem) {
               cycles: 12
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->HL = read_u16(r16->PC + 1);
@@ -3333,8 +3048,6 @@ void op_22(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     write_u8(r16->HL++, r8->A);
@@ -3349,8 +3062,6 @@ void op_26(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->H = read_u8(r16->PC + 1);
@@ -3365,8 +3076,6 @@ void op_2a(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A = read_u8(r16->HL++);
@@ -3381,8 +3090,6 @@ void op_2e(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->L = read_u8(r16->PC + 1);
@@ -3397,8 +3104,6 @@ void op_31(void *reg, t_state *state, uint8_t *mem) {
               cycles: 12
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->SP = read_u16(r16->PC + 1);
@@ -3413,8 +3118,6 @@ void op_32(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     write_u8(r16->HL--, r8->A);
@@ -3429,8 +3132,6 @@ void op_36(void *reg, t_state *state, uint8_t *mem) {
               cycles: 12
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     write_u8(r16->HL, read_u8(r16->PC + 1));
@@ -3445,8 +3146,6 @@ void op_3a(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A = read_u8(r16->HL--);
@@ -3461,8 +3160,6 @@ void op_3e(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A = read_u8(r16->PC + 1);
@@ -3477,8 +3174,6 @@ void op_40(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->B = r8->B;
@@ -3493,8 +3188,6 @@ void op_41(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->B = r8->C;
@@ -3509,8 +3202,6 @@ void op_42(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->B = r8->D;
@@ -3525,8 +3216,6 @@ void op_43(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->B = r8->E;
@@ -3541,8 +3230,6 @@ void op_44(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->B = r8->H;
@@ -3557,8 +3244,6 @@ void op_45(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->B = r8->L;
@@ -3573,8 +3258,6 @@ void op_46(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->B = read_u8(r16->HL);
@@ -3589,8 +3272,6 @@ void op_47(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->B = r8->A;
@@ -3605,8 +3286,6 @@ void op_48(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->C = r8->B;
@@ -3621,8 +3300,6 @@ void op_49(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->C = r8->C;
@@ -3637,8 +3314,6 @@ void op_4a(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->C = r8->D;
@@ -3653,8 +3328,6 @@ void op_4b(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->C = r8->E;
@@ -3669,8 +3342,6 @@ void op_4c(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->C = r8->H;
@@ -3685,8 +3356,6 @@ void op_4d(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->C = r8->L;
@@ -3701,8 +3370,6 @@ void op_4e(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->C = read_u8(r16->HL);
@@ -3717,8 +3384,6 @@ void op_4f(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->C = r8->A;
@@ -3733,8 +3398,6 @@ void op_50(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->D = r8->B;
@@ -3749,8 +3412,6 @@ void op_51(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->D = r8->C;
@@ -3765,8 +3426,6 @@ void op_52(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->D = r8->D;
@@ -3781,8 +3440,6 @@ void op_53(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->D = r8->E;
@@ -3797,8 +3454,6 @@ void op_54(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->D = r8->H;
@@ -3813,8 +3468,6 @@ void op_55(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->D = r8->L;
@@ -3829,8 +3482,6 @@ void op_56(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->D = read_u8(r16->HL);
@@ -3845,8 +3496,6 @@ void op_57(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->D = r8->A;
@@ -3861,8 +3510,6 @@ void op_58(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->E = r8->B;
@@ -3877,8 +3524,6 @@ void op_59(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->E = r8->C;
@@ -3893,8 +3538,6 @@ void op_5a(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->E = r8->D;
@@ -3909,8 +3552,6 @@ void op_5b(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->E = r8->E;
@@ -3925,8 +3566,6 @@ void op_5c(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->E = r8->H;
@@ -3941,8 +3580,6 @@ void op_5d(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->E = r8->L;
@@ -3957,8 +3594,6 @@ void op_5e(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->E = read_u8(r16->HL);
@@ -3973,8 +3608,6 @@ void op_5f(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->E = r8->A;
@@ -3989,8 +3622,6 @@ void op_60(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->H = r8->B;
@@ -4005,8 +3636,6 @@ void op_61(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->H = r8->C;
@@ -4021,8 +3650,6 @@ void op_62(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->H = r8->D;
@@ -4037,8 +3664,6 @@ void op_63(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->H = r8->E;
@@ -4053,8 +3678,6 @@ void op_64(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->H = r8->H;
@@ -4069,8 +3692,6 @@ void op_65(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->H = r8->L;
@@ -4085,8 +3706,6 @@ void op_66(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->H = read_u8(r16->HL);
@@ -4101,8 +3720,6 @@ void op_67(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->H = r8->A;
@@ -4117,8 +3734,6 @@ void op_68(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->L = r8->B;
@@ -4133,8 +3748,6 @@ void op_69(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->L = r8->C;
@@ -4149,8 +3762,6 @@ void op_6a(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->L = r8->D;
@@ -4165,8 +3776,6 @@ void op_6b(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->L = r8->E;
@@ -4181,8 +3790,6 @@ void op_6c(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->L = r8->H;
@@ -4197,8 +3804,6 @@ void op_6d(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->L = r8->L;
@@ -4213,8 +3818,6 @@ void op_6e(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->L = read_u8(r16->HL);
@@ -4229,8 +3832,6 @@ void op_6f(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->L = r8->A;
@@ -4245,8 +3846,6 @@ void op_70(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     write_u8(r16->HL, r8->B);
@@ -4261,8 +3860,6 @@ void op_71(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     write_u8(r16->HL, r8->C);
@@ -4277,8 +3874,6 @@ void op_72(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     write_u8(r16->HL, r8->D);
@@ -4293,8 +3888,6 @@ void op_73(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     write_u8(r16->HL, r8->E);
@@ -4309,8 +3902,6 @@ void op_74(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     write_u8(r16->HL, r8->H);
@@ -4325,8 +3916,6 @@ void op_75(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     write_u8(r16->HL, r8->L);
@@ -4341,8 +3930,6 @@ void op_77(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     write_u8(r16->HL, r8->A);
@@ -4357,8 +3944,6 @@ void op_78(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A = r8->B;
@@ -4373,8 +3958,6 @@ void op_79(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A = r8->C;
@@ -4389,8 +3972,6 @@ void op_7a(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A = r8->D;
@@ -4405,8 +3986,6 @@ void op_7b(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A = r8->E;
@@ -4421,8 +4000,6 @@ void op_7c(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A = r8->H;
@@ -4437,8 +4014,6 @@ void op_7d(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A = r8->L;
@@ -4453,8 +4028,6 @@ void op_7e(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A = read_u8(r16->HL);
@@ -4469,8 +4042,6 @@ void op_7f(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A = r8->A;
@@ -4485,8 +4056,6 @@ void op_e2(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     write_u8(0xff00 + r8->C, r8->A);
@@ -4501,8 +4070,6 @@ void op_ea(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint16_t a16;
@@ -4519,8 +4086,6 @@ void op_f2(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A = read_u8(0xff00 + r8->C);
@@ -4535,8 +4100,6 @@ void op_f8(void *reg, t_state *state, uint8_t *mem) {
               cycles: 12
                flags: 0 0 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     int offset = (int8_t)read_u8(r16->PC + 1);
@@ -4556,8 +4119,6 @@ void op_f9(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->SP = r16->HL;
@@ -4572,8 +4133,6 @@ void op_fa(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint16_t a16;
@@ -4590,8 +4149,6 @@ void op_e0(void *reg, t_state *state, uint8_t *mem) {
               cycles: 12
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t a8;
@@ -4608,8 +4165,6 @@ void op_f0(void *reg, t_state *state, uint8_t *mem) {
               cycles: 12
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t a8;
@@ -4626,8 +4181,6 @@ void op_00(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->PC += 1;
@@ -4641,8 +4194,6 @@ void op_b0(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 0 0 0
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A |= r8->B;
@@ -4661,8 +4212,6 @@ void op_b1(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 0 0 0
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A |= r8->C;
@@ -4681,8 +4230,6 @@ void op_b2(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 0 0 0
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A |= r8->D;
@@ -4701,8 +4248,6 @@ void op_b3(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 0 0 0
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A |= r8->E;
@@ -4721,8 +4266,6 @@ void op_b4(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 0 0 0
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A |= r8->H;
@@ -4741,8 +4284,6 @@ void op_b5(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 0 0 0
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A |= r8->L;
@@ -4761,8 +4302,6 @@ void op_b6(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 0
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A |= read_u8(r16->HL);
@@ -4781,8 +4320,6 @@ void op_b7(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 0 0 0
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A |= r8->A;
@@ -4801,8 +4338,6 @@ void op_f6(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 0
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A |= read_u8(r16->PC + 1);
@@ -4821,8 +4356,6 @@ void op_c1(void *reg, t_state *state, uint8_t *mem) {
               cycles: 12
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->BC = read_u16(r16->SP);
@@ -4838,8 +4371,6 @@ void op_d1(void *reg, t_state *state, uint8_t *mem) {
               cycles: 12
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->DE = read_u16(r16->SP);
@@ -4855,8 +4386,6 @@ void op_e1(void *reg, t_state *state, uint8_t *mem) {
               cycles: 12
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->HL = read_u16(r16->SP);
@@ -4872,8 +4401,6 @@ void op_f1(void *reg, t_state *state, uint8_t *mem) {
               cycles: 12
                flags: Z N H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->AF = read_u16(r16->SP);
@@ -4890,7 +4417,6 @@ void op_cb(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
     printf("undefined instruction 0xcb\n");
     printf("state->cycles = %u\n", state->cycles);
     state->done = true;
@@ -4904,8 +4430,6 @@ void op_c5(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->SP -= 2;
@@ -4921,8 +4445,6 @@ void op_d5(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->SP -= 2;
@@ -4938,8 +4460,6 @@ void op_e5(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->SP -= 2;
@@ -4955,8 +4475,6 @@ void op_f5(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->SP -= 2;
@@ -4972,8 +4490,6 @@ void op_cb80(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->B &= ~(1 << 0);
@@ -4988,8 +4504,6 @@ void op_cb81(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->C &= ~(1 << 0);
@@ -5004,8 +4518,6 @@ void op_cb82(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->D &= ~(1 << 0);
@@ -5020,8 +4532,6 @@ void op_cb83(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->E &= ~(1 << 0);
@@ -5036,8 +4546,6 @@ void op_cb84(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->H &= ~(1 << 0);
@@ -5052,8 +4560,6 @@ void op_cb85(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->L &= ~(1 << 0);
@@ -5068,8 +4574,6 @@ void op_cb86(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -5087,8 +4591,6 @@ void op_cb87(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A &= ~(1 << 0);
@@ -5103,8 +4605,6 @@ void op_cb88(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->B &= ~(1 << 1);
@@ -5119,8 +4619,6 @@ void op_cb89(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->C &= ~(1 << 1);
@@ -5135,8 +4633,6 @@ void op_cb8a(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->D &= ~(1 << 1);
@@ -5151,8 +4647,6 @@ void op_cb8b(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->E &= ~(1 << 1);
@@ -5167,8 +4661,6 @@ void op_cb8c(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->H &= ~(1 << 1);
@@ -5183,8 +4675,6 @@ void op_cb8d(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->L &= ~(1 << 1);
@@ -5199,8 +4689,6 @@ void op_cb8e(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -5218,8 +4706,6 @@ void op_cb8f(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A &= ~(1 << 1);
@@ -5234,8 +4720,6 @@ void op_cb90(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->B &= ~(1 << 2);
@@ -5250,8 +4734,6 @@ void op_cb91(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->C &= ~(1 << 2);
@@ -5266,8 +4748,6 @@ void op_cb92(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->D &= ~(1 << 2);
@@ -5282,8 +4762,6 @@ void op_cb93(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->E &= ~(1 << 2);
@@ -5298,8 +4776,6 @@ void op_cb94(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->H &= ~(1 << 2);
@@ -5314,8 +4790,6 @@ void op_cb95(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->L &= ~(1 << 2);
@@ -5330,8 +4804,6 @@ void op_cb96(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -5349,8 +4821,6 @@ void op_cb97(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A &= ~(1 << 2);
@@ -5365,8 +4835,6 @@ void op_cb98(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->B &= ~(1 << 3);
@@ -5381,8 +4849,6 @@ void op_cb99(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->C &= ~(1 << 3);
@@ -5397,8 +4863,6 @@ void op_cb9a(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->D &= ~(1 << 3);
@@ -5413,8 +4877,6 @@ void op_cb9b(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->E &= ~(1 << 3);
@@ -5429,8 +4891,6 @@ void op_cb9c(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->H &= ~(1 << 3);
@@ -5445,8 +4905,6 @@ void op_cb9d(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->L &= ~(1 << 3);
@@ -5461,8 +4919,6 @@ void op_cb9e(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -5480,8 +4936,6 @@ void op_cb9f(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A &= ~(1 << 3);
@@ -5496,8 +4950,6 @@ void op_cba0(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->B &= ~(1 << 4);
@@ -5512,8 +4964,6 @@ void op_cba1(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->C &= ~(1 << 4);
@@ -5528,8 +4978,6 @@ void op_cba2(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->D &= ~(1 << 4);
@@ -5544,8 +4992,6 @@ void op_cba3(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->E &= ~(1 << 4);
@@ -5560,8 +5006,6 @@ void op_cba4(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->H &= ~(1 << 4);
@@ -5576,8 +5020,6 @@ void op_cba5(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->L &= ~(1 << 4);
@@ -5592,8 +5034,6 @@ void op_cba6(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -5611,8 +5051,6 @@ void op_cba7(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A &= ~(1 << 4);
@@ -5627,8 +5065,6 @@ void op_cba8(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->B &= ~(1 << 5);
@@ -5643,8 +5079,6 @@ void op_cba9(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->C &= ~(1 << 5);
@@ -5659,8 +5093,6 @@ void op_cbaa(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->D &= ~(1 << 5);
@@ -5675,8 +5107,6 @@ void op_cbab(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->E &= ~(1 << 5);
@@ -5691,8 +5121,6 @@ void op_cbac(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->H &= ~(1 << 5);
@@ -5707,8 +5135,6 @@ void op_cbad(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->L &= ~(1 << 5);
@@ -5723,8 +5149,6 @@ void op_cbae(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -5742,8 +5166,6 @@ void op_cbaf(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A &= ~(1 << 5);
@@ -5758,8 +5180,6 @@ void op_cbb0(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->B &= ~(1 << 6);
@@ -5774,8 +5194,6 @@ void op_cbb1(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->C &= ~(1 << 6);
@@ -5790,8 +5208,6 @@ void op_cbb2(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->D &= ~(1 << 6);
@@ -5806,8 +5222,6 @@ void op_cbb3(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->E &= ~(1 << 6);
@@ -5822,8 +5236,6 @@ void op_cbb4(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->H &= ~(1 << 6);
@@ -5838,8 +5250,6 @@ void op_cbb5(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->L &= ~(1 << 6);
@@ -5854,8 +5264,6 @@ void op_cbb6(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -5873,8 +5281,6 @@ void op_cbb7(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A &= ~(1 << 6);
@@ -5889,8 +5295,6 @@ void op_cbb8(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->B &= ~(1 << 7);
@@ -5905,8 +5309,6 @@ void op_cbb9(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->C &= ~(1 << 7);
@@ -5921,8 +5323,6 @@ void op_cbba(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->D &= ~(1 << 7);
@@ -5937,8 +5337,6 @@ void op_cbbb(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->E &= ~(1 << 7);
@@ -5953,8 +5351,6 @@ void op_cbbc(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->H &= ~(1 << 7);
@@ -5969,8 +5365,6 @@ void op_cbbd(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->L &= ~(1 << 7);
@@ -5985,8 +5379,6 @@ void op_cbbe(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -6004,8 +5396,6 @@ void op_cbbf(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A &= ~(1 << 7);
@@ -6020,15 +5410,15 @@ void op_c0(void *reg, t_state *state, uint8_t *mem) {
               cycles: 20/8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
+
     if (!IS_Z_FLAG) {
         r16->PC = read_u16(r16->SP);
         r16->SP += 2;
         return;
     }
+
     r16->PC += 1;
 }
 
@@ -6040,15 +5430,15 @@ void op_c8(void *reg, t_state *state, uint8_t *mem) {
               cycles: 20/8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
+
     if (IS_Z_FLAG) {
         r16->PC = read_u16(r16->SP);
         r16->SP += 2;
         return;
     }
+
     r16->PC += 1;
 }
 
@@ -6060,8 +5450,6 @@ void op_c9(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->PC = read_u16(r16->SP);
@@ -6077,15 +5465,15 @@ void op_d0(void *reg, t_state *state, uint8_t *mem) {
               cycles: 20/8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
+
     if (!IS_C_FLAG) {
         r16->PC = read_u16(r16->SP);
         r16->SP += 2;
         return;
     }
+
     r16->PC += 1;
 }
 
@@ -6097,15 +5485,15 @@ void op_d8(void *reg, t_state *state, uint8_t *mem) {
               cycles: 20/8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
+
     if (IS_C_FLAG) {
         r16->PC = read_u16(r16->SP);
         r16->SP += 2;
         return;
     }
+
     r16->PC += 1;
 }
 
@@ -6117,8 +5505,6 @@ void op_d9(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->PC = read_u16(r16->SP);
@@ -6134,8 +5520,6 @@ void op_cb10(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, carry;
@@ -6158,8 +5542,6 @@ void op_cb11(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, carry;
@@ -6182,8 +5564,6 @@ void op_cb12(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, carry;
@@ -6206,8 +5586,6 @@ void op_cb13(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, carry;
@@ -6230,8 +5608,6 @@ void op_cb14(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, carry;
@@ -6254,8 +5630,6 @@ void op_cb15(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, carry;
@@ -6278,8 +5652,6 @@ void op_cb16(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: Z 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, carry;
@@ -6302,8 +5674,6 @@ void op_cb17(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, carry;
@@ -6326,8 +5696,6 @@ void op_17(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: 0 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t carry;
@@ -6348,8 +5716,6 @@ void op_cb00(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -6371,8 +5737,6 @@ void op_cb01(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -6394,8 +5758,6 @@ void op_cb02(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -6417,8 +5779,6 @@ void op_cb03(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -6440,8 +5800,6 @@ void op_cb04(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -6463,8 +5821,6 @@ void op_cb05(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -6486,8 +5842,6 @@ void op_cb06(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: Z 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -6509,8 +5863,6 @@ void op_cb07(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -6532,8 +5884,6 @@ void op_07(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: 0 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A = (r8->A << 1) | (r8->A >> 7);
@@ -6552,8 +5902,6 @@ void op_cb18(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, carry;
@@ -6576,8 +5924,6 @@ void op_cb19(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, carry;
@@ -6600,8 +5946,6 @@ void op_cb1a(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, carry;
@@ -6624,8 +5968,6 @@ void op_cb1b(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, carry;
@@ -6648,8 +5990,6 @@ void op_cb1c(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, carry;
@@ -6672,8 +6012,6 @@ void op_cb1d(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, carry;
@@ -6696,8 +6034,6 @@ void op_cb1e(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: Z 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, carry;
@@ -6720,8 +6056,6 @@ void op_cb1f(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, carry;
@@ -6744,8 +6078,6 @@ void op_1f(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: 0 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t carry;
@@ -6766,8 +6098,6 @@ void op_cb08(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -6789,8 +6119,6 @@ void op_cb09(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -6812,8 +6140,6 @@ void op_cb0a(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -6835,8 +6161,6 @@ void op_cb0b(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -6858,8 +6182,6 @@ void op_cb0c(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -6881,8 +6203,6 @@ void op_cb0d(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -6904,8 +6224,6 @@ void op_cb0e(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: Z 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -6927,8 +6245,6 @@ void op_cb0f(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -6950,8 +6266,6 @@ void op_0f(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: 0 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A = (r8->A >> 1) | ((r8->A & 1) << 7);
@@ -6970,8 +6284,6 @@ void op_c7(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->SP -= 2;
@@ -6987,8 +6299,6 @@ void op_cf(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->SP -= 2;
@@ -7004,8 +6314,6 @@ void op_d7(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->SP -= 2;
@@ -7021,8 +6329,6 @@ void op_df(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->SP -= 2;
@@ -7038,8 +6344,6 @@ void op_e7(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->SP -= 2;
@@ -7055,8 +6359,6 @@ void op_ef(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->SP -= 2;
@@ -7072,8 +6374,6 @@ void op_f7(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->SP -= 2;
@@ -7089,8 +6389,6 @@ void op_ff(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->SP -= 2;
@@ -7106,8 +6404,6 @@ void op_98(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 1 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, calc;
@@ -7129,8 +6425,6 @@ void op_99(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 1 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, calc;
@@ -7152,8 +6446,6 @@ void op_9a(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 1 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, calc;
@@ -7175,8 +6467,6 @@ void op_9b(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 1 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, calc;
@@ -7198,8 +6488,6 @@ void op_9c(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 1 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, calc;
@@ -7221,8 +6509,6 @@ void op_9d(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 1 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, calc;
@@ -7244,8 +6530,6 @@ void op_9e(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 1 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, calc;
@@ -7267,8 +6551,6 @@ void op_9f(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 1 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, calc;
@@ -7290,8 +6572,6 @@ void op_de(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 1 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op, calc;
@@ -7313,8 +6593,6 @@ void op_37(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - 0 0 1
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     CLEAR_N_FLAG;
@@ -7331,8 +6609,6 @@ void op_cbc0(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->B |= (1 << 0);
@@ -7347,8 +6623,6 @@ void op_cbc1(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->C |= (1 << 0);
@@ -7363,8 +6637,6 @@ void op_cbc2(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->D |= (1 << 0);
@@ -7379,8 +6651,6 @@ void op_cbc3(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->E |= (1 << 0);
@@ -7395,8 +6665,6 @@ void op_cbc4(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->H |= (1 << 0);
@@ -7411,8 +6679,6 @@ void op_cbc5(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->L |= (1 << 0);
@@ -7427,8 +6693,6 @@ void op_cbc6(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -7446,8 +6710,6 @@ void op_cbc7(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A |= (1 << 0);
@@ -7462,8 +6724,6 @@ void op_cbc8(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->B |= (1 << 1);
@@ -7478,8 +6738,6 @@ void op_cbc9(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->C |= (1 << 1);
@@ -7494,8 +6752,6 @@ void op_cbca(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->D |= (1 << 1);
@@ -7510,8 +6766,6 @@ void op_cbcb(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->E |= (1 << 1);
@@ -7526,8 +6780,6 @@ void op_cbcc(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->H |= (1 << 1);
@@ -7542,8 +6794,6 @@ void op_cbcd(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->L |= (1 << 1);
@@ -7558,8 +6808,6 @@ void op_cbce(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -7577,8 +6825,6 @@ void op_cbcf(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A |= (1 << 1);
@@ -7593,8 +6839,6 @@ void op_cbd0(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->B |= (1 << 2);
@@ -7609,8 +6853,6 @@ void op_cbd1(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->C |= (1 << 2);
@@ -7625,8 +6867,6 @@ void op_cbd2(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->D |= (1 << 2);
@@ -7641,8 +6881,6 @@ void op_cbd3(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->E |= (1 << 2);
@@ -7657,8 +6895,6 @@ void op_cbd4(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->H |= (1 << 2);
@@ -7673,8 +6909,6 @@ void op_cbd5(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->L |= (1 << 2);
@@ -7689,8 +6923,6 @@ void op_cbd6(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -7708,8 +6940,6 @@ void op_cbd7(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A |= (1 << 2);
@@ -7724,8 +6954,6 @@ void op_cbd8(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->B |= (1 << 3);
@@ -7740,8 +6968,6 @@ void op_cbd9(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->C |= (1 << 3);
@@ -7756,8 +6982,6 @@ void op_cbda(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->D |= (1 << 3);
@@ -7772,8 +6996,6 @@ void op_cbdb(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->E |= (1 << 3);
@@ -7788,8 +7010,6 @@ void op_cbdc(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->H |= (1 << 3);
@@ -7804,8 +7024,6 @@ void op_cbdd(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->L |= (1 << 3);
@@ -7820,8 +7038,6 @@ void op_cbde(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -7839,8 +7055,6 @@ void op_cbdf(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A |= (1 << 3);
@@ -7855,8 +7069,6 @@ void op_cbe0(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->B |= (1 << 4);
@@ -7871,8 +7083,6 @@ void op_cbe1(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->C |= (1 << 4);
@@ -7887,8 +7097,6 @@ void op_cbe2(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->D |= (1 << 4);
@@ -7903,8 +7111,6 @@ void op_cbe3(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->E |= (1 << 4);
@@ -7919,8 +7125,6 @@ void op_cbe4(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->H |= (1 << 4);
@@ -7935,8 +7139,6 @@ void op_cbe5(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->L |= (1 << 4);
@@ -7951,8 +7153,6 @@ void op_cbe6(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -7970,8 +7170,6 @@ void op_cbe7(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A |= (1 << 4);
@@ -7986,8 +7184,6 @@ void op_cbe8(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->B |= (1 << 5);
@@ -8002,8 +7198,6 @@ void op_cbe9(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->C |= (1 << 5);
@@ -8018,8 +7212,6 @@ void op_cbea(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->D |= (1 << 5);
@@ -8034,8 +7226,6 @@ void op_cbeb(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->E |= (1 << 5);
@@ -8050,8 +7240,6 @@ void op_cbec(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->H |= (1 << 5);
@@ -8066,8 +7254,6 @@ void op_cbed(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->L |= (1 << 5);
@@ -8082,8 +7268,6 @@ void op_cbee(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -8101,8 +7285,6 @@ void op_cbef(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A |= (1 << 5);
@@ -8117,8 +7299,6 @@ void op_cbf0(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->B |= (1 << 6);
@@ -8133,8 +7313,6 @@ void op_cbf1(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->C |= (1 << 6);
@@ -8149,8 +7327,6 @@ void op_cbf2(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->D |= (1 << 6);
@@ -8165,8 +7341,6 @@ void op_cbf3(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->E |= (1 << 6);
@@ -8181,8 +7355,6 @@ void op_cbf4(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->H |= (1 << 6);
@@ -8197,8 +7369,6 @@ void op_cbf5(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->L |= (1 << 6);
@@ -8213,8 +7383,6 @@ void op_cbf6(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -8232,8 +7400,6 @@ void op_cbf7(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A |= (1 << 6);
@@ -8248,8 +7414,6 @@ void op_cbf8(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->B |= (1 << 7);
@@ -8264,8 +7428,6 @@ void op_cbf9(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->C |= (1 << 7);
@@ -8280,8 +7442,6 @@ void op_cbfa(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->D |= (1 << 7);
@@ -8296,8 +7456,6 @@ void op_cbfb(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->E |= (1 << 7);
@@ -8312,8 +7470,6 @@ void op_cbfc(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->H |= (1 << 7);
@@ -8328,8 +7484,6 @@ void op_cbfd(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->L |= (1 << 7);
@@ -8344,8 +7498,6 @@ void op_cbfe(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -8363,8 +7515,6 @@ void op_cbff(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A |= (1 << 7);
@@ -8379,8 +7529,6 @@ void op_cb20(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -8402,8 +7550,6 @@ void op_cb21(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -8425,8 +7571,6 @@ void op_cb22(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -8448,8 +7592,6 @@ void op_cb23(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -8471,8 +7613,6 @@ void op_cb24(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -8494,8 +7634,6 @@ void op_cb25(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -8517,8 +7655,6 @@ void op_cb26(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: Z 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -8540,8 +7676,6 @@ void op_cb27(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -8563,8 +7697,6 @@ void op_cb28(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 0
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -8586,8 +7718,6 @@ void op_cb29(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 0
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -8609,8 +7739,6 @@ void op_cb2a(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 0
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -8632,8 +7760,6 @@ void op_cb2b(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 0
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -8655,8 +7781,6 @@ void op_cb2c(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 0
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -8678,8 +7802,6 @@ void op_cb2d(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 0
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -8701,8 +7823,6 @@ void op_cb2e(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: Z 0 0 0
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -8724,8 +7844,6 @@ void op_cb2f(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 0
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -8747,8 +7865,6 @@ void op_cb38(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -8770,8 +7886,6 @@ void op_cb39(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -8793,8 +7907,6 @@ void op_cb3a(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -8816,8 +7928,6 @@ void op_cb3b(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -8839,8 +7949,6 @@ void op_cb3c(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -8862,8 +7970,6 @@ void op_cb3d(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -8885,8 +7991,6 @@ void op_cb3e(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: Z 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -8908,8 +8012,6 @@ void op_cb3f(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -8931,8 +8033,6 @@ void op_10(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: - - - -
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r16->PC += 2;
@@ -8947,8 +8047,6 @@ void op_90(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 1 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -8969,8 +8067,6 @@ void op_91(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 1 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -8991,8 +8087,6 @@ void op_92(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 1 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -9013,8 +8107,6 @@ void op_93(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 1 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -9035,8 +8127,6 @@ void op_94(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 1 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -9057,8 +8147,6 @@ void op_95(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 1 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -9079,8 +8167,6 @@ void op_96(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 1 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -9101,8 +8187,6 @@ void op_97(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 1 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -9123,8 +8207,6 @@ void op_d6(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 1 H C
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -9145,8 +8227,6 @@ void op_cb30(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 0
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -9168,8 +8248,6 @@ void op_cb31(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 0
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -9191,8 +8269,6 @@ void op_cb32(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 0
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -9214,8 +8290,6 @@ void op_cb33(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 0
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -9237,8 +8311,6 @@ void op_cb34(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 0
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -9260,8 +8332,6 @@ void op_cb35(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 0
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -9283,8 +8353,6 @@ void op_cb36(void *reg, t_state *state, uint8_t *mem) {
               cycles: 16
                flags: Z 0 0 0
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -9306,8 +8374,6 @@ void op_cb37(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 0
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     uint8_t op;
@@ -9329,8 +8395,6 @@ void op_a8(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 0 0 0
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A ^= r8->B;
@@ -9349,8 +8413,6 @@ void op_a9(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 0 0 0
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A ^= r8->C;
@@ -9369,8 +8431,6 @@ void op_aa(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 0 0 0
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A ^= r8->D;
@@ -9389,8 +8449,6 @@ void op_ab(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 0 0 0
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A ^= r8->E;
@@ -9409,8 +8467,6 @@ void op_ac(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 0 0 0
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A ^= r8->H;
@@ -9429,8 +8485,6 @@ void op_ad(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 0 0 0
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A ^= r8->L;
@@ -9449,8 +8503,6 @@ void op_ae(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 0
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A ^= read_u8(r16->HL);
@@ -9469,8 +8521,6 @@ void op_af(void *reg, t_state *state, uint8_t *mem) {
               cycles: 4
                flags: Z 0 0 0
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A ^= r8->A;
@@ -9489,8 +8539,6 @@ void op_ee(void *reg, t_state *state, uint8_t *mem) {
               cycles: 8
                flags: Z 0 0 0
     */
-
-
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
     r8->A ^= read_u8(r16->PC + 1);
@@ -9509,7 +8557,6 @@ void op_d3(void *reg, t_state *state, uint8_t *mem) {
               cycles: 0
                flags: - - - -
     */
-
     printf("undefined instruction 0xd3\n");
     printf("state->cycles = %u\n", state->cycles);
     state->done = true;
@@ -9523,7 +8570,6 @@ void op_db(void *reg, t_state *state, uint8_t *mem) {
               cycles: 0
                flags: - - - -
     */
-
     printf("undefined instruction 0xdb\n");
     printf("state->cycles = %u\n", state->cycles);
     state->done = true;
@@ -9537,7 +8583,6 @@ void op_dd(void *reg, t_state *state, uint8_t *mem) {
               cycles: 0
                flags: - - - -
     */
-
     printf("undefined instruction 0xdd\n");
     printf("state->cycles = %u\n", state->cycles);
     state->done = true;
@@ -9551,7 +8596,6 @@ void op_e3(void *reg, t_state *state, uint8_t *mem) {
               cycles: 0
                flags: - - - -
     */
-
     printf("undefined instruction 0xe3\n");
     printf("state->cycles = %u\n", state->cycles);
     state->done = true;
@@ -9565,7 +8609,6 @@ void op_e4(void *reg, t_state *state, uint8_t *mem) {
               cycles: 0
                flags: - - - -
     */
-
     printf("undefined instruction 0xe4\n");
     printf("state->cycles = %u\n", state->cycles);
     state->done = true;
@@ -9579,7 +8622,6 @@ void op_eb(void *reg, t_state *state, uint8_t *mem) {
               cycles: 0
                flags: - - - -
     */
-
     printf("undefined instruction 0xeb\n");
     printf("state->cycles = %u\n", state->cycles);
     state->done = true;
@@ -9593,7 +8635,6 @@ void op_ec(void *reg, t_state *state, uint8_t *mem) {
               cycles: 0
                flags: - - - -
     */
-
     printf("undefined instruction 0xec\n");
     printf("state->cycles = %u\n", state->cycles);
     state->done = true;
@@ -9607,7 +8648,6 @@ void op_ed(void *reg, t_state *state, uint8_t *mem) {
               cycles: 0
                flags: - - - -
     */
-
     printf("undefined instruction 0xed\n");
     printf("state->cycles = %u\n", state->cycles);
     state->done = true;
@@ -9621,7 +8661,6 @@ void op_f4(void *reg, t_state *state, uint8_t *mem) {
               cycles: 0
                flags: - - - -
     */
-
     printf("undefined instruction 0xf4\n");
     printf("state->cycles = %u\n", state->cycles);
     state->done = true;
@@ -9635,7 +8674,6 @@ void op_fc(void *reg, t_state *state, uint8_t *mem) {
               cycles: 0
                flags: - - - -
     */
-
     printf("undefined instruction 0xfc\n");
     printf("state->cycles = %u\n", state->cycles);
     state->done = true;
@@ -9649,7 +8687,6 @@ void op_fd(void *reg, t_state *state, uint8_t *mem) {
               cycles: 0
                flags: - - - -
     */
-
     printf("undefined instruction 0xfd\n");
     printf("state->cycles = %u\n", state->cycles);
     state->done = true;

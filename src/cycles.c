@@ -115,27 +115,28 @@ int cycles_table1[] = {
 };
 
 int get_num_cycles(void *gb_reg, void *gb_mem) {
-    t_r16 *r16;
-    t_r8 *r8;
-    int idx;
-
     (void)gb_mem;
-    r16 = gb_reg;
-    r8 = gb_reg;
+    t_r16 *r16 = gb_reg;
+    t_r8 *r8 = gb_reg;
+    int idx = read_u8(r16->PC);
 
-    idx = read_u8(r16->PC);
-    if (idx == 0xcb)
+    if (idx == 0xcb) {
         idx = 256 + read_u8(r16->PC + 1);
+    }
 
     switch (is_conditional_num_cycles[idx]) {
     case 1:
         return (IS_Z_FLAG) ? cycles_table0[idx] : cycles_table1[idx];
+
     case 2:
         return (!IS_Z_FLAG) ? cycles_table0[idx] : cycles_table1[idx];
+
     case 3:
         return (IS_C_FLAG) ? cycles_table0[idx] : cycles_table1[idx];
+
     case 4:
         return (!IS_C_FLAG) ? cycles_table0[idx] : cycles_table1[idx];
     }
+
     return cycles_table0[idx];
 }
