@@ -185,11 +185,9 @@ uint8_t mbc5_rom_read_u8(uint16_t addr);
 
 void mbc5_rom_write_u8(uint16_t addr, uint8_t data);
 
-bool is_savefile_enabled();
+int savefile_read();
 
-void savefile_read();
-
-void savefile_write();
+int savefile_write();
 
 /* jump tables */
 

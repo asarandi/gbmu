@@ -60,6 +60,31 @@ uint16_t read_u16(uint16_t addr) {
     return ((read_u8(addr + 1) << 8) | read_u8(addr));
 }
 
+void testing_hook(uint16_t addr, uint8_t data) {
+    if (!state->testing) {
+        return;
+    }
+
+    if ((addr == rSC) && ((data & 0x81) == 0x81)) {
+        (void)fprintf(stderr, "%c", gb_mem[rSB]);
+        (void)fflush(stderr);
+        return;
+    }
+
+    if ((addr >= _SRAM) && (addr < _RAM)) {
+        gb_mem[addr] = data;
+    }
+
+    const uint8_t sig[] = {0xde, 0xb0, 0x61};
+    static uint16_t f, i = _SRAM + 4;
+    f |= !memcmp((const void *)&gb_mem[_SRAM + 1], sig, 3);
+
+    while ((f) && (gb_mem[i])) {
+        (void)fprintf(stderr, "%c", gb_mem[i++]);
+        (void)fflush(stderr);
+    }
+}
+
 void write_u8(uint16_t addr, uint8_t data) {
     /* ROM */
     if (addr < _VRAM) {
@@ -73,6 +98,7 @@ void write_u8(uint16_t addr, uint8_t data) {
     }
 
     if ((addr >= _SRAM) && (addr < _RAM)) {
+        (void)testing_hook(addr, data);
         return state->ram_write_u8(addr, data);
     }
 
@@ -97,6 +123,7 @@ void write_u8(uint16_t addr, uint8_t data) {
     }
 
     if ((addr == rSB) || (addr == rSC)) {
+        (void)testing_hook(addr, data);
         return serial_write_u8(addr, data);
     }
 
