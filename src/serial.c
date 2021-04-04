@@ -9,6 +9,7 @@ uint8_t serial_read_u8(uint16_t addr) {
     } else if (addr == rSC) {
         res = ((gb_mem[rSC] & 0x81) | 0x7e);
     }
+
     return res;
 }
 
@@ -17,8 +18,8 @@ void serial_write_u8(uint16_t addr, uint8_t data) {
         gb_mem[rSB] = data;
     } else if (addr == rSC) {
         gb_mem[rSC] = data & 0x81;
+
         if ((gb_mem[rSC] & 0x81) == 0x81) {
-            /* set interrupt */
             gb_mem[rSC] &= 1;
             gb_mem[rIF] |= 8;
             gb_mem[rSB] = 0xff;

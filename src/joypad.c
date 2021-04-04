@@ -1,7 +1,7 @@
 #include "gb.h"
 #include "hardware.h"
 
-#define IS_SGB      ((gb_mem[0x146] == CART_INDICATOR_SGB) && (gb_mem[0x14b] == 0x33))
+#define IS_SGB ((gb_mem[0x146] == CART_INDICATOR_SGB) && (gb_mem[0x14b] == 0x33))
 
 void joypad_request_interrupt() {
     gb_mem[rIF] |= IEF_HILO;
@@ -26,6 +26,7 @@ uint8_t joypad_read() {
             joypad |= bit << (3 - i);
         }
     }
+
     gb_mem[rP1] = joypad;
     return joypad;
 }
@@ -73,21 +74,28 @@ t_sgb_cmd sgb_commands[] = {
 void joypad_write(uint8_t data) {
     static uint8_t tab[256];
     static int i;
-
     data &= 0x30;
     gb_mem[rP1] = (gb_mem[rP1] & 15) | data;
-    if (!IS_SGB)
+
+    if (!IS_SGB) {
         return;
+    }
+
     data >>= 4;
-    if (data == 3)              /* both high between pulses */
+
+    if (data == 3) {            /* both high between pulses */
         return;
+    }
+
     if (!data) {                /* both low: reset */
         i = 0;
         (void)memset(tab, 0, 256);
         return;
     }
+
     tab[i >> 3] = (tab[i >> 3] & ~(1 << (i & 7))) | ((data & 1) << (i & 7));
     i = (i + 1) & 0x7ff;
+
     if (i == 128) {
         /*
                 for (i=0;i<16;i++) {
@@ -95,11 +103,16 @@ void joypad_write(uint8_t data) {
                 }
                 printf("%s\n", sgb_commands[tab[0]>>3].info);
         */
-        if (tab[0] == 0xb9)                          /*MASK_EN, len 1*/
+        if (tab[0] == 0xb9) {                        /*MASK_EN, len 1*/
             state->screen_mask = tab[1] & 3;
-        if ((tab[0] == 0x51) && (tab[9] & 0x40))  /*PAL_SET, len 1*/
+        }
+
+        if ((tab[0] == 0x51) && (tab[9] & 0x40)) { /*PAL_SET, len 1*/
             state->screen_mask = 0;
-        if ((tab[0] == 0xb1) && (tab[1] & 0x40))  /*ATTR_SET, len1*/
+        }
+
+        if ((tab[0] == 0xb1) && (tab[1] & 0x40)) { /*ATTR_SET, len1*/
             state->screen_mask = 0;
+        }
     }
 }

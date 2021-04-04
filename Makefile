@@ -38,4 +38,19 @@ fclean: clean
 re: fclean all
 
 format:
-	astyle -A14 -n src/*.c include/*.h
+	astyle -A14 \
+	--mode=c \
+	--break-one-line-headers \
+	--break-blocks \
+	--align-pointer=name \
+	--convert-tabs \
+	--pad-header \
+	--unpad-paren \
+	--add-braces \
+	--max-code-length=80 \
+	--break-after-logical \
+	--delete-empty-lines \
+	--indent-continuation=1 \
+	--lineend=linux \
+	--suffix=none \
+	src/*.c include/*.h

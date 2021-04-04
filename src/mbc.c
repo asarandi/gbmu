@@ -1,33 +1,33 @@
 #include "gb.h"
 
-#define     IS_ROM_ONLY                              (gb_mem[0x0147] == 0x00 ? 1:0)
-#define     IS_MBC1                                  (gb_mem[0x0147] == 0x01 ? 1:0)
-#define     IS_MBC1_RAM                              (gb_mem[0x0147] == 0x02 ? 1:0)
-#define     IS_MBC1_RAM_BATTERY                      (gb_mem[0x0147] == 0x03 ? 1:0)
-#define     IS_MBC2                                  (gb_mem[0x0147] == 0x05 ? 1:0)
-#define     IS_MBC2_BATTERY                          (gb_mem[0x0147] == 0x06 ? 1:0)
-#define     IS_ROM_RAM                               (gb_mem[0x0147] == 0x08 ? 1:0)
-#define     IS_ROM_RAM_BATTERY                       (gb_mem[0x0147] == 0x09 ? 1:0)
-#define     IS_MMM01                                 (gb_mem[0x0147] == 0x0B ? 1:0)
-#define     IS_MMM01_RAM                             (gb_mem[0x0147] == 0x0C ? 1:0)
-#define     IS_MMM01_RAM_BATTERY                     (gb_mem[0x0147] == 0x0D ? 1:0)
-#define     IS_MBC3_TIMER_BATTERY                    (gb_mem[0x0147] == 0x0F ? 1:0)
-#define     IS_MBC3_TIMER_RAM_BATTERY                (gb_mem[0x0147] == 0x10 ? 1:0)
-#define     IS_MBC3                                  (gb_mem[0x0147] == 0x11 ? 1:0)
-#define     IS_MBC3_RAM                              (gb_mem[0x0147] == 0x12 ? 1:0)
-#define     IS_MBC3_RAM_BATTERY                      (gb_mem[0x0147] == 0x13 ? 1:0)
-#define     IS_MBC5                                  (gb_mem[0x0147] == 0x19 ? 1:0)
-#define     IS_MBC5_RAM                              (gb_mem[0x0147] == 0x1A ? 1:0)
-#define     IS_MBC5_RAM_BATTERY                      (gb_mem[0x0147] == 0x1B ? 1:0)
-#define     IS_MBC5_RUMBLE                           (gb_mem[0x0147] == 0x1C ? 1:0)
-#define     IS_MBC5_RUMBLE_RAM                       (gb_mem[0x0147] == 0x1D ? 1:0)
-#define     IS_MBC5_RUMBLE_RAM_BATTERY               (gb_mem[0x0147] == 0x1E ? 1:0)
-#define     IS_MBC6                                  (gb_mem[0x0147] == 0x20 ? 1:0)
-#define     IS_MBC7_SENSOR_RUMBLE_RAM_BATTERY        (gb_mem[0x0147] == 0x22 ? 1:0)
-#define     IS_POCKET_CAMERA                         (gb_mem[0x0147] == 0xFC ? 1:0)
-#define     IS_BANDAI_TAMA5                          (gb_mem[0x0147] == 0xFD ? 1:0)
-#define     IS_HuC3                                  (gb_mem[0x0147] == 0xFE ? 1:0)
-#define     IS_HuC1_RAM_BATTERY                      (gb_mem[0x0147] == 0xFF ? 1:0)
+#define IS_ROM_ONLY                       (gb_mem[0x0147] == 0x00 ? 1:0)
+#define IS_MBC1                           (gb_mem[0x0147] == 0x01 ? 1:0)
+#define IS_MBC1_RAM                       (gb_mem[0x0147] == 0x02 ? 1:0)
+#define IS_MBC1_RAM_BATTERY               (gb_mem[0x0147] == 0x03 ? 1:0)
+#define IS_MBC2                           (gb_mem[0x0147] == 0x05 ? 1:0)
+#define IS_MBC2_BATTERY                   (gb_mem[0x0147] == 0x06 ? 1:0)
+#define IS_ROM_RAM                        (gb_mem[0x0147] == 0x08 ? 1:0)
+#define IS_ROM_RAM_BATTERY                (gb_mem[0x0147] == 0x09 ? 1:0)
+#define IS_MMM01                          (gb_mem[0x0147] == 0x0B ? 1:0)
+#define IS_MMM01_RAM                      (gb_mem[0x0147] == 0x0C ? 1:0)
+#define IS_MMM01_RAM_BATTERY              (gb_mem[0x0147] == 0x0D ? 1:0)
+#define IS_MBC3_TIMER_BATTERY             (gb_mem[0x0147] == 0x0F ? 1:0)
+#define IS_MBC3_TIMER_RAM_BATTERY         (gb_mem[0x0147] == 0x10 ? 1:0)
+#define IS_MBC3                           (gb_mem[0x0147] == 0x11 ? 1:0)
+#define IS_MBC3_RAM                       (gb_mem[0x0147] == 0x12 ? 1:0)
+#define IS_MBC3_RAM_BATTERY               (gb_mem[0x0147] == 0x13 ? 1:0)
+#define IS_MBC5                           (gb_mem[0x0147] == 0x19 ? 1:0)
+#define IS_MBC5_RAM                       (gb_mem[0x0147] == 0x1A ? 1:0)
+#define IS_MBC5_RAM_BATTERY               (gb_mem[0x0147] == 0x1B ? 1:0)
+#define IS_MBC5_RUMBLE                    (gb_mem[0x0147] == 0x1C ? 1:0)
+#define IS_MBC5_RUMBLE_RAM                (gb_mem[0x0147] == 0x1D ? 1:0)
+#define IS_MBC5_RUMBLE_RAM_BATTERY        (gb_mem[0x0147] == 0x1E ? 1:0)
+#define IS_MBC6                           (gb_mem[0x0147] == 0x20 ? 1:0)
+#define IS_MBC7_SENSOR_RUMBLE_RAM_BATTERY (gb_mem[0x0147] == 0x22 ? 1:0)
+#define IS_POCKET_CAMERA                  (gb_mem[0x0147] == 0xFC ? 1:0)
+#define IS_BANDAI_TAMA5                   (gb_mem[0x0147] == 0xFD ? 1:0)
+#define IS_HuC3                           (gb_mem[0x0147] == 0xFE ? 1:0)
+#define IS_HuC1_RAM_BATTERY               (gb_mem[0x0147] == 0xFF ? 1:0)
 
 typedef struct s_cartridge {
     uint8_t id;
@@ -66,35 +66,74 @@ t_cartridge cartridge_types[] = {
 };
 
 bool is_savefile_enabled() {
-    if (IS_MBC1_RAM_BATTERY) return true;
-    if (IS_MBC2_BATTERY) return true;
-    if (IS_ROM_RAM_BATTERY) return true;
-    if (IS_MMM01_RAM_BATTERY) return true;
-    if (IS_MBC3_TIMER_BATTERY) return true;
-    if (IS_MBC3_TIMER_RAM_BATTERY) return true;
-    if (IS_MBC3_RAM_BATTERY) return true;
-    if (IS_MBC5_RAM_BATTERY) return true;
-    if (IS_MBC5_RUMBLE_RAM_BATTERY) return true;
-    if (IS_MBC7_SENSOR_RUMBLE_RAM_BATTERY) return true;
-    if (IS_HuC1_RAM_BATTERY) return true;
+    if (IS_MBC1_RAM_BATTERY) {
+        return true;
+    }
+
+    if (IS_MBC2_BATTERY) {
+        return true;
+    }
+
+    if (IS_ROM_RAM_BATTERY) {
+        return true;
+    }
+
+    if (IS_MMM01_RAM_BATTERY) {
+        return true;
+    }
+
+    if (IS_MBC3_TIMER_BATTERY) {
+        return true;
+    }
+
+    if (IS_MBC3_TIMER_RAM_BATTERY) {
+        return true;
+    }
+
+    if (IS_MBC3_RAM_BATTERY) {
+        return true;
+    }
+
+    if (IS_MBC5_RAM_BATTERY) {
+        return true;
+    }
+
+    if (IS_MBC5_RUMBLE_RAM_BATTERY) {
+        return true;
+    }
+
+    if (IS_MBC7_SENSOR_RUMBLE_RAM_BATTERY) {
+        return true;
+    }
+
+    if (IS_HuC1_RAM_BATTERY) {
+        return true;
+    }
+
     return false;
 }
 
 void savefile_read() {
     int len, offset, fd;
 
-    if (!is_savefile_enabled())
+    if (!is_savefile_enabled()) {
         return;
+    }
 
     len = strlen(state->rom_file);
     state->ram_file = malloc(len + 6);
     strncpy(state->ram_file, state->rom_file, len + 1);
     (void)memset(&state->ram_file[len], 0, 5);
     offset = 0;
-    if (!strcmp(&state->ram_file[len - 3], ".gb"))
+
+    if (!strcmp(&state->ram_file[len - 3], ".gb")) {
         offset = 3;
-    if (!strcmp(&state->ram_file[len - 4], ".gbc"))
+    }
+
+    if (!strcmp(&state->ram_file[len - 4], ".gbc")) {
         offset = 4;
+    }
+
     strncpy(&state->ram_file[len - offset], ".sav", 5);
     printf("ramfile: %s\n", state->ram_file);
 
@@ -102,11 +141,13 @@ void savefile_read() {
         printf("%s: open() failed\n", "savefile_read()");
         return;
     }
+
     if ((read(fd, state->ram_banks, RAM_SIZE * 16)) == -1) {
         close(fd);
         printf("%s: read() failed\n", "savefile_read()");
         return;
     }
+
     close(fd);
     printf("ramfile loaded\n");
 }
@@ -114,20 +155,31 @@ void savefile_read() {
 void savefile_write() {
     int fd, size;
 
-    if (!is_savefile_enabled())
+    if (!is_savefile_enabled()) {
         return;
+    }
+
     size = (RAM_SIZE * 16) - 1;
-    while ((size >= 0) && (!state->ram_banks[size]))
+
+    while ((size >= 0) && (!state->ram_banks[size])) {
         size--;
+    }
+
     size++;
-    if (!size) return; /* game did not use ram? */
+
+    if (!size) {
+        return;    /* game did not use ram? */
+    }
+
     if ((fd = open(state->ram_file, O_CREAT | O_WRONLY, 0644)) == -1) {
         printf("%s: open() failed\n", "savefile_write()");
         return;
     }
+
     if (write(fd, state->ram_banks, size) == -1) {
         printf("%s: write() failed\n", "savefile_write()");
     }
+
     close(fd);
     printf("ramfile saved\n");
 }
@@ -174,15 +226,16 @@ void cartridge_init() {
         state->rom_write_u8 = &mbc2_rom_write_u8;
     }
 
-    if ((IS_MBC3_TIMER_BATTERY) || (IS_MBC3_TIMER_RAM_BATTERY) || (IS_MBC3) || (IS_MBC3_RAM) || (IS_MBC3_RAM_BATTERY)) {
+    if ((IS_MBC3_TIMER_BATTERY) || (IS_MBC3_TIMER_RAM_BATTERY) || (IS_MBC3)
+            || (IS_MBC3_RAM) || (IS_MBC3_RAM_BATTERY)) {
         state->ram_read_u8 = &mbc3_ram_read_u8;
         state->ram_write_u8 = &mbc3_ram_write_u8;
         state->rom_read_u8 = &mbc3_rom_read_u8;
         state->rom_write_u8 = &mbc3_rom_write_u8;
     }
 
-    if ((IS_MBC5) || (IS_MBC5_RAM) || (IS_MBC5_RAM_BATTERY) || (IS_MBC5_RUMBLE) || (IS_MBC5_RUMBLE_RAM) ||
-            (IS_MBC5_RUMBLE_RAM_BATTERY)) {
+    if ((IS_MBC5) || (IS_MBC5_RAM) || (IS_MBC5_RAM_BATTERY) || (IS_MBC5_RUMBLE)
+            || (IS_MBC5_RUMBLE_RAM) || (IS_MBC5_RUMBLE_RAM_BATTERY)) {
         state->ram_read_u8 = &mbc5_ram_read_u8;
         state->ram_write_u8 = &mbc5_ram_write_u8;
         state->rom_read_u8 = &mbc5_rom_read_u8;
