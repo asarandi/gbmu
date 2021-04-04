@@ -1,31 +1,32 @@
 #include "gb.h"
+#include "hardware.h"
 
-#define IS_SGB      ((gb_mem[0x146] == 3) && (gb_mem[0x14b] == 0x33))
+#define IS_SGB      ((gb_mem[0x146] == CART_INDICATOR_SGB) && (gb_mem[0x14b] == 0x33))
 
 void joypad_request_interrupt() {
-    gb_mem[0xff0f] |= 0x10;
+    gb_mem[rIF] |= IEF_HILO;
 }
 
 uint8_t joypad_read() {
-    uint8_t joypad = gb_mem[0xff00];
-    int i, val;
+    uint8_t joypad = gb_mem[rP1];
+    int i, bit;
 
-    if ((joypad & 0x10) == 0) {
+    if ((joypad & P1F_GET_BTN) == 0) {
         for (i = 0; i < 4; i++) {
-            val = (state->buttons[i] & 1) ^ 1;
+            bit = (state->buttons[i] & 1) ^ 1;
             joypad &= ~(1 << (3 - i));
-            joypad |= val << (3 - i);
+            joypad |= bit << (3 - i);
         }
     }
 
-    if ((joypad & 0x20) == 0) {
+    if ((joypad & P1F_GET_DPAD) == 0) {
         for (i = 0; i < 4; i++) {
-            val = (state->buttons[i + 4] & 1) ^ 1;
+            bit = (state->buttons[i + 4] & 1) ^ 1;
             joypad &= ~(1 << (3 - i));
-            joypad |= val << (3 - i);
+            joypad |= bit << (3 - i);
         }
     }
-    gb_mem[0xff00] = joypad;
+    gb_mem[rP1] = joypad;
     return joypad;
 }
 
@@ -70,38 +71,35 @@ t_sgb_cmd sgb_commands[] = {
 };
 
 void joypad_write(uint8_t data) {
-    static uint8_t packet[256];
-    static int idx;
+    static uint8_t tab[256];
+    static int i;
 
     data &= 0x30;
-    gb_mem[0xff00] = (gb_mem[0xff00] & 15) | data;
+    gb_mem[rP1] = (gb_mem[rP1] & 15) | data;
     if (!IS_SGB)
         return;
     data >>= 4;
     if (data == 3)              /* both high between pulses */
         return;
     if (!data) {                /* both low: reset */
-        /*        printf("joypad reset "); */
-        for (idx = 0; idx < 256; idx++)
-            packet[idx] = 0;
-        idx = 0;
+        i = 0;
+        (void)memset(tab, 0, 256);
         return;
     }
-    packet[idx >> 3] = (packet[idx >> 3] & ~(1 << (idx & 7))) | ((data & 1) << (idx & 7));
-    idx++;
-    idx &= 0x7ff;
-    if (idx == 128) {
+    tab[i >> 3] = (tab[i >> 3] & ~(1 << (i & 7))) | ((data & 1) << (i & 7));
+    i = (i + 1) & 0x7ff;
+    if (i == 128) {
         /*
                 for (i=0;i<16;i++) {
-                    printf("%02x ", packet[i]);
+                    printf("%02x ", tab[i]);
                 }
-                printf("%s\n", sgb_commands[packet[0]>>3].info);
+                printf("%s\n", sgb_commands[tab[0]>>3].info);
         */
-        if (packet[0] == 0xb9)                          /*MASK_EN, len 1*/
-            state->screen_mask = packet[1] & 3;
-        if ((packet[0] == 0x51) && (packet[9] & 0x40))  /*PAL_SET, len 1*/
+        if (tab[0] == 0xb9)                          /*MASK_EN, len 1*/
+            state->screen_mask = tab[1] & 3;
+        if ((tab[0] == 0x51) && (tab[9] & 0x40))  /*PAL_SET, len 1*/
             state->screen_mask = 0;
-        if ((packet[0] == 0xb1) && (packet[1] & 0x40))  /*ATTR_SET, len1*/
+        if ((tab[0] == 0xb1) && (tab[1] & 0x40))  /*ATTR_SET, len1*/
             state->screen_mask = 0;
     }
 }
