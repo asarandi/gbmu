@@ -62,7 +62,7 @@ void write_u8(uint16_t addr, uint8_t data) {
 
     if ((addr >= _VRAM) && (addr < _SRAM)) {
         if (IS_LCD_MODE_3)
-           return;
+            return;
     }
 
     if ((addr >= _SRAM) && (addr < _RAM)) {
