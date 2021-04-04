@@ -1,4 +1,5 @@
 #include "gb.h"
+#include <errno.h>
 
 #define IS_ROM_ONLY                       (gb_mem[0x0147] == 0x00 ? 1:0)
 #define IS_MBC1                           (gb_mem[0x0147] == 0x01 ? 1:0)
@@ -65,7 +66,7 @@ t_cartridge cartridge_types[] = {
     {0xFF, "HuC1+RAM+BATTERY"}
 };
 
-bool is_savefile_enabled() {
+static bool is_savefile_enabled() {
     if (IS_MBC1_RAM_BATTERY) {
         return true;
     }
@@ -113,16 +114,17 @@ bool is_savefile_enabled() {
     return false;
 }
 
-void savefile_read() {
+int savefile_read() {
     int len, offset, fd;
+    struct stat st;
 
     if (!is_savefile_enabled()) {
-        return;
+        return 1;
     }
 
     len = strlen(state->rom_file);
-    state->ram_file = malloc(len + 6);
-    strncpy(state->ram_file, state->rom_file, len + 1);
+    state->ram_file = calloc(len + 6, 1);
+    (void)strncpy(state->ram_file, state->rom_file, len + 1);
     (void)memset(&state->ram_file[len], 0, 5);
     offset = 0;
 
@@ -135,28 +137,38 @@ void savefile_read() {
     }
 
     strncpy(&state->ram_file[len - offset], ".sav", 5);
-    printf("ramfile: %s\n", state->ram_file);
+
+    if (stat(state->ram_file, &st) != 0) {
+        if (errno == ENOENT) {
+            /* file does not exist ? */
+            return 1;
+        }
+
+        (void)perror(__func__);
+        return 0;
+    }
 
     if ((fd = open(state->ram_file, O_RDONLY)) == -1) {
-        printf("%s: open() failed\n", "savefile_read()");
-        return;
+        (void)perror(__func__);
+        return 0;
     }
 
     if ((read(fd, state->ram_banks, RAM_SIZE * 16)) == -1) {
-        close(fd);
-        printf("%s: read() failed\n", "savefile_read()");
-        return;
+        (void)perror(__func__);
+        (void)close(fd);
+        return 0;
     }
 
-    close(fd);
-    printf("ramfile loaded\n");
+    (void)close(fd);
+    (void)printf("savefile loaded: %s\n", state->ram_file);
+    return 1;
 }
 
-void savefile_write() {
+int savefile_write() {
     int fd, size;
 
     if (!is_savefile_enabled()) {
-        return;
+        return 1;
     }
 
     size = (RAM_SIZE * 16) - 1;
@@ -167,21 +179,27 @@ void savefile_write() {
 
     size++;
 
+    /* no ram data ? */
     if (!size) {
-        return;    /* game did not use ram? */
+        return 1;
     }
 
-    if ((fd = open(state->ram_file, O_CREAT | O_WRONLY, 0644)) == -1) {
-        printf("%s: open() failed\n", "savefile_write()");
-        return;
+    fd = open(state->ram_file, O_CREAT | O_TRUNC | O_WRONLY, 0644);
+
+    if (fd == -1) {
+        perror(__func__);
+        return 0;
     }
 
     if (write(fd, state->ram_banks, size) == -1) {
-        printf("%s: write() failed\n", "savefile_write()");
+        (void)perror(__func__);
+        (void)close(fd);
+        return 0;
     }
 
-    close(fd);
-    printf("ramfile saved\n");
+    (void)close(fd);
+    (void)printf("savefile stored: %s\n", state->ram_file);
+    return 1;
 }
 
 void default_ram_write_u8(uint16_t addr, uint8_t data) {

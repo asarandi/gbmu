@@ -68,18 +68,21 @@ int main(int ac, char **av) {
 
     close(fd);
     (void)memcpy(gb_mem, state->file_contents, 0x8000);
+    set_initial_register_values();
+    cartridge_init();
 
     if (!state->testing) {
         struct fn {
             int(*f)();
             char *n;
         } fn[] = {
+            {&savefile_read, "savefile_read"},
             {&video_open, "video_open"},
             {&audio_open, "audio_open"},
             {&input_open, "input_open"},
         };
 
-        for (i = 0; i < 3; i++) {
+        for (i = 0; i < 4; i++) {
             if (!fn[i].f()) {
                 perror(fn[i].n);
                 return cleanup();
@@ -87,20 +90,20 @@ int main(int ac, char **av) {
         }
     }
 
-    set_initial_register_values();
-    cartridge_init();
-    savefile_read();
-
     while (!state->done) {
         timers_update(gb_mem, &gb_state, op_cycles);
 
         if (lcd_update(gb_mem, &gb_state, op_cycles)) {
-            video_write(state->screen_buf, 160 * 144);
-            input_read();
+            if (!state->testing) {
+                video_write(state->screen_buf, 160 * 144);
+                input_read();
+            }
         }
 
         if (sound_update(gb_mem, &gb_state, op_cycles)) {
-            audio_write(state->sound_buf, SOUND_BUF_SIZE);
+            if (!state->testing) {
+                audio_write(state->sound_buf, SOUND_BUF_SIZE);
+            }
         }
 
         interrupts_update(gb_mem, state, &registers);
@@ -133,8 +136,6 @@ int main(int ac, char **av) {
 }
 
 static int cleanup() {
-    savefile_write();
-
     if (!state->testing) {
         if (!input_close()) {
             printf("input_close() failed\n");
@@ -146,6 +147,10 @@ static int cleanup() {
 
         if (!video_close()) {
             printf("video_close() failed\n");
+        }
+
+        if (!savefile_write()) {
+            printf("savefile_write() failed\n");
         }
     }
 
