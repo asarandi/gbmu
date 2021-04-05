@@ -16,6 +16,7 @@ SRC := \
     src/ops.c \
     src/serial.c \
     src/sound.c \
+    src/testing.c \
     src/timers.c \
     src/sdl.c
 
