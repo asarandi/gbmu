@@ -7,12 +7,11 @@ bool arg_parse(int ac, char **av) {
         switch (c) {
         case 't':
             state->testing = 1;
-            state->test_timeout = 15;
+            state->exit_code = -1;
             break;
 
         case '?':
         default:
-            printf("failed to parse options");
             return false;
         }
     }
@@ -29,7 +28,7 @@ t_r16 *r16 = &registers;
 static int cleanup();
 
 int main(int ac, char **av) {
-    static int fd, i, op, instr_cycles, op_cycles = 4;
+    static int fd, i, op, ret, instr_cycles, op_cycles = 4;
     void (*f)(void *, t_state *, uint8_t *);
     struct stat stat_buf;
 
@@ -40,33 +39,36 @@ int main(int ac, char **av) {
     state->rom_file = av[ac - 1];
 
     if ((fd = open(state->rom_file, O_RDONLY)) == -1) {
-        printf("failed to open file\n");
+        (void)fprintf(stderr, "failed to open file\n");
         return 1;
     }
 
     if (fstat(fd, &stat_buf) != 0) {
-        close(fd);
-        printf("fstat() failed\n");
+        (void)close(fd);
+        (void)fprintf(stderr, "fstat() failed\n");
         return 1;
     }
 
     if ((stat_buf.st_size < 0x8000) ||
             (stat_buf.st_size > 0x800000) ||
             (stat_buf.st_size & 0x7fff)) {
-        close(fd);
-        printf("invalid file\n");
+        (void)close(fd);
+        (void)fprintf(stderr, "invalid file\n");
         return 1;
     }
 
     state->gameboy_registers = &registers;
     state->file_contents = malloc(stat_buf.st_size);
     state->file_size = stat_buf.st_size;
+    ret = read(fd, state->file_contents, stat_buf.st_size);
+    (void)close(fd);
 
-    if (read(fd, state->file_contents, stat_buf.st_size) != stat_buf.st_size) {
-        printf("read() failed\n");
+    if (ret != stat_buf.st_size) {
+        (void)fprintf(stderr, "read() failed\n");
+        (void)free(state->file_contents);
+        return 1;
     }
 
-    close(fd);
     (void)memcpy(gb_mem, state->file_contents, 0x8000);
     set_initial_register_values();
     cartridge_init();
@@ -84,29 +86,33 @@ int main(int ac, char **av) {
 
         for (i = 0; i < 4; i++) {
             if (!fn[i].f()) {
-                perror(fn[i].n);
+                (void)perror(fn[i].n);
                 return cleanup();
             }
         }
     }
 
     while (!state->done) {
-        timers_update(gb_mem, &gb_state, op_cycles);
+        (void)timers_update(gb_mem, &gb_state, op_cycles);
 
         if (lcd_update(gb_mem, &gb_state, op_cycles)) {
             if (!state->testing) {
-                video_write(state->screen_buf, 160 * 144);
-                input_read();
+                (void)video_write(state->screen_buf, 160 * 144);
+                (void)input_read();
             }
         }
 
         if (sound_update(gb_mem, &gb_state, op_cycles)) {
             if (!state->testing) {
-                audio_write(state->sound_buf, SOUND_BUF_SIZE);
+                (void)audio_write(state->sound_buf, SOUND_BUF_SIZE);
             }
         }
 
-        interrupts_update(gb_mem, state, &registers);
+        if (state->testing) {
+            (void)testing_run_hook();
+        }
+
+        (void)interrupts_update(gb_mem, state, &registers);
         op = read_u8(r16->PC);
         f = ops0[op];
 
@@ -124,7 +130,7 @@ int main(int ac, char **av) {
             }
 
             if (!instr_cycles) {
-                f((void *)&registers, (void *)&gb_state, gb_mem);
+                (void)f((void *)&registers, (void *)&gb_state, gb_mem);
             }
         }
 
@@ -138,26 +144,26 @@ int main(int ac, char **av) {
 static int cleanup() {
     if (!state->testing) {
         if (!input_close()) {
-            printf("input_close() failed\n");
+            (void)fprintf(stderr, "input_close() failed\n");
         }
 
         if (!audio_close()) {
-            printf("audio_close() failed\n");
+            (void)fprintf(stderr, "audio_close() failed\n");
         }
 
         if (!video_close()) {
-            printf("video_close() failed\n");
+            (void)fprintf(stderr, "video_close() failed\n");
         }
 
         if (!savefile_write()) {
-            printf("savefile_write() failed\n");
+            (void)fprintf(stderr, "savefile_write() failed\n");
         }
     }
 
     if (state->file_contents) {
-        free(state->file_contents);
+        (void)free(state->file_contents);
         state->file_contents = NULL;
     }
 
-    return 0;
+    return state->exit_code;
 }

@@ -55,7 +55,7 @@ typedef struct s_state {
     bool done;
     bool dma_update;
     bool testing;
-    bool test_timeout;
+    int exit_code;
     int screen_mask;
     char *rom_file;
     char *ram_file;
@@ -200,10 +200,16 @@ extern int byte_lens1[];
 extern char *op_names0[];
 extern char *op_names1[];
 
-/*  serial  */
+/* serial */
 
 uint8_t serial_read_u8(uint16_t addr);
 
 void serial_write_u8(uint16_t addr, uint8_t data);
+
+/* testing  */
+
+void testing_run_hook();
+
+void testing_write_hook(uint16_t addr, uint8_t data);
 
 #endif
