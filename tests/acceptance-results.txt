@@ -59,7 +59,7 @@ failure acceptance/reti_intr_timing.gb
 failure acceptance/reti_timing.gb
 failure acceptance/ret_timing.gb
 failure acceptance/rst_timing.gb
-timeout acceptance/serial/boot_sclk_align-dmgABCmgb.gb
+failure acceptance/serial/boot_sclk_align-dmgABCmgb.gb
 success acceptance/timer/div_write.gb
 success acceptance/timer/rapid_toggle.gb
 success acceptance/timer/tim00_div_trigger.gb

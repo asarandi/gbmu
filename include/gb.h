@@ -77,6 +77,10 @@ typedef struct s_state {
 
     void (*rom_write_u8)(uint16_t, uint8_t);
 
+    void (*testing_run_hook)();
+
+    void (*testing_write_hook)(uint16_t, uint8_t);
+
 } t_state;
 
 extern uint8_t gb_mem[];
@@ -208,8 +212,6 @@ void serial_write_u8(uint16_t addr, uint8_t data);
 
 /* testing  */
 
-void testing_run_hook();
-
-void testing_write_hook(uint16_t addr, uint8_t data);
+int testing_setup();
 
 #endif

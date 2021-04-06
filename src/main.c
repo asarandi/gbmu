@@ -1,22 +1,21 @@
 #include "gb.h"
 
-bool arg_parse(int ac, char **av) {
-    int c;
+int arg_parse(int ac, char **av) {
+    int c, ret = 1;
 
-    while ((c = getopt(ac, av, "t")) != -1) {
+    while ((c = getopt(ac, av, "t:")) != -1) {
         switch (c) {
         case 't':
-            state->testing = 1;
-            state->exit_code = -1;
+            ret &= testing_setup(optarg);
             break;
 
         case '?':
         default:
-            return false;
+            return 0;
         }
     }
 
-    return true;
+    return ret;
 }
 
 uint8_t gb_mem[0x10000];
@@ -109,7 +108,7 @@ int main(int ac, char **av) {
         }
 
         if (state->testing) {
-            (void)testing_run_hook();
+            (void)state->testing_run_hook();
         }
 
         (void)interrupts_update(gb_mem, state, &registers);
