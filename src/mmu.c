@@ -61,7 +61,9 @@ uint16_t read_u16(uint16_t addr) {
 }
 
 void write_u8(uint16_t addr, uint8_t data) {
-    (void)testing_write_hook(addr, data);
+    if (state->testing) {
+        (void)state->testing_write_hook(addr, data);
+    }
 
     /* ROM */
     if (addr < _VRAM) {

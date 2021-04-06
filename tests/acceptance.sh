@@ -3,15 +3,15 @@
 cd extras/roms/mooneye-gb_hwtests/
 if [ $? -ne 0 ]; then
     exit 1
-fi    
+fi
 
 if [ ! -f ../../../gbmu ]; then
     echo "cannot find gbmu"
     exit 1
-fi    
+fi
 
 for f in $(find acceptance/ -iname "*.gb" | sort); do
-    ../../../gbmu -t "$f"
+    ../../../gbmu -t mooneye "$f"
     ret=$?
     if [ $ret -eq 10 ]; then
         echo "success $f"
