@@ -26,7 +26,7 @@ int testing_setup(char *s) {
         {"mooneye", &default_run_hook, &mooneye_write_hook},
     };
 
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i < 3; i++) {
         if (!strcasecmp(s, tests[i].name)) {
             state->testing_run_hook = tests[i].run;
             state->testing_write_hook = tests[i].write;
