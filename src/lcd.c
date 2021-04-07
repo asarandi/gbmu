@@ -9,75 +9,44 @@
 #define IS_OBJ_Y_FLIP   (obj_attr & 0x40 ? 1:0)
 #define IS_OBJ_X_FLIP   (obj_attr & 0x20 ? 1:0)
 
-uint8_t get_bg_pixel_yx(uint8_t *gb_mem, uint8_t y, uint8_t x) {
-    uint16_t tile_map_addr, tile_data_addr, tile_idx_addr;
-    uint8_t tile0, tile1, tile_idx, pixel, *tile_data;
-    int8_t idxi;
-    y += gb_mem[rSCY];
-    x += gb_mem[rSCX];
-    tile_map_addr = (gb_mem[rLCDC] & 0x08) ? 0x9c00 : 0x9800;
-    tile_data_addr = (gb_mem[rLCDC] & 0x10) ? 0x8000 : 0x8800;
-    tile_idx_addr = ((y >> 3) << 5) + (x >> 3);
-    tile_idx = gb_mem[tile_map_addr + tile_idx_addr];
-    tile_data = &gb_mem[tile_data_addr + (tile_idx << 4)];
+uint8_t bg_pixel(uint8_t *gb_mem, uint8_t y, uint8_t x, int win) {
+    uint16_t addr;
+    uint8_t *data, a, b;
 
-    if (tile_data_addr == 0x8800) {
-        idxi = (int8_t)gb_mem[tile_map_addr + tile_idx_addr];
-        tile_data = &gb_mem[0x9000 + (idxi * 16)];
+    if (win) {
+        y -= gb_mem[rWY];
+        x = x - gb_mem[rWX] + 7;
+        b = LCDCF_WIN9C00;
+    } else {
+        y += gb_mem[rSCY];
+        x += gb_mem[rSCX];
+        b = LCDCF_BG9C00;
     }
 
-    tile0 = tile_data[(y % 8) * 2];
-    tile1 = tile_data[(y % 8) * 2 + 1];
-    pixel = ((tile0 >> (7 - (x % 8))) & 1) |
-            (((tile1 >> (7 - (x % 8))) << 1) & 3);
-    return pixel;
-}
+    addr = (gb_mem[rLCDC] & b) ? 0x9c00 : 0x9800;
+    addr += ((y >> 3) << 5) + (x >> 3);
 
-uint8_t get_wnd_pixel_yx(uint8_t *gb_mem, uint8_t y, uint8_t x) {
-    int tile_map_addr, tile_data_addr;
-    uint16_t tile_idx_addr;
-    uint8_t tile_idx, *tile_data, tile0, tile1, pixel;
-    int8_t idxi;
-    y -= gb_mem[rWY];
-    x -= gb_mem[rWX];
-    x += 7;
-    tile_map_addr = (gb_mem[rLCDC] & 0x40) ? 0x9c00 : 0x9800;
-    tile_data_addr = (gb_mem[rLCDC] & 0x10) ? 0x8000 : 0x8800;
-    tile_idx_addr = ((y >> 3) << 5) + (x >> 3);
-    tile_idx = gb_mem[tile_map_addr + tile_idx_addr];
-    tile_data = &gb_mem[tile_data_addr + (tile_idx << 4)];
-
-    if (tile_data_addr == 0x8800) {
-        idxi = (int8_t)gb_mem[tile_map_addr + tile_idx_addr];
-        tile_data = &gb_mem[0x9000 + (idxi * 16)];
+    if (gb_mem[rLCDC] & LCDCF_BG8000) {
+        data = &gb_mem[0x8000 + ((uint8_t)gb_mem[addr] << 4)];
+    } else {
+        data = &gb_mem[0x9000 + ((int8_t)gb_mem[addr] << 4)];
     }
 
-    tile0 = tile_data[(y % 8) * 2];
-    tile1 = tile_data[(y % 8) * 2 + 1];
-    pixel = ((tile0 >> (7 - (x % 8))) & 1) |
-            (((tile1 >> (7 - (x % 8))) << 1) & 3);
-    return pixel;
+    data += (y & 7) << 1;
+    a = *data, b = *(++data);
+    return ((a >> (7 - (x & 7))) & 1) | (((b >> (7 - (x & 7))) << 1) & 3);
 }
 
 bool is_window_pixel(uint8_t *gb_mem, uint8_t y, uint8_t x) {
-    uint8_t wy, wx;
-    wy = gb_mem[rWY];
-    wx = gb_mem[rWX];
-
-    if (!IS_WND_ENABLED) {
+    if (!(gb_mem[rLCDC] & LCDCF_WINON)) {
         return false;
     }
 
-    if ((wy > 143) || (wx > 166)) {
+    if ((gb_mem[rWY] > 143) || (gb_mem[rWX] > 166)) {
         return false;
     }
 
-    /* current pixel is in window region */
-    if ((y >= wy) && (x + 7 >= wx)) {
-        return true;
-    }
-
-    return false;
+    return (y >= gb_mem[rWY]) && ((x + 7) >= gb_mem[rWX]);
 }
 
 uint8_t get_sprite_pixel(uint8_t *gb_mem, uint8_t idx, uint8_t y, uint8_t x) {
@@ -120,12 +89,17 @@ uint8_t get_sprite_pixel(uint8_t *gb_mem, uint8_t idx, uint8_t y, uint8_t x) {
     return (pixel | (obj_attr & 0xf0));
 }
 
-int sprites_compare(const void *alpha, const void *beta) {
+static int sprites_compare_dmg(const void *a, const void *b) {
     /* dmg priority */
-    /* (gb_mem[0xfe00 + *(uint8_t*)alpha + 1] - gb_mem[0xfe00 + *(uint8_t*)beta + 1]); */
-    /* cgb priority */
-    return (int)(*(uint8_t *)alpha - *(uint8_t *)beta);
+    int m = gb_mem[_OAMRAM + *(uint8_t *)a + 1];
+    int n = gb_mem[_OAMRAM + *(uint8_t *)b + 1];
+    return m - n;
 }
+
+//static int sprites_compare_cgb(const void *a, const void *b) {
+//    /* cgb priority */
+//    return (int)(*(uint8_t *)a - *(uint8_t *)b);
+//}
 
 /* fills `uint8_t *sprites' with indexes to oam */
 void get_sprites(uint8_t *gb_mem, uint8_t lcd_y, uint8_t *sprites) {
@@ -161,7 +135,7 @@ void get_sprites(uint8_t *gb_mem, uint8_t lcd_y, uint8_t *sprites) {
         }
     }
 
-    (void)qsort(sprites, sprites_idx, 1, &sprites_compare);
+    (void)qsort(sprites, sprites_idx, 1, &sprites_compare_dmg);
 }
 
 void screen_mask() {
@@ -173,15 +147,28 @@ void screen_mask() {
     (void)memset(state->screen_buf, 0, sizeof(state->screen_buf));
 }
 
+void draw_bg(uint8_t *out, uint8_t *bg_data, uint8_t y) {
+    uint8_t pal = gb_mem[rBGP], p, x;
+
+    for (x = 0; x < 160; x++) {
+        if (is_window_pixel(gb_mem, y, x)) {
+            p = bg_pixel(gb_mem, y, x, 1);
+        } else {
+            p = bg_pixel(gb_mem, y, x, 0);
+        }
+
+        out[x] = (pal >> ((p & 3) << 1)) & 3;
+        bg_data[x]= p;
+    }
+}
+
+
 void screen_update(uint8_t *gb_mem, t_state *state, uint8_t *sprites) {
-    uint8_t y, x, i, pixel;
-    uint8_t bg_pixel, wnd_pixel, obj_pixel;
-    uint8_t bg_pal, obj_pal;
+    uint8_t y = gb_mem[rLY], x, i, p, pal;
+    uint8_t obj_data[160] = {0}, bg_data[160] = {0};
     uint8_t oam_idx;
-    uint8_t bg_data[160] = {0};
-    uint8_t obj_data[160] = {0};
-    uint8_t *oam = &gb_mem[0xfe00];
-    y = gb_mem[rLY];
+    uint8_t *oam = &gb_mem[_OAMRAM];
+    uint8_t *out = &state->screen_buf[y * 160];
 
     if (y > 143) {
         return;
@@ -192,25 +179,12 @@ void screen_update(uint8_t *gb_mem, t_state *state, uint8_t *sprites) {
         return;
     }
 
-    (void)memset(bg_data, 0, 160);
     (void)memset(obj_data, 0, 160);
-    (void)memset(&state->screen_buf[y * 160], 0, 160 * sizeof(uint8_t));
-    bg_pal = gb_mem[rBGP];
+    (void)memset(bg_data, 0, 160);
+    (void)memset(out, 0, 160);
 
-    for (x = 0; x < 160; x++) {
-        if (IS_BG_ENABLED) {
-            bg_pixel = get_bg_pixel_yx(gb_mem, y, x);
-            pixel = (bg_pal >> ((bg_pixel & 3) << 1)) & 3;
-            state->screen_buf[y * 160 + x] = pixel;
-            bg_data[x] = bg_pixel;
-        }
-
-        if (is_window_pixel(gb_mem, y, x)) {
-            wnd_pixel = get_wnd_pixel_yx(gb_mem, y, x);
-            pixel = (bg_pal >> ((wnd_pixel & 3) << 1)) & 3;
-            state->screen_buf[y * 160 + x] = pixel;
-            bg_data[x] = wnd_pixel;
-        }
+    if (gb_mem[rLCDC] & LCDCF_BGON) {
+        draw_bg(out, bg_data, y);
     }
 
     for (i = 0; i < 10; i++) {
@@ -221,6 +195,10 @@ void screen_update(uint8_t *gb_mem, t_state *state, uint8_t *sprites) {
         }
 
         for (x = 0; x < 160; x++) {
+            if (obj_data[x]) {
+                continue;
+            }
+
             if (x + 8 < oam[oam_idx + 1]) {
                 continue;
             }
@@ -229,18 +207,18 @@ void screen_update(uint8_t *gb_mem, t_state *state, uint8_t *sprites) {
                 break;
             }
 
-            obj_pixel = get_sprite_pixel(gb_mem, oam_idx, y, x);
+            p = get_sprite_pixel(gb_mem, oam_idx, y, x);
 
-            if ((obj_pixel) && (obj_data[x] == 0)) {
-                obj_pal = (obj_pixel & 0x10) ? gb_mem[rOBP1] : gb_mem[rOBP0];
-                pixel = (obj_pal >> ((obj_pixel & 3) << 1)) & 3;
-
-                if (((obj_pixel & 0x80) == 0) || (bg_data[x] == 0)) {
-                    state->screen_buf[y * 160 + x] = pixel;
-                }
-
-                obj_data[x] = 1;
+            if (!p) {
+                continue;
             }
+
+            if (((p & 0x80) == 0) || (bg_data[x] == 0)) {
+                pal = (p & 0x10) ? gb_mem[rOBP1] : gb_mem[rOBP0];
+                out[x] = (pal >> ((p & 3) << 1)) & 3;
+            }
+
+            obj_data[x] = p;
         }
     }
 }
