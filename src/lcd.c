@@ -173,13 +173,16 @@ void screen_update(uint8_t *gb_mem, t_state *state, uint8_t *sprites) {
         return;
     }
 
-    (void)memset(obj_data, 0, 160);
-    (void)memset(bg_data, 0, 160);
     (void)memset(out, 0, 160);
+    (void)memset(bg_data, 0, 160);
 
     if (gb_mem[rLCDC] & LCDCF_BGON) {
-        draw_bg(out, bg_data, y);
+        (void)draw_bg(out, bg_data, y);
+    } else {
+        (void)memset(out, gb_mem[rBGP] & 3, 160);
     }
+
+    (void)memset(obj_data, 0, 160);
 
     for (i = 0; i < 10; i++) {
         oam_idx = sprites[i];
