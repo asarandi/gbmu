@@ -2,12 +2,6 @@
 #include "hardware.h"
 
 #define FRAME_DURATION  70224
-#define IS_LCD_ENABLED  (gb_mem[rLCDC] & 0x80 ? 1:0)
-#define IS_WND_ENABLED  (gb_mem[rLCDC] & 0x20 ? 1:0)
-#define IS_BG_ENABLED   (gb_mem[rLCDC] & 0x01 ? 1:0) /* DMG specific */
-#define IS_OBJ_ENABLED  (gb_mem[rLCDC] & 0x02 ? 1:0)
-#define IS_OBJ_Y_FLIP   (obj_attr & 0x40 ? 1:0)
-#define IS_OBJ_X_FLIP   (obj_attr & 0x20 ? 1:0)
 
 uint8_t bg_pixel(uint8_t *gb_mem, uint8_t y, uint8_t x, int win) {
     uint16_t addr;
@@ -50,35 +44,35 @@ bool is_window_pixel(uint8_t *gb_mem, uint8_t y, uint8_t x) {
 }
 
 uint8_t get_sprite_pixel(uint8_t *gb_mem, uint8_t idx, uint8_t y, uint8_t x) {
-    uint8_t *oam, obj_height, coord_y, coord_x, obj_num, obj_attr;
+    uint8_t obj_height, coord_y, coord_x, obj_num;
     uint8_t *tile_data, tile0, tile1, pixel;
+    struct OAM_ATTRS *obj;
 
-    if ((idx == 0xff) || (!IS_OBJ_ENABLED)) {
+    if ((idx == 0xff) || (!(gb_mem[rLCDC] & LCDCF_OBJON))) {
         return 0;
     }
 
-    oam = &gb_mem[0xfe00];
-    obj_height = (gb_mem[rLCDC] & 4) ? 16 : 8;
-    coord_y = (y + 16 - oam[idx]) % obj_height;
-    coord_x = (x + 8 - oam[idx + 1]) % 8;
-    obj_num = oam[idx + 2];
-    obj_attr = oam[idx + 3];
+    obj_height = (gb_mem[rLCDC] & LCDCF_OBJ16) ? 16 : 8;
+    obj = (void *)&gb_mem[_OAMRAM + idx];
+    coord_y = (y + 16 - obj->OAMA_Y) % obj_height;
+    coord_x = (x + 8 - obj->OAMA_X) % 8;
+    obj_num = obj->OAMA_TILEID;
 
     if (obj_height == 16) {
         obj_num &= 0xfe;
     }
 
-    if (IS_OBJ_Y_FLIP) {
+    if (obj->OAMA_FLAGS & OAMF_YFLIP) {
         coord_y = (obj_height - 1) - coord_y;
     }
 
-    if (IS_OBJ_X_FLIP) {
+    if (obj->OAMA_FLAGS & OAMF_XFLIP) {
         coord_x = 7 - coord_x;
     }
 
-    tile_data = &gb_mem[0x8000 + (obj_num * 16)];
-    tile0 = tile_data[coord_y * 2];
-    tile1 = tile_data[coord_y * 2 + 1];
+    tile_data = &gb_mem[_VRAM + (obj_num << 4)];
+    tile0 = tile_data[coord_y << 1];
+    tile1 = tile_data[(coord_y << 1) + 1];
     pixel = ((tile0 >> (7 - (coord_x))) & 1) |
             (((tile1 >> (7 - (coord_x))) << 1) & 3);
 
@@ -86,7 +80,7 @@ uint8_t get_sprite_pixel(uint8_t *gb_mem, uint8_t idx, uint8_t y, uint8_t x) {
         return 0;
     }
 
-    return (pixel | (obj_attr & 0xf0));
+    return (pixel | (obj->OAMA_FLAGS & 0xf0));
 }
 
 static int sprites_compare_dmg(const void *a, const void *b) {
@@ -108,7 +102,7 @@ void get_sprites(uint8_t *gb_mem, uint8_t lcd_y, uint8_t *sprites) {
     uint8_t obj_height = (gb_mem[rLCDC] & 4) ? 16 : 8;
     (void)memset(sprites, 0xff, 10);
 
-    if (!IS_OBJ_ENABLED) {
+    if (!(gb_mem[rLCDC] & LCDCF_OBJON)) {
         return;
     }
 
@@ -225,21 +219,24 @@ void screen_update(uint8_t *gb_mem, t_state *state, uint8_t *sprites) {
 
 int lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles) {
     static bool is_vblank, is_hblank, is_oam, is_lyc, is_get_sprites;
-    static int lcd_cycle;
+    static int on, lcd_cycle;
     static uint8_t sprites[10];
     uint8_t i;
     uint16_t dma_source;
-    int render;
-    render = 0;
+    int render = 0;
 
-    if (!IS_LCD_ENABLED) {
-        (void)memset(state->screen_buf, 0, sizeof(state->screen_buf));
-        gb_mem[rSTAT] &= 0xfc;
-        gb_mem[rLY] = 0;
-        lcd_cycle = 0;
-        return render;
+    if (!(gb_mem[rLCDC] & LCDCF_ON)) {
+        if (on) {
+            (void)memset(state->screen_buf, 0, sizeof(state->screen_buf));
+            gb_mem[rSTAT] &= ~STATF_LCD;
+            lcd_cycle = on = 0;
+            return 1;
+        } else {
+            return 0;
+        }
     }
 
+    on = 1;
     lcd_cycle += current_cycles;
     lcd_cycle %= FRAME_DURATION;
     gb_mem[rLY] = lcd_cycle / 456;
