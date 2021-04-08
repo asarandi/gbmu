@@ -210,8 +210,8 @@ void screen_update(uint8_t *gb_mem, t_state *state, uint8_t *sprites) {
                 continue;
             }
 
-            if (((p & 0x80) == 0) || (bg_data[x] == 0)) {
-                pal = (p & 0x10) ? gb_mem[rOBP1] : gb_mem[rOBP0];
+            if ((!(p & OAMF_PRI)) || (!(bg_data[x]))) {
+                pal = (p & OAMF_PAL1) ? gb_mem[rOBP1] : gb_mem[rOBP0];
                 out[x] = (pal >> ((p & 3) << 1)) & 3;
             }
 
@@ -221,103 +221,81 @@ void screen_update(uint8_t *gb_mem, t_state *state, uint8_t *sprites) {
 }
 
 int lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles) {
-    static bool is_vblank, is_hblank, is_oam, is_lyc, is_get_sprites;
     static int on, lcd_cycle;
     static uint8_t sprites[10];
     uint8_t i;
     uint16_t dma_source;
     int render = 0;
 
-    if (!(gb_mem[rLCDC] & LCDCF_ON)) {
-        if (on) {
-            (void)memset(state->screen_buf, 0, sizeof(state->screen_buf));
-            gb_mem[rSTAT] &= ~STATF_LCD;
-            lcd_cycle = on = 0;
-            return 1;
-        } else {
-            return 0;
-        }
+    if (gb_mem[rLCDC] & LCDCF_ON) {
+        on = 1;
+    } else if (on) {
+        (void)memset(state->screen_buf, 0, sizeof(state->screen_buf));
+        gb_mem[rSTAT] &= ~STATF_LCD;
+        lcd_cycle = on = 0;
+        return 1;
+    } else {
+        return 0;
     }
 
-    on = 1;
     lcd_cycle += current_cycles;
     lcd_cycle %= FRAME_DURATION;
     gb_mem[rLY] = lcd_cycle / 456;
 
-    /* set coincidence bit */
     if (gb_mem[rLY] == gb_mem[rLYC]) {
-        gb_mem[rSTAT] |= 4;
-
-        if (is_lyc) {
-            is_lyc = false;
-
-            if (gb_mem[rSTAT] & 0x40) {
-                gb_mem[rIF] |= 2;
+        if (!(gb_mem[rSTAT] & STATF_LYCF)) {
+            if (gb_mem[rSTAT] & STATF_LYC) {
+                gb_mem[rIF] |= IEF_LCDC;
             }
         }
+
+        gb_mem[rSTAT] |= STATF_LYCF;
     } else {
-        /* clear coincidence bit */
-        gb_mem[rSTAT] &= 0xfb;
-        is_lyc = true;
+        gb_mem[rSTAT] &= ~STATF_LYCF;
     }
 
     if (gb_mem[rLY] < 144) {
+        // mode 2
         if ((lcd_cycle % 456) < 80) {
-            /* mode 2 */
-            gb_mem[rSTAT] = (gb_mem[rSTAT] & 0xfc) | 2;
-
-            if (is_oam) {
-                is_oam = false;
-
-                /* irq */
-                if (gb_mem[rSTAT] & 0x20) {
-                    gb_mem[rIF] |= 2;
+            if (!(gb_mem[rSTAT] & STATF_OAM)) {
+                if (gb_mem[rSTAT] & STATF_MODE10) {
+                    gb_mem[rIF] |= IEF_LCDC;
                 }
             }
 
-            is_get_sprites = true;
+            gb_mem[rSTAT] = (gb_mem[rSTAT] & ~STATF_LCD) | STATF_OAM;
         } else if ((lcd_cycle % 456) < 252) {
-            if (is_get_sprites) {
-                is_get_sprites = false;
+            // mode 3
+            if ((gb_mem[rSTAT] & STATF_LCD) == STATF_OAM) {
                 get_sprites(gb_mem, gb_mem[rLY], sprites);
             }
 
-            /* mode 3 */
-            gb_mem[rSTAT] = (gb_mem[rSTAT] & 0xfc) | 3;
-            is_hblank = true;
+            gb_mem[rSTAT] |= STATF_LCD;
         } else {
-            /* mode 0 */
-            gb_mem[rSTAT] &= 0xfc;
-
-            if (is_hblank) {
-                is_hblank = false;
+            // mode 0
+            if ((gb_mem[rSTAT] & STATF_LCD) == STATF_LCD) {
                 screen_update(gb_mem, state, sprites);
 
-                /* irq */
-                if (gb_mem[rSTAT] & 0x08) {
-                    gb_mem[rIF] |= 2;
+                if (gb_mem[rSTAT] & STATF_MODE00) {
+                    gb_mem[rIF] |= IEF_LCDC;
                 }
             }
 
-            is_vblank = true;
+            gb_mem[rSTAT] &= ~STATF_LCD;
         }
     } else {
-        /* mode 1 */
-        gb_mem[rSTAT] = (gb_mem[rSTAT] & 0xfc) | 1;
+        // mode 1
+        if (!(gb_mem[rSTAT] & STATF_VBL)) {
+            gb_mem[rIF] |= IEF_VBLANK;
 
-        /* request vblank */
-        if (is_vblank) {
-            is_vblank = false;
-            render = 1;
-            gb_mem[rIF] |= 1;
-
-            /* irq */
-            if (gb_mem[rSTAT] & 0x10) {
-                gb_mem[rIF] |= 2;
+            if (gb_mem[rSTAT] & STATF_MODE01) {
+                gb_mem[rIF] |= IEF_LCDC;
             }
+
+            render = 1;
         }
 
-        is_oam = true;
+        gb_mem[rSTAT] = (gb_mem[rSTAT] & ~STATF_LCD) | STATF_VBL;
     }
 
     if (state->dma_update) {

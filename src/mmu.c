@@ -119,16 +119,19 @@ void write_u8(uint16_t addr, uint8_t data) {
         return sound_write_u8(addr, data);
     }
 
-    /* LCD STAT */
-    /*
-            t_r16   *r16 = state->gameboy_registers;
-            printf("writing to STAT 0xff41, data: %02x, r16->PC = %04x\n", data, r16->PC);
-            printf("current LY 0xff44: %02x, current LYC 0xff45: %02x\n", gb_mem[0xff44], gb_mem[0xff45]);
-    */
-    /* lcd stat bottom 3 bits read only */
     if (addr == rSTAT) {
-        data &= 0xf8;
-        data |= (gb_mem[rSTAT] & 7);
+        // dmg specific:
+        // any write while lcd is `on` and - in mode `0` - or - mode `1`
+        // will set bit 1 in IF register
+        if (gb_mem[rLCDC] & LCDCF_ON) {
+            if ((gb_mem[rSTAT] & STATF_LCD) < 2) {
+                gb_mem[rIF] |= IEF_LCDC;
+            }
+        }
+
+        // bottom 3 bits are read-only
+        gb_mem[rSTAT] = (data & 0xf8) | (gb_mem[rSTAT] & 7);
+        return;
     }
 
     if (addr == rDMA) {
