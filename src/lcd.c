@@ -292,6 +292,11 @@ int lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles) {
                 gb_mem[rIF] |= IEF_LCDC;
             }
 
+            // ppu/vblank_stat_intr-GS.s
+            if (gb_mem[rSTAT] & STATF_MODE10) {
+                gb_mem[rIF] |= IEF_LCDC;
+            }
+
             render = 1;
         }
 
