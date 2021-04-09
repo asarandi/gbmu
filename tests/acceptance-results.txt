@@ -51,7 +51,7 @@ failure acceptance/ppu/lcdon_timing-GS.gb
 failure acceptance/ppu/lcdon_write_timing-GS.gb
 failure acceptance/ppu/stat_irq_blocking.gb
 failure acceptance/ppu/stat_lyc_onoff.gb
-failure acceptance/ppu/vblank_stat_intr-GS.gb
+success acceptance/ppu/vblank_stat_intr-GS.gb
 failure acceptance/push_timing.gb
 failure acceptance/rapid_di_ei.gb
 failure acceptance/ret_cc_timing.gb
