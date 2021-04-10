@@ -135,7 +135,7 @@ void write_u8(uint16_t addr, uint8_t data) {
     }
 
     if (addr == rDMA) {
-        state->dma_update = true;
+        return dma_write_u8(addr, data);
     }
 
     /* read only as per pandocs */

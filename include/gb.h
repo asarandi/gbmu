@@ -53,7 +53,6 @@ typedef struct s_state {
     bool stop;
     bool ram_enabled;
     bool done;
-    bool dma_update;
     bool testing;
     int exit_code;
     int screen_mask;
@@ -114,6 +113,8 @@ void timers_update(uint8_t *gb_mem, t_state *state, int current_cycles);
 int sound_update(uint8_t *gb_mem, t_state *state, int current_cycles);
 
 void sound_write_u8(uint16_t addr, uint8_t data);
+
+void dma_write_u8(uint16_t addr, uint8_t data);
 
 uint8_t sound_read_u8(uint16_t addr);
 

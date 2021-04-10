@@ -223,8 +223,6 @@ void screen_update(uint8_t *gb_mem, t_state *state, uint8_t *sprites) {
 int lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles) {
     static int on, lcd_cycle;
     static uint8_t sprites[10];
-    uint8_t i;
-    uint16_t dma_source;
     int render = 0;
 
     if (gb_mem[rLCDC] & LCDCF_ON) {
@@ -303,14 +301,20 @@ int lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles) {
         gb_mem[rSTAT] = (gb_mem[rSTAT] & ~STATF_LCD) | STATF_VBL;
     }
 
-    if (state->dma_update) {
-        state->dma_update = false;
-        dma_source = gb_mem[rDMA] << 8;
+    return render;
+}
 
-        for (i = 0; i < 0xa0; i++) {
-            gb_mem[_OAMRAM + i] = read_u8(dma_source + i);
-        }
+void dma_write_u8(uint16_t addr, uint8_t data) {
+    uint16_t dma_source, i;
+
+    if (addr != rDMA) {
+        return ;
     }
 
-    return render;
+    gb_mem[rDMA] = data;
+    dma_source = data << 8;
+
+    for (i = 0; i < 0xa0; i++) {
+        gb_mem[_OAMRAM + i] = read_u8(dma_source + i);
+    }
 }
