@@ -47,7 +47,8 @@ typedef struct s_r8 {
 typedef struct s_state {
     void *gameboy_memory;
     void *gameboy_registers;
-    bool interrupts_enabled;
+    bool ime_scheduled;
+    bool ime;
     bool halt;
     bool halt_bug;
     bool stop;

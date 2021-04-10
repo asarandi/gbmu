@@ -11,7 +11,13 @@ void interrupts_update(uint8_t *gb_mem, t_state *state, void *registers) {
         state->halt = false;
     }
 
-    if (!state->interrupts_enabled) {
+    if (state->ime_scheduled) {
+        state->ime_scheduled = false;
+        state->ime = true;
+        return;
+    }
+
+    if (!state->ime) {
         return;
     }
 
@@ -33,7 +39,7 @@ void interrupts_update(uint8_t *gb_mem, t_state *state, void *registers) {
             r16->SP -= 2;
             write_u16(r16->SP, r16->PC);
             r16->PC = tab[i].addr;
-            state->interrupts_enabled = false;
+            state->ime = false;
             gb_mem[rIF] &= ~tab[i].interrupt;
             state->interrupt_cycles = 20;
             return ;
