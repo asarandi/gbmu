@@ -311,10 +311,13 @@ void dma_write_u8(uint16_t addr, uint8_t data) {
         return ;
     }
 
+    state->is_dma = 1; // allow vram access regardless of lcd mode
     gb_mem[rDMA] = data;
     dma_source = data << 8;
 
     for (i = 0; i < 0xa0; i++) {
         gb_mem[_OAMRAM + i] = read_u8(dma_source + i);
     }
+
+    state->is_dma = 0;
 }

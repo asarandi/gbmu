@@ -54,6 +54,7 @@ typedef struct s_state {
     bool ram_enabled;
     bool done;
     bool testing;
+    bool is_dma;
     int exit_code;
     int screen_mask;
     char *rom_file;
