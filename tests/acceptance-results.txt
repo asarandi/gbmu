@@ -21,7 +21,7 @@ failure acceptance/call_timing.gb
 success acceptance/di_timing-GS.gb
 success acceptance/div_timing.gb
 failure acceptance/ei_sequence.gb
-failure acceptance/ei_timing.gb
+success acceptance/ei_timing.gb
 success acceptance/halt_ime0_ei.gb
 success acceptance/halt_ime0_nointr_timing.gb
 success acceptance/halt_ime1_timing2-GS.gb
@@ -53,7 +53,7 @@ failure acceptance/ppu/stat_irq_blocking.gb
 failure acceptance/ppu/stat_lyc_onoff.gb
 success acceptance/ppu/vblank_stat_intr-GS.gb
 failure acceptance/push_timing.gb
-failure acceptance/rapid_di_ei.gb
+success acceptance/rapid_di_ei.gb
 failure acceptance/ret_cc_timing.gb
 failure acceptance/reti_intr_timing.gb
 failure acceptance/reti_timing.gb

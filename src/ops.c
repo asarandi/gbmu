@@ -2416,7 +2416,7 @@ void op_f3(void *reg, t_state *state, uint8_t *mem) {
     */
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
-    state->interrupts_enabled = false;
+    state->ime_scheduled = state->ime = false;
     r16->PC += 1;
 }
 
@@ -2430,7 +2430,7 @@ void op_fb(void *reg, t_state *state, uint8_t *mem) {
     */
     t_r8 *r8 = reg;
     t_r16 *r16 = reg;
-    state->interrupts_enabled = true;
+    state->ime_scheduled = true;
     r16->PC += 1;
 }
 
@@ -2447,7 +2447,7 @@ void op_76(void *reg, t_state *state, uint8_t *mem) {
     r16->PC += 1;
     state->halt = true;
 
-    if (state->interrupts_enabled == false) {
+    if (state->ime_scheduled == false) {
         if (read_u8(0xffff) & read_u8(0xff0f) & 0x1f) {
             state->halt_bug = true;
         }
@@ -5509,7 +5509,7 @@ void op_d9(void *reg, t_state *state, uint8_t *mem) {
     t_r16 *r16 = reg;
     r16->PC = read_u16(r16->SP);
     r16->SP += 2;
-    state->interrupts_enabled = true;
+    state->ime_scheduled = true;
 }
 
 void op_cb10(void *reg, t_state *state, uint8_t *mem) {
