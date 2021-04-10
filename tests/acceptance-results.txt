@@ -20,7 +20,7 @@ failure acceptance/call_timing2.gb
 failure acceptance/call_timing.gb
 success acceptance/di_timing-GS.gb
 success acceptance/div_timing.gb
-failure acceptance/ei_sequence.gb
+success acceptance/ei_sequence.gb
 success acceptance/ei_timing.gb
 success acceptance/halt_ime0_ei.gb
 success acceptance/halt_ime0_nointr_timing.gb
