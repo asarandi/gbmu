@@ -36,7 +36,7 @@ failure acceptance/ld_hl_sp_e_timing.gb
 success acceptance/oam_dma/basic.gb
 success acceptance/oam_dma/reg_read.gb
 failure acceptance/oam_dma_restart.gb
-failure acceptance/oam_dma/sources-GS.gb
+success acceptance/oam_dma/sources-GS.gb
 timeout acceptance/oam_dma_start.gb
 failure acceptance/oam_dma_timing.gb
 failure acceptance/pop_timing.gb
