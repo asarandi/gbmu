@@ -13,8 +13,11 @@ void interrupts_update(uint8_t *gb_mem, t_state *state, void *registers) {
 
     if (state->ime_scheduled) {
         state->ime_scheduled = false;
-        state->ime = true;
-        return;
+
+        if (!state->ime) {
+            state->ime = true;
+            return;
+        }
     }
 
     if (!state->ime) {
