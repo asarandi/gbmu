@@ -33,7 +33,7 @@ success acceptance/intr_timing.gb
 failure acceptance/jp_cc_timing.gb
 failure acceptance/jp_timing.gb
 failure acceptance/ld_hl_sp_e_timing.gb
-failure acceptance/oam_dma/basic.gb
+success acceptance/oam_dma/basic.gb
 success acceptance/oam_dma/reg_read.gb
 failure acceptance/oam_dma_restart.gb
 failure acceptance/oam_dma/sources-GS.gb
