@@ -99,9 +99,7 @@ void mooneye_write_hook(uint16_t addr, uint8_t data) {
 }
 
 void blargg1_write_hook(uint16_t addr, uint8_t data) {
-    uint8_t passed[] = {'P', 'a', 's', 's', 'e', 'd'};
-    uint8_t failed[] = {'F', 'a', 'i', 'l', 'e', 'd'};
-    static int i;
+    static uint8_t buf[8], i;
 
     if (!state->testing) {
         return;
@@ -113,19 +111,22 @@ void blargg1_write_hook(uint16_t addr, uint8_t data) {
 
     (void)fprintf(stderr, "%c", gb_mem[rSB]);
     (void)fflush(stderr);
+    buf[i++] = gb_mem[rSB];
 
-    if (gb_mem[rSB] == passed[i]) {
-        if (++i == 6) {
-            state->exit_code = RESULT_SUCCESS;
-            state->done = 1;
-        }
-    } else if (gb_mem[rSB] == failed[i]) {
-        if (++i == 6) {
-            state->exit_code = RESULT_FAILURE;
-            state->done = 1;
-        }
-    } else {
-        i = 0;
+    if (i < 6) {
+        return;
+    }
+
+    if (!memcmp(buf, "Failed", 6)) {
+        state->exit_code = RESULT_FAILURE;
+        state->done = 1;
+    } else if (!memcmp(buf, "Passed", 6)) {
+        state->exit_code = RESULT_SUCCESS;
+        state->done = 1;
+    }
+
+    for (i = 0; i < 5; i++) {
+        buf[i] = buf[i + 1];
     }
 }
 
