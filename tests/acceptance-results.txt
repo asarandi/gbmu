@@ -7,7 +7,7 @@ failure acceptance/boot_div-dmg0.gb
 failure acceptance/boot_div-dmgABCmgb.gb
 failure acceptance/boot_div-S.gb
 failure acceptance/boot_hwio-dmg0.gb
-failure acceptance/boot_hwio-dmgABCmgb.gb
+success acceptance/boot_hwio-dmgABCmgb.gb
 failure acceptance/boot_hwio-S.gb
 failure acceptance/boot_regs-dmg0.gb
 success acceptance/boot_regs-dmgABC.gb

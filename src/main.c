@@ -91,6 +91,8 @@ int main(int ac, char **av) {
         }
     }
 
+    state->div_cycles = 0xac00;
+
     while (!state->done) {
         (void)timers_update(gb_mem, &gb_state, op_cycles);
 
