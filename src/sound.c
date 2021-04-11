@@ -211,6 +211,12 @@ static void sweep_tick(t_sound *s) {
 }
 
 int sound_update(uint8_t *gb_mem, t_state *state, int cycles) {
+    static int once;
+
+    if (!once) {
+        once = s1.on = 1;
+    }
+
     static uint32_t volume, sweep, length, samples;
     s1.cycles += cycles;
     s2.cycles += cycles;
