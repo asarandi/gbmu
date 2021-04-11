@@ -1,3 +1,4 @@
+failure cgb_sound/cgb_sound.gb
 failure cgb_sound/rom_singles/01-registers.gb
 failure cgb_sound/rom_singles/02-len ctr.gb
 failure cgb_sound/rom_singles/03-trigger.gb
@@ -10,6 +11,7 @@ failure cgb_sound/rom_singles/09-wave read while on.gb
 success cgb_sound/rom_singles/10-wave trigger while on.gb
 failure cgb_sound/rom_singles/11-regs after power.gb
 failure cgb_sound/rom_singles/12-wave.gb
+failure dmg_sound/dmg_sound.gb
 failure dmg_sound/rom_singles/01-registers.gb
 failure dmg_sound/rom_singles/02-len ctr.gb
 failure dmg_sound/rom_singles/03-trigger.gb
@@ -22,9 +24,12 @@ failure dmg_sound/rom_singles/09-wave read while on.gb
 failure dmg_sound/rom_singles/10-wave trigger while on.gb
 failure dmg_sound/rom_singles/11-regs after power.gb
 failure dmg_sound/rom_singles/12-wave write while on.gb
+failure halt_bug.gb
+failure interrupt_time/interrupt_time.gb
 success mem_timing-2/rom_singles/01-read_timing.gb
 success mem_timing-2/rom_singles/02-write_timing.gb
 failure mem_timing-2/rom_singles/03-modify_timing.gb
+failure oam_bug/oam_bug.gb
 failure oam_bug/rom_singles/1-lcd_sync.gb
 failure oam_bug/rom_singles/2-causes.gb
 success oam_bug/rom_singles/3-non_causes.gb
