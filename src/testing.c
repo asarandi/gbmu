@@ -3,7 +3,7 @@
 #include <time.h>
 #include <ctype.h>
 
-#define TIMEOUT        10
+#define TIMEOUT        15
 #define RESULT_SUCCESS 10
 #define RESULT_FAILURE 11
 #define RESULT_TIMEOUT 12
