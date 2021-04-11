@@ -1,3 +1,4 @@
+success cpu_instrs/cpu_instrs.gb
 success cpu_instrs/individual/01-special.gb
 success cpu_instrs/individual/02-interrupts.gb
 success cpu_instrs/individual/03-op sp,hl.gb
@@ -10,6 +11,7 @@ success cpu_instrs/individual/09-op r,r.gb
 success cpu_instrs/individual/10-bit ops.gb
 success cpu_instrs/individual/11-op a,(hl).gb
 success instr_timing/instr_timing.gb
+failure mem_timing/mem_timing.gb
 success mem_timing/individual/01-read_timing.gb
 success mem_timing/individual/02-write_timing.gb
 failure mem_timing/individual/03-modify_timing.gb

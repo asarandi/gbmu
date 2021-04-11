@@ -23,7 +23,8 @@ while IFS= read -r f; do
     else
         echo "other $ret $f"
     fi
-done <<< "cpu_instrs/individual/01-special.gb
+done <<< "cpu_instrs/cpu_instrs.gb
+cpu_instrs/individual/01-special.gb
 cpu_instrs/individual/02-interrupts.gb
 cpu_instrs/individual/03-op sp,hl.gb
 cpu_instrs/individual/04-op r,imm.gb
@@ -35,6 +36,7 @@ cpu_instrs/individual/09-op r,r.gb
 cpu_instrs/individual/10-bit ops.gb
 cpu_instrs/individual/11-op a,(hl).gb
 instr_timing/instr_timing.gb
+mem_timing/mem_timing.gb
 mem_timing/individual/01-read_timing.gb
 mem_timing/individual/02-write_timing.gb
 mem_timing/individual/03-modify_timing.gb"
