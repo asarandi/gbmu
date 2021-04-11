@@ -148,6 +148,8 @@ void joypad_request_interrupt();
 
 void set_initial_register_values();
 
+uint8_t io_read_u8(uint16_t addr);
+
 uint8_t read_u8(uint16_t addr);
 
 uint16_t read_u16(uint16_t addr);

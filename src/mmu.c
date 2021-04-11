@@ -34,22 +34,8 @@ uint8_t read_u8(uint16_t addr) {
         }
     }
 
-    /* joypad no buttons pressed */
-    if (addr == rP1) {
-        return joypad_read();
-    }
-
-    if ((addr == rSB) || (addr == rSC)) {
-        return serial_read_u8(addr);
-    }
-
-    /* upper 3 bits of IF register always 1 */
-    if (addr == rIF) {
-        return ((gb_mem[rIF] & 0x1f) | 0xe0);
-    }
-
-    if ((addr >= rNR10) && (addr < rNR10 + 0x30)) {
-        return sound_read_u8(addr);
+    if (addr >= _IO) {
+        return io_read_u8(addr);
     }
 
     return gb_mem[addr];

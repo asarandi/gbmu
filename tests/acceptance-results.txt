@@ -1,7 +1,7 @@
 failure acceptance/add_sp_e_timing.gb
 success acceptance/bits/mem_oam.gb
 success acceptance/bits/reg_f.gb
-failure acceptance/bits/unused_hwio-GS.gb
+success acceptance/bits/unused_hwio-GS.gb
 failure acceptance/boot_div2-S.gb
 failure acceptance/boot_div-dmg0.gb
 failure acceptance/boot_div-dmgABCmgb.gb
