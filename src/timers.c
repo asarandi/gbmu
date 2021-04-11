@@ -1,4 +1,5 @@
 #include "gb.h"
+#include "hardware.h"
 
 void timers_update(uint8_t *gb_mem, t_state *state, int current_cycles) {
     static uint8_t tima, counter;
@@ -7,24 +8,24 @@ void timers_update(uint8_t *gb_mem, t_state *state, int current_cycles) {
     int f;
     state->div_cycles += current_cycles;
     state->div_cycles &= 0xffff;
-    gb_mem[0xff04] = state->div_cycles >> 8;
-    f = gb_mem[0xff07] & 3;
+    gb_mem[rDIV] = state->div_cycles >> 8;
+    f = gb_mem[rTAC] & 3;
     current = (state->div_cycles >> shifts[f]) & 1;
-    current &= (gb_mem[0xff07] >> 2) & 1;
+    current &= (gb_mem[rTAC] >> 2) & 1;
 
     if (overflow) {
         counter++;
 
-        if ((tima != gb_mem[0xff05]) && (counter == 1)) {
+        if ((tima != gb_mem[rTIMA]) && (counter == 1)) {
             overflow = false;
         }
     }
 
     if (overflow) {
-        gb_mem[0xff05] = gb_mem[0xff06];
+        gb_mem[rTIMA] = gb_mem[rTMA];
 
         if (counter == 1) {
-            gb_mem[0xff0f] |= 4;
+            gb_mem[rIF] |= IEF_TIMER;
         }
 
         if (counter > 1) {
@@ -33,14 +34,14 @@ void timers_update(uint8_t *gb_mem, t_state *state, int current_cycles) {
     }
 
     if (!current && prev) {
-        gb_mem[0xff05]++;
+        gb_mem[rTIMA]++;
 
-        if (!gb_mem[0xff05]) {
+        if (!gb_mem[rTIMA]) {
             overflow = true;
             counter = 0;
         }
     }
 
     prev = current;
-    tima = gb_mem[0xff05];
+    tima = gb_mem[rTIMA];
 }
