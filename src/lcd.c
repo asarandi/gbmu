@@ -8,7 +8,6 @@ uint8_t bg_pixel(uint8_t *gb_mem, uint8_t y, uint8_t x, int win) {
     uint8_t *data, a, b;
 
     if (win) {
-        y -= gb_mem[rWY];
         x = x - gb_mem[rWX] + 7;
         b = LCDCF_WIN9C00;
     } else {
@@ -143,19 +142,26 @@ void screen_mask() {
 
 void draw_bg(uint8_t *out, uint8_t *bg_data, uint8_t y) {
     uint8_t pal = gb_mem[rBGP], p, x;
+    static uint8_t wy, wq; // window line counter
 
-    for (x = 0; x < 160; x++) {
+    if (y == 0) {
+        wy = 0;
+    }
+
+    for (x = wq = 0; x < 160; x++) {
         if (is_window_pixel(gb_mem, y, x)) {
-            p = bg_pixel(gb_mem, y, x, 1);
+            p = bg_pixel(gb_mem, wy, x, 1);
+            wq = 1;
         } else {
             p = bg_pixel(gb_mem, y, x, 0);
         }
 
         out[x] = (pal >> ((p & 3) << 1)) & 3;
-        bg_data[x]= p;
+        bg_data[x] = p;
     }
-}
 
+    wy += wq;
+}
 
 void screen_update(uint8_t *gb_mem, t_state *state, uint8_t *sprites) {
     uint8_t y = gb_mem[rLY], x, i, p, pal;
