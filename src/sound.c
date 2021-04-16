@@ -12,6 +12,7 @@
 
 struct channel {
     uint32_t on;
+    uint32_t dac;
     uint32_t sweep_time;
     uint32_t sweep_dir;
     uint32_t sweep_shift;
@@ -270,7 +271,8 @@ void sound_write_u8(uint16_t addr, uint8_t data) {
         ch[0].env_dir = gb_mem[rAUD1ENV] & 8;       // 1 bit
         ch[0].env_period = gb_mem[rAUD1ENV] & 7;    // 3 bits
         ch[0].env_ctr = ch[0].env_period;
-        ch[0].on = (gb_mem[rAUD1ENV] & 0xf8) != 0;
+        ch[0].dac = (gb_mem[rAUD1ENV] & 0xf8) != 0;
+        ch[0].on &= ch[0].dac;
         break;
 
     case rAUD1LOW:      // rNR13
@@ -316,7 +318,8 @@ void sound_write_u8(uint16_t addr, uint8_t data) {
         ch[1].env_dir = gb_mem[rAUD2ENV] & 8;       // 1 bit
         ch[1].env_period = gb_mem[rAUD2ENV] & 7;    // 3 bits
         ch[1].env_ctr = ch[1].env_period;
-        ch[1].on = (gb_mem[rAUD2ENV] & 0xf8) != 0;
+        ch[1].dac = (gb_mem[rAUD2ENV] & 0xf8) != 0;
+        ch[1].on &= ch[1].dac;
         break;
 
     case rAUD2LOW:      // rNR23
@@ -346,7 +349,8 @@ void sound_write_u8(uint16_t addr, uint8_t data) {
 
     case rAUD3ENA:      // rNR30
         gb_mem[rAUD3ENA] = data;
-        ch[2].on = (gb_mem[rAUD3ENA] & 128) != 0;
+        ch[2].dac = (gb_mem[rAUD3ENA] & 128) != 0;
+        ch[2].on &= ch[2].dac;
         break;
 
     case rAUD3LEN:      // rNR31
@@ -395,7 +399,8 @@ void sound_write_u8(uint16_t addr, uint8_t data) {
         ch[3].env_dir = gb_mem[rAUD4ENV] & 8;
         ch[3].env_period = gb_mem[rAUD4ENV] & 7;
         ch[3].env_ctr = ch[3].env_period;
-        ch[3].on = (gb_mem[rAUD4ENV] & 0xf8) != 0;
+        ch[3].dac = (gb_mem[rAUD4ENV] & 0xf8) != 0;
+        ch[3].on &= ch[3].dac;
         break;
 
     case rAUD4POLY:     // rNR43
