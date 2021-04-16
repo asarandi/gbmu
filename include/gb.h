@@ -38,8 +38,8 @@ typedef struct s_r8 {
     uint16_t PC;
 } t_r8;
 
-#define  SAMPLING_FREQUENCY 96000
-#define  NUM_FRAMES         2048
+#define  SAMPLING_FREQUENCY 44100
+#define  NUM_FRAMES         1024
 #define  NUM_CHANNELS       2
 #define  SAMPLE_SIZE        2
 #define  SOUND_BUF_SIZE     (NUM_FRAMES * SAMPLE_SIZE * NUM_CHANNELS)
