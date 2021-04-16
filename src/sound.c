@@ -16,8 +16,6 @@ struct channel {
     uint32_t sweep_dir;
     uint32_t sweep_shift;
     uint32_t sweep_ctr;         //helper
-    uint32_t duty;
-    uint32_t phase;
     uint32_t len_period;
     uint32_t len_ctr;
     uint32_t len_enabled;    //rename?
@@ -25,10 +23,13 @@ struct channel {
     uint32_t env_dir;
     uint32_t env_period;         //rename?
     uint32_t env_ctr;           //helper
-    uint32_t freq;
     uint32_t lfsr_width;
-    int32_t  period;
-    int32_t  clocks;
+    uint32_t duty;
+    uint32_t phase;
+    uint32_t freq;
+    int32_t period;
+    uint32_t clocks;
+    int32_t counter;
 };
 
 struct channel ch[4];
@@ -45,7 +46,7 @@ static int16_t tone_sample(struct channel *s) {
         return 0;
     }
 
-    return s->volume * duties[s->duty][s->phase];
+    return s->volume * duties[s->duty][(s->phase & 7)];
 }
 
 static int16_t wave_sample(struct channel *s) {
@@ -53,7 +54,7 @@ static int16_t wave_sample(struct channel *s) {
         return 0;
     }
 
-    uint8_t nib = gb_mem[_AUD3WAVERAM + (s->phase >> 1)];
+    uint8_t nib = gb_mem[_AUD3WAVERAM + ((s->phase & 31) >> 1)];
     nib = (s->phase & 1) ? (nib & 15) : (nib >> 4);
 
     switch (s->volume) {
@@ -164,6 +165,7 @@ static void sweep_calc(struct channel *s) {
     }
 
     s->freq = shadow_freq;
+    s->period = (2048 - s->freq) << 2;
 }
 
 static void sweep_tick(struct channel *s) {
@@ -210,38 +212,27 @@ int sound_update(uint8_t *gb_mem, t_state *state, int clocks) {
         }
     }
 
-    gb_mem[rAUDENA] = (gb_mem[rAUDENA] & 128);
-
-    for (i = 0; i < 4; i++) {
-        gb_mem[rAUDENA] |= ch[i].on << i;
-
-        if (!ch[i].on) {
-            continue;
-        }
-
-        ch[i].period -= clocks;
-
-        if (ch[i].period <= 0) {
-            if (i < 2) {
-                ch[i].period += (2048 - ch[i].freq) << 2;
-                ch[i].phase = (ch[i].phase + 1) & 7;
-            } else if (i == 2) {
-                ch[i].period += (2048 - ch[i].freq) << 1;
-                ch[i].phase = (ch[i].phase + 1) & 31;
-            } else {
-                if (ch[i].freq != 0) {
-                    ch[i].period += 4194304 / ch[i].freq;
-                    ch[i].phase++;
-                }
-            }
-        }
-    }
-
     samples += clocks;
 
     if (samples >= SAMPLE_CLOCK) {
         samples -= SAMPLE_CLOCK;
         return write_sounds(state->sound_buf, SOUND_BUF_SIZE);
+    }
+
+    gb_mem[rAUDENA] = (gb_mem[rAUDENA] & 128);
+    //ch[1].on = ch[2].on = ch[3].on = 0;
+
+    for (i = 0; i < 4; i++) {
+        gb_mem[rAUDENA] |= ch[i].on << i;
+
+        if (ch[i].on && ch[i].period) {
+            ch[i].counter -= clocks;
+
+            if (ch[i].counter <= 0) {
+                ch[i].counter += ch[i].period;
+                ch[i].phase++;
+            }
+        }
     }
 
     return 0;
@@ -252,7 +243,6 @@ uint8_t sound_read_u8(uint16_t addr) {
 }
 
 void sound_write_u8(uint16_t addr, uint8_t data) {
-//    printf("sound_write_u8(): addr = %04x data = %02x\n", addr, data); fflush(stdout);
     if (addr != rAUDENA) {
         if ((gb_mem[rAUDENA] & AUDENA_ON) == 0) {
             return;      /*ignore all writes when sound off*/
@@ -286,18 +276,20 @@ void sound_write_u8(uint16_t addr, uint8_t data) {
     case rAUD1LOW:      // rNR13
         gb_mem[rAUD1LOW] = data;
         ch[0].freq = ((gb_mem[rAUD1HIGH] & 7) << 8) | gb_mem[rAUD1LOW];
-        //ch[0].len_ctr = ch[0].len_period;           // reload?
+        ch[0].period = (2048 - ch[0].freq) << 2;
         break;
 
     case rAUD1HIGH:     // rNR14
         gb_mem[rAUD1HIGH] = data;
         ch[0].freq = ((gb_mem[rAUD1HIGH] & 7) << 8) | gb_mem[rAUD1LOW];
-        ch[0].len_enabled = gb_mem[rAUD1HIGH] & 64;
-
-        //ch[0].len_ctr = ch[0].len_period;           // reload?
+        ch[0].period = (2048 - ch[0].freq) << 2;
 
         if (data & 128) {
             // trigger
+            if (!ch[0].len_ctr) {
+                ch[0].len_ctr = 64;
+            }
+
             ch[0].volume = gb_mem[rAUD1ENV] >> 4;   // reload?
             ch[0].env_ctr = ch[0].env_period;       // reload?
 
@@ -308,6 +300,7 @@ void sound_write_u8(uint16_t addr, uint8_t data) {
             ch[0].on = (gb_mem[rAUD1ENV] & 0xf8) != 0;
         }
 
+        ch[0].len_enabled = gb_mem[rAUD1HIGH] & 64;
         break;
 
     case rAUD2LEN:      // rNR21
@@ -329,23 +322,26 @@ void sound_write_u8(uint16_t addr, uint8_t data) {
     case rAUD2LOW:      // rNR23
         gb_mem[rAUD2LOW] = data;
         ch[1].freq = ((gb_mem[rAUD2HIGH] & 7) << 8) | gb_mem[rAUD2LOW];
-//        ch[1].len_ctr = ch[1].len_period;           // reload?
+        ch[1].period = (2048 - ch[1].freq) << 2;
         break;
 
     case rAUD2HIGH:     // rNR24
         gb_mem[rAUD2HIGH] = data;
         ch[1].freq = ((gb_mem[rAUD2HIGH] & 7) << 8) | gb_mem[rAUD2LOW];
-        ch[1].len_enabled = gb_mem[rAUD2HIGH] & 64;     // 1 bit
-
-//        ch[1].len_ctr = ch[1].len_period;           // reload?
+        ch[1].period = (2048 - ch[1].freq) << 2;
 
         if (data & 128) {
             // trigger
+            if (!ch[1].len_ctr) {
+                ch[1].len_ctr = 64;
+            }
+
             ch[1].volume = gb_mem[rAUD2ENV] >> 4;   // reload?
             ch[1].env_ctr = ch[1].env_period;       // reload?
             ch[1].on = (gb_mem[rAUD2ENV] & 0xf8) != 0;
         }
 
+        ch[1].len_enabled = gb_mem[rAUD2HIGH] & 64;     // 1 bit
         break;
 
     case rAUD3ENA:      // rNR30
@@ -367,20 +363,24 @@ void sound_write_u8(uint16_t addr, uint8_t data) {
     case rAUD3LOW:      // rNR33
         gb_mem[rAUD3LOW] = data;
         ch[2].freq = ((gb_mem[rAUD3HIGH] & 7) << 8) | gb_mem[rAUD3LOW];
+        ch[2].period = (2048 - ch[2].freq) << 1;
         break;
 
     case rAUD3HIGH:     // rNR34
         gb_mem[rAUD3HIGH] = data;
         ch[2].freq = ((gb_mem[rAUD3HIGH] & 7) << 8) | gb_mem[rAUD3LOW];
-        ch[2].len_enabled = gb_mem[rAUD3HIGH] & 64;
+        ch[2].period = (2048 - ch[2].freq) << 1;
 
-        //ch[2].len_ctr = ch[2].len_period;
-
-        if (gb_mem[rAUD3HIGH] & gb_mem[rAUD3ENA] & 128) {
+        if (gb_mem[rAUD3HIGH] & 128) {
             // trigger
-            ch[2].on = 1;
+            if (!ch[2].len_ctr) {
+                ch[2].len_ctr = 256;
+            }
+
+            ch[2].on = (gb_mem[rAUD3ENA] & 128) == 128;
         }
 
+        ch[2].len_enabled = gb_mem[rAUD3HIGH] & 64;
         break;
 
     case rAUD4LEN:      // rNR41
@@ -407,26 +407,29 @@ void sound_write_u8(uint16_t addr, uint8_t data) {
         ratio = gb_mem[rAUD4POLY] & 7;
 
         if (shift >= 14) {
-            ch[3].on = ch[3].freq = 0;
+            ch[3].on = ch[3].freq = ch[3].period = 0;
         } else {
-            // period
             ch[3].freq = tab[ratio] >> (shift + 1);
+            ch[3].period = 4194304 / ch[3].freq;
         }
 
         break;
 
     case rAUD4GO:       // rNR44
         gb_mem[rAUD4GO] = data;
-        ch[3].len_enabled = gb_mem[rAUD4GO] & 64;
-
-        //ch[3].len_ctr = ch[3].len_period;
 
         if (data & 128) {
+            // trigger
+            if (!ch[3].len_ctr) {
+                ch[3].len_ctr = 64;
+            }
+
             ch[3].volume = gb_mem[rAUD4ENV] >> 4;
             ch[3].env_ctr = ch[3].env_period;
             ch[3].on = ((gb_mem[rAUD4ENV] & 0xf8) != 0) && (ch[3].freq != 0);
         }
 
+        ch[3].len_enabled = gb_mem[rAUD4GO] & 64;
         break;
 
     case rAUDVOL:       // rNR50
