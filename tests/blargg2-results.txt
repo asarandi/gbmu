@@ -1,10 +1,10 @@
 failure cgb_sound/cgb_sound.gb
 failure cgb_sound/rom_singles/01-registers.gb
-failure cgb_sound/rom_singles/02-len ctr.gb
+success cgb_sound/rom_singles/02-len ctr.gb
 failure cgb_sound/rom_singles/03-trigger.gb
-failure cgb_sound/rom_singles/04-sweep.gb
+success cgb_sound/rom_singles/04-sweep.gb
 failure cgb_sound/rom_singles/05-sweep details.gb
-failure cgb_sound/rom_singles/06-overflow on trigger.gb
+success cgb_sound/rom_singles/06-overflow on trigger.gb
 failure cgb_sound/rom_singles/07-len sweep period sync.gb
 failure cgb_sound/rom_singles/08-len ctr during power.gb
 failure cgb_sound/rom_singles/09-wave read while on.gb
@@ -13,11 +13,11 @@ failure cgb_sound/rom_singles/11-regs after power.gb
 failure cgb_sound/rom_singles/12-wave.gb
 failure dmg_sound/dmg_sound.gb
 failure dmg_sound/rom_singles/01-registers.gb
-failure dmg_sound/rom_singles/02-len ctr.gb
+success dmg_sound/rom_singles/02-len ctr.gb
 failure dmg_sound/rom_singles/03-trigger.gb
-failure dmg_sound/rom_singles/04-sweep.gb
+success dmg_sound/rom_singles/04-sweep.gb
 failure dmg_sound/rom_singles/05-sweep details.gb
-failure dmg_sound/rom_singles/06-overflow on trigger.gb
+success dmg_sound/rom_singles/06-overflow on trigger.gb
 failure dmg_sound/rom_singles/07-len sweep period sync.gb
 failure dmg_sound/rom_singles/08-len ctr during power.gb
 failure dmg_sound/rom_singles/09-wave read while on.gb
