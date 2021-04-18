@@ -16,13 +16,13 @@ while IFS= read -r f; do
     ../../../gbmu -t blargg2 "$f"
     ret=$?
     if [ $ret -eq 10 ]; then
-        echo "success,$f"
+        echo "success,\"$f\""
     elif [ $ret -eq 11 ]; then
-        echo "failure,$f"
+        echo "failure,\"$f\""
     elif [ $ret -eq 12 ]; then
-        echo "timeout,$f"
+        echo "timeout,\"$f\""
     else
-        echo "other $ret,$f"
+        echo "other $ret,\"$f\""
     fi
 done <<< "cgb_sound/cgb_sound.gb
 cgb_sound/rom_singles/01-registers.gb
