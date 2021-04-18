@@ -334,10 +334,12 @@ uint8_t io_read_u8(uint16_t addr) {
     }
 
     val |= mask;
+
     if ((addr >= 0xff10) && (addr < 0xff40)) {
         val = sound_read_u8(addr);
 //        (void)printf(" read() addr = %04x val = %02x\n", addr, val);
 //        (void)fflush(stdout);
     }
+
     return val;
 }

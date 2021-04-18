@@ -194,7 +194,10 @@ static void sweep_tick(struct channel *s) {
                 s->freq = f & 2047;
                 s->period = (2048 - s->freq) << 2;
                 (void)sweep_calc(s);
+                return ;
             }
+
+            s->sweep_down = 0;
         }
     }
 }
@@ -204,9 +207,6 @@ int sound_update(uint8_t *gb_mem, t_state *state, int clocks) {
 
     if (gb_mem[rAUDENA] & AUDENA_ON) {
         seq_clocks += clocks;
-    } else {
-        ch[0].on = ch[1].on = ch[2].on = ch[3].on = 0;
-        seq_clocks = seq_frame = 0;
     }
 
     if ((gb_mem[rAUDENA] & AUDENA_ON) && (seq_clocks >= 8192)) {
@@ -283,7 +283,33 @@ void sound_write_u8(uint16_t addr, uint8_t data) {
 //    }
     if (addr != rAUDENA) {
         if (!(gb_mem[rAUDENA] & AUDENA_ON)) {
-            return;      /*ignore all writes when sound off*/
+            //DMG specific: lengths are writable when powered-off
+            switch (addr) {
+            case rAUD1LEN:
+                gb_mem[addr] &= ~63;
+                gb_mem[addr] |= data & 63;
+                ch[0].length = 64 - (gb_mem[rAUD1LEN] & 63);
+                break;
+
+            case rAUD2LEN:
+                gb_mem[addr] &= ~63;
+                gb_mem[addr] |= data & 63;
+                ch[1].length = 64 - (gb_mem[rAUD2LEN] & 63);
+                break;
+
+            case rAUD3LEN:
+                gb_mem[addr] = data;
+                ch[2].length = 256 - gb_mem[rAUD3LEN];
+                break;
+
+            case rAUD4LEN:
+                gb_mem[addr] &= ~63;
+                gb_mem[addr] |= data & 63;
+                ch[3].length = 64 - (gb_mem[rAUD4LEN] & 63);
+                break;
+            }
+
+            return;
         }
     }
 
@@ -345,6 +371,7 @@ void sound_write_u8(uint16_t addr, uint8_t data) {
 
             if (ch[0].sweep_shift) {
                 (void)sweep_calc(&ch[0]);
+                ch[0].sweep_down = 0;
             }
         }
 
@@ -530,10 +557,15 @@ void sound_write_u8(uint16_t addr, uint8_t data) {
 
         if (!(gb_mem[rAUDENA] & 128)) {
             for (int i = 0; i < 4; i++) {
+                //DMG specific: length preservation on power-off
+                uint32_t length = ch[i].length;
                 (void)memset(&ch[i], 0, sizeof(struct channel));
+                ch[i].length = length;
             }
 
             (void)memset(&gb_mem[0xff10], 0, 0x20);
+            seq_clocks = 0;
+            seq_frame = 7;
         }
 
         break;
