@@ -55,3 +55,10 @@ format:
 	--lineend=linux \
 	--suffix=none \
 	src/*.c include/*.h
+
+tests:
+	./tests/acceptance.sh > tests/acceptance-results.csv
+	./tests/blargg1.sh > tests/blargg1-results.csv
+	./tests/blargg2.sh > tests/blargg2-results.csv
+
+.PHONY: tests
