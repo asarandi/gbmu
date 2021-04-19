@@ -131,15 +131,6 @@ void get_sprites(uint8_t *gb_mem, uint8_t lcd_y, uint8_t *sprites) {
     (void)qsort(sprites, sprites_idx, 1, &sprites_compare_dmg);
 }
 
-void screen_mask() {
-    /* freeze */
-    if (!state->screen_mask) {
-        return;
-    }
-
-    (void)memset(state->screen_buf, 0, sizeof(state->screen_buf));
-}
-
 void draw_bg(uint8_t *out, uint8_t *bg_data, uint8_t y) {
     uint8_t pal = gb_mem[rBGP], p, x;
     static uint8_t wy, wq; // window line counter
@@ -171,11 +162,6 @@ void screen_update(uint8_t *gb_mem, t_state *state, uint8_t *sprites) {
     uint8_t *out = &state->screen_buf[y * 160];
 
     if (y > 143) {
-        return;
-    }
-
-    if (state->screen_mask) {
-        (void)screen_mask();
         return;
     }
 
