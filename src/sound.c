@@ -161,43 +161,38 @@ static void volume_tick(struct channel *s) {
     }
 }
 
-static uint32_t sweep_calc(struct channel *s) {
-    uint32_t f = s->shadow_freq;
-    uint32_t d = s->shadow_freq >> s->sweep_shift;
+static void sweep_calc(struct channel *s, int update) {
+    int32_t d = s->shadow_freq >> s->sweep_shift;
 
     if (s->sweep_neg) {
-        f += ~d;
+        d = -d;
         s->sweep_down = 1;
     } else {
-        f += d;
         s->sweep_down = 0;
     }
 
-    if (f >= 2048) {
-        s->on = 0;
-    }
+    uint32_t f = s->shadow_freq + d;
 
-    return f;
+    if (f > 2047) {
+        s->on = 0;
+    } else {
+        if ((s->sweep_shift) && (update)) {
+            s->shadow_freq = s->freq = f;
+            s->period = (2048 - s->freq) << 2;
+            gb_mem[rAUD1LOW] = f & 255;
+            gb_mem[rAUD1HIGH] &= ~7;
+            gb_mem[rAUD1HIGH] |= ((f >> 8) & 7);
+        }
+    }
 }
 
 static void sweep_tick(struct channel *s) {
-    uint32_t f;
-
     if ((s->sweep_on) && (!--(s->sweep_ctr))) {
         s->sweep_ctr = s->sweep_period ? s->sweep_period : 8;
 
         if (s->sweep_period) {
-            f = sweep_calc(s);
-
-            if (s->sweep_shift) {
-                s->shadow_freq = f;
-                s->freq = f & 2047;
-                s->period = (2048 - s->freq) << 2;
-                (void)sweep_calc(s);
-                return ;
-            }
-
-            s->sweep_down = 0;
+            (void)sweep_calc(s, 1);
+            (void)sweep_calc(s, 0);
         }
     }
 }
@@ -321,12 +316,12 @@ void sound_write_u8(uint16_t addr, uint8_t data) {
         gb_mem[rAUD1SWEEP] = data;
         ch[0].sweep_period = (gb_mem[rAUD1SWEEP] >> 4) & 7; // 3 bits
         ch[0].sweep_shift = gb_mem[rAUD1SWEEP] & 7; // 3 bits
+        ch[0].sweep_neg = gb_mem[rAUD1SWEEP] & 8;   // 1 bit
 
         if ((ch[0].sweep_down) && (!ch[0].sweep_neg)) {
             ch[0].on = 0;
         }
 
-        ch[0].sweep_neg = gb_mem[rAUD1SWEEP] & 8;   // 1 bit
         break;
 
     case rAUD1LEN:      // rNR11
@@ -368,14 +363,13 @@ void sound_write_u8(uint16_t addr, uint8_t data) {
             ch[0].volume = gb_mem[rAUD1ENV] >> 4;
             ch[0].env_on = ch[0].env_period != 0;
             ch[0].env_ctr = ch[0].env_period;
-            ch[0].sweep_down = 0;
             ch[0].shadow_freq = ch[0].freq;
             ch[0].sweep_ctr = ch[0].sweep_period ? ch[0].sweep_period : 8;
             ch[0].sweep_on = (ch[0].sweep_period != 0) || (ch[0].sweep_shift != 0);
+            ch[0].sweep_down = 0;
 
             if (ch[0].sweep_shift) {
-                (void)sweep_calc(&ch[0]);
-                ch[0].sweep_down = 0;
+                (void)sweep_calc(&ch[0], 0);
             }
         }
 
