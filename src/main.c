@@ -1,4 +1,5 @@
 #include "gb.h"
+#include "hardware.h"
 
 int arg_parse(int ac, char **av) {
     int c, ret = 1;
@@ -27,7 +28,7 @@ t_r16 *r16 = &registers;
 static int cleanup();
 
 int main(int ac, char **av) {
-    static int fd, i, op, ret, instr_cycles, op_cycles = 4;
+    static int fd, i, op, ret, instr_cycles;
     void (*f)(void *, t_state *, uint8_t *);
     struct stat stat_buf;
 
@@ -94,16 +95,16 @@ int main(int ac, char **av) {
     state->div_cycles = 0xac00;
 
     while (!state->done) {
-        (void)timers_update(gb_mem, &gb_state, op_cycles);
+        (void)timers_update(gb_mem, &gb_state, 4);
 
-        if (lcd_update(gb_mem, &gb_state, op_cycles)) {
+        if (lcd_update(gb_mem, &gb_state, 4)) {
             if (!state->testing) {
                 (void)video_write(state->screen_buf, 160 * 144);
                 (void)input_read();
             }
         }
 
-        if (sound_update(gb_mem, &gb_state, op_cycles)) {
+        if (sound_update(gb_mem, &gb_state, 4)) {
             if (!state->testing) {
                 (void)audio_write(state->sound_buf, SOUND_BUF_SIZE);
             }
@@ -114,29 +115,45 @@ int main(int ac, char **av) {
         }
 
         (void)interrupts_update(gb_mem, state, &registers);
-        op = read_u8(r16->PC);
-        f = ops0[op];
+        state->cycles += 4;
 
-        if (op == 0xcb) {
-            f = ops1[read_u8(r16->PC + 1)];
+        if ((state->halt) || (state->interrupt_cycles)) {
+            continue ;
         }
 
-        if ((!state->halt) && (!state->interrupt_cycles)) {
-            if (!instr_cycles) {
-                instr_cycles = get_num_cycles(&registers, gb_mem);
-            }
-
-            if (instr_cycles) {
-                instr_cycles -= 4;
-            }
-
-            if (!instr_cycles) {
-                (void)f((void *)&registers, (void *)&gb_state, gb_mem);
-            }
+        if (!instr_cycles) {
+            instr_cycles = get_num_cycles(&registers, gb_mem);
         }
 
-        op_cycles = 4;
-        state->cycles += op_cycles;
+        if (instr_cycles) {
+            instr_cycles -= 4;
+        }
+
+        if (!instr_cycles) {
+            if (state->halt_bug) {
+                static uint16_t addr, a16, b16;
+
+                if (!addr) {
+                    addr = r16->PC;
+                    a16 = *(uint16_t *)&gb_mem[addr];
+                    b16 = *(uint16_t *)&gb_mem[addr + 1];
+                    *(uint16_t *)&gb_mem[addr + 1] = a16;
+                } else {
+                    *(uint16_t *)&gb_mem[addr] = a16;
+                    *(uint16_t *)&gb_mem[addr + 1] = b16;
+                    addr = state->halt_bug = 0;
+                }
+            }
+
+            op = read_u8(r16->PC);
+            f = ops0[op];
+
+            if (op == 0xcb) {
+                f = ops1[read_u8(r16->PC + 1)];
+            }
+
+            (void)f((void *)&registers, (void *)&gb_state, gb_mem);
+        }
     }
 
     return cleanup();

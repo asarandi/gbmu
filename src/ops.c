@@ -2447,10 +2447,8 @@ void op_76(void *reg, t_state *state, uint8_t *mem) {
     r16->PC += 1;
     state->halt = true;
 
-    if (state->ime_scheduled == false) {
-        if (read_u8(0xffff) & read_u8(0xff0f) & 0x1f) {
-            state->halt_bug = true;
-        }
+    if ((mem[0xff0f] & mem[0xffff] & 0x1f) != 0) {
+        state->halt_bug = !state->ime;
     }
 }
 
@@ -5509,7 +5507,7 @@ void op_d9(void *reg, t_state *state, uint8_t *mem) {
     t_r16 *r16 = reg;
     r16->PC = read_u16(r16->SP);
     r16->SP += 2;
-    state->ime_scheduled = true;
+    state->ime = true;
 }
 
 void op_cb10(void *reg, t_state *state, uint8_t *mem) {

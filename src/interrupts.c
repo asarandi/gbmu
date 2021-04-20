@@ -2,6 +2,8 @@
 #include "hardware.h"
 
 void interrupts_update(uint8_t *gb_mem, t_state *state, void *registers) {
+    t_r16 *r16 = registers;
+
     if (state->interrupt_cycles) {
         state->interrupt_cycles -= 4;
         return;
@@ -35,16 +37,15 @@ void interrupts_update(uint8_t *gb_mem, t_state *state, void *registers) {
         {0x0058, IEF_SERIAL},
         {0x0060, IEF_HILO},
     };
-    t_r16 *r16 = registers;
 
     for (int i = 0; i < 5; i++) {
         if (gb_mem[rIE] & gb_mem[rIF] & tab[i].interrupt) {
             r16->SP -= 2;
             write_u16(r16->SP, r16->PC);
             r16->PC = tab[i].addr;
-            state->ime = false;
             gb_mem[rIF] &= ~tab[i].interrupt;
-            state->interrupt_cycles = 20;
+            state->interrupt_cycles += 20;
+            state->ime = false;
             return ;
         }
     }
