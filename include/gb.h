@@ -55,6 +55,7 @@ typedef struct s_state {
     bool ram_enabled;
     bool done;
     bool testing;
+    int dma_clocks;
     bool is_dma;
     int exit_code;
     char *rom_file;
@@ -103,8 +104,6 @@ extern t_state *state;
 
 int get_num_cycles(void *gb_reg, void *gb_mem);
 
-void *gui(void *arg);
-
 int lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles);
 
 void interrupts_update(uint8_t *gb_mem, t_state *state, void *registers);
@@ -115,7 +114,7 @@ int sound_update(uint8_t *gb_mem, t_state *state, int current_cycles);
 
 void sound_write_u8(uint16_t addr, uint8_t data);
 
-void dma_write_u8(uint16_t addr, uint8_t data);
+void dma_update(uint8_t *gb_mem, t_state *state, t_r16 *r16);
 
 uint8_t sound_read_u8(uint16_t addr);
 
