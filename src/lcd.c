@@ -222,7 +222,7 @@ int lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles) {
     } else if (on) {
         (void)memset(state->screen_buf, 0, sizeof(state->screen_buf));
         gb_mem[rSTAT] &= ~STATF_LCD;
-        lcd_cycle = on = 0;
+        gb_mem[rLY] = lcd_cycle = on = 0;
         return 1;
     } else {
         return 0;
