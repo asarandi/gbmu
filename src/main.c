@@ -96,6 +96,7 @@ int main(int ac, char **av) {
 
     while (!state->done) {
         (void)timers_update(gb_mem, &gb_state, 4);
+        (void)dma_update((void *)&gb_mem, state, r16);
 
         if (lcd_update(gb_mem, &gb_state, 4)) {
             if (!state->testing) {

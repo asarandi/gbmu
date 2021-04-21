@@ -12,14 +12,6 @@ uint8_t read_u8(uint16_t addr) {
         return state->ram_read_u8(addr);
     }
 
-    if (state->is_dma) {
-        if (addr >= _RAM + 0x2000) {
-            addr = _RAM | (addr & 0x1fff);
-        }
-
-        return gb_mem[addr];
-    }
-
     /* ignore reads from vram in lcd-mode-3 */
     if ((addr >= _VRAM) && (addr < _VRAM + 0x2000)) {
         if ((gb_mem[rSTAT] & STATF_LCD) == 3) {
@@ -29,7 +21,7 @@ uint8_t read_u8(uint16_t addr) {
 
     /* ignore reads from oam in lcd mode 2 and 3 */
     if ((addr >= _OAMRAM) && (addr < _OAMRAM + 0xa0)) {
-        if ((gb_mem[rSTAT] & STATF_LCD) >= 2) {
+        if (((gb_mem[rSTAT] & STATF_LCD) >= 2) || (state->is_dma)) {
             return 0xff;
         }
     }
@@ -122,7 +114,7 @@ void write_u8(uint16_t addr, uint8_t data) {
     }
 
     if (addr == rDMA) {
-        return dma_write_u8(addr, data);
+        state->dma_clocks = 12;
     }
 
     /* read only as per pandocs */

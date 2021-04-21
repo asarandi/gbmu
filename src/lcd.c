@@ -296,20 +296,30 @@ int lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles) {
     return render;
 }
 
-void dma_write_u8(uint16_t addr, uint8_t data) {
-    uint16_t dma_source, i;
+void dma_update(uint8_t *mem, t_state *state, t_r16 *r16) {
+    static uint16_t dma_source, idx;
+    (void)r16;
 
-    if (addr != rDMA) {
+    if (state->halt) {
         return ;
     }
 
-    state->is_dma = 1; // allow vram access regardless of lcd mode
-    gb_mem[rDMA] = data;
-    dma_source = data << 8;
+    if (state->dma_clocks) {
+        state->dma_clocks -= 4;
 
-    for (i = 0; i < 0xa0; i++) {
-        gb_mem[_OAMRAM + i] = read_u8(dma_source + i);
+        if (state->dma_clocks == 0) {
+            state->is_dma = 1;
+            idx = 0;
+            dma_source = mem[rDMA] << 8;
+
+            if (dma_source >= _RAM + 0x2000) {
+                dma_source = _RAM | (dma_source & 0x1fff);
+            }
+        }
     }
 
-    state->is_dma = 0;
+    if (state->is_dma) {
+        mem[_OAMRAM + idx] = read_u8(dma_source + idx);
+        state->is_dma = (++idx < 0xa0);
+    }
 }
