@@ -15,3 +15,5 @@ gbmu-*
 nohup.out
 extras/
 miniaudio/
+*.bmp
+*.png

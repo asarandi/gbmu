@@ -67,7 +67,9 @@ typedef struct s_state {
     uint32_t div_cycles;
     uint32_t cycles;
     uint8_t screen_buf[144 * 160];
+    int video_render;
     uint8_t sound_buf[SOUND_BUF_SIZE];
+    int audio_render;
     uint8_t buttons[8];
 
     uint8_t (*ram_read_u8)(uint16_t);
@@ -102,7 +104,7 @@ extern t_state *state;
 #define IS_H_FLAG        (r8->F & 0x20 ? 1:0)
 #define IS_C_FLAG        (r8->F & 0x10 ? 1:0)
 
-void dump_registers(uint8_t *mem, t_state *state, t_r16 *r16);
+void debug(uint8_t *mem, t_state *state, t_r16 *r16);
 
 int get_num_cycles(void *gb_reg, void *gb_mem);
 

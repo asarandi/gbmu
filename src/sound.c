@@ -111,7 +111,8 @@ static int write_sounds(uint8_t *buf, uint32_t size) {
     static uint32_t index;
 
     if (!size) {
-        return 1;
+        state->audio_render = 1;
+        return state->audio_render;
     }
 
     index %= size;
@@ -136,7 +137,8 @@ static int write_sounds(uint8_t *buf, uint32_t size) {
     *(int16_t *) &buf[index + 2] = (int16_t)right;
     /* one frame == 2 sixteen bit samples: L, R */
     index += 4;
-    return index >= size;
+    state->audio_render = index >= size;
+    return state->audio_render;
 }
 
 static void volume_tick(struct channel *s) {
