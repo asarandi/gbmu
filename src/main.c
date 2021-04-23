@@ -117,6 +117,7 @@ int main(int ac, char **av) {
 
         (void)interrupts_update(gb_mem, state, &registers);
         state->cycles += 4;
+        (void)debug(gb_mem, state, r16); /* XXX */
 
         if ((state->halt) || (state->interrupt_cycles)) {
             continue ;
@@ -153,7 +154,6 @@ int main(int ac, char **av) {
                 f = ops1[read_u8(r16->PC + 1)];
             }
 
-            //(void)dump_registers(gb_mem, state, r16);
             (void)f((void *)&registers, (void *)&gb_state, gb_mem);
         }
     }

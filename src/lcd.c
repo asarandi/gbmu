@@ -215,7 +215,7 @@ void screen_update(uint8_t *gb_mem, t_state *state, uint8_t *sprites) {
 int lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles) {
     static int on, lcd_cycle;
     static uint8_t sprites[10];
-    int render = 0;
+    state->video_render = 0;
 
     if (gb_mem[rLCDC] & LCDCF_ON) {
         on = 1;
@@ -287,13 +287,13 @@ int lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles) {
                 gb_mem[rIF] |= IEF_LCDC;
             }
 
-            render = 1;
+            state->video_render = 1;
         }
 
         gb_mem[rSTAT] = (gb_mem[rSTAT] & ~STATF_LCD) | STATF_VBL;
     }
 
-    return render;
+    return state->video_render;
 }
 
 void dma_update(uint8_t *mem, t_state *state, t_r16 *r16) {
