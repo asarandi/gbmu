@@ -11,8 +11,13 @@ if [ ! -f ../../../gbmu ]; then
     exit 1
 fi
 
+if [ $# -ne 1 ]; then
+    echo "requires folder name"
+    exit 1
+fi
+
 echo "result,file"
-for f in $(find acceptance/ -iname "*.gb" | sort); do
+for f in $(find "$1"/ -iname "*.gb" | sort); do
     ../../../gbmu -t mooneye "$f"
     ret=$?
     if [ $ret -eq 10 ]; then
