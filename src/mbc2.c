@@ -7,7 +7,7 @@ void mbc2_ram_write_u8(uint16_t addr, uint8_t data) {
         return;
     }
 
-    state->ram_banks[addr & 0x1fff] = (data & 0x0f) | 0xf0;
+    state->ram_banks[addr & 0x1ff] = (data & 0x0f) | 0xf0;
 }
 
 uint8_t mbc2_ram_read_u8(uint16_t addr) {
@@ -15,7 +15,7 @@ uint8_t mbc2_ram_read_u8(uint16_t addr) {
         return 0xff;
     }
 
-    return (state->ram_banks[addr & 0x1fff] & 0x0f) | 0xf0;
+    return (state->ram_banks[addr & 0x1ff] & 0x0f) | 0xf0;
 }
 
 uint8_t mbc2_rom_read_u8(uint16_t addr) {
@@ -36,15 +36,15 @@ uint8_t mbc2_rom_read_u8(uint16_t addr) {
 }
 
 void mbc2_rom_write_u8(uint16_t addr, uint8_t data) {
-    if (addr <= 0x1fff) {
-        ramg = data & 0x0f;
-    }
+    if (addr <= 0x3fff) {
+        if (addr & 0x100) {
+            romb = data & 0x0f;
 
-    if ((addr >= 0x2000) && (addr <= 0x3fff)) {
-        romb = data & 0x0f;
-
-        if (romb == 0) {
-            romb = 1;
+            if (romb == 0) {
+                romb = 1;
+            }
+        } else {
+            ramg = data & 0x0f;
         }
     }
 }
