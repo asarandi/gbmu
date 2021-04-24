@@ -135,13 +135,13 @@ void debug(uint8_t *mem, t_state *state, t_r16 *r16) {
     //printf("\n");
     //fflush(stdout);
     (void)mem;
+    (void)state;
     (void)r16;
-    static int once;
-
-    if ((!once) && (state->cycles > (15 * 60 * 70224)) && (state->video_render)) {
-        once = 1;
-        (void)printf("screenshot = %d\n",
-                     screenshot(state, "screenshot.png"));
-        (void)fflush(stdout);
-    }
+    //static int once;
+    //if ((!once) && (state->cycles > (15 * 60 * 70224)) && (state->video_render)) {
+    //    once = 1;
+    //    (void)printf("screenshot = %d\n",
+    //                 screenshot(state, "screenshot.png"));
+    //    (void)fflush(stdout);
+    //}
 }
