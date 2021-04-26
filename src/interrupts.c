@@ -4,8 +4,7 @@
 void interrupts_update(uint8_t *gb_mem, t_state *state, void *registers) {
     t_r16 *r16 = registers;
 
-    if (state->interrupt_cycles) {
-        state->interrupt_cycles -= 4;
+    if (state->instr_cycles) {
         return;
     }
 
@@ -44,7 +43,7 @@ void interrupts_update(uint8_t *gb_mem, t_state *state, void *registers) {
             write_u16(r16->SP, r16->PC);
             r16->PC = tab[i].addr;
             gb_mem[rIF] &= ~tab[i].interrupt;
-            state->interrupt_cycles += 20;
+            state->instr_cycles += 20;
             state->ime = false;
             return ;
         }

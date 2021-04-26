@@ -28,8 +28,8 @@ t_r16 *r16 = &registers;
 static int cleanup();
 
 int main(int ac, char **av) {
-    static int fd, i, op, ret, instr_cycles;
-    void (*f)(void *, t_state *, uint8_t *);
+    static int fd, i, op, ret;
+    void (*f)(void *, t_state *, uint8_t *) = NULL;
     struct stat stat_buf;
 
     if (!arg_parse(ac, av)) {
@@ -115,23 +115,21 @@ int main(int ac, char **av) {
             (void)state->testing_run_hook();
         }
 
-        (void)interrupts_update(gb_mem, state, &registers);
         state->cycles += 4;
-        (void)debug(gb_mem, state, r16); /* XXX */
 
-        if ((state->halt) || (state->interrupt_cycles)) {
+        if (state->instr_cycles) {
+            state->instr_cycles -= 4;
+        }
+
+        if (state->instr_cycles) {
             continue ;
         }
 
-        if (!instr_cycles) {
-            instr_cycles = get_num_cycles(&registers, gb_mem);
-        }
+        if ((!state->halt) && (f)) {
+            (void)debug(gb_mem, state, r16); /* XXX */
+            (void)f((void *)&registers, (void *)&gb_state, gb_mem);
+            f = NULL;
 
-        if (instr_cycles) {
-            instr_cycles -= 4;
-        }
-
-        if (!instr_cycles) {
             if (state->halt_bug) {
                 static uint16_t addr, a16, b16;
 
@@ -146,15 +144,23 @@ int main(int ac, char **av) {
                     addr = state->halt_bug = 0;
                 }
             }
+        }
 
+        (void)interrupts_update(gb_mem, state, &registers);
+
+        if (state->instr_cycles) {
+            continue ;
+        }
+
+        if ((!state->halt) && (!f)) {
+            state->instr_cycles += get_num_cycles(&registers, gb_mem);
             op = read_u8(r16->PC);
-            f = ops0[op];
 
             if (op == 0xcb) {
                 f = ops1[read_u8(r16->PC + 1)];
+            } else {
+                f = ops0[op];
             }
-
-            (void)f((void *)&registers, (void *)&gb_state, gb_mem);
         }
     }
 

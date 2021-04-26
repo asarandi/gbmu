@@ -54,6 +54,7 @@ typedef struct s_state {
     bool stop;
     bool ram_enabled;
     bool done;
+    bool debug;
     bool testing;
     int dma_clocks;
     bool is_dma;
@@ -63,7 +64,7 @@ typedef struct s_state {
     size_t file_size;
     uint8_t *file_contents;
     uint8_t ram_banks[RAM_SIZE * 16];
-    uint32_t interrupt_cycles;
+    uint32_t instr_cycles;
     uint32_t div_cycles;
     uint32_t cycles;
     uint8_t screen_buf[144 * 160];

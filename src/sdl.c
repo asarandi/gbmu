@@ -143,6 +143,10 @@ int input_read() {
                 state->done = true;
             }
 
+            if (event.key.keysym.sym == SDLK_d) {
+                state->debug = !state->debug;
+            }
+
             break;
 
         case SDL_KEYUP:
