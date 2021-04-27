@@ -148,10 +148,6 @@ int main(int ac, char **av) {
 
         (void)interrupts_update(gb_mem, state, &registers);
 
-        if (state->instr_cycles) {
-            continue ;
-        }
-
         if ((!state->halt) && (!f)) {
             state->instr_cycles += get_num_cycles(&registers, gb_mem);
             op = read_u8(r16->PC);

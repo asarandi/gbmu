@@ -55,6 +55,7 @@ typedef struct s_state {
     bool ram_enabled;
     bool done;
     bool debug;
+    bool screenshot;
     bool testing;
     int dma_clocks;
     bool is_dma;
