@@ -129,19 +129,20 @@ int screenshot(t_state *state, char *filename) {
 }
 
 void debug(uint8_t *mem, t_state *state, t_r16 *r16) {
-    //dump_instr(mem, state, r16);
-    //printf("    ");
-    //dump_io(mem, state, r16);
-    //printf("\n");
-    //fflush(stdout);
-    (void)mem;
-    (void)state;
-    (void)r16;
-    //static int once;
-    //if ((!once) && (state->cycles > (15 * 60 * 70224)) && (state->video_render)) {
-    //    once = 1;
-    //    (void)printf("screenshot = %d\n",
-    //                 screenshot(state, "screenshot.png"));
-    //    (void)fflush(stdout);
-    //}
+    //(void)mem;
+    //(void)state;
+    //(void)r16;
+    //
+    if (state->debug) {
+        dump_instr(mem, state, r16);
+        printf("    ");
+        dump_io(mem, state, r16);
+        printf("\n");
+        fflush(stdout);
+    }
+
+    if ((state->screenshot) && (state->video_render)) {
+        screenshot(state, "screenshot.png");
+        state->screenshot = false;
+    }
 }

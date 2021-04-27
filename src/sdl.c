@@ -147,6 +147,10 @@ int input_read() {
                 state->debug = !state->debug;
             }
 
+            if (event.key.keysym.sym == SDLK_s) {
+                state->screenshot = true;
+            }
+
             break;
 
         case SDL_KEYUP:
