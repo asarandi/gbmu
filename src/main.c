@@ -1,13 +1,23 @@
 #include "gb.h"
 #include "hardware.h"
 
+uint8_t gb_mem[0x10000];
+t_state gb_state;
+t_state *state = &gb_state;
+t_r16 registers;
+t_r16 *r16 = &registers;
+
 int arg_parse(int ac, char **av) {
     int c, ret = 1;
 
-    while ((c = getopt(ac, av, "t:")) != -1) {
+    while ((c = getopt(ac, av, "dt:")) != -1) {
         switch (c) {
         case 't':
             ret &= testing_setup(optarg);
+            break;
+
+        case 'd':
+            state->debug = true;
             break;
 
         case '?':
@@ -18,12 +28,6 @@ int arg_parse(int ac, char **av) {
 
     return ret;
 }
-
-uint8_t gb_mem[0x10000];
-t_state gb_state;
-t_state *state = &gb_state;
-t_r16 registers;
-t_r16 *r16 = &registers;
 
 static int cleanup();
 
@@ -129,24 +133,14 @@ int main(int ac, char **av) {
             (void)debug(gb_mem, state, r16); /* XXX */
             (void)f((void *)&registers, (void *)&gb_state, gb_mem);
             f = NULL;
-
-            if (state->halt_bug) {
-                static uint16_t addr, a16, b16;
-
-                if (!addr) {
-                    addr = r16->PC;
-                    a16 = *(uint16_t *)&gb_mem[addr];
-                    b16 = *(uint16_t *)&gb_mem[addr + 1];
-                    *(uint16_t *)&gb_mem[addr + 1] = a16;
-                } else {
-                    *(uint16_t *)&gb_mem[addr] = a16;
-                    *(uint16_t *)&gb_mem[addr + 1] = b16;
-                    addr = state->halt_bug = 0;
-                }
-            }
         }
 
         (void)interrupts_update(gb_mem, state, &registers);
+
+        if (state->instr_cycles) {
+            state->halt_bug = 0;
+            continue ;
+        }
 
         if ((!state->halt) && (!f)) {
             state->instr_cycles += get_num_cycles(&registers, gb_mem);
@@ -156,6 +150,11 @@ int main(int ac, char **av) {
                 f = ops1[read_u8(r16->PC + 1)];
             } else {
                 f = ops0[op];
+            }
+
+            if (state->halt_bug) {
+                --(r16->PC);
+                state->halt_bug = 0;
             }
         }
     }
