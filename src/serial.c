@@ -21,7 +21,7 @@ void serial_write_u8(uint16_t addr, uint8_t data) {
 
         if ((gb_mem[rSC] & 0x81) == 0x81) {
             gb_mem[rSC] &= 1;
-            gb_mem[rIF] |= 8;
+            gb_mem[rIF] |= IEF_SERIAL;
             gb_mem[rSB] = 0xff;
         }
     }

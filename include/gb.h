@@ -51,6 +51,7 @@ typedef struct s_state {
     bool ime;
     bool halt;
     bool halt_bug;
+    bool stat_irq;
     bool stop;
     bool ram_enabled;
     bool done;
