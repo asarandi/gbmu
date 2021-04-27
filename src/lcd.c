@@ -233,61 +233,53 @@ int lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles) {
     gb_mem[rLY] = lcd_cycle / 456;
 
     if (gb_mem[rLY] == gb_mem[rLYC]) {
-        if (!(gb_mem[rSTAT] & STATF_LYCF)) {
-            if (gb_mem[rSTAT] & STATF_LYC) {
-                gb_mem[rIF] |= IEF_LCDC;
-            }
-        }
-
         gb_mem[rSTAT] |= STATF_LYCF;
+        state->stat_irq = (gb_mem[rSTAT] & STATF_LYC) ? true : false;
     } else {
         gb_mem[rSTAT] &= ~STATF_LYCF;
+        state->stat_irq = false;
     }
 
     if (gb_mem[rLY] < 144) {
         // mode 2
         if ((lcd_cycle % 456) < 80) {
-            if (!(gb_mem[rSTAT] & STATF_OAM)) {
-                if (gb_mem[rSTAT] & STATF_MODE10) {
-                    gb_mem[rIF] |= IEF_LCDC;
-                }
+            if (gb_mem[rSTAT] & STATF_MODE10) {
+                state->stat_irq = true;
             }
 
             gb_mem[rSTAT] = (gb_mem[rSTAT] & ~STATF_LCD) | STATF_OAM;
         } else if ((lcd_cycle % 456) < 252) {
             // mode 3
-            if ((gb_mem[rSTAT] & STATF_LCD) == STATF_OAM) {
+            if ((gb_mem[rSTAT] & STATF_LCD) == STATF_OAM) { //once
                 get_sprites(gb_mem, gb_mem[rLY], sprites);
             }
 
             gb_mem[rSTAT] |= STATF_LCD;
         } else {
             // mode 0
-            if ((gb_mem[rSTAT] & STATF_LCD) == STATF_LCD) {
+            if ((gb_mem[rSTAT] & STATF_LCD) == STATF_LCD) { //once
                 screen_update(gb_mem, state, sprites);
+            }
 
-                if (gb_mem[rSTAT] & STATF_MODE00) {
-                    gb_mem[rIF] |= IEF_LCDC;
-                }
+            if (gb_mem[rSTAT] & STATF_MODE00) {
+                state->stat_irq = true;
             }
 
             gb_mem[rSTAT] &= ~STATF_LCD;
         }
     } else {
         // mode 1
-        if (!(gb_mem[rSTAT] & STATF_VBL)) {
-            gb_mem[rIF] |= IEF_VBLANK;
-
-            if (gb_mem[rSTAT] & STATF_MODE01) {
-                gb_mem[rIF] |= IEF_LCDC;
-            }
-
-            // ppu/vblank_stat_intr-GS.s
+        if (!(gb_mem[rSTAT] & STATF_VBL)) { //once
             if (gb_mem[rSTAT] & STATF_MODE10) {
-                gb_mem[rIF] |= IEF_LCDC;
+                state->stat_irq = true;
             }
 
+            gb_mem[rIF] |= IEF_VBLANK;
             state->video_render = 1;
+        }
+
+        if (gb_mem[rSTAT] & STATF_MODE01) {
+            state->stat_irq = true;
         }
 
         gb_mem[rSTAT] = (gb_mem[rSTAT] & ~STATF_LCD) | STATF_VBL;

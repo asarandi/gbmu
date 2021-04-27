@@ -135,6 +135,13 @@ int main(int ac, char **av) {
             f = NULL;
         }
 
+        static bool stat_irq_old;
+
+        if ((state->stat_irq) && (!stat_irq_old)) {
+            gb_mem[rIF] |= IEF_LCDC;
+        }
+
+        stat_irq_old = state->stat_irq;
         (void)interrupts_update(gb_mem, state, &registers);
 
         if (state->instr_cycles) {

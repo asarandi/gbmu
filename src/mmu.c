@@ -104,7 +104,7 @@ void write_u8(uint16_t addr, uint8_t data) {
         // will set bit 1 in IF register
         if (gb_mem[rLCDC] & LCDCF_ON) {
             if ((gb_mem[rSTAT] & STATF_LCD) < 2) {
-                gb_mem[rIF] |= IEF_LCDC;
+                state->stat_irq = true;
             }
         }
 
