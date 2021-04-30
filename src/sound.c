@@ -271,16 +271,55 @@ uint8_t sound_read_u8(uint16_t addr) {
     return gb_mem[addr] | masks[addr - 0xff10];
 }
 
-void sound_write_u8(uint16_t addr, uint8_t data) {
-    bool trigger, len_enabled;
+void channel_reload(struct channel ch[4], int i, uint8_t data) {
+    int trigger = (data & 128) != 0;
+    int len_enabled = (data & 64) != 0;
+    int max_lengths[] = {64, 64, 256, 64};
+    gb_mem[rAUD1HIGH + (i * 5)] = data;
 
+    if (i != 3) { // not noise
+        ch[i].freq = (gb_mem[rAUD1HIGH + (i * 5)] & 7) << 8;
+        ch[i].freq |= gb_mem[rAUD1LOW + (i * 5)];
+        ch[i].period = (2048 - ch[i].freq) << (2 - (i >> 1));
+    }
+
+    if (trigger) {
+        ch[i].on = ch[i].dac;
+
+        if (i != 2) { // not wave
+            ch[i].volume = gb_mem[rAUD1ENV + (i * 5)] >> 4;
+            ch[i].env_on = ch[i].env_period != 0;
+            ch[i].env_ctr = ch[i].env_period;
+        }
+
+        if (!ch[i].length) {
+            ch[i].length = max_lengths[i];
+            ch[i].len_enabled = 0;
+        }
+    }
+
+    if ((len_enabled) && (!ch[i].len_enabled)) {
+        if ((ch[i].length) && (!(seq_frame & 1))) {
+            if (!--(ch[i].length)) {
+                if (trigger) {
+                    ch[i].length = max_lengths[i] - 1;
+                } else {
+                    ch[i].on = 0;
+                }
+            }
+        }
+    }
+
+    ch[i].len_enabled = len_enabled;
+}
+
+void sound_write_u8(uint16_t addr, uint8_t data) {
 //    if ((addr >= 0xff10) && (addr < 0xff40)) {
 //        (void)printf("write() addr = %04x val = %02x", addr, data);
 //        (void)printf(" %s\n", ((addr != rAUDENA) &&
 //                               (!(gb_mem[rAUDENA] & AUDENA_ON))) ? "return" : "continue");
 //        (void)fflush(stdout);
 //    }
-
     if (addr != rAUDENA) {
         if (!(gb_mem[rAUDENA] & AUDENA_ON)) {
             //DMG specific: lengths are writable when powered-off
@@ -348,23 +387,9 @@ void sound_write_u8(uint16_t addr, uint8_t data) {
         break;
 
     case rAUD1HIGH:     // rNR14
-        gb_mem[rAUD1HIGH] = data;
-        trigger = (data & 128) != 0;
-        len_enabled = (data & 64) != 0;
-        ch[0].freq = ((gb_mem[rAUD1HIGH] & 7) << 8) | gb_mem[rAUD1LOW];
-        ch[0].period = (2048 - ch[0].freq) << 2;
+        channel_reload(ch, 0, data);
 
-        if (trigger) {
-            ch[0].on = ch[0].dac;
-
-            if (!ch[0].length) {
-                ch[0].length = 64;
-                ch[0].len_enabled = 0;
-            }
-
-            ch[0].volume = gb_mem[rAUD1ENV] >> 4;
-            ch[0].env_on = ch[0].env_period != 0;
-            ch[0].env_ctr = ch[0].env_period;
+        if (data & 128) {
             ch[0].shadow_freq = ch[0].freq;
             ch[0].sweep_ctr = ch[0].sweep_period ? ch[0].sweep_period : 8;
             ch[0].sweep_on = (ch[0].sweep_period != 0) || (ch[0].sweep_shift != 0);
@@ -375,19 +400,6 @@ void sound_write_u8(uint16_t addr, uint8_t data) {
             }
         }
 
-        if ((len_enabled) && (!ch[0].len_enabled)) {
-            if ((ch[0].length) && (!(seq_frame & 1))) {
-                if (!--(ch[0].length)) {
-                    if (trigger) {
-                        ch[0].length = 63;
-                    } else {
-                        ch[0].on = 0;
-                    }
-                }
-            }
-        }
-
-        ch[0].len_enabled = len_enabled;
         break;
 
     case rAUD2LEN:      // rNR21
@@ -412,38 +424,7 @@ void sound_write_u8(uint16_t addr, uint8_t data) {
         break;
 
     case rAUD2HIGH:     // rNR24
-        gb_mem[rAUD2HIGH] = data;
-        trigger = (data & 128) != 0;
-        len_enabled = (data & 64) != 0;
-        ch[1].freq = ((gb_mem[rAUD2HIGH] & 7) << 8) | gb_mem[rAUD2LOW];
-        ch[1].period = (2048 - ch[1].freq) << 2;
-
-        if (trigger) {
-            ch[1].on = ch[1].dac;
-
-            if (!ch[1].length) {
-                ch[1].length = 64;
-                ch[1].len_enabled = 0;
-            }
-
-            ch[1].volume = gb_mem[rAUD2ENV] >> 4;
-            ch[1].env_on = ch[1].env_period != 0;
-            ch[1].env_ctr = ch[1].env_period;
-        }
-
-        if ((len_enabled) && (!ch[1].len_enabled)) {
-            if ((ch[1].length) && (!(seq_frame & 1))) {
-                if (!--(ch[1].length)) {
-                    if (trigger) {
-                        ch[1].length = 63;
-                    } else {
-                        ch[1].on = 0;
-                    }
-                }
-            }
-        }
-
-        ch[1].len_enabled = len_enabled;
+        channel_reload(ch, 1, data);
         break;
 
     case rAUD3ENA:      // rNR30
@@ -469,34 +450,7 @@ void sound_write_u8(uint16_t addr, uint8_t data) {
         break;
 
     case rAUD3HIGH:     // rNR34
-        gb_mem[rAUD3HIGH] = data;
-        trigger = (data & 128) != 0;
-        len_enabled = (data & 64) != 0;
-        ch[2].freq = ((gb_mem[rAUD3HIGH] & 7) << 8) | gb_mem[rAUD3LOW];
-        ch[2].period = (2048 - ch[2].freq) << 1;
-
-        if (trigger) {
-            ch[2].on = ch[2].dac;
-
-            if (!ch[2].length) {
-                ch[2].length = 256;
-                ch[2].len_enabled = 0;
-            }
-        }
-
-        if ((len_enabled) && (!ch[2].len_enabled)) {
-            if ((ch[2].length) && (!(seq_frame & 1))) {
-                if (!--(ch[2].length)) {
-                    if (trigger) {
-                        ch[2].length = 255;
-                    } else {
-                        ch[2].on = 0;
-                    }
-                }
-            }
-        }
-
-        ch[2].len_enabled = len_enabled;
+        channel_reload(ch, 2, data);
         break;
 
     case rAUD4LEN:      // rNR41
@@ -531,36 +485,7 @@ void sound_write_u8(uint16_t addr, uint8_t data) {
         break;
 
     case rAUD4GO:       // rNR44
-        gb_mem[rAUD4GO] = data;
-        trigger = (data & 128) != 0;
-        len_enabled = (data & 64) != 0;
-
-        if (trigger) {
-            ch[3].on = ch[3].dac;
-
-            if (!ch[3].length) {
-                ch[3].length = 64;
-                ch[3].len_enabled = 0;
-            }
-
-            ch[3].volume = gb_mem[rAUD4ENV] >> 4;
-            ch[3].env_on = ch[3].env_period != 0;
-            ch[3].env_ctr = ch[3].env_period;
-        }
-
-        if ((len_enabled) && (!ch[3].len_enabled)) {
-            if ((ch[3].length) && (!(seq_frame & 1))) {
-                if (!--(ch[3].length)) {
-                    if (trigger) {
-                        ch[3].length = 63;
-                    } else {
-                        ch[3].on = 0;
-                    }
-                }
-            }
-        }
-
-        ch[3].len_enabled = len_enabled;
+        channel_reload(ch, 3, data);
         break;
 
     case rAUDVOL:       // rNR50
