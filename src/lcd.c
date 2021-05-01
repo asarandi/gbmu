@@ -223,9 +223,11 @@ int lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles) {
         (void)memset(state->screen_buf, 0, sizeof(state->screen_buf));
         gb_mem[rSTAT] &= ~STATF_LCD;
         gb_mem[rLY] = lcd_cycle = on = 0;
-        return 1;
+        state->video_render = 1;
+        return state->video_render;
     } else {
-        return 0;
+        state->video_render = 0;
+        return state->video_render;
     }
 
     lcd_cycle += current_cycles;
@@ -276,6 +278,11 @@ int lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles) {
 
             gb_mem[rIF] |= IEF_VBLANK;
             state->video_render = 1;
+
+            if (state->screenshot) {
+                screenshot(state, "screenshot.png");
+                state->screenshot = false;
+            }
         }
 
         if (gb_mem[rSTAT] & STATF_MODE01) {

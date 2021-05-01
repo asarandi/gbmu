@@ -68,11 +68,9 @@ int video_close() {
 }
 
 int video_write(uint8_t *data, uint32_t size) {
+    uint32_t palette[] = {0xffffff, 0xaaaaaa, 0x555555, 0x000000};
     uint32_t *pixels, px;
-    uint32_t palette[] = {0xd6d3bd, 0xde8221, 0x005100, 0x001010};
-    //uint32_t palette[] = {0xffffff, 0xaaaaaa, 0x555555, 0x000000};
-    int pitch, y, x, i, j;
-    int f = scale_factor;
+    int pitch, y, x, i, j, f;
     (void)size;
 
     if (SDL_LockTexture(texture, NULL, (void *)&pixels, &pitch) < 0) {
