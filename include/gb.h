@@ -107,6 +107,8 @@ extern t_state *state;
 #define IS_H_FLAG        (r8->F & 0x20 ? 1:0)
 #define IS_C_FLAG        (r8->F & 0x10 ? 1:0)
 
+int screenshot(t_state *state, char *filename);
+
 void debug(uint8_t *mem, t_state *state, t_r16 *r16);
 
 int get_num_cycles(void *gb_reg, void *gb_mem);

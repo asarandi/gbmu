@@ -140,9 +140,4 @@ void debug(uint8_t *mem, t_state *state, t_r16 *r16) {
         printf("\n");
         fflush(stdout);
     }
-
-    if ((state->screenshot) && (state->video_render)) {
-        screenshot(state, "screenshot.png");
-        state->screenshot = false;
-    }
 }
