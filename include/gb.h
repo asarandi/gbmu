@@ -167,39 +167,7 @@ void write_u16(uint16_t addr, uint16_t data);
 
 /* cartridge/mbc */
 
-void cartridge_init();
-
-uint8_t mbc1_ram_read_u8(uint16_t addr);
-
-void mbc1_ram_write_u8(uint16_t addr, uint8_t data);
-
-uint8_t mbc1_rom_read_u8(uint16_t addr);
-
-void mbc1_rom_write_u8(uint16_t addr, uint8_t data);
-
-uint8_t mbc2_ram_read_u8(uint16_t addr);
-
-void mbc2_ram_write_u8(uint16_t addr, uint8_t data);
-
-uint8_t mbc2_rom_read_u8(uint16_t addr);
-
-void mbc2_rom_write_u8(uint16_t addr, uint8_t data);
-
-uint8_t mbc3_ram_read_u8(uint16_t addr);
-
-void mbc3_ram_write_u8(uint16_t addr, uint8_t data);
-
-uint8_t mbc3_rom_read_u8(uint16_t addr);
-
-void mbc3_rom_write_u8(uint16_t addr, uint8_t data);
-
-uint8_t mbc5_ram_read_u8(uint16_t addr);
-
-void mbc5_ram_write_u8(uint16_t addr, uint8_t data);
-
-uint8_t mbc5_rom_read_u8(uint16_t addr);
-
-void mbc5_rom_write_u8(uint16_t addr, uint8_t data);
+int cartridge_init();
 
 int savefile_read();
 

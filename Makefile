@@ -12,6 +12,7 @@ SRC := \
     src/cartridge.c \
     src/mmu.c \
     src/ops.c \
+    src/savefile.c \
     src/sdl.c \
     src/serial.c \
     src/sound.c \
