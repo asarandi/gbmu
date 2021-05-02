@@ -1,5 +1,6 @@
 CFLAGS += -O2 -Wall -Werror -Wextra -I include/
 SRC := \
+    src/cartridge.c \
     src/crc.c \
     src/cycles.c \
     src/debug.c \
@@ -9,7 +10,6 @@ SRC := \
     src/jump_table.c \
     src/lcd.c \
     src/main.c \
-    src/cartridge.c \
     src/mmu.c \
     src/ops.c \
     src/savefile.c \

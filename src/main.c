@@ -75,7 +75,6 @@ int main(int ac, char **av) {
 
     (void)memcpy(gb_mem, state->file_contents, 0x8000);
     set_initial_register_values();
-    cartridge_init();
 
     if (!state->testing) {
         struct fn {
