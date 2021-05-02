@@ -29,7 +29,7 @@ int arg_parse(int ac, char **av) {
     return ret;
 }
 
-static int cleanup();
+static int cleanup(int save);
 
 int main(int ac, char **av) {
     static int fd, i, op, ret;
@@ -81,17 +81,22 @@ int main(int ac, char **av) {
         struct fn {
             int(*f)();
             char *n;
+            bool e;
         } fn[] = {
-            {&savefile_read, "savefile_read"},
-            {&video_open, "video_open"},
-            {&audio_open, "audio_open"},
-            {&input_open, "input_open"},
+            {&cartridge_init, "cartridge_init", false},
+            {&savefile_read, "savefile_read", true},
+            {&video_open, "video_open", true},
+            {&audio_open, "audio_open", true},
+            {&input_open, "input_open", true},
         };
 
-        for (i = 0; i < 4; i++) {
+        for (i = 0; i < 5; i++) {
             if (!fn[i].f()) {
-                (void)perror(fn[i].n);
-                return cleanup();
+                if (fn[i].e) {
+                    (void)perror(fn[i].n);
+                }
+
+                return cleanup(0);
             }
         }
     }
@@ -166,10 +171,10 @@ int main(int ac, char **av) {
         }
     }
 
-    return cleanup();
+    return cleanup(1);
 }
 
-static int cleanup() {
+static int cleanup(int save) {
     if (!state->testing) {
         if (!input_close()) {
             (void)fprintf(stderr, "input_close() failed\n");
@@ -183,7 +188,7 @@ static int cleanup() {
             (void)fprintf(stderr, "video_close() failed\n");
         }
 
-        if (!savefile_write()) {
+        if ((save) && (!savefile_write())) {
             (void)fprintf(stderr, "savefile_write() failed\n");
         }
     }
