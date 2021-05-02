@@ -237,7 +237,7 @@ int audio_open() {
 
 int audio_close() {
     if (!audio_device) {
-        return 0;
+        return 1;
     }
 
     SDL_PauseAudioDevice(audio_device, 1);
