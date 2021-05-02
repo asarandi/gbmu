@@ -9,11 +9,7 @@ SRC := \
     src/jump_table.c \
     src/lcd.c \
     src/main.c \
-    src/mbc1.c \
-    src/mbc2.c \
-    src/mbc3.c \
-    src/mbc5.c \
-    src/mbc.c \
+    src/cartridge.c \
     src/mmu.c \
     src/ops.c \
     src/sdl.c \
