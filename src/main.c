@@ -76,25 +76,24 @@ int main(int ac, char **av) {
     (void)memcpy(gb_mem, state->file_contents, 0x8000);
     set_initial_register_values();
 
+    if (!cartridge_init()) {
+        return cleanup(0);
+    };
+
     if (!state->testing) {
         struct fn {
             int(*f)();
             char *n;
-            bool e;
         } fn[] = {
-            {&cartridge_init, "cartridge_init", false},
-            {&savefile_read, "savefile_read", true},
-            {&video_open, "video_open", true},
-            {&audio_open, "audio_open", true},
-            {&input_open, "input_open", true},
+            {&savefile_read, "savefile_read"},
+            {&video_open, "video_open"},
+            {&audio_open, "audio_open"},
+            {&input_open, "input_open"},
         };
 
-        for (i = 0; i < 5; i++) {
+        for (i = 0; i < 4; i++) {
             if (!fn[i].f()) {
-                if (fn[i].e) {
-                    (void)perror(fn[i].n);
-                }
-
+                (void)perror(fn[i].n);
                 return cleanup(0);
             }
         }
