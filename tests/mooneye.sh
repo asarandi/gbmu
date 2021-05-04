@@ -17,7 +17,7 @@ if [ $# -ne 1 ]; then
 fi
 
 echo "result,file"
-for f in $(find "$1"/ -iname "*.gb" | sort); do
+for f in $(find "$1" -iname "*.gb" | LC_ALL=C sort); do
     ../../../gbmu -t mooneye "$f"
     ret=$?
     if [ $ret -eq 10 ]; then
