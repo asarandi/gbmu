@@ -14,6 +14,8 @@ void blargg1_write_hook(uint16_t, uint8_t);
 void blargg2_run_hook();
 void blargg2_write_hook(uint16_t, uint8_t);
 void mooneye_write_hook(uint16_t, uint8_t);
+void screenshot_run_hook();
+void screenshot_write_hook(uint16_t, uint8_t);
 
 int testing_setup(char *s) {
     struct test {
@@ -24,9 +26,10 @@ int testing_setup(char *s) {
         {"blargg1", &default_run_hook, &blargg1_write_hook},
         {"blargg2", &blargg2_run_hook, &blargg2_write_hook},
         {"mooneye", &default_run_hook, &mooneye_write_hook},
+        {"screenshot", &screenshot_run_hook, &screenshot_write_hook},
     };
 
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 4; i++) {
         if (!strcasecmp(s, tests[i].name)) {
             state->testing_run_hook = tests[i].run;
             state->testing_write_hook = tests[i].write;
@@ -38,6 +41,30 @@ int testing_setup(char *s) {
 
     (void)fprintf(stderr, "test not found: %s\n", s);
     return 0;
+}
+
+void screenshot_run_hook() {
+    if (!state->testing) {
+        return ;
+    }
+
+    if ((state->cycles >= 167772160) && (state->video_render)) {
+        char *fn = replace_exten(state->rom_file, "-1.png");
+        screenshot(state, fn);
+        free(fn);
+        fn = NULL;
+        state->exit_code = 0;
+        state->done = 1;
+    }
+}
+
+void screenshot_write_hook(uint16_t addr, uint8_t data) {
+    (void)addr;
+    (void)data;
+
+    if (!state->testing) {
+        return ;
+    }
 }
 
 void default_run_hook() {
