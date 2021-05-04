@@ -109,6 +109,8 @@ extern t_state *state;
 
 int screenshot(t_state *state, char *filename);
 
+char *replace_exten(char *rom, char *ext);
+
 void debug(uint8_t *mem, t_state *state, t_r16 *r16);
 
 int get_num_cycles(void *gb_reg, void *gb_mem);

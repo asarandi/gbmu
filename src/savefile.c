@@ -1,6 +1,7 @@
 #include "gb.h"
 #include "hardware.h"
 #include <errno.h>
+#include <ctype.h>
 
 static bool has_battery() {
     switch (gb_mem[0x147]) {
@@ -24,29 +25,35 @@ static bool has_battery() {
     return true;
 }
 
+// f("myfile.gb", ".sav") => "myfile.sav"
+char *replace_exten(char *fn, char *ext) {
+    size_t fnlen, extlen, i;
+    char *res;
+    fnlen = strlen(fn);
+    extlen = strlen(ext);
+    res = calloc(fnlen + extlen + 1, 1);
+    (void)memcpy(res, fn, fnlen);
+
+    for (i = fnlen - 1; i > 0; i--) {
+        if (!isalnum(res[i])) {
+            break ;
+        }
+    }
+
+    i = (i > 0) ? i : fnlen;
+    (void)memcpy(res + i, ext, extlen + 1);
+    return res;
+}
+
 int savefile_read() {
-    int len, offset, ret, fd;
+    int ret, fd;
     struct stat st;
 
     if (!has_battery()) {
         return 1;
     }
 
-    len = strlen(state->rom_file);
-    state->ram_file = calloc(len + 6, 1);
-    (void)strncpy(state->ram_file, state->rom_file, len + 1);
-    (void)memset(&state->ram_file[len], 0, 5);
-    offset = 0;
-
-    if (!strcmp(&state->ram_file[len - 3], ".gb")) {
-        offset = 3;
-    }
-
-    if (!strcmp(&state->ram_file[len - 4], ".gbc")) {
-        offset = 4;
-    }
-
-    strncpy(&state->ram_file[len - offset], ".sav", 5);
+    state->ram_file = replace_exten(state->rom_file, ".sav");
 
     if (stat(state->ram_file, &st) != 0) {
         return errno == ENOENT;
