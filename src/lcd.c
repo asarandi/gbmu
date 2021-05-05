@@ -215,14 +215,16 @@ void screen_update(uint8_t *gb_mem, t_state *state, uint8_t *sprites) {
 int lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles) {
     static int on, lcd_cycle;
     static uint8_t sprites[10];
-    state->video_render = 0;
 
     if (gb_mem[rLCDC] & LCDCF_ON) {
         on = 1;
+        state->video_render = 0;
     } else if (on) {
         (void)memset(state->screen_buf, 0, sizeof(state->screen_buf));
+        (void)memset(sprites, 0xff, 10);
         gb_mem[rSTAT] &= ~STATF_LCD;
-        gb_mem[rLY] = lcd_cycle = on = 0;
+        gb_mem[rLY] = on = 0;
+        lcd_cycle = 248; // start in mode 0
         state->video_render = 1;
         return state->video_render;
     } else {

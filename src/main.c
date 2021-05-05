@@ -102,6 +102,18 @@ int main(int ac, char **av) {
     state->div_cycles = 0xac00;
 
     while (!state->done) {
+        if (state->instr_cycles) {
+            state->instr_cycles -= 4;
+        }
+
+        if (!state->instr_cycles) {
+            if ((!state->halt) && (f)) {
+                (void)debug(gb_mem, state, r16); /* XXX */
+                (void)f((void *)&registers, (void *)&gb_state, gb_mem);
+                f = NULL;
+            }
+        }
+
         (void)timers_update(gb_mem, &gb_state, 4);
         (void)dma_update((void *)&gb_mem, state, r16);
 
@@ -123,21 +135,6 @@ int main(int ac, char **av) {
         }
 
         state->cycles += 4;
-
-        if (state->instr_cycles) {
-            state->instr_cycles -= 4;
-        }
-
-        if (state->instr_cycles) {
-            continue ;
-        }
-
-        if ((!state->halt) && (f)) {
-            (void)debug(gb_mem, state, r16); /* XXX */
-            (void)f((void *)&registers, (void *)&gb_state, gb_mem);
-            f = NULL;
-        }
-
         static bool stat_irq_old;
 
         if ((state->stat_irq) && (!stat_irq_old)) {
