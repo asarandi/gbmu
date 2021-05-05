@@ -99,7 +99,7 @@ int main(int ac, char **av) {
         }
     }
 
-    state->div_cycles = 0xac00;
+    state->div_cycles = 0xabc8;
 
     while (!state->done) {
         if (state->instr_cycles) {
