@@ -201,6 +201,11 @@ static void sweep_tick(struct channel *s) {
 
 int sound_update(uint8_t *gb_mem, t_state *state, int clocks) {
     static int i, samples;
+    static int once;
+
+    if (!once) {
+        once = ch[0].on = 1;
+    }
 
     if (gb_mem[rAUDENA] & AUDENA_ON) {
         seq_clocks += clocks;
