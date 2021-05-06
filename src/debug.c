@@ -14,16 +14,9 @@ static void dump_io(uint8_t *mem, t_state *state, t_r16 *r16) {
         {"IE",     0xFFFF, 0b00000000},
         {"LCDC",   0xFF40, 0b00000000},
         {"STAT",   0xFF41, 0b10000000},
-        {"SCY",    0xFF42, 0b00000000},
-        {"SCX",    0xFF43, 0b00000000},
         {"LY",     0xFF44, 0b00000000},
         {"LYC",    0xFF45, 0b00000000},
         {"DMA",    0xFF46, 0b00000000},
-        {"BGP",    0xFF47, 0b00000000},
-        {"OBP0",   0xFF48, 0b00000000},
-        {"OBP1",   0xFF49, 0b00000000},
-        {"WY",     0xFF4A, 0b00000000},
-        {"WX",     0xFF4B, 0b00000000},
     };
     (void)state;
     (void)r16;
@@ -36,6 +29,9 @@ static void dump_io(uint8_t *mem, t_state *state, t_r16 *r16) {
                mem[io_registers[i].addr]
               );
     }
+
+    (void)printf(" ime %02x dma %02x cycles %u", state->ime, state->is_dma,
+                 state->cycles);
 }
 
 static void dump_instr(uint8_t *mem, t_state *state, t_r16 *r16) {
