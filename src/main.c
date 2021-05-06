@@ -122,6 +122,11 @@ int main(int ac, char **av) {
                 (void)video_write(state->screen_buf, 160 * 144);
                 (void)input_read();
             }
+
+            if (state->screenshot) {
+                screenshot(state, "screenshot.png");
+                state->screenshot = false;
+            }
         }
 
         if (sound_update(gb_mem, &gb_state, 4)) {

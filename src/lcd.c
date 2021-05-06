@@ -213,22 +213,22 @@ void screen_update(uint8_t *gb_mem, t_state *state, uint8_t *sprites) {
 }
 
 int lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles) {
-    static int on, lcd_cycle;
+    const uint32_t nskipfram = 1; // skip first frame after lcd on
+    static uint32_t on, lcd_cycle, frames;
     static uint8_t sprites[10];
+    state->video_render = 0;
 
     if (gb_mem[rLCDC] & LCDCF_ON) {
         on = 1;
-        state->video_render = 0;
     } else if (on) {
-        (void)memset(state->screen_buf, 0, sizeof(state->screen_buf));
-        (void)memset(sprites, 0xff, 10);
         gb_mem[rSTAT] &= ~STATF_LCD;
-        gb_mem[rLY] = on = 0;
+        gb_mem[rLY] = on = frames = 0;
         lcd_cycle = 248; // start in mode 0
+        // show "blank" screen when lcd off
+        (void)memset(state->screen_buf, 0, sizeof(state->screen_buf));
         state->video_render = 1;
         return state->video_render;
     } else {
-        state->video_render = 0;
         return state->video_render;
     }
 
@@ -255,14 +255,18 @@ int lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles) {
         } else if ((lcd_cycle % 456) < 252) {
             // mode 3
             if ((gb_mem[rSTAT] & STATF_LCD) == STATF_OAM) { //once
-                get_sprites(gb_mem, gb_mem[rLY], sprites);
+                if (frames >= nskipfram) {
+                    get_sprites(gb_mem, gb_mem[rLY], sprites);
+                }
             }
 
             gb_mem[rSTAT] |= STATF_LCD;
         } else {
             // mode 0
             if ((gb_mem[rSTAT] & STATF_LCD) == STATF_LCD) { //once
-                screen_update(gb_mem, state, sprites);
+                if (frames >= nskipfram) {
+                    screen_update(gb_mem, state, sprites);
+                }
             }
 
             if (gb_mem[rSTAT] & STATF_MODE00) {
@@ -279,12 +283,12 @@ int lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles) {
             }
 
             gb_mem[rIF] |= IEF_VBLANK;
-            state->video_render = 1;
 
-            if (state->screenshot) {
-                screenshot(state, "screenshot.png");
-                state->screenshot = false;
+            if (frames >= nskipfram) {
+                state->video_render = 1;
             }
+
+            ++frames;
         }
 
         if (gb_mem[rSTAT] & STATF_MODE01) {
