@@ -2,7 +2,8 @@
 #include "hardware.h"
 #include <arpa/inet.h>
 
-extern unsigned long crc(unsigned char *buf, int len);
+extern unsigned long crc32(unsigned char *buf, int len);
+extern unsigned long adler32(unsigned char *buf, int len);
 
 static void dump_io(uint8_t *mem, t_state *state, t_r16 *r16) {
     struct io_register {
@@ -110,8 +111,8 @@ int screenshot(t_state *state, char *filename) {
         buf[o++] |= 3 - state->screen_buf[i++];
     }
 
-    *(unsigned long *)(buf + o) = htonl(crc(buf + 48, 5904)); // zlib
-    *(unsigned long *)(buf + o + 4) = htonl(crc(buf + 37, 5919)); // idat
+    *(unsigned long *)(buf + o) = htonl(adler32(buf + 48, 5904)); // zlib
+    *(unsigned long *)(buf + o + 4) = htonl(crc32(buf + 37, 5919)); // idat
     int fd = open(filename, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 
     if (fd < 1) {

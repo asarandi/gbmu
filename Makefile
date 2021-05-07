@@ -1,9 +1,9 @@
 CFLAGS += -O2 -Wall -Werror -Wextra -I include/
 SRC := \
     src/cartridge.c \
-    src/crc.c \
     src/cycles.c \
     src/debug.c \
+    src/hash.c \
     src/init.c \
     src/interrupts.c \
     src/joypad.c \
@@ -26,7 +26,7 @@ gbmu:        LDFLAGS += $(shell sdl2-config --libs)
 
 all: gbmu
 
-gbmu: $(SRC:.c=.o) src/crc.o
+gbmu: $(SRC:.c=.o)
 	$(CC) -o $@ $^ $(LDFLAGS)
 
 clean:

@@ -49,7 +49,27 @@ unsigned long update_crc(unsigned long crc, unsigned char *buf,
 }
 
 /* Return the CRC of the bytes buf[0..len-1]. */
-unsigned long crc(unsigned char *buf, int len) {
+unsigned long crc32(unsigned char *buf, int len) {
     return update_crc(0xffffffffL, buf, len) ^ 0xffffffffL;
 }
 
+/* https://en.wikipedia.org/wiki/Adler-32 */
+const unsigned long MOD_ADLER = 65521;
+
+unsigned long adler32(unsigned char *buf, int len)
+/*
+    where data is the location of the data in physical memory and
+    len is the length of the data in bytes
+*/
+{
+    unsigned long a = 1, b = 0;
+    int index;
+
+    // Process each byte of the data in order
+    for (index = 0; index < len; ++index) {
+        a = (a + buf[index]) % MOD_ADLER;
+        b = (b + a) % MOD_ADLER;
+    }
+
+    return (b << 16) | a;
+}
