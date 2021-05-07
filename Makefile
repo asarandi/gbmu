@@ -56,6 +56,7 @@ format:
 	src/*.c include/*.h
 
 tests: gbmu
+	./tests/mealybug.sh > tests/mealybug.results.csv
 	./tests/mooneye.sh acceptance > tests/acceptance.results.csv
 	./tests/mooneye.sh emulator-only > tests/emulator-only.results.csv
 	./tests/blargg1.sh > tests/blargg1.results.csv
