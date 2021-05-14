@@ -11,6 +11,10 @@
 #include <unistd.h>
 #include <time.h>
 
+#ifndef O_BINARY
+# define O_BINARY 0
+#endif
+
 #define ROM_ADDRESS 0x4000
 #define ROM_SIZE    0x4000
 #define RAM_ADDRESS 0xa000

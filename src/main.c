@@ -41,7 +41,7 @@ int main(int ac, char **av) {
 
     state->rom_file = av[ac - 1];
 
-    if ((fd = open(state->rom_file, O_RDONLY)) == -1) {
+    if ((fd = open(state->rom_file, O_RDONLY | O_BINARY)) == -1) {
         (void)fprintf(stderr, "failed to open file\n");
         return 1;
     }

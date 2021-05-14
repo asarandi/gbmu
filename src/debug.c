@@ -1,6 +1,5 @@
 #include "gb.h"
 #include "hardware.h"
-#include <arpa/inet.h>
 
 extern unsigned long crc32(unsigned char *buf, int len);
 extern unsigned long adler32(unsigned char *buf, int len);
@@ -82,6 +81,12 @@ static void dump_instr(uint8_t *mem, t_state *state, t_r16 *r16) {
            buf_instr_name);
 }
 
+void write_be32(uint8_t *dst, uint32_t val) {
+    for (int i = 0; i < 4; i++) {
+        dst[i] = (val >> ((3 - i) << 3)) & 255;
+    }
+}
+
 int screenshot(t_state *state, char *filename) {
     uint8_t buf[5972] = {0};
     const uint8_t png_head[] = {
@@ -99,7 +104,7 @@ int screenshot(t_state *state, char *filename) {
     };
     (void)memcpy(buf, png_head, sizeof(png_head));
     (void)memcpy(buf + 5952, png_tail, sizeof(png_tail));
-    int i, o = 48;
+    int fd, i, o = 48;
 
     for (i = 0; i < 144 * 160;) {
         if (!(i % 160)) {
@@ -112,9 +117,9 @@ int screenshot(t_state *state, char *filename) {
         buf[o++] |= 3 - state->screen_buf[i++];
     }
 
-    *(unsigned long *)(buf + o) = htonl(adler32(buf + 48, 5904)); // zlib
-    *(unsigned long *)(buf + o + 4) = htonl(crc32(buf + 37, 5919)); // idat
-    int fd = open(filename, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+    (void)write_be32(buf + o, adler32(buf + 48, 5904)); // zlib
+    (void)write_be32(buf + o + 4, crc32(buf + 37, 5919)); // idat
+    fd = open(filename, O_CREAT | O_WRONLY | O_TRUNC | O_BINARY, 0644);
 
     if (fd < 1) {
         perror(__func__);

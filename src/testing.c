@@ -88,32 +88,17 @@ void screenshot_write_hook(uint16_t addr, uint8_t data) {
 }
 
 void default_run_hook() {
+    static time_t start;
+
     if (!state->testing) {
         return ;
     }
 
-    static struct timespec start;
-    static int f;
-
-    if (!f++) {
-        if ((clock_gettime(CLOCK_REALTIME, &start)) != 0) {
-            perror(__func__);
-            state->done = 1;
-            state->exit_code = RESULT_ERROR;
-        }
-    } else {
-        struct timespec ts;
-
-        if ((clock_gettime(CLOCK_REALTIME, &ts)) != 0) {
-            perror(__func__);
-            state->done = 1;
-            state->exit_code = RESULT_ERROR;
-        } else {
-            if (ts.tv_sec > start.tv_sec + TIMEOUT) {
-                state->exit_code = RESULT_TIMEOUT;
-                state->done = 1;
-            }
-        }
+    if (!start) {
+        start = time(NULL);
+    } else if (time(NULL) > start + TIMEOUT) {
+        state->exit_code = RESULT_TIMEOUT;
+        state->done = 1;
     }
 }
 

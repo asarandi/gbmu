@@ -59,7 +59,7 @@ int savefile_read() {
         return errno == ENOENT;
     }
 
-    if ((fd = open(state->ram_file, O_RDONLY)) == -1) {
+    if ((fd = open(state->ram_file, O_RDONLY | O_BINARY)) == -1) {
         return 0;
     }
 
@@ -88,7 +88,7 @@ int savefile_write() {
         return 1;
     }
 
-    fd = open(state->ram_file, O_CREAT | O_TRUNC | O_WRONLY, 0644);
+    fd = open(state->ram_file, O_CREAT | O_TRUNC | O_WRONLY | O_BINARY, 0644);
 
     if (fd == -1) {
         return 0;
