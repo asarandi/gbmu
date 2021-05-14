@@ -2,7 +2,14 @@
 #include "hardware.h"
 
 void interrupts_update(uint8_t *gb_mem, t_state *state, void *registers) {
+    static bool stat_irq_old;
     t_r16 *r16 = registers;
+
+    if ((state->stat_irq) && (!stat_irq_old)) {
+        gb_mem[rIF] |= IEF_LCDC;
+    }
+
+    stat_irq_old = state->stat_irq;
 
     if (state->instr_cycles) {
         return;

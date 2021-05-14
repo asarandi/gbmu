@@ -32,8 +32,7 @@ int arg_parse(int ac, char **av) {
 static int cleanup(int save);
 
 int main(int ac, char **av) {
-    static int fd, i, op, ret;
-    void (*f)(void *, t_state *, uint8_t *) = NULL;
+    static int fd, i, ret;
     struct stat stat_buf;
 
     if (!arg_parse(ac, av)) {
@@ -99,21 +98,11 @@ int main(int ac, char **av) {
         }
     }
 
-    state->div_cycles = 0xabc8;
+    state->div_cycles = 0xabcc;
 
     while (!state->done) {
-        if (state->instr_cycles) {
-            state->instr_cycles -= 4;
-        }
-
-        if (!state->instr_cycles) {
-            if ((!state->halt) && (f)) {
-                (void)debug(gb_mem, state, r16); /* XXX */
-                (void)f((void *)&registers, (void *)&gb_state, gb_mem);
-                f = NULL;
-            }
-        }
-
+        (void)interrupts_update(gb_mem, state, &registers);
+        (void)instruction(gb_mem, state, &registers);
         (void)timers_update(gb_mem, &gb_state, 4);
         (void)dma_update((void *)&gb_mem, state, r16);
 
@@ -140,35 +129,6 @@ int main(int ac, char **av) {
         }
 
         state->cycles += 4;
-        static bool stat_irq_old;
-
-        if ((state->stat_irq) && (!stat_irq_old)) {
-            gb_mem[rIF] |= IEF_LCDC;
-        }
-
-        stat_irq_old = state->stat_irq;
-        (void)interrupts_update(gb_mem, state, &registers);
-
-        if (state->instr_cycles) {
-            state->halt_bug = 0;
-            continue ;
-        }
-
-        if ((!state->halt) && (!f)) {
-            state->instr_cycles += get_num_cycles(&registers, gb_mem);
-            op = read_u8(r16->PC);
-
-            if (op == 0xcb) {
-                f = ops1[read_u8(r16->PC + 1)];
-            } else {
-                f = ops0[op];
-            }
-
-            if (state->halt_bug) {
-                --(r16->PC);
-                state->halt_bug = 0;
-            }
-        }
     }
 
     return cleanup(1);
