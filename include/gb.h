@@ -56,6 +56,7 @@ typedef struct s_state {
     bool ram_enabled;
     bool done;
     bool debug;
+    bool log_io;
     bool screenshot;
     bool testing;
     int dma_clocks;
@@ -89,6 +90,13 @@ typedef struct s_state {
 
 } t_state;
 
+struct io_register {
+    char      *name;
+    uint16_t   addr;
+    uint8_t    mask;
+};
+
+extern struct io_register io_registers[];
 extern uint8_t gb_mem[];
 extern t_state *state;
 
@@ -118,6 +126,8 @@ int get_num_cycles(void *gb_reg, void *gb_mem);
 int lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles);
 
 void interrupts_update(uint8_t *gb_mem, t_state *state, void *registers);
+
+void instruction(uint8_t *mem, t_state *state, t_r16 *r16);
 
 void timers_update(uint8_t *gb_mem, t_state *state, int current_cycles);
 
