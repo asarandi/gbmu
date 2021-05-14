@@ -77,7 +77,8 @@ static void dump_instr(uint8_t *mem, t_state *state, t_r16 *r16) {
                );
     }
 
-    printf("pc:%04x sp:%04x   %-8s  %-16s", r16->PC, r16->SP, buf_instr_bytes,
+    printf("af:%04x bc:%04x de:%04x hl:%04x pc:%04x sp:%04x   %-8s  %-16s",
+           r16->AF, r16->BC, r16->DE, r16->HL, r16->PC, r16->SP, buf_instr_bytes,
            buf_instr_name);
 }
 

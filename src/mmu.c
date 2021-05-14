@@ -1,6 +1,8 @@
 #include "gb.h"
 #include "hardware.h"
 
+extern struct io_register io_registers[];
+
 uint8_t read_u8(uint16_t addr) {
     /* mbc/rom */
     if (addr < _VRAM) {
@@ -40,6 +42,18 @@ uint16_t read_u16(uint16_t addr) {
 void write_u8(uint16_t addr, uint8_t data) {
     if (state->testing) {
         (void)state->testing_write_hook(addr, data);
+    }
+
+    if ((state->log_io) && (addr >= _IO)) {
+        char *io_reg_name = io_registers[addr - _IO].name;
+
+        if (addr >= _HRAM) {
+            io_reg_name = "HRAM";
+        }
+
+        (void)printf("IO: addr = %04x data = %02x register = %s\n",
+                     addr, data, io_reg_name);
+        (void)fflush(stdout);
     }
 
     /* mbc/rom */

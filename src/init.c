@@ -1,68 +1,7 @@
 #include "gb.h"
 #include "hardware.h"
 
-/* http://gbdev.gg8.se/wiki/articles/Power_Up_Sequence */
-
-void set_initial_register_values() {
-    t_r16 *r16 = state->gameboy_registers;
-    r16->AF = 0x01b0;
-    r16->BC = 0x0013;
-    r16->DE = 0x00d8;
-    r16->HL = 0x014d;
-    r16->SP = 0xfffe;
-    r16->PC = 0x0100;
-    gb_mem[rP1] = 0xcf;
-    gb_mem[rSB] = 0x00;
-    gb_mem[rDIV] = 0x00;
-    gb_mem[rTIMA] = 0x00;
-    gb_mem[rTMA] = 0x00;
-    gb_mem[rTAC] = 0x00;
-    gb_mem[rIF] = 0xe1;
-    gb_mem[rNR10] = 0x80;
-    gb_mem[rNR11] = 0xbf;
-    gb_mem[rNR12] = 0xf3;
-    gb_mem[rNR13] = 0xff;
-    gb_mem[rNR14] = 0xbf;
-    gb_mem[rNR21] = 0x3f;
-    gb_mem[rNR22] = 0x00;
-    gb_mem[rNR23] = 0xff;
-    gb_mem[rNR24] = 0xbf;
-    gb_mem[rNR30] = 0x7f;
-    gb_mem[rNR31] = 0xff;
-    gb_mem[rNR32] = 0x9f;
-    gb_mem[rNR33] = 0xff;
-    gb_mem[rNR34] = 0xbf;
-    gb_mem[rNR41] = 0xff;
-    gb_mem[rNR42] = 0x00;
-    gb_mem[rNR43] = 0x00;
-    gb_mem[rNR44] = 0xbf;
-    gb_mem[rNR50] = 0x77;
-    gb_mem[rNR51] = 0xf3;
-    gb_mem[rNR52] = 0xf1;
-    gb_mem[rLCDC] = 0x91;
-    gb_mem[rSCY] = 0x00;
-    gb_mem[rSCX] = 0x00;
-    gb_mem[rLYC] = 0x00;
-    gb_mem[rBGP] = 0xfc;
-    gb_mem[rOBP0] = 0xff;
-    gb_mem[rOBP1] = 0xff;
-    gb_mem[rWY] = 0x00;
-    gb_mem[rWX] = 0x00;
-    gb_mem[rIE] = 0x00;
-    uint8_t dmg_wave[] = {0x84, 0x40, 0x43, 0xaa, 0x2d, 0x78, 0x92, 0x3c,
-                          0x60, 0x59, 0x59, 0xb0, 0x34, 0xb8, 0x2e, 0xda,
-                         };
-//    uint8_t cgb_wave[] =  {0x00, 0xff, 0x00, 0xff, 0x00, 0xff, 0x00, 0xff,
-//                           0x00, 0xff, 0x00, 0xff, 0x00, 0xff, 0x00, 0xff,
-//                          };
-    memcpy(gb_mem + _AUD3WAVERAM, dmg_wave, 16);
-}
-
-struct io_register {
-    char      *name;
-    uint16_t   addr;
-    uint8_t    mask;
-} io_registers[] = {
+struct io_register io_registers[] = {
     {"rP1",     0xFF00, 0b11000000},
     {"rSB",     0xFF01, 0b00000000},
     {"rSC",     0xFF02, 0b01111110},
@@ -111,22 +50,22 @@ struct io_register {
     {"",        0xff2d, 0b11111111},
     {"",        0xff2e, 0b11111111},
     {"",        0xff2f, 0b11111111},
-    {"",        0xff30, 0b00000000},
-    {"",        0xff31, 0b00000000},
-    {"",        0xff32, 0b00000000},
-    {"",        0xff33, 0b00000000},
-    {"",        0xff34, 0b00000000},
-    {"",        0xff35, 0b00000000},
-    {"",        0xff36, 0b00000000},
-    {"",        0xff37, 0b00000000},
-    {"",        0xff38, 0b00000000},
-    {"",        0xff39, 0b00000000},
-    {"",        0xff3a, 0b00000000},
-    {"",        0xff3b, 0b00000000},
-    {"",        0xff3c, 0b00000000},
-    {"",        0xff3d, 0b00000000},
-    {"",        0xff3e, 0b00000000},
-    {"",        0xff3f, 0b00000000},
+    {"WAVE0",   0xff30, 0b00000000},
+    {"WAVE1",   0xff31, 0b00000000},
+    {"WAVE2",   0xff32, 0b00000000},
+    {"WAVE3",   0xff33, 0b00000000},
+    {"WAVE4",   0xff34, 0b00000000},
+    {"WAVE5",   0xff35, 0b00000000},
+    {"WAVE6",   0xff36, 0b00000000},
+    {"WAVE7",   0xff37, 0b00000000},
+    {"WAVE8",   0xff38, 0b00000000},
+    {"WAVE9",   0xff39, 0b00000000},
+    {"WAVEA",   0xff3a, 0b00000000},
+    {"WAVEB",   0xff3b, 0b00000000},
+    {"WAVEC",   0xff3c, 0b00000000},
+    {"WAVED",   0xff3d, 0b00000000},
+    {"WAVEE",   0xff3e, 0b00000000},
+    {"WAVEF",   0xff3f, 0b00000000},
     {"rLCDC",   0xFF40, 0b00000000},
     {"rSTAT",   0xFF41, 0b10000000},
     {"rSCY",    0xFF42, 0b00000000},
@@ -320,6 +259,64 @@ struct io_register {
     {"",        0xfffe, 0b00000000},
     {"rIE",     0xFFFF, 0b00000000},
 };
+
+/* http://gbdev.gg8.se/wiki/articles/Power_Up_Sequence */
+
+void set_initial_register_values() {
+    t_r16 *r16 = state->gameboy_registers;
+    r16->AF = 0x01b0;
+    r16->BC = 0x0013;
+    r16->DE = 0x00d8;
+    r16->HL = 0x014d;
+    r16->SP = 0xfffe;
+    r16->PC = 0x0100;
+    gb_mem[rP1] = 0xcf;
+    gb_mem[rSB] = 0x00;
+    gb_mem[rDIV] = 0x00;
+    gb_mem[rTIMA] = 0x00;
+    gb_mem[rTMA] = 0x00;
+    gb_mem[rTAC] = 0x00;
+    gb_mem[rIF] = 0xe1;
+    gb_mem[rNR10] = 0x80;
+    gb_mem[rNR11] = 0xbf;
+    gb_mem[rNR12] = 0xf3;
+    gb_mem[rNR13] = 0xff;
+    gb_mem[rNR14] = 0xbf;
+    gb_mem[rNR21] = 0x3f;
+    gb_mem[rNR22] = 0x00;
+    gb_mem[rNR23] = 0xff;
+    gb_mem[rNR24] = 0xbf;
+    gb_mem[rNR30] = 0x7f;
+    gb_mem[rNR31] = 0xff;
+    gb_mem[rNR32] = 0x9f;
+    gb_mem[rNR33] = 0xff;
+    gb_mem[rNR34] = 0xbf;
+    gb_mem[rNR41] = 0xff;
+    gb_mem[rNR42] = 0x00;
+    gb_mem[rNR43] = 0x00;
+    gb_mem[rNR44] = 0xbf;
+    gb_mem[rNR50] = 0x77;
+    gb_mem[rNR51] = 0xf3;
+    gb_mem[rNR52] = 0xf1;
+    gb_mem[rLCDC] = 0x91;
+    gb_mem[rSTAT] = 0x80;
+    gb_mem[rSCY] = 0x00;
+    gb_mem[rSCX] = 0x00;
+    gb_mem[rLYC] = 0x00;
+    gb_mem[rBGP] = 0xfc;
+    gb_mem[rOBP0] = 0xff;
+    gb_mem[rOBP1] = 0xff;
+    gb_mem[rWY] = 0x00;
+    gb_mem[rWX] = 0x00;
+    gb_mem[rIE] = 0x00;
+    uint8_t dmg_wave[] = {0x84, 0x40, 0x43, 0xaa, 0x2d, 0x78, 0x92, 0x3c,
+                          0x60, 0x59, 0x59, 0xb0, 0x34, 0xb8, 0x2e, 0xda,
+                         };
+//    uint8_t cgb_wave[] =  {0x00, 0xff, 0x00, 0xff, 0x00, 0xff, 0x00, 0xff,
+//                           0x00, 0xff, 0x00, 0xff, 0x00, 0xff, 0x00, 0xff,
+//                          };
+    memcpy(gb_mem + _AUD3WAVERAM, dmg_wave, 16);
+}
 
 uint8_t io_read_u8(uint16_t addr) {
     uint8_t val, mask;
