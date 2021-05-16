@@ -64,6 +64,13 @@ void screenshot_run_hook() {
     if ((state->cycles >= (40 * 4194304)) && (state->video_render)) {
         (void)screenshot_and_exit("-1.png");
     }
+
+    if (state->cycles >= (41 * 4194304)) {
+        (void)printf("timeout: %s\n,", state->rom_file);
+        (void)fflush(stdout);
+        state->exit_code = RESULT_TIMEOUT;
+        state->done = 1;
+    }
 }
 
 void mealybug_run_hook() {
