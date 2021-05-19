@@ -322,7 +322,7 @@ int get_num_cycles(void *gb_reg, void *gb_mem) {
     return cycles_table0[idx];
 }
 
-void instruction(uint8_t *mem, t_state *state, t_r16 *r16) {
+int instruction(uint8_t *mem, t_state *state, t_r16 *r16) {
     uint8_t opcode;
     static void (*instr)(void *, t_state *, uint8_t *) = NULL;
 
@@ -353,4 +353,6 @@ void instruction(uint8_t *mem, t_state *state, t_r16 *r16) {
             instr = NULL;
         }
     }
+
+    return instr != NULL;
 }

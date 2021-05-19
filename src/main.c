@@ -102,7 +102,13 @@ int main(int ac, char **av) {
 
     while (!state->done) {
         (void)interrupts_update(gb_mem, state, &registers);
-        (void)instruction(gb_mem, state, &registers);
+
+        if (state->interrupt_dispatch) {
+            (void)interrupt_step(gb_mem, state, r16);
+        } else {
+            (void)instruction(gb_mem, state, &registers);
+        }
+
         (void)timers_update(gb_mem, &gb_state, 4);
         (void)dma_update((void *)&gb_mem, state, r16);
 
