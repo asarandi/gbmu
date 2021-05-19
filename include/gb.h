@@ -71,6 +71,7 @@ typedef struct s_state {
     size_t file_size;
     uint8_t *file_contents;
     uint8_t ram_banks[RAM_SIZE * 16];
+    int interrupt_dispatch;
     uint32_t instr_cycles;
     uint32_t div_cycles;
     uint32_t cycles;
@@ -129,9 +130,11 @@ int get_num_cycles(void *gb_reg, void *gb_mem);
 
 int lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles);
 
-void interrupts_update(uint8_t *gb_mem, t_state *state, void *registers);
+int interrupts_update(uint8_t *mem, t_state *state, t_r16 *r16);
 
-void instruction(uint8_t *mem, t_state *state, t_r16 *r16);
+int interrupt_step(uint8_t *mem, t_state *state, t_r16 *r16);
+
+int instruction(uint8_t *mem, t_state *state, t_r16 *r16);
 
 void timers_update(uint8_t *gb_mem, t_state *state, int current_cycles);
 
