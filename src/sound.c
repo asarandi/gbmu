@@ -51,7 +51,7 @@ static int16_t tone_sample(struct channel *s) {
         return 0;
     }
 
-    return s->volume * duties[s->duty][(s->phase & 7)];
+    return (s->volume * duties[s->duty][(s->phase & 7)]) << 2;
 }
 
 static int16_t wave_sample(struct channel *s) {
@@ -59,24 +59,21 @@ static int16_t wave_sample(struct channel *s) {
         return 0;
     }
 
-    uint8_t nib = gb_mem[_AUD3WAVERAM + ((s->phase & 31) >> 1)];
-    nib = (s->phase & 1) ? (nib & 15) : (nib >> 4);
+    int16_t sample = (uint8_t)gb_mem[_AUD3WAVERAM + ((s->phase & 31) >> 1)];
+    sample = (s->phase & 1) ? (sample & 15) : (sample >> 4);
 
     switch (s->volume) {
     case 0:
-        nib = 0;
-        break;
+        return 0;
+
+    case 1:
+        return sample << 2;
 
     case 2:
-        nib >>= 1;
-        break;
-
-    case 3:
-        nib >>= 2;
-        break;
+        return sample << 1;
     }
 
-    return nib;
+    return sample;
 }
 
 static int16_t noise_sample(struct channel *s) {
@@ -98,7 +95,7 @@ static int16_t noise_sample(struct channel *s) {
     }
 
     sample = (tab[idx >> 3] >> (7 - (idx & 7))) & 1;
-    return s->volume * sample;
+    return (s->volume * sample) << 2;
 }
 
 /*
@@ -129,9 +126,9 @@ static int write_sounds(uint8_t *buf, uint32_t size) {
     sample = noise_sample(&ch[3]);
     left += (gb_mem[rAUDTERM] & AUDTERM_4_LEFT) ? sample : 0;
     right += (gb_mem[rAUDTERM] & AUDTERM_4_RIGHT) ? sample : 0;
-    left <<= 6;
+    left <<= 4;
     left *= (((gb_mem[rAUDVOL] >> 4) & 7) + 1);
-    right <<= 6;
+    right <<= 4;
     right *= ((gb_mem[rAUDVOL] & 7) + 1);
     *(int16_t *) &buf[index] = (int16_t)left;
     *(int16_t *) &buf[index + 2] = (int16_t)right;
