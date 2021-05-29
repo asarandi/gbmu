@@ -37,8 +37,7 @@ int video_open() {
 
     SDL_RenderClear(renderer);
     texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888,
-                                SDL_TEXTUREACCESS_STREAMING,
-                                SCRN_X * f, SCRN_Y * f);
+                                SDL_TEXTUREACCESS_STREAMING, SCRN_X, SCRN_Y);
 
     if (!texture) {
         SDL_Log("could not create texture: %s", SDL_GetError());
@@ -70,7 +69,7 @@ int video_close() {
 int video_write(uint8_t *data, uint32_t size) {
     uint32_t palette[] = {0xffffff, 0xaaaaaa, 0x555555, 0x000000};
     uint32_t *pixels, px;
-    int pitch, y, x, i, j, f;
+    int pitch, y, x;
     (void)size;
 
     if (SDL_LockTexture(texture, NULL, (void *)&pixels, &pitch) < 0) {
@@ -78,17 +77,10 @@ int video_write(uint8_t *data, uint32_t size) {
         return 0;
     }
 
-    f = scale_factor;
-
     for (y = 0; y < SCRN_Y; y++) {
         for (x = 0; x < SCRN_X; x++) {
             px = data[y * SCRN_X + x];
-
-            for (i = y * f; i < (y + 1) * f; i++) {
-                for (j = x * f; j < (x + 1) * f; j++) {
-                    pixels[i * f * SCRN_X + j] = palette[px];
-                }
-            }
+            pixels[y * SCRN_X + x] = palette[px];
         }
     }
 
