@@ -67,80 +67,42 @@ static inline void r16hli(struct gameboy *gb) {
 }
 
 
-
-//ld_r_r
-//ld_r_n
-//ld_r_hl
-//ld_hl_r
-//ld_hl_n
-
-//ld_a_bc
-//ld_a_de
-//ld_bc_a
-//ld_de_a
-
-//ld_a_nn
-//ld_nn_a
-//ldh_a_c
-//ldh_c_a
-
-//ldh_a_n
-//ldh_n_a
+//            0,        1,        2,       3,          4,       5,       6,       7,          8,         9,        a,      b,          c,       d,       e,      f,
+// 0        nop, ld_rr_nn,  ld_bc_a,  inc_rr,      inc_r,   dec_r,  ld_r_n,   rlc_r,   ld_nn_sp, add_hl_rr,  ld_a_bc, dec_rr,      inc_r,   dec_r,  ld_r_n,  rrc_r,
+// 1       stop, ld_rr_nn,  ld_de_a,  inc_rr,      inc_r,   dec_r,  ld_r_n,    rl_r,       jr_e, add_hl_rr,  ld_a_de, dec_rr,      inc_r,   dec_r,  ld_r_n,   rr_r,
+// 2    jr_cc_e, ld_rr_nn, ld_hli_a,  inc_rr,      inc_r,   dec_r,  ld_r_n,     daa,    jr_cc_e, add_hl_rr, ld_a_hli, dec_rr,      inc_r,   dec_r,  ld_r_n,    cpl,
+// 3    jr_cc_e, ld_rr_nn, ld_hld_a,  inc_rr,     inc_hl,  dec_hl, ld_hl_n,     scf,    jr_cc_e, add_hl_rr, ld_a_hld, dec_rr,      inc_r,   dec_r,  ld_r_n,    ccf,
+// 4     ld_r_r,   ld_r_r,   ld_r_r,  ld_r_r,     ld_r_r,  ld_r_r, ld_r_hl,  ld_r_r,     ld_r_r,    ld_r_r,   ld_r_r, ld_r_r,     ld_r_r,  ld_r_r, ld_r_hl, ld_r_r,
+// 5     ld_r_r,   ld_r_r,   ld_r_r,  ld_r_r,     ld_r_r,  ld_r_r, ld_r_hl,  ld_r_r,     ld_r_r,    ld_r_r,   ld_r_r, ld_r_r,     ld_r_r,  ld_r_r, ld_r_hl, ld_r_r,
+// 6     ld_r_r,   ld_r_r,   ld_r_r,  ld_r_r,     ld_r_r,  ld_r_r, ld_r_hl,  ld_r_r,     ld_r_r,    ld_r_r,   ld_r_r, ld_r_r,     ld_r_r,  ld_r_r, ld_r_hl, ld_r_r,
+// 7    ld_hl_r,  ld_hl_r,  ld_hl_r, ld_hl_r,    ld_hl_r, ld_hl_r,    halt, ld_hl_r,     ld_r_r,    ld_r_r,   ld_r_r, ld_r_r,     ld_r_r,  ld_r_r, ld_r_hl, ld_r_r,
+// 8      add_r,    add_r,    add_r,   add_r,      add_r,   add_r,  add_hl,   add_r,      adc_r,     adc_r,    adc_r,  adc_r,      adc_r,   adc_r,  adc_hl,  adc_r,
+// 9      sub_r,    sub_r,    sub_r,   sub_r,      sub_r,   sub_r,  sub_hl,   sub_r,      sbc_r,     sbc_r,    sbc_r,  sbc_r,      sbc_r,   sbc_r,  sbc_hl,  sbc_r,
+// a      and_r,    and_r,    and_r,   and_r,      and_r,   and_r,  and_hl,   and_r,      xor_r,     xor_r,    xor_r,  xor_r,      xor_r,   xor_r,  xor_hl,  xor_r,
+// b       or_r,     or_r,     or_r,    or_r,       or_r,    or_r,   or_hl,    or_r,       cp_r,      cp_r,     cp_r,   cp_r,       cp_r,    cp_r,   cp_hl,   cp_r,
+// c     ret_cc,   pop_rr, jp_cc_nn,   jp_nn, call_cc_nn, push_rr,   add_n,   rst_n,     ret_cc,       ret, jp_cc_nn,      -, call_cc_nn, call_nn,   adc_n,  rst_n,
+// d     ret_cc,   pop_rr, jp_cc_nn,       -, call_cc_nn, push_rr,   sub_n,   rst_n,     ret_cc,      reti, jp_cc_nn,      -, call_cc_nn,       -,   sbc_n,  rst_n,
+// e    ldh_n_a,   pop_rr,  ldh_c_a,       -,          -, push_rr,   and_n,   rst_n,   add_sp_e,     jp_hl,  ld_nn_a,      -,          -,       -,   xor_n,  rst_n,
+// f    ldh_a_n,   pop_rr,  ldh_a_c,      di,          -, push_rr,    or_n,   rst_n, ld_hl_sp_e,  ld_sp_hl,  ld_a_nn,     ei,          -,       -,    cp_n,  rst_n,
 
 
-//ld_a_hld
-//ld_hld_a
-//ld_a_hli
-//ld_hli_a
-//ld_rr_nn
-//ld_nn_sp
-//ld_sp_hl
-//ld_hl_sp_e
-
-//push_rr
-//pop_rr
-//jp_nn
-//jp_hl
-//jp_cc_nn
-//jr_e
-//jr_cc_e
-//call_nn
-//call_cc_nn
-//ret
-//ret_cc
-//reti
-//rst_n
-//halt
-//stop
-//di
-//ei
-//ccf
-//scf
-//nop
-//daa
-//cpl
-
-//            0,        1,        2,       3,          4,       5,       6,       7,          8,        9,        a,      b,          c,       d,       e,      f,
-
-// 0        nop, ld_rr_nn,  ld_bc_a,       0,          0,       0,  ld_r_n,       0,   ld_nn_sp,        0,  ld_a_bc,      0,          0,       0,  ld_r_n,      0,
-// 1       stop, ld_rr_nn,  ld_de_a,       0,          0,       0,  ld_r_n,       0,       jr_e,        0,  ld_a_de,      0,          0,       0,  ld_r_n,      0,
-// 2    jr_cc_e, ld_rr_nn, ld_hli_a,       0,          0,       0,  ld_r_n,     daa,    jr_cc_e,        0, ld_a_hli,      0,          0,       0,  ld_r_n,    cpl,
-// 3    jr_cc_e, ld_rr_nn, ld_hld_a,       0,          0,       0, ld_hl_n,     scf,    jr_cc_e,        0, ld_a_hld,      0,          0,       0,  ld_r_n,    ccf,
-// 4     ld_r_r,   ld_r_r,   ld_r_r,  ld_r_r,     ld_r_r,  ld_r_r, ld_r_hl,  ld_r_r,     ld_r_r,   ld_r_r,   ld_r_r, ld_r_r,     ld_r_r,  ld_r_r, ld_r_hl, ld_r_r,
-// 5     ld_r_r,   ld_r_r,   ld_r_r,  ld_r_r,     ld_r_r,  ld_r_r, ld_r_hl,  ld_r_r,     ld_r_r,   ld_r_r,   ld_r_r, ld_r_r,     ld_r_r,  ld_r_r, ld_r_hl, ld_r_r,
-// 6     ld_r_r,   ld_r_r,   ld_r_r,  ld_r_r,     ld_r_r,  ld_r_r, ld_r_hl,  ld_r_r,     ld_r_r,   ld_r_r,   ld_r_r, ld_r_r,     ld_r_r,  ld_r_r, ld_r_hl, ld_r_r,
-// 7    ld_hl_r,  ld_hl_r,  ld_hl_r, ld_hl_r,    ld_hl_r, ld_hl_r,    halt, ld_hl_r,     ld_r_r,   ld_r_r,   ld_r_r, ld_r_r,     ld_r_r,  ld_r_r, ld_r_hl, ld_r_r,
-// 8          0,        0,        0,       0,          0,       0,       0,       0,          0,        0,        0,      0,          0,       0,       0,      0,
-// 9          0,        0,        0,       0,          0,       0,       0,       0,          0,        0,        0,      0,          0,       0,       0,      0,
-// a          0,        0,        0,       0,          0,       0,       0,       0,          0,        0,        0,      0,          0,       0,       0,      0,
-// b          0,        0,        0,       0,          0,       0,       0,       0,          0,        0,        0,      0,          0,       0,       0,      0,
-// c     ret_cc,   pop_rr, jp_cc_nn,   jp_nn, call_cc_nn, push_rr,       0,   rst_n,     ret_cc,      ret, jp_cc_nn,      0, call_cc_nn, call_nn,       0,  rst_n,
-// d     ret_cc,   pop_rr, jp_cc_nn,       -, call_cc_nn, push_rr,       0,   rst_n,     ret_cc,     reti, jp_cc_nn,      -, call_cc_nn,       -,       0,  rst_n,
-// e    ldh_n_a,   pop_rr,  ldh_c_a,       -,          -, push_rr,       0,   rst_n,          0,    jp_hl,  ld_nn_a,      -,          -,       -,       0,  rst_n,
-// f    ldh_a_n,   pop_rr,  ldh_a_c,      di,          -, push_rr,       0,   rst_n, ld_hl_sp_e, ld_sp_hl,  ld_a_nn,     ei,          -,       -,       0,  rst_n,
-
-
-
+//            0,        1,        2,       3,          4,       5,       6,       7,          8,         9,        a,      b,          c,       d,       e,      f,
+// 0      rlc_r,    rlc_r,     rlc_r,    rlc_r,    rlc_r,   rlc_r,  rlc_hl,   rlc_r,      rrc_r,     rrc_r,    rrc_r,  rrc_r,      rrc_r,   rrc_r,  rrc_hl,  rrc_r,
+// 1       rl_r,     rl_r,      rl_r,     rl_r,     rl_r,    rl_r,   rl_hl,    rl_r,       rr_r,      rr_r,     rr_r,   rr_r,       rr_r,    rr_r,   rr_hl,   rr_r,
+// 2      sla_r,    sla_r,     sla_r,    sla_r,    sla_r,   sla_r,  sla_hl,   sla_r,      sra_r,     sra_r,    sra_r,  sra_r,      sra_r,   sra_r,  sra_hl,  sra_r,
+// 3     swap_r,   swap_r,    swap_r,   swap_r,   swap_r,  swap_r, swap_hl,  swap_r,      srl_r,     srl_r,    srl_r,  srl_r,      srl_r,   srl_r,  srl_hl,  srl_r,
+// 4      bit_r,    bit_r,     bit_r,    bit_r,    bit_r,   bit_r,  bit_hl,   bit_r,      bit_r,     bit_r,    bit_r,  bit_r,      bit_r,   bit_r,  bit_hl,  bit_r,
+// 5      bit_r,    bit_r,     bit_r,    bit_r,    bit_r,   bit_r,  bit_hl,   bit_r,      bit_r,     bit_r,    bit_r,  bit_r,      bit_r,   bit_r,  bit_hl,  bit_r,
+// 6      bit_r,    bit_r,     bit_r,    bit_r,    bit_r,   bit_r,  bit_hl,   bit_r,      bit_r,     bit_r,    bit_r,  bit_r,      bit_r,   bit_r,  bit_hl,  bit_r,
+// 7      bit_r,    bit_r,     bit_r,    bit_r,    bit_r,   bit_r,  bit_hl,   bit_r,      bit_r,     bit_r,    bit_r,  bit_r,      bit_r,   bit_r,  bit_hl,  bit_r,
+// 8      res_r,    res_r,     res_r,    res_r,    res_r,   res_r,  res_hl,   res_r,      res_r,     res_r,    res_r,  res_r,      res_r,   res_r,  res_hl,  res_r,
+// 9      res_r,    res_r,     res_r,    res_r,    res_r,   res_r,  res_hl,   res_r,      res_r,     res_r,    res_r,  res_r,      res_r,   res_r,  res_hl,  res_r,
+// a      res_r,    res_r,     res_r,    res_r,    res_r,   res_r,  res_hl,   res_r,      res_r,     res_r,    res_r,  res_r,      res_r,   res_r,  res_hl,  res_r,
+// b      res_r,    res_r,     res_r,    res_r,    res_r,   res_r,  res_hl,   res_r,      res_r,     res_r,    res_r,  res_r,      res_r,   res_r,  res_hl,  res_r,
+// c      set_r,    set_r,     set_r,    set_r,    set_r,   set_r,  set_hl,   set_r,      set_r,     set_r,    set_r,  set_r,      set_r,   set_r,  set_hl,  set_r,
+// d      set_r,    set_r,     set_r,    set_r,    set_r,   set_r,  set_hl,   set_r,      set_r,     set_r,    set_r,  set_r,      set_r,   set_r,  set_hl,  set_r,
+// e      set_r,    set_r,     set_r,    set_r,    set_r,   set_r,  set_hl,   set_r,      set_r,     set_r,    set_r,  set_r,      set_r,   set_r,  set_hl,  set_r,
+// f      set_r,    set_r,     set_r,    set_r,    set_r,   set_r,  set_hl,   set_r,      set_r,     set_r,    set_r,  set_r,      set_r,   set_r,  set_hl,  set_r,
 
 
 /*
@@ -400,13 +362,120 @@ void pop_rr(struct gameboy *gb) {
 ** 8-bit arithmetic instructions
 */
 
+// 0x04, 0x0c, 0x14, 0x1c, 0x24, 0x2c, 0x3c
+// 1 byte, 1 cycle
+void inc_r(struct gameboy *gb) {}
+// 0x34: 1 byte, 3 cycles
+void inc_hl(struct gameboy *gb) {}
+
+
+// 0x05, 0x0d, 0x15, 0x1d, 0x25, 0x2d, 0x3d
+// 1 byte, 1 cycle
+void dec_r(struct gameboy *gb) {}
+// 0x35: 1 byte, 3 cycles
+void dec_hl(struct gameboy *gb) {}
+
+
+// 0x80-0x87, except 0x86: 1 byte, 1 cycle
+void add_r(struct gameboy *gb) {}
+// 0x86: 1 byte, 2 cycles
+void add_hl(struct gameboy *gb) {}
+// 0xc6: 2 bytes, 2 cycles
+void add_n(struct gameboy *gb) {}
+
+// 0x88-0x8f, except 0x8e: 1 byte, 1 cycle
+void adc_r(struct gameboy *gb) {}
+// 0x8e: 1 byte, 2 cycles
+void adc_hl(struct gameboy *gb) {}
+// 0xce: 2 bytes, 2 cycles
+void adc_n(struct gameboy *gb) {}
+
+// 0x90-97, except 0x96: 1 byte, 1 cycle
+void sub_r(struct gameboy *gb) {}
+// 0x96: 1 byte, 2 cycles
+void sub_hl(struct gameboy *gb) {}
+// 0xd6: 2 bytes, 2 cycles
+void sub_n(struct gameboy *gb) {}
+
+// 0x98-0x9f, except 0x9e: 1 byte, 1 cycle
+void sbc_r(struct gameboy *gb) {}
+// 0x9e: 1 byte, 2 cycles
+void sbc_hl(struct gameboy *gb) {}
+// 0xde: 2 bytes, 2 cycles
+void sbc_n(struct gameboy *gb) {}
+
+// 0xa0-a7, except 0xa6: 1 byte, 1 cycle
+void and_r(struct gameboy *gb) {}
+// 0xa6: 1 byte, 2 cycles
+void and_hl(struct gameboy *gb) {}
+// 0xe6: 2 bytes, 2 cycles
+void and_n(struct gameboy *gb) {}
+
+// 0xa8-0xaf, except 0xae: 1 byte, 1 cycle
+void xor_r(struct gameboy *gb) {}
+// 0xae: 1 byte, 2 cycles
+void xor_hl(struct gameboy *gb) {}
+// 0xee: 2 bytes, 2 cycles
+void xor_n(struct gameboy *gb) {}
+
+// 0xb0-b7, except 0xb6: 1 byte, 1 cycle
+void or_r(struct gameboy *gb) {}
+// 0xb6: 1 byte, 2 cycles
+void or_hl(struct gameboy *gb) {}
+// 0xf6: 2 bytes, 2 cycles
+void or_n(struct gameboy *gb) {}
+
+// 0xb8-0xbf, except 0xbe: 1 byte, 1 cycle
+void cp_r(struct gameboy *gb) {}
+// 0xbe: 1 byte, 2 cycles
+void cp_hl(struct gameboy *gb) {}
+// 0xfe: 2 bytes, 2 cycles
+void cp_n(struct gameboy *gb) {}
+
 /*
 ** 16-bit arithmetic instructions
 */
 
+// 0x03, 0x13, 0x23, 0x33: 1 byte, 2 cycles
+void inc_rr(struct gameboy *gb) {}
+
+// 0x0b, 0x1b, 0x2b, 0x3b: 1 byte, 2 cycles
+void dec_rr(struct gameboy *gb) {}
+
+// 0x09, 0x19, 0x29, 0x39
+// 1 byte, 2 cycles
+void add_hl_rr(struct gameboy *gb) {}
+
+// 0xe8, 2 bytes, 4 cycles
+void add_sp_e(struct gameboy *gb) {}
+
 /*
 ** rotate, shift, and bit operation instructions
 */
+
+void rlc_r(struct gameboy *gb) {}
+void rrc_r(struct gameboy *gb) {}
+void rl_r(struct gameboy *gb) {}
+void rr_r(struct gameboy *gb) {}
+void sla_r(struct gameboy *gb) {}
+void sra_r(struct gameboy *gb) {}
+void swap_r(struct gameboy *gb) {}
+void srl_r(struct gameboy *gb) {}
+void bit_r(struct gameboy *gb) {}
+void res_r(struct gameboy *gb) {}
+void set_r(struct gameboy *gb) {}
+
+void rlc_hl(struct gameboy *gb) {}
+void rrc_hl(struct gameboy *gb) {}
+void rl_hl(struct gameboy *gb) {}
+void rr_hl(struct gameboy *gb) {}
+void sla_hl(struct gameboy *gb) {}
+void sra_hl(struct gameboy *gb) {}
+void swap_hl(struct gameboy *gb) {}
+void srl_hl(struct gameboy *gb) {}
+void bit_hl(struct gameboy *gb) {}
+void res_hl(struct gameboy *gb) {}
+void set_hl(struct gameboy *gb) {}
 
 /*
 ** control flow instructions
