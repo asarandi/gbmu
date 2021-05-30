@@ -12,12 +12,17 @@
 // b, c, d, e, h, l, (hl), a
 // opcode 0x76 => halt
 
+enum CPU_STATE { RUNNING, HALTED, STOPPED };
+
 struct gameboy {
     uint8_t memory[0x10000];
     uint8_t r8[8];
     uint16_t pc;
     uint16_t sp;
     uint8_t opcode;
+    int cpu_state;
+    int ime;
+    int ime_scheduled;
 };
 
 uint8_t read_u8(struct gameboy *gb, uint16_t addr) {
@@ -378,6 +383,183 @@ void jr_cc_e(struct gameboy *gb) {
     }
 }
 
+// 0xcd, 3 bytes, 6 cycles
+void call_nn(struct gameboy *gb) {
+    uint16_t nn;
+    gb->pc++;
+    nn = read_u8(gb, gb->pc);
+    gb->pc++;
+    nn |= (read_u8(gb, gb->pc) << 8);
+    gb->pc++;
+    gb->sp--;
+    write_u8(gb, gb->sp, gb->pc >> 8);
+    gb->sp--;
+    write_u8(gb, gb->sp, gb->pc & 255);
+    gb->pc = nn;
+}
+
+// 0b110cc100: 0xc4 (NZ) 0xcc (Z), 0xd4 (NC), 0xdc (C)
+// 3 bytes, 3 cycles (cc false) - or - 6 cycles (cc true)
+void call_cc_nn(struct gameboy *gb) {
+    int cc;
+    uint16_t nn;
+    cc = (gb->opcode >> 3) & 3;
+    gb->pc++;
+    nn = read_u8(gb, gb->pc);
+    gb->pc++;
+    nn |= (read_u8(gb, gb->pc) << 8);
+    gb->pc++;
+
+    if (((cc == 0) && (!IS_Z_FLAG)) ||
+            ((cc == 1) && (IS_Z_FLAG))  ||
+            ((cc == 2) && (!IS_C_FLAG)) ||
+            ((cc == 3) && (IS_C_FLAG))) {
+        gb->sp--;
+        write_u8(gb, gb->sp, gb->pc >> 8);
+        gb->sp--;
+        write_u8(gb, gb->sp, gb->pc & 255);
+        gb->pc = nn;
+    }
+}
+
+// 0xc9, 1 byte, 4 cycles
+void ret(struct gameboy *gb) {
+    uint16_t addr;
+    gb->pc++;
+    addr = read_u8(gb, gb->sp);
+    gb->sp++;
+    addr |= (read_u8(gb, gb->sp) << 8);
+    gb->sp++;
+    gb->pc = addr;
+}
+
+// 0b110cc000: 0xc0 (NZ), 0xc8 (Z), 0xd0 (NC), 0xd8 (C)
+// 2 cycles (cc false) - or - 5 cycles (cc true)
+void ret_cc(struct gameboy *gb) {
+    int cc;
+    uint16_t addr;
+    cc = (gb->opcode >> 3) & 3;
+    gb->pc++;
+
+    if (((cc == 0) && (!IS_Z_FLAG)) ||
+            ((cc == 1) && (IS_Z_FLAG))  ||
+            ((cc == 2) && (!IS_C_FLAG)) ||
+            ((cc == 3) && (IS_C_FLAG))) {
+        addr = read_u8(gb, gb->sp);
+        gb->sp++;
+        addr |= (read_u8(gb, gb->sp) << 8);
+        gb->sp++;
+        gb->pc = addr;
+    }
+}
+
+// 0xd9, 1 byte, 4 cycles
+void reti(struct gameboy *gb) {
+    uint16_t addr;
+    gb->pc++;
+    addr = read_u8(gb, gb->sp);
+    gb->sp++;
+    addr |= (read_u8(gb, gb->sp) << 8);
+    gb->sp++;
+    gb->pc = addr;
+    gb->ime = 1;
+}
+
+// 0b11xxx111: c7,cf,d7,df,e7,ef,f7,ff
+// 1 byte, 4 cycles;
+void rst_n(struct gameboy *gb) {
+    gb->pc++;
+    gb->sp--;
+    write_u8(gb, gb->sp, gb->pc >> 8);
+    gb->sp--;
+    write_u8(gb, gb->sp, gb->pc & 255);
+    gb->pc = gb->opcode & 0b00111000;
+}
+
+/*
+** miscellaneous instructions
+*/
+
+// 0x76 XXX 1 byte, 1 cycle
+void halt(struct gameboy *gb) {
+    gb->pc++;
+    gb->cpu_state = HALTED;
+}
+
+// 0x10 XXX
+void stop(struct gameboy *gb) {
+    gb->pc++;
+    gb->cpu_state = STOPPED;
+}
+
+// 0xf3, 1 byte, 1 cycle
+void di(struct gameboy *gb) {
+    gb->pc++;
+    gb->ime = gb->ime_scheduled = 0;
+}
+
+// 0xfb, 1 byte, 1 cycle
+void ei(struct gameboy *gb) {
+    gb->pc++;
+    gb->ime_scheduled = 1;
+}
+
+// 0x3f, 1 byte, 1 cycle
+void ccf(struct gameboy *gb) {
+    gb->pc++;
+    CLEAR_N_FLAG;
+    CLEAR_H_FLAG;
+    IS_C_FLAG ? CLEAR_C_FLAG : SET_C_FLAG;
+}
+
+// 0x37, 1 byte, 1 cycle
+void scf(struct gameboy *gb) {
+    gb->pc++;
+    CLEAR_N_FLAG;
+    CLEAR_H_FLAG;
+    SET_C_FLAG;
+}
+
+// 0x00, 1 byte, 1 cycle
+void nop(struct gameboy *gb) {
+    gb->pc++;
+}
+
+// 0x27, 1 byte, 1 cycle
+// https://forums.nesdev.com/viewtopic.php?f=20&t=15944
+void daa(struct gameboy *gb) {
+    gb->pc++;
+
+    if (!IS_N_FLAG) {
+        if ((IS_C_FLAG) || (gb->r8[7] > 0x99)) {
+            gb->r8[7] += 0x60;
+            SET_C_FLAG;
+        }
+
+        if ((IS_H_FLAG) || ((gb->r8[7] & 0x0f) > 0x09)) {
+            gb->r8[7] += 0x6;
+        }
+    } else {
+        if (IS_C_FLAG) {
+            gb->r8[7] -= 0x60;
+        }
+
+        if (IS_H_FLAG) {
+            gb->r8[7] -= 0x6;
+        }
+    }
+
+    gb->r8[7] == 0 ? SET_Z_FLAG : CLEAR_Z_FLAG;
+    CLEAR_H_FLAG;
+}
+
+// 0x2f, 1 byte, 1 cycle
+void cpl(struct gameboy *gb) {
+    gb->pc++;
+    gb->r8[7] = ~(gb->r8[7]);
+    SET_N_FLAG;
+    SET_H_FLAG;
+}
 
 int main(void) {
     struct gameboy *gb = calloc(sizeof(struct gameboy), 1);
