@@ -39,9 +39,9 @@ void write_u8(struct gameboy *gb, uint16_t addr, uint8_t val) {
 #define A16          ((gb->hi << 8) | (gb->lo))
 #define D16          A16
 
-#define U3DST        ((gb->opcode >> 3) & 7)    // bits 5-3
-#define U3SRC        (gb->opcode & 7)           // bits 2-0
-#define U2IDX        ((gb->opcode >> 4) & 3)    // bits 5-4, r16 index
+#define U3DST        ((gb->opcode >> 3) & 7)
+#define U3SRC        (gb->opcode & 7)
+#define U2IDX        ((gb->opcode >> 4) & 3)
 
 #define IS_Z_FLAG    ((gb->r8[6] & 0b10000000) != 0)
 #define IS_N_FLAG    ((gb->r8[6] & 0b01000000) != 0)
@@ -64,15 +64,15 @@ void write_u8(struct gameboy *gb, uint16_t addr, uint8_t val) {
 #define CC_C        (((gb->opcode & 0b00011000) == 0b00011000) && (IS_C_FLAG))
 #define CONDITION   ((CC_NZ) || (CC_Z) || (CC_NC) || (CC_C))
 
-static inline void r16hld(struct gameboy *gb) {
-    gb->u16 = R16HL - 1;
-    gb->r8[4] = gb->u16 >> 8, gb->r8[5] = gb->u16 & 255;
-}
+#define R16HLD \
+    gb->u16 = R16HL - 1;\
+    gb->r8[4] = gb->u16 >> 8;\
+    gb->r8[5] = gb->u16 & 255;
 
-static inline void r16hli(struct gameboy *gb) {
-    gb->u16 = R16HL + 1;
-    gb->r8[4] = gb->u16 >> 8, gb->r8[5] = gb->u16 & 255;
-}
+#define R16HLI \
+    gb->u16 = R16HL + 1;\
+    gb->r8[4] = gb->u16 >> 8;\
+    gb->r8[5] = gb->u16 & 255;
 
 /*
 ** 8-bit load instructions
@@ -192,28 +192,28 @@ void ldh_a8_a(struct gameboy *gb) {
 void ld_a_hld(struct gameboy *gb) {
     gb->pc++;
     gb->r8[7] = read_u8(gb, R16HL);
-    r16hld(gb);
+    R16HLD;
 }
 
 // 0x32, 1 byte, 2 cycles
 void ld_hld_a(struct gameboy *gb) {
     gb->pc++;
     write_u8(gb, R16HL, gb->r8[7]);
-    r16hld(gb);
+    R16HLD;
 }
 
 // 0x2a, 1 byte, 2 cycles
 void ld_a_hli(struct gameboy *gb) {
     gb->pc++;
     gb->r8[7] = read_u8(gb, R16HL);
-    r16hli(gb);
+    R16HLI;
 }
 
 // 0x22, 1 byte, 2 cycles
 void ld_hli_a(struct gameboy *gb) {
     gb->pc++;
     write_u8(gb, R16HL, gb->r8[7]);
-    r16hli(gb);
+    R16HLI;
 }
 
 /*
@@ -250,8 +250,8 @@ void ld_a16_sp(struct gameboy *gb) {
 
 // 0xf9, 1 byte, 2 cycles
 void ld_sp_hl(struct gameboy *gb) {
-    gb->sp = R16HL;
     gb->pc++;
+    gb->sp = R16HL;
 }
 
 // 0xf8, 2 bytes, 3 cycles
@@ -832,68 +832,53 @@ void cpl(struct gameboy *gb) {
     SET_H_FLAG;
 }
 
-//          0,        1,        2,       3,          4,       5,        6,       7,          8,         9,        a,      b,          c,       d,       e,      f,
-// 0      nop,ld_rr_d16,  ld_bc_a,  inc_rr,      inc_r,   dec_r,  ld_r_d8,   rlc_r,  ld_a16_sp, add_hl_rr,  ld_a_bc, dec_rr,      inc_r,   dec_r, ld_r_d8,  rrc_r,
-// 1     stop,ld_rr_d16,  ld_de_a,  inc_rr,      inc_r,   dec_r,  ld_r_d8,    rl_r,       jr_e, add_hl_rr,  ld_a_de, dec_rr,      inc_r,   dec_r, ld_r_d8,   rr_r,
-// 2  jr_cc_e,ld_rr_d16, ld_hli_a,  inc_rr,      inc_r,   dec_r,  ld_r_d8,     daa,    jr_cc_e, add_hl_rr, ld_a_hli, dec_rr,      inc_r,   dec_r, ld_r_d8,    cpl,
-// 3  jr_cc_e,ld_rr_d16, ld_hld_a,  inc_rr,     inc_hl,  dec_hl, ld_hl_d8,     scf,    jr_cc_e, add_hl_rr, ld_a_hld, dec_rr,      inc_r,   dec_r, ld_r_d8,    ccf,
-// 4   ld_r_r,   ld_r_r,   ld_r_r,  ld_r_r,     ld_r_r,  ld_r_r,  ld_r_hl,  ld_r_r,     ld_r_r,    ld_r_r,   ld_r_r, ld_r_r,     ld_r_r,  ld_r_r, ld_r_hl, ld_r_r,
-// 5   ld_r_r,   ld_r_r,   ld_r_r,  ld_r_r,     ld_r_r,  ld_r_r,  ld_r_hl,  ld_r_r,     ld_r_r,    ld_r_r,   ld_r_r, ld_r_r,     ld_r_r,  ld_r_r, ld_r_hl, ld_r_r,
-// 6   ld_r_r,   ld_r_r,   ld_r_r,  ld_r_r,     ld_r_r,  ld_r_r,  ld_r_hl,  ld_r_r,     ld_r_r,    ld_r_r,   ld_r_r, ld_r_r,     ld_r_r,  ld_r_r, ld_r_hl, ld_r_r,
-// 7  ld_hl_r,  ld_hl_r,  ld_hl_r, ld_hl_r,    ld_hl_r, ld_hl_r,     halt, ld_hl_r,     ld_r_r,    ld_r_r,   ld_r_r, ld_r_r,     ld_r_r,  ld_r_r, ld_r_hl, ld_r_r,
-// 8    add_r,    add_r,    add_r,   add_r,      add_r,   add_r,   add_hl,   add_r,      adc_r,     adc_r,    adc_r,  adc_r,      adc_r,   adc_r,  adc_hl,  adc_r,
-// 9    sub_r,    sub_r,    sub_r,   sub_r,      sub_r,   sub_r,   sub_hl,   sub_r,      sbc_r,     sbc_r,    sbc_r,  sbc_r,      sbc_r,   sbc_r,  sbc_hl,  sbc_r,
-// a    and_r,    and_r,    and_r,   and_r,      and_r,   and_r,   and_hl,   and_r,      xor_r,     xor_r,    xor_r,  xor_r,      xor_r,   xor_r,  xor_hl,  xor_r,
-// b     or_r,     or_r,     or_r,    or_r,       or_r,    or_r,    or_hl,    or_r,       cp_r,      cp_r,     cp_r,   cp_r,       cp_r,    cp_r,   cp_hl,   cp_r,
-// c   ret_cc,   pop_rr,jp_cc_a16,  jp_a16,call_cc_a16, push_rr,    add_n,     rst,     ret_cc,       ret,jp_cc_a16,      -,call_cc_a16,call_a16,   adc_n,    rst,
-// d   ret_cc,   pop_rr,jp_cc_a16,       -,call_cc_a16, push_rr,    sub_n,     rst,     ret_cc,      reti,jp_cc_a16,      -,call_cc_a16,       -,   sbc_n,    rst,
-// e ldh_a8_a,   pop_rr,  ldh_c_a,       -,          -, push_rr,    and_n,     rst,   add_sp_e,     jp_hl, ld_a16_a,      -,          -,       -,   xor_n,    rst,
-// f ldh_a_a8,   pop_rr,  ldh_a_c,      di,          -, push_rr,     or_n,     rst, ld_hl_sp_e,  ld_sp_hl, ld_a_a16,     ei,          -,       -,    cp_n,    rst,
+void (*instruct[])(struct gameboy *gb) = {
+     nop, ld_rr_d16,   ld_bc_a,  inc_rr,       inc_r,   dec_r,  ld_r_d8,   rlc_r,  ld_a16_sp, add_hl_rr,   ld_a_bc, dec_rr,       inc_r,    dec_r, ld_r_d8,  rrc_r,
+    stop, ld_rr_d16,   ld_de_a,  inc_rr,       inc_r,   dec_r,  ld_r_d8,    rl_r,       jr_e, add_hl_rr,   ld_a_de, dec_rr,       inc_r,    dec_r, ld_r_d8,   rr_r,
+ jr_cc_e, ld_rr_d16,  ld_hli_a,  inc_rr,       inc_r,   dec_r,  ld_r_d8,     daa,    jr_cc_e, add_hl_rr,  ld_a_hli, dec_rr,       inc_r,    dec_r, ld_r_d8,    cpl,
+ jr_cc_e, ld_rr_d16,  ld_hld_a,  inc_rr,      inc_hl,  dec_hl, ld_hl_d8,     scf,    jr_cc_e, add_hl_rr,  ld_a_hld, dec_rr,       inc_r,    dec_r, ld_r_d8,    ccf,
+  ld_r_r,    ld_r_r,    ld_r_r,  ld_r_r,      ld_r_r,  ld_r_r,  ld_r_hl,  ld_r_r,     ld_r_r,    ld_r_r,    ld_r_r, ld_r_r,      ld_r_r,   ld_r_r, ld_r_hl, ld_r_r,
+  ld_r_r,    ld_r_r,    ld_r_r,  ld_r_r,      ld_r_r,  ld_r_r,  ld_r_hl,  ld_r_r,     ld_r_r,    ld_r_r,    ld_r_r, ld_r_r,      ld_r_r,   ld_r_r, ld_r_hl, ld_r_r,
+  ld_r_r,    ld_r_r,    ld_r_r,  ld_r_r,      ld_r_r,  ld_r_r,  ld_r_hl,  ld_r_r,     ld_r_r,    ld_r_r,    ld_r_r, ld_r_r,      ld_r_r,   ld_r_r, ld_r_hl, ld_r_r,
+ ld_hl_r,   ld_hl_r,   ld_hl_r, ld_hl_r,     ld_hl_r, ld_hl_r,     halt, ld_hl_r,     ld_r_r,    ld_r_r,    ld_r_r, ld_r_r,      ld_r_r,   ld_r_r, ld_r_hl, ld_r_r,
+   add_r,     add_r,     add_r,   add_r,       add_r,   add_r,   add_hl,   add_r,      adc_r,     adc_r,     adc_r,  adc_r,       adc_r,    adc_r,  adc_hl,  adc_r,
+   sub_r,     sub_r,     sub_r,   sub_r,       sub_r,   sub_r,   sub_hl,   sub_r,      sbc_r,     sbc_r,     sbc_r,  sbc_r,       sbc_r,    sbc_r,  sbc_hl,  sbc_r,
+   and_r,     and_r,     and_r,   and_r,       and_r,   and_r,   and_hl,   and_r,      xor_r,     xor_r,     xor_r,  xor_r,       xor_r,    xor_r,  xor_hl,  xor_r,
+    or_r,      or_r,      or_r,    or_r,        or_r,    or_r,    or_hl,    or_r,       cp_r,      cp_r,      cp_r,   cp_r,        cp_r,     cp_r,   cp_hl,   cp_r,
+  ret_cc,    pop_rr, jp_cc_a16,  jp_a16, call_cc_a16, push_rr,    add_n,     rst,     ret_cc,       ret, jp_cc_a16,      0, call_cc_a16, call_a16,   adc_n,    rst,
+  ret_cc,    pop_rr, jp_cc_a16,       0, call_cc_a16, push_rr,    sub_n,     rst,     ret_cc,      reti, jp_cc_a16,      0, call_cc_a16,        0,   sbc_n,    rst,
+ldh_a8_a,    pop_rr,   ldh_c_a,       0,           0, push_rr,    and_n,     rst,   add_sp_e,     jp_hl,  ld_a16_a,      0,           0,        0,   xor_n,    rst,
+ldh_a_a8,    pop_rr,   ldh_a_c,      di,           0, push_rr,     or_n,     rst, ld_hl_sp_e,  ld_sp_hl,  ld_a_a16,     ei,           0,        0,    cp_n,    rst,
 
-//          0,        1,        2,       3,          4,       5,        6,       7,          8,         9,        a,      b,          c,       d,       e,      f,
-// 0    rlc_r,    rlc_r,     rlc_r,    rlc_r,    rlc_r,   rlc_r,   rlc_hl,   rlc_r,      rrc_r,     rrc_r,    rrc_r,  rrc_r,      rrc_r,   rrc_r,  rrc_hl,  rrc_r,
-// 1     rl_r,     rl_r,      rl_r,     rl_r,     rl_r,    rl_r,    rl_hl,    rl_r,       rr_r,      rr_r,     rr_r,   rr_r,       rr_r,    rr_r,   rr_hl,   rr_r,
-// 2    sla_r,    sla_r,     sla_r,    sla_r,    sla_r,   sla_r,   sla_hl,   sla_r,      sra_r,     sra_r,    sra_r,  sra_r,      sra_r,   sra_r,  sra_hl,  sra_r,
-// 3   swap_r,   swap_r,    swap_r,   swap_r,   swap_r,  swap_r,  swap_hl,  swap_r,      srl_r,     srl_r,    srl_r,  srl_r,      srl_r,   srl_r,  srl_hl,  srl_r,
-// 4    bit_r,    bit_r,     bit_r,    bit_r,    bit_r,   bit_r,   bit_hl,   bit_r,      bit_r,     bit_r,    bit_r,  bit_r,      bit_r,   bit_r,  bit_hl,  bit_r,
-// 5    bit_r,    bit_r,     bit_r,    bit_r,    bit_r,   bit_r,   bit_hl,   bit_r,      bit_r,     bit_r,    bit_r,  bit_r,      bit_r,   bit_r,  bit_hl,  bit_r,
-// 6    bit_r,    bit_r,     bit_r,    bit_r,    bit_r,   bit_r,   bit_hl,   bit_r,      bit_r,     bit_r,    bit_r,  bit_r,      bit_r,   bit_r,  bit_hl,  bit_r,
-// 7    bit_r,    bit_r,     bit_r,    bit_r,    bit_r,   bit_r,   bit_hl,   bit_r,      bit_r,     bit_r,    bit_r,  bit_r,      bit_r,   bit_r,  bit_hl,  bit_r,
-// 8    res_r,    res_r,     res_r,    res_r,    res_r,   res_r,   res_hl,   res_r,      res_r,     res_r,    res_r,  res_r,      res_r,   res_r,  res_hl,  res_r,
-// 9    res_r,    res_r,     res_r,    res_r,    res_r,   res_r,   res_hl,   res_r,      res_r,     res_r,    res_r,  res_r,      res_r,   res_r,  res_hl,  res_r,
-// a    res_r,    res_r,     res_r,    res_r,    res_r,   res_r,   res_hl,   res_r,      res_r,     res_r,    res_r,  res_r,      res_r,   res_r,  res_hl,  res_r,
-// b    res_r,    res_r,     res_r,    res_r,    res_r,   res_r,   res_hl,   res_r,      res_r,     res_r,    res_r,  res_r,      res_r,   res_r,  res_hl,  res_r,
-// c    set_r,    set_r,     set_r,    set_r,    set_r,   set_r,   set_hl,   set_r,      set_r,     set_r,    set_r,  set_r,      set_r,   set_r,  set_hl,  set_r,
-// d    set_r,    set_r,     set_r,    set_r,    set_r,   set_r,   set_hl,   set_r,      set_r,     set_r,    set_r,  set_r,      set_r,   set_r,  set_hl,  set_r,
-// e    set_r,    set_r,     set_r,    set_r,    set_r,   set_r,   set_hl,   set_r,      set_r,     set_r,    set_r,  set_r,      set_r,   set_r,  set_hl,  set_r,
-// f    set_r,    set_r,     set_r,    set_r,    set_r,   set_r,   set_hl,   set_r,      set_r,     set_r,    set_r,  set_r,      set_r,   set_r,  set_hl,  set_r,
+   rlc_r,     rlc_r,     rlc_r,   rlc_r,     rlc_r,     rlc_r,   rlc_hl,   rlc_r,      rrc_r,     rrc_r,     rrc_r,  rrc_r,       rrc_r,    rrc_r,  rrc_hl,  rrc_r,
+    rl_r,      rl_r,      rl_r,    rl_r,      rl_r,      rl_r,    rl_hl,    rl_r,       rr_r,      rr_r,      rr_r,   rr_r,        rr_r,     rr_r,   rr_hl,   rr_r,
+   sla_r,     sla_r,     sla_r,   sla_r,     sla_r,     sla_r,   sla_hl,   sla_r,      sra_r,     sra_r,     sra_r,  sra_r,       sra_r,    sra_r,  sra_hl,  sra_r,
+  swap_r,    swap_r,    swap_r,  swap_r,    swap_r,    swap_r,  swap_hl,  swap_r,      srl_r,     srl_r,     srl_r,  srl_r,       srl_r,    srl_r,  srl_hl,  srl_r,
+   bit_r,     bit_r,     bit_r,   bit_r,     bit_r,     bit_r,   bit_hl,   bit_r,      bit_r,     bit_r,     bit_r,  bit_r,       bit_r,    bit_r,  bit_hl,  bit_r,
+   bit_r,     bit_r,     bit_r,   bit_r,     bit_r,     bit_r,   bit_hl,   bit_r,      bit_r,     bit_r,     bit_r,  bit_r,       bit_r,    bit_r,  bit_hl,  bit_r,
+   bit_r,     bit_r,     bit_r,   bit_r,     bit_r,     bit_r,   bit_hl,   bit_r,      bit_r,     bit_r,     bit_r,  bit_r,       bit_r,    bit_r,  bit_hl,  bit_r,
+   bit_r,     bit_r,     bit_r,   bit_r,     bit_r,     bit_r,   bit_hl,   bit_r,      bit_r,     bit_r,     bit_r,  bit_r,       bit_r,    bit_r,  bit_hl,  bit_r,
+   res_r,     res_r,     res_r,   res_r,     res_r,     res_r,   res_hl,   res_r,      res_r,     res_r,     res_r,  res_r,       res_r,    res_r,  res_hl,  res_r,
+   res_r,     res_r,     res_r,   res_r,     res_r,     res_r,   res_hl,   res_r,      res_r,     res_r,     res_r,  res_r,       res_r,    res_r,  res_hl,  res_r,
+   res_r,     res_r,     res_r,   res_r,     res_r,     res_r,   res_hl,   res_r,      res_r,     res_r,     res_r,  res_r,       res_r,    res_r,  res_hl,  res_r,
+   res_r,     res_r,     res_r,   res_r,     res_r,     res_r,   res_hl,   res_r,      res_r,     res_r,     res_r,  res_r,       res_r,    res_r,  res_hl,  res_r,
+   set_r,     set_r,     set_r,   set_r,     set_r,     set_r,   set_hl,   set_r,      set_r,     set_r,     set_r,  set_r,       set_r,    set_r,  set_hl,  set_r,
+   set_r,     set_r,     set_r,   set_r,     set_r,     set_r,   set_hl,   set_r,      set_r,     set_r,     set_r,  set_r,       set_r,    set_r,  set_hl,  set_r,
+   set_r,     set_r,     set_r,   set_r,     set_r,     set_r,   set_hl,   set_r,      set_r,     set_r,     set_r,  set_r,       set_r,    set_r,  set_hl,  set_r,
+   set_r,     set_r,     set_r,   set_r,     set_r,     set_r,   set_hl,   set_r,      set_r,     set_r,     set_r,  set_r,       set_r,    set_r,  set_hl,  set_r,
+};
 
 int main(void) {
     struct gameboy *gb = calloc(sizeof(struct gameboy), 1);
-    (void)ld_r_r(gb);
-    (void)ld_r_d8(gb);
-    (void)ld_r_hl(gb);
-    (void)ld_hl_r(gb);
-    (void)ld_hl_d8(gb);
-    (void)ld_a_bc(gb);
-    (void)ld_a_de(gb);
-    (void)ld_bc_a(gb);
-    (void)ld_de_a(gb);
-    (void)ld_a_a16(gb);
-    (void)ld_a16_a(gb);
-    (void)ldh_a_c(gb);
-    (void)ldh_c_a(gb);
-    (void)ldh_a_a8(gb);
-    (void)ldh_a8_a(gb);
-    (void)ld_a_hld(gb);
-    (void)ld_hld_a(gb);
-    (void)ld_a_hli(gb);
-    (void)ld_hli_a(gb);
-    (void)ld_rr_d16(gb);
-    (void)ld_a16_sp(gb);
-    (void)ld_sp_hl(gb);
-    (void)push_rr(gb);
-    (void)pop_rr(gb);
-    printf("%02x\n", gb->r8[7]);
+    int i;
+    for (i = 0; i < 512; i++) {
+        gb->opcode = i;
+        if (instruct[i]) {
+            instruct[i](gb);
+            printf("%04x %02x\n", i, gb->r8[7]);
+        } else {
+            printf("%04x missing\n", i);
+        }
+    }
     return 0;
 }
