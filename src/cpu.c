@@ -8,32 +8,21 @@
 ** https://gbdev.io/gb-opcodes/optables/
 */
 
-// 0, 1, 2, 3, 4, 5,    6, 7
-// b, c, d, e, h, l, (hl), a
-// opcode 0x76 => halt
-
 enum CPU_STATE { RUNNING, HALTED, STOPPED };
 
 struct gameboy {
     uint8_t memory[0x10000];
     uint8_t opcode;
-    uint8_t r8[10];
+    uint8_t r8[8];
     uint16_t pc;
     uint16_t sp;
+    uint8_t hi, lo;
     int16_t i16;
     uint16_t u16;
     int cpu_state;
     int ime;
     int ime_scheduled;
 };
-
-/*
-** 0, 1 => B, C
-** 2, 3 => D, E
-** 4, 5 => H, L
-** 6, 7 => F, A
-** 8, 9 => hi, lo (A16/D16)
-*/
 
 uint8_t read_u8(struct gameboy *gb, uint16_t addr) {
     return gb->memory[addr];
@@ -47,7 +36,7 @@ void write_u8(struct gameboy *gb, uint16_t addr, uint8_t val) {
 #define R16DE        ((gb->r8[2] << 8) | (gb->r8[3]))
 #define R16HL        ((gb->r8[4] << 8) | (gb->r8[5]))
 #define R16AF        ((gb->r8[7] << 8) | (gb->r8[6] & 0b11110000))
-#define A16          ((gb->r8[8] << 8) | (gb->r8[9]))
+#define A16          ((gb->hi << 8) | (gb->lo))
 #define D16          A16
 
 #define U3DST        ((gb->opcode >> 3) & 7)    // bits 5-3
@@ -70,10 +59,10 @@ void write_u8(struct gameboy *gb, uint16_t addr, uint8_t val) {
 #define CLEAR_C_FLAG (gb->r8[6] &= ~0b00010000)
 
 #define CC_NZ       (((gb->opcode & 0b00011000) == 0b00000000) && (!IS_Z_FLAG))
-#define CC_ZF       (((gb->opcode & 0b00011000) == 0b00001000) && (IS_Z_FLAG))
+#define CC_Z        (((gb->opcode & 0b00011000) == 0b00001000) && (IS_Z_FLAG))
 #define CC_NC       (((gb->opcode & 0b00011000) == 0b00010000) && (!IS_C_FLAG))
-#define CC_CF       (((gb->opcode & 0b00011000) == 0b00011000) && (IS_C_FLAG))
-#define CONDITION   ((CC_NZ) || (CC_ZF) || (CC_NC) || (CC_CF))
+#define CC_C        (((gb->opcode & 0b00011000) == 0b00011000) && (IS_C_FLAG))
+#define CONDITION   ((CC_NZ) || (CC_Z) || (CC_NC) || (CC_C))
 
 static inline void r16hld(struct gameboy *gb) {
     gb->u16 = R16HL - 1;
@@ -84,7 +73,6 @@ static inline void r16hli(struct gameboy *gb) {
     gb->u16 = R16HL + 1;
     gb->r8[4] = gb->u16 >> 8, gb->r8[5] = gb->u16 & 255;
 }
-
 
 /*
 ** 8-bit load instructions
@@ -101,9 +89,9 @@ void ld_r_r(struct gameboy *gb) {
 // 2 bytes, 2 cycles
 void ld_r_d8(struct gameboy *gb) {
     gb->pc++;
-    gb->r8[9] = read_u8(gb, gb->pc); //lo
+    gb->lo = read_u8(gb, gb->pc);
     gb->pc++;
-    gb->r8[U3DST] = gb->r8[9];
+    gb->r8[U3DST] = gb->lo;
 }
 
 // 0b01xxx110 except 0x76 (4v X6, XE)
@@ -123,9 +111,9 @@ void ld_hl_r(struct gameboy *gb) {
 // 0x36, 2 bytes, 3 cycles
 void ld_hl_d8(struct gameboy *gb) {
     gb->pc++;
-    gb->r8[9] = read_u8(gb, gb->pc); //lo
+    gb->lo = read_u8(gb, gb->pc);
     gb->pc++;
-    write_u8(gb, R16HL, gb->r8[9]);
+    write_u8(gb, R16HL, gb->lo);
 }
 
 // 0x0a, 1 byte, 2 cycles
@@ -155,9 +143,9 @@ void ld_de_a(struct gameboy *gb) {
 // 0xfa, 3 bytes, 4 cycles
 void ld_a_a16(struct gameboy *gb) {
     gb->pc++;
-    gb->r8[9] = read_u8(gb, gb->pc); //lo
+    gb->lo = read_u8(gb, gb->pc);
     gb->pc++;
-    gb->r8[8] = read_u8(gb, gb->pc); //hi
+    gb->hi = read_u8(gb, gb->pc);
     gb->pc++;
     gb->r8[7] = read_u8(gb, A16);
 }
@@ -165,9 +153,9 @@ void ld_a_a16(struct gameboy *gb) {
 // 0xea, 3 bytes, 4 cycles
 void ld_a16_a(struct gameboy *gb) {
     gb->pc++;
-    gb->r8[9] = read_u8(gb, gb->pc); //lo
+    gb->lo = read_u8(gb, gb->pc);
     gb->pc++;
-    gb->r8[8] = read_u8(gb, gb->pc); //hi
+    gb->hi = read_u8(gb, gb->pc);
     gb->pc++;
     write_u8(gb, A16, gb->r8[7]);
 }
@@ -236,25 +224,25 @@ void ld_hli_a(struct gameboy *gb) {
 // 3 bytes, 3 cycles
 void ld_rr_d16(struct gameboy *gb) {
     gb->pc++;
-    gb->r8[9] = read_u8(gb, gb->pc); //lo
+    gb->lo = read_u8(gb, gb->pc);
     gb->pc++;
-    gb->r8[8] = read_u8(gb, gb->pc); //hi
+    gb->hi = read_u8(gb, gb->pc);
     gb->pc++;
 
     if (U2IDX == 3) {
         gb->sp = D16;
     } else {
-        gb->r8[U2IDX * 2] = gb->r8[8]; //hi
-        gb->r8[U2IDX * 2 + 1] = gb->r8[9]; //lo
+        gb->r8[U2IDX * 2] = gb->hi;
+        gb->r8[U2IDX * 2 + 1] = gb->lo;
     }
 }
 
 // 0x08, 3 bytes, 5 cycles
 void ld_a16_sp(struct gameboy *gb) {
     gb->pc++;
-    gb->r8[9] = read_u8(gb, gb->pc); //lo
+    gb->lo = read_u8(gb, gb->pc);
     gb->pc++;
-    gb->r8[8] = read_u8(gb, gb->pc); //hi
+    gb->hi = read_u8(gb, gb->pc);
     gb->pc++;
     write_u8(gb, A16, gb->sp & 255);
     write_u8(gb, A16 + 1, gb->sp >> 8);
@@ -333,12 +321,12 @@ void inc_r(struct gameboy *gb) {
 // 0x34: 1 byte, 3 cycles
 void inc_hl(struct gameboy *gb) {
     gb->pc++;
-    gb->r8[9] = read_u8(gb, R16HL);
-    gb->r8[9]++;
-    (gb->r8[9] == 0) ? SET_Z_FLAG : CLEAR_Z_FLAG;
+    gb->lo = read_u8(gb, R16HL);
+    gb->lo++;
+    (gb->lo == 0) ? SET_Z_FLAG : CLEAR_Z_FLAG;
     CLEAR_N_FLAG;
-    ((gb->r8[9] & 0xf) == 0) ? SET_H_FLAG : CLEAR_H_FLAG;
-    write_u8(gb, R16HL, gb->r8[9]);
+    ((gb->lo & 0xf) == 0) ? SET_H_FLAG : CLEAR_H_FLAG;
+    write_u8(gb, R16HL, gb->lo);
 }
 
 // 0x05, 0x0d, 0x15, 0x1d, 0x25, 0x2d, 0x3d - 1 byte, 1 cycle
@@ -353,126 +341,126 @@ void dec_r(struct gameboy *gb) {
 // 0x35: 1 byte, 3 cycles
 void dec_hl(struct gameboy *gb) {
     gb->pc++;
-    gb->r8[9] = read_u8(gb, R16HL);
-    gb->r8[9]--;
-    (gb->r8[9] == 0) ? SET_Z_FLAG : CLEAR_Z_FLAG;
+    gb->lo = read_u8(gb, R16HL);
+    gb->lo--;
+    (gb->lo == 0) ? SET_Z_FLAG : CLEAR_Z_FLAG;
     SET_N_FLAG;
-    ((gb->r8[9] & 0xf) == 0) ? SET_H_FLAG : CLEAR_H_FLAG;
-    write_u8(gb, R16HL, gb->r8[9]);
+    ((gb->lo & 0xf) == 0) ? SET_H_FLAG : CLEAR_H_FLAG;
+    write_u8(gb, R16HL, gb->lo);
 }
 
 #define _ADD \
-    (((gb->r8[7] & 15) + (gb->r8[9] & 15)) > 15) ? SET_H_FLAG : CLEAR_H_FLAG;\
-    ((gb->r8[7] + gb->r8[9]) > 255) ? SET_C_FLAG : CLEAR_C_FLAG;\
-    gb->r8[7] += gb->r8[9];\
+    (((gb->r8[7] & 15) + (gb->lo & 15)) > 15) ? SET_H_FLAG : CLEAR_H_FLAG;\
+    ((gb->r8[7] + gb->lo) > 255) ? SET_C_FLAG : CLEAR_C_FLAG;\
+    gb->r8[7] += gb->lo;\
     (gb->r8[7] == 0) ? SET_Z_FLAG : CLEAR_Z_FLAG;\
     CLEAR_N_FLAG;
 
 // 0x80-0x87, except 0x86: 1 byte, 1 cycle
-void add_r(struct gameboy *gb)  { gb->pc++; gb->r8[9] = gb->r8[U3SRC]; _ADD; }
+void add_r(struct gameboy *gb)  { gb->pc++; gb->lo = gb->r8[U3SRC]; _ADD; }
 // 0x86: 1 byte, 2 cycles
-void add_hl(struct gameboy *gb) { gb->pc++; gb->r8[9] = read_u8(gb, R16HL); _ADD; }
+void add_hl(struct gameboy *gb) { gb->pc++; gb->lo = read_u8(gb, R16HL); _ADD; }
 // 0xc6: 2 bytes, 2 cycles
-void add_n(struct gameboy *gb)  { gb->pc++; gb->r8[9] = read_u8(gb, gb->pc); gb->pc++; _ADD; }
+void add_n(struct gameboy *gb)  { gb->pc++; gb->lo = read_u8(gb, gb->pc); gb->pc++; _ADD; }
 
 #define _ADC \
-    gb->u16 = gb->r8[7] + gb->r8[9] + IS_C_FLAG;\
-    (((gb->r8[7] & 15) + (gb->r8[9] & 15) + IS_C_FLAG) > 15) ? SET_H_FLAG : CLEAR_H_FLAG;\
+    gb->u16 = gb->r8[7] + gb->lo + IS_C_FLAG;\
+    (((gb->r8[7] & 15) + (gb->lo & 15) + IS_C_FLAG) > 15) ? SET_H_FLAG : CLEAR_H_FLAG;\
     (gb->u16 > 255) ? SET_C_FLAG : CLEAR_C_FLAG;\
     gb->r8[7] = gb->u16 & 255;\
     (gb->r8[7] == 0) ? SET_Z_FLAG : CLEAR_Z_FLAG;\
     CLEAR_N_FLAG;
 
 // 0x88-0x8f, except 0x8e: 1 byte, 1 cycle
-void adc_r(struct gameboy *gb)  { gb->pc++; gb->r8[9] = gb->r8[U3SRC]; _ADC; }
+void adc_r(struct gameboy *gb)  { gb->pc++; gb->lo = gb->r8[U3SRC]; _ADC; }
 // 0x8e: 1 byte, 2 cycles
-void adc_hl(struct gameboy *gb) { gb->pc++; gb->r8[9] = read_u8(gb, R16HL); _ADC; }
+void adc_hl(struct gameboy *gb) { gb->pc++; gb->lo = read_u8(gb, R16HL); _ADC; }
 // 0xce: 2 bytes, 2 cycles
-void adc_n(struct gameboy *gb)  { gb->pc++; gb->r8[9] = read_u8(gb, gb->pc); gb->pc++; _ADC; }
+void adc_n(struct gameboy *gb)  { gb->pc++; gb->lo = read_u8(gb, gb->pc); gb->pc++; _ADC; }
 
 #define _SUB \
-    ((gb->r8[7] & 15) < (gb->r8[9] & 15)) ? SET_H_FLAG : CLEAR_H_FLAG;\
-    (gb->r8[7] < gb->r8[9]) ? SET_C_FLAG : CLEAR_C_FLAG;\
-    gb->r8[7] -= gb->r8[9];\
+    ((gb->r8[7] & 15) < (gb->lo & 15)) ? SET_H_FLAG : CLEAR_H_FLAG;\
+    (gb->r8[7] < gb->lo) ? SET_C_FLAG : CLEAR_C_FLAG;\
+    gb->r8[7] -= gb->lo;\
     (gb->r8[7] == 0) ? SET_Z_FLAG : CLEAR_Z_FLAG;\
     SET_N_FLAG;
 
 // 0x90-97, except 0x96: 1 byte, 1 cycle
-void sub_r(struct gameboy *gb)  { gb->pc++; gb->r8[9] = gb->r8[U3SRC]; _SUB; }
+void sub_r(struct gameboy *gb)  { gb->pc++; gb->lo = gb->r8[U3SRC]; _SUB; }
 // 0x96: 1 byte, 2 cycles
-void sub_hl(struct gameboy *gb) { gb->pc++; gb->r8[9] = read_u8(gb, R16HL); _SUB; }
+void sub_hl(struct gameboy *gb) { gb->pc++; gb->lo = read_u8(gb, R16HL); _SUB; }
 // 0xd6: 2 bytes, 2 cycles
-void sub_n(struct gameboy *gb)  { gb->pc++; gb->r8[9] = read_u8(gb, gb->pc); gb->pc++; _SUB; }
+void sub_n(struct gameboy *gb)  { gb->pc++; gb->lo = read_u8(gb, gb->pc); gb->pc++; _SUB; }
 
 #define _SBC \
-    gb->i16 = gb->r8[7] - gb->r8[9] - IS_C_FLAG;\
-    (((gb->r8[7] & 15) - (gb->r8[9] & 15) - IS_C_FLAG) < 0) ? SET_H_FLAG : CLEAR_H_FLAG;\
+    gb->i16 = gb->r8[7] - gb->lo - IS_C_FLAG;\
+    (((gb->r8[7] & 15) - (gb->lo & 15) - IS_C_FLAG) < 0) ? SET_H_FLAG : CLEAR_H_FLAG;\
     (gb->i16 < 0) ? SET_C_FLAG : CLEAR_C_FLAG;\
     gb->r8[7] = gb->i16 & 255;\
     (gb->r8[7] == 0) ? SET_Z_FLAG : CLEAR_Z_FLAG;\
     SET_N_FLAG;
 
 // 0x98-0x9f, except 0x9e: 1 byte, 1 cycle
-void sbc_r(struct gameboy *gb)  { gb->pc++; gb->r8[9] = gb->r8[U3SRC]; _SBC; }
+void sbc_r(struct gameboy *gb)  { gb->pc++; gb->lo = gb->r8[U3SRC]; _SBC; }
 // 0x9e: 1 byte, 2 cycles
-void sbc_hl(struct gameboy *gb) { gb->pc++; gb->r8[9] = read_u8(gb, R16HL); _SBC; }
+void sbc_hl(struct gameboy *gb) { gb->pc++; gb->lo = read_u8(gb, R16HL); _SBC; }
 // 0xde: 2 bytes, 2 cycles
-void sbc_n(struct gameboy *gb)  { gb->pc++; gb->r8[9] = read_u8(gb, gb->pc); gb->pc++; _SBC; }
+void sbc_n(struct gameboy *gb)  { gb->pc++; gb->lo = read_u8(gb, gb->pc); gb->pc++; _SBC; }
 
 #define _AND \
-    gb->r8[7] &= gb->r8[9];\
+    gb->r8[7] &= gb->lo;\
     (gb->r8[7] == 0) ? SET_Z_FLAG : CLEAR_Z_FLAG;\
     CLEAR_N_FLAG;\
     SET_H_FLAG;\
     CLEAR_C_FLAG;
 
 // 0xa0-a7, except 0xa6: 1 byte, 1 cycle
-void and_r(struct gameboy *gb)  { gb->pc++; gb->r8[9] = gb->r8[U3SRC]; _AND; }
+void and_r(struct gameboy *gb)  { gb->pc++; gb->lo = gb->r8[U3SRC]; _AND; }
 // 0xa6: 1 byte, 2 cycles
-void and_hl(struct gameboy *gb) { gb->pc++; gb->r8[9] = read_u8(gb, R16HL); _AND; }
+void and_hl(struct gameboy *gb) { gb->pc++; gb->lo = read_u8(gb, R16HL); _AND; }
 // 0xe6: 2 bytes, 2 cycles
-void and_n(struct gameboy *gb)  { gb->pc++; gb->r8[9] = read_u8(gb, gb->pc); gb->pc++; _AND; }
+void and_n(struct gameboy *gb)  { gb->pc++; gb->lo = read_u8(gb, gb->pc); gb->pc++; _AND; }
 
 #define _XOR \
-    gb->r8[7] ^= gb->r8[9];\
+    gb->r8[7] ^= gb->lo;\
     (gb->r8[7] == 0) ? SET_Z_FLAG : CLEAR_Z_FLAG;\
     CLEAR_N_FLAG;\
     CLEAR_H_FLAG;\
     CLEAR_C_FLAG;
 
 // 0xa8-0xaf, except 0xae: 1 byte, 1 cycle
-void xor_r(struct gameboy *gb)  { gb->pc++; gb->r8[9] = gb->r8[U3SRC]; _XOR; }
+void xor_r(struct gameboy *gb)  { gb->pc++; gb->lo = gb->r8[U3SRC]; _XOR; }
 // 0xae: 1 byte, 2 cycles
-void xor_hl(struct gameboy *gb) { gb->pc++; gb->r8[9] = read_u8(gb, R16HL); _XOR; }
+void xor_hl(struct gameboy *gb) { gb->pc++; gb->lo = read_u8(gb, R16HL); _XOR; }
 // 0xee: 2 bytes, 2 cycles
-void xor_n(struct gameboy *gb)  { gb->pc++; gb->r8[9] = read_u8(gb, gb->pc); gb->pc++; _XOR; }
+void xor_n(struct gameboy *gb)  { gb->pc++; gb->lo = read_u8(gb, gb->pc); gb->pc++; _XOR; }
 
 #define _OR \
-    gb->r8[7] |= gb->r8[9];\
+    gb->r8[7] |= gb->lo;\
     (gb->r8[7] == 0) ? SET_Z_FLAG : CLEAR_Z_FLAG;\
     CLEAR_N_FLAG;\
     CLEAR_H_FLAG;\
     CLEAR_C_FLAG;
 
 // 0xb0-b7, except 0xb6: 1 byte, 1 cycle
-void or_r(struct gameboy *gb)  { gb->pc++; gb->r8[9] = gb->r8[U3SRC]; _OR; }
+void or_r(struct gameboy *gb)  { gb->pc++; gb->lo = gb->r8[U3SRC]; _OR; }
 // 0xb6: 1 byte, 2 cycles
-void or_hl(struct gameboy *gb) { gb->pc++; gb->r8[9] = read_u8(gb, R16HL); _OR; }
+void or_hl(struct gameboy *gb) { gb->pc++; gb->lo = read_u8(gb, R16HL); _OR; }
 // 0xf6: 2 bytes, 2 cycles
-void or_n(struct gameboy *gb)  { gb->pc++; gb->r8[9] = read_u8(gb, gb->pc); gb->pc++; _OR; }
+void or_n(struct gameboy *gb)  { gb->pc++; gb->lo = read_u8(gb, gb->pc); gb->pc++; _OR; }
 
 #define _CP \
-    (gb->r8[7] == gb->r8[9]) ? SET_Z_FLAG : CLEAR_Z_FLAG;\
+    (gb->r8[7] == gb->lo) ? SET_Z_FLAG : CLEAR_Z_FLAG;\
     SET_N_FLAG;\
-    ((gb->r8[7] & 15) < (gb->r8[9] & 15)) ? SET_H_FLAG : CLEAR_H_FLAG;\
-    (gb->r8[7] < gb->r8[9]) ? SET_C_FLAG : CLEAR_C_FLAG;
+    ((gb->r8[7] & 15) < (gb->lo & 15)) ? SET_H_FLAG : CLEAR_H_FLAG;\
+    (gb->r8[7] < gb->lo) ? SET_C_FLAG : CLEAR_C_FLAG;
 
 // 0xb8-0xbf, except 0xbe: 1 byte, 1 cycle
-void cp_r(struct gameboy *gb)  { gb->pc++; gb->r8[9] = gb->r8[U3SRC]; _CP; }
+void cp_r(struct gameboy *gb)  { gb->pc++; gb->lo = gb->r8[U3SRC]; _CP; }
 // 0xbe: 1 byte, 2 cycles
-void cp_hl(struct gameboy *gb) { gb->pc++; gb->r8[9] = read_u8(gb, R16HL); _CP; }
+void cp_hl(struct gameboy *gb) { gb->pc++; gb->lo = read_u8(gb, R16HL); _CP; }
 // 0xfe: 2 bytes, 2 cycles
-void cp_n(struct gameboy *gb)  { gb->pc++; gb->r8[9] = read_u8(gb, gb->pc); gb->pc++; _CP; }
+void cp_n(struct gameboy *gb)  { gb->pc++; gb->lo = read_u8(gb, gb->pc); gb->pc++; _CP; }
 
 /*
 ** 16-bit arithmetic instructions
@@ -536,41 +524,111 @@ void add_sp_e(struct gameboy *gb) {
 ** rotate, shift, and bit operation instructions
 */
 
-void rlc_r(struct gameboy *gb) {}
-void rrc_r(struct gameboy *gb) {}
-void rl_r(struct gameboy *gb) {}
-void rr_r(struct gameboy *gb) {}
-void sla_r(struct gameboy *gb) {}
-void sra_r(struct gameboy *gb) {}
-void swap_r(struct gameboy *gb) {}
-void srl_r(struct gameboy *gb) {}
-void bit_r(struct gameboy *gb) {}
-void res_r(struct gameboy *gb) {}
-void set_r(struct gameboy *gb) {}
+#define _RLC \
+    gb->lo = (gb->lo << 1) | ((gb->lo & 1) >> 7);\
+    (gb->lo == 0) ? SET_Z_FLAG : CLEAR_Z_FLAG;\
+    CLEAR_N_FLAG;\
+    CLEAR_H_FLAG;\
+    (gb->lo & 1) ? SET_C_FLAG : CLEAR_C_FLAG;
 
-void rlc_hl(struct gameboy *gb) {}
-void rrc_hl(struct gameboy *gb) {}
-void rl_hl(struct gameboy *gb) {}
-void rr_hl(struct gameboy *gb) {}
-void sla_hl(struct gameboy *gb) {}
-void sra_hl(struct gameboy *gb) {}
-void swap_hl(struct gameboy *gb) {}
-void srl_hl(struct gameboy *gb) {}
-void bit_hl(struct gameboy *gb) {}
-void res_hl(struct gameboy *gb) {}
-void set_hl(struct gameboy *gb) {}
+#define _RRC \
+    (gb->lo & 1) ? SET_C_FLAG : CLEAR_C_FLAG;\
+    gb->lo = (gb->lo >> 1) | ((gb->lo & 1) << 7);\
+    (gb->lo == 0) ? SET_Z_FLAG : CLEAR_Z_FLAG;\
+    CLEAR_N_FLAG;\
+    CLEAR_H_FLAG;
+
+#define _RL \
+    gb->hi = IS_C_FLAG;\
+    (gb->lo & 0x80) ? SET_C_FLAG : CLEAR_C_FLAG;\
+    gb->lo = (gb->lo << 1) | gb->hi;\
+    (gb->lo == 0) ? SET_Z_FLAG : CLEAR_Z_FLAG;\
+    CLEAR_N_FLAG;\
+    CLEAR_H_FLAG;
+
+#define _RR \
+    gb->hi = IS_C_FLAG;\
+    (gb->lo & 1) ? SET_C_FLAG : CLEAR_C_FLAG;\
+    gb->lo = (gb->lo >> 1) | (gb->hi << 7);\
+    (gb->lo == 0) ? SET_Z_FLAG : CLEAR_Z_FLAG;\
+    CLEAR_N_FLAG;\
+    CLEAR_H_FLAG;
+
+#define _SLA \
+    (gb->lo & 0x80) ? SET_C_FLAG : CLEAR_C_FLAG;\
+    gb->lo = gb->lo << 1;\
+    (gb->lo == 0) ? SET_Z_FLAG : CLEAR_Z_FLAG;\
+    CLEAR_N_FLAG;\
+    CLEAR_H_FLAG;
+
+#define _SRA \
+    (gb->lo & 1) ? SET_C_FLAG : CLEAR_C_FLAG;\
+    gb->lo = (gb->lo & 0x80) | (gb->lo >> 1);\
+    (gb->lo == 0) ? SET_Z_FLAG : CLEAR_Z_FLAG;\
+    CLEAR_N_FLAG;\
+    CLEAR_H_FLAG;
+
+#define _SWAP \
+    gb->lo = ((gb->lo & 0xf0) >> 4) | ((gb->lo & 0x0f) << 4);\
+    (gb->lo == 0) ? SET_Z_FLAG : CLEAR_Z_FLAG;\
+    CLEAR_N_FLAG;\
+    CLEAR_H_FLAG;\
+    CLEAR_C_FLAG;
+
+#define _SRL \
+    (gb->lo & 1) ? SET_C_FLAG : CLEAR_C_FLAG;\
+    gb->lo = gb->lo >> 1;\
+    (gb->lo == 0) ? SET_Z_FLAG : CLEAR_Z_FLAG;\
+    CLEAR_N_FLAG;\
+    CLEAR_H_FLAG;
+
+#define _BIT \
+    (gb->lo & (1 << U3DST)) ? CLEAR_Z_FLAG : SET_Z_FLAG;\
+    CLEAR_N_FLAG;\
+    SET_H_FLAG;
+
+#define _RES \
+    gb->lo &= ~(1 << U3DST);
+
+#define _SET \
+    gb->lo |= (1 << U3DST);
+
+// CB-prefix + 1 cycle
+void rlc_r(struct gameboy *gb)   { gb->pc++; gb->lo = gb->r8[U3SRC];      _RLC;  gb->r8[U3SRC] = gb->lo; }
+void rrc_r(struct gameboy *gb)   { gb->pc++; gb->lo = gb->r8[U3SRC];      _RRC;  gb->r8[U3SRC] = gb->lo; }
+void rl_r(struct gameboy *gb)    { gb->pc++; gb->lo = gb->r8[U3SRC];      _RL;   gb->r8[U3SRC] = gb->lo; }
+void rr_r(struct gameboy *gb)    { gb->pc++; gb->lo = gb->r8[U3SRC];      _RR;   gb->r8[U3SRC] = gb->lo; }
+void sla_r(struct gameboy *gb)   { gb->pc++; gb->lo = gb->r8[U3SRC];      _SLA;  gb->r8[U3SRC] = gb->lo; }
+void sra_r(struct gameboy *gb)   { gb->pc++; gb->lo = gb->r8[U3SRC];      _SRA;  gb->r8[U3SRC] = gb->lo; }
+void swap_r(struct gameboy *gb)  { gb->pc++; gb->lo = gb->r8[U3SRC];      _SWAP; gb->r8[U3SRC] = gb->lo; }
+void srl_r(struct gameboy *gb)   { gb->pc++; gb->lo = gb->r8[U3SRC];      _SRL;  gb->r8[U3SRC] = gb->lo; }
+void bit_r(struct gameboy *gb)   { gb->pc++; gb->lo = gb->r8[U3SRC];      _BIT;  gb->r8[U3SRC] = gb->lo; }
+void res_r(struct gameboy *gb)   { gb->pc++; gb->lo = gb->r8[U3SRC];      _RES;  gb->r8[U3SRC] = gb->lo; }
+void set_r(struct gameboy *gb)   { gb->pc++; gb->lo = gb->r8[U3SRC];      _SET;  gb->r8[U3SRC] = gb->lo; }
+
+// CB-prefix + 3 cycles
+void rlc_hl(struct gameboy *gb)  { gb->pc++; gb->lo = read_u8(gb, R16HL); _RLC;  write_u8(gb, R16HL, gb->lo); }
+void rrc_hl(struct gameboy *gb)  { gb->pc++; gb->lo = read_u8(gb, R16HL); _RRC;  write_u8(gb, R16HL, gb->lo); }
+void rl_hl(struct gameboy *gb)   { gb->pc++; gb->lo = read_u8(gb, R16HL); _RL;   write_u8(gb, R16HL, gb->lo); }
+void rr_hl(struct gameboy *gb)   { gb->pc++; gb->lo = read_u8(gb, R16HL); _RR;   write_u8(gb, R16HL, gb->lo); }
+void sla_hl(struct gameboy *gb)  { gb->pc++; gb->lo = read_u8(gb, R16HL); _SLA;  write_u8(gb, R16HL, gb->lo); }
+void sra_hl(struct gameboy *gb)  { gb->pc++; gb->lo = read_u8(gb, R16HL); _SRA;  write_u8(gb, R16HL, gb->lo); }
+void swap_hl(struct gameboy *gb) { gb->pc++; gb->lo = read_u8(gb, R16HL); _SWAP; write_u8(gb, R16HL, gb->lo); }
+void srl_hl(struct gameboy *gb)  { gb->pc++; gb->lo = read_u8(gb, R16HL); _SRL;  write_u8(gb, R16HL, gb->lo); }
+void bit_hl(struct gameboy *gb)  { gb->pc++; gb->lo = read_u8(gb, R16HL); _BIT;  write_u8(gb, R16HL, gb->lo); }
+void res_hl(struct gameboy *gb)  { gb->pc++; gb->lo = read_u8(gb, R16HL); _RES;  write_u8(gb, R16HL, gb->lo); }
+void set_hl(struct gameboy *gb)  { gb->pc++; gb->lo = read_u8(gb, R16HL); _SET;  write_u8(gb, R16HL, gb->lo); }
 
 /*
 ** control flow instructions
 */
 
-
 // 0xc3, 3 bytes, 4 cycles
 void jp_a16(struct gameboy *gb) {
     gb->pc++;
-    gb->r8[9] = read_u8(gb, gb->pc); // lo
+    gb->lo = read_u8(gb, gb->pc);
     gb->pc++;
-    gb->r8[8] = read_u8(gb, gb->pc); // hi
+    gb->hi = read_u8(gb, gb->pc);
     gb->pc++;
     gb->pc = A16;
 }
@@ -585,9 +643,9 @@ void jp_hl(struct gameboy *gb) {
 // 3 bytes, 3 cycles (cc false) - or - 4 cycles (cc true)
 void jp_cc_a16(struct gameboy *gb) {
     gb->pc++;
-    gb->r8[9] = read_u8(gb, gb->pc); // lo
+    gb->lo = read_u8(gb, gb->pc);
     gb->pc++;
-    gb->r8[8] = read_u8(gb, gb->pc); // hi
+    gb->hi = read_u8(gb, gb->pc);
     gb->pc++;
     if (CONDITION) {
         gb->pc = A16;
@@ -616,9 +674,9 @@ void jr_cc_e(struct gameboy *gb) {
 // 0xcd, 3 bytes, 6 cycles
 void call_a16(struct gameboy *gb) {
     gb->pc++;
-    gb->r8[9] = read_u8(gb, gb->pc); //lo
+    gb->lo = read_u8(gb, gb->pc);
     gb->pc++;
-    gb->r8[8] = read_u8(gb, gb->pc); //hi
+    gb->hi = read_u8(gb, gb->pc);
     gb->pc++;
     gb->sp--;
     write_u8(gb, gb->sp, gb->pc >> 8);
@@ -631,9 +689,9 @@ void call_a16(struct gameboy *gb) {
 // 3 bytes, 3 cycles (cc false) - or - 6 cycles (cc true)
 void call_cc_a16(struct gameboy *gb) {
     gb->pc++;
-    gb->r8[9] = read_u8(gb, gb->pc); //lo
+    gb->lo = read_u8(gb, gb->pc);
     gb->pc++;
-    gb->r8[8]= read_u8(gb, gb->pc); //hi
+    gb->hi = read_u8(gb, gb->pc);
     gb->pc++;
     if (CONDITION) {
         gb->sp--;
@@ -647,9 +705,9 @@ void call_cc_a16(struct gameboy *gb) {
 // 0xc9, 1 byte, 4 cycles
 void ret(struct gameboy *gb) {
     gb->pc++;
-    gb->r8[9] = read_u8(gb, gb->sp); //lo
+    gb->lo = read_u8(gb, gb->sp);
     gb->sp++;
-    gb->r8[8] = read_u8(gb, gb->sp); //hi
+    gb->hi = read_u8(gb, gb->sp);
     gb->sp++;
     gb->pc = A16;
 }
@@ -659,9 +717,9 @@ void ret(struct gameboy *gb) {
 void ret_cc(struct gameboy *gb) {
     gb->pc++;
     if (CONDITION) {
-        gb->r8[9] = read_u8(gb, gb->sp); //lo
+        gb->lo = read_u8(gb, gb->sp);
         gb->sp++;
-        gb->r8[8] = read_u8(gb, gb->sp); //hi
+        gb->hi = read_u8(gb, gb->sp);
         gb->sp++;
         gb->pc = A16;
     }
@@ -670,9 +728,9 @@ void ret_cc(struct gameboy *gb) {
 // 0xd9, 1 byte, 4 cycles
 void reti(struct gameboy *gb) {
     gb->pc++;
-    gb->r8[9] = read_u8(gb, gb->sp); //lo
+    gb->lo = read_u8(gb, gb->sp);
     gb->sp++;
-    gb->r8[8] = read_u8(gb, gb->sp); //hi
+    gb->hi = read_u8(gb, gb->sp);
     gb->sp++;
     gb->pc = A16;
     gb->ime = 1;
@@ -836,5 +894,6 @@ int main(void) {
     (void)ld_sp_hl(gb);
     (void)push_rr(gb);
     (void)pop_rr(gb);
+    printf("%02x\n", gb->r8[7]);
     return 0;
 }
