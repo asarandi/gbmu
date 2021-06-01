@@ -9,22 +9,20 @@
 #define RESULT_TIMEOUT 12
 #define RESULT_ERROR   13
 
-void default_run_hook();
-void blargg1_write_hook(uint16_t, uint8_t);
-void blargg2_run_hook();
-void blargg2_write_hook(uint16_t, uint8_t);
-void mooneye_write_hook(uint16_t, uint8_t);
-void screenshot_run_hook();
-void mealybug_run_hook();
-void screenshot_write_hook(uint16_t, uint8_t);
+void default_run_hook(struct gameboy *);
+void blargg1_write_hook(struct gameboy *, uint16_t, uint8_t);
+void blargg2_run_hook(struct gameboy *);
+void blargg2_write_hook(struct gameboy *, uint16_t, uint8_t);
+void mooneye_write_hook(struct gameboy *,uint16_t, uint8_t);
+void screenshot_run_hook(struct gameboy *);
+void mealybug_run_hook(struct gameboy *);
+void screenshot_write_hook(struct gameboy *, uint16_t, uint8_t);
 
-extern t_r16 *r16;
-
-int testing_setup(char *s) {
+int testing_setup(struct gameboy *gb, char *test_name) {
     struct test {
         char *name;
-        void (*run)();
-        void (*write)(uint16_t, uint8_t);
+        void (*run)(struct gameboy *);
+        void (*write)(struct gameboy *, uint16_t, uint8_t);
     } tests[] = {
         {"blargg1", &default_run_hook, &blargg1_write_hook},
         {"blargg2", &blargg2_run_hook, &blargg2_write_hook},
@@ -34,87 +32,85 @@ int testing_setup(char *s) {
     };
 
     for (int i = 0; i < 5; i++) {
-        if (!strcasecmp(s, tests[i].name)) {
-            state->testing_run_hook = tests[i].run;
-            state->testing_write_hook = tests[i].write;
-            state->testing = 1;
-            state->exit_code = -1;
+        if (!strcasecmp(test_name, tests[i].name)) {
+            gb->testing_run_hook = tests[i].run;
+            gb->testing_write_hook = tests[i].write;
+            gb->testing = 1;
+            gb->exit_code = -1;
             return 1;
         }
     }
 
-    (void)fprintf(stderr, "test not found: %s\n", s);
+    (void)fprintf(stderr, "test not found: %s\n", test_name);
     return 0;
 }
 
-void screenshot_and_exit(char *exten) {
-    char *fn = replace_exten(state->rom_file, exten);
-    screenshot(state, fn);
+void screenshot_and_exit(struct gameboy *gb, char *exten) {
+    char *fn = replace_exten(gb->rom_file, exten);
+    screenshot(gb, fn);
     free(fn);
     fn = NULL;
-    state->exit_code = 0;
-    state->done = 1;
+    gb->exit_code = 0;
+    gb->done = 1;
 }
 
-void screenshot_run_hook() {
-    if (!state->testing) {
+void screenshot_run_hook(struct gameboy *gb) {
+    if (!gb->testing) {
         return ;
     }
 
-    if ((state->cycles >= (40 * 4194304)) && (state->video_render)) {
-        (void)screenshot_and_exit("-1.png");
+    if ((gb->cycles >= (40 * 4194304)) && (gb->video_render)) {
+        (void)screenshot_and_exit(gb, "-1.png");
     }
 
-    if (state->cycles >= (41 * 4194304)) {
-        (void)printf("timeout: %s\n,", state->rom_file);
+    if (gb->cycles >= (41 * 4194304)) {
+        (void)printf("timeout: %s\n,", gb->rom_file);
         (void)fflush(stdout);
-        state->exit_code = RESULT_TIMEOUT;
-        state->done = 1;
+        gb->exit_code = RESULT_TIMEOUT;
+        gb->done = 1;
     }
 }
 
-void mealybug_run_hook() {
-    if (!state->testing) {
+void mealybug_run_hook(struct gameboy *gb) {
+    if (!gb->testing) {
         return ;
     }
 
-    uint8_t instr = read_u8(r16->PC);
-
-    if (instr == 0x40) { // LD B,B
-        (void)screenshot_and_exit("-gbmu.png");
+    if (gb->cpu.opcode == 0x40) { // LD B,B
+        (void)screenshot_and_exit(gb, "-gbmu.png");
     }
 }
 
-void screenshot_write_hook(uint16_t addr, uint8_t data) {
+void screenshot_write_hook(struct gameboy *gb, uint16_t addr, uint8_t data) {
     (void)addr;
     (void)data;
 
-    if (!state->testing) {
+    if (!gb->testing) {
         return ;
     }
 }
 
-void default_run_hook() {
+void default_run_hook(struct gameboy *gb) {
     static time_t start;
 
-    if (!state->testing) {
+    if (!gb->testing) {
         return ;
     }
 
     if (!start) {
         start = time(NULL);
     } else if (time(NULL) > start + TIMEOUT) {
-        state->exit_code = RESULT_TIMEOUT;
-        state->done = 1;
+        gb->exit_code = RESULT_TIMEOUT;
+        gb->done = 1;
     }
 }
 
-void mooneye_write_hook(uint16_t addr, uint8_t data) {
+void mooneye_write_hook(struct gameboy *gb, uint16_t addr, uint8_t data) {
     uint8_t success[] = {3, 5, 8, 13, 21, 34};
     uint8_t failure[] = {66, 66, 66, 66, 66, 66};
     static int i;
 
-    if (!state->testing) {
+    if (!gb->testing) {
         return;
     }
 
@@ -122,25 +118,25 @@ void mooneye_write_hook(uint16_t addr, uint8_t data) {
         return;
     }
 
-    if (gb_mem[rSB] == success[i]) {
+    if (gb->memory[rSB] == success[i]) {
         if (++i == 6) {
-            state->exit_code = RESULT_SUCCESS;
-            state->done = 1;
+            gb->exit_code = RESULT_SUCCESS;
+            gb->done = 1;
         }
-    } else if (gb_mem[rSB] == failure[i]) {
+    } else if (gb->memory[rSB] == failure[i]) {
         if (++i == 6) {
-            state->exit_code = RESULT_FAILURE;
-            state->done = 1;
+            gb->exit_code = RESULT_FAILURE;
+            gb->done = 1;
         }
     } else {
         i = 0;
     }
 }
 
-void blargg1_write_hook(uint16_t addr, uint8_t data) {
+void blargg1_write_hook(struct gameboy *gb, uint16_t addr, uint8_t data) {
     static uint8_t buf[8], i;
 
-    if (!state->testing) {
+    if (!gb->testing) {
         return;
     }
 
@@ -148,20 +144,20 @@ void blargg1_write_hook(uint16_t addr, uint8_t data) {
         return;
     }
 
-    (void)fprintf(stderr, "%c", gb_mem[rSB]);
+    (void)fprintf(stderr, "%c", gb->memory[rSB]);
     (void)fflush(stderr);
-    buf[i++] = gb_mem[rSB];
+    buf[i++] = gb->memory[rSB];
 
     if (i < 6) {
         return;
     }
 
     if (!memcmp(buf, "Failed", 6)) {
-        state->exit_code = RESULT_FAILURE;
-        state->done = 1;
+        gb->exit_code = RESULT_FAILURE;
+        gb->done = 1;
     } else if (!memcmp(buf, "Passed", 6)) {
-        state->exit_code = RESULT_SUCCESS;
-        state->done = 1;
+        gb->exit_code = RESULT_SUCCESS;
+        gb->done = 1;
     }
 
     for (i = 0; i < 5; i++) {
@@ -169,42 +165,42 @@ void blargg1_write_hook(uint16_t addr, uint8_t data) {
     }
 }
 
-void blargg2_run_hook() {
-    if (!state->testing) {
+void blargg2_run_hook(struct gameboy *gb) {
+    if (!gb->testing) {
         return;
     }
 }
 
 // should work for: oam_bug, mem_timing-2, dmg_sound, cgb_sound
-void blargg2_write_hook(uint16_t addr, uint8_t data) {
+void blargg2_write_hook(struct gameboy *gb, uint16_t addr, uint8_t data) {
     const uint8_t sig[] = {0xde, 0xb0, 0x61};
-    char *res = (char *)&gb_mem[_SRAM + 4];
+    char *res = (char *)&gb->memory[_SRAM + 4];
     static int f;
 
-    if (!state->testing) {
+    if (!gb->testing) {
         return;
     }
 
     if ((addr >= _SRAM) && (addr < _RAM)) {
-        gb_mem[addr] = data;
+        gb->memory[addr] = data;
     }
 
-    if (memcmp((const void *)&gb_mem[_SRAM + 1], sig, 3)) {
+    if (memcmp((const void *)&gb->memory[_SRAM + 1], sig, 3)) {
         return;
     }
 
-    if (gb_mem[_SRAM] == 0x80) {
+    if (gb->memory[_SRAM] == 0x80) {
         f = 1;
     } else if (f) {
-        state->done = 1;
+        gb->done = 1;
         fprintf(stderr, "%s", res);
 
         if (strstr(res, "Failed")) {
-            state->exit_code = RESULT_FAILURE;
+            gb->exit_code = RESULT_FAILURE;
         } else if (strstr(res, "Passed")) {
-            state->exit_code = RESULT_SUCCESS;
+            gb->exit_code = RESULT_SUCCESS;
         } else {
-            state->exit_code = RESULT_ERROR;
+            gb->exit_code = RESULT_ERROR;
         }
     }
 }

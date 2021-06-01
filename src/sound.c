@@ -1,45 +1,13 @@
 #include "gb.h"
+#include "sound.h"
 #include "hardware.h"
 
 /* http://gbdev.gg8.se/wiki/articles/Sound_Controller */
 /* http://gbdev.gg8.se/wiki/articles/Gameboy_sound_hardware */
 /* https://ia801906.us.archive.org/19/items/GameBoyProgManVer1.1/GameBoyProgManVer1.1.pdf */
 
-#define VOLUME_CLOCK            (4194304 /  64)
-#define SWEEP_CLOCK             (4194304 / 128)
-#define FREQUENCY_CLOCK         (4194304 / 512)
-#define SAMPLE_CLOCK            (4194304 / SAMPLING_FREQUENCY)
-
-struct channel {
-    uint32_t on;
-    uint32_t dac;
-    uint32_t sweep_on;
-    uint32_t sweep_period;
-    uint32_t sweep_neg;
-    uint32_t sweep_down;
-    uint32_t sweep_shift;
-    uint32_t sweep_ctr;         //helper
-    uint32_t shadow_freq;
-    uint32_t length;
-    uint32_t len_enabled;    //rename?
-    uint32_t volume;
-    uint32_t env_dir;
-    uint32_t env_period;         //rename?
-    uint32_t env_ctr;           //helper
-    uint32_t env_on;
-    uint32_t lfsr_width;
-    uint32_t duty;
-    uint32_t phase;
-    uint32_t freq;
-    int32_t period;
-    uint32_t clocks;
-    int32_t counter;
-};
-
-uint32_t seq_clocks, seq_frame;
-struct channel ch[4];
-
-static int16_t tone_sample(struct channel *s) {
+static int16_t tone_sample(struct gameboy *gb, int idx) {
+    struct channel *s = &gb->ch[idx];
     uint32_t duties[4][8] = {
         {0, 0, 0, 0, 0, 0, 0, 1},
         {1, 0, 0, 0, 0, 0, 0, 1},
@@ -54,12 +22,14 @@ static int16_t tone_sample(struct channel *s) {
     return (s->volume * duties[s->duty][(s->phase & 7)]) << 2;
 }
 
-static int16_t wave_sample(struct channel *s) {
+static int16_t wave_sample(struct gameboy *gb) {
+    struct channel *s = &gb->ch[2];
+
     if ((!s->on) || (s->len_enabled && !s->length) || (!s->volume)) {
         return 0;
     }
 
-    int16_t sample = (uint8_t)gb_mem[_AUD3WAVERAM + ((s->phase & 31) >> 1)];
+    int16_t sample = (uint8_t)gb->memory[_AUD3WAVERAM + ((s->phase & 31) >> 1)];
     sample = (s->phase & 1) ? (sample & 15) : (sample >> 4);
 
     switch (s->volume) {
@@ -76,8 +46,9 @@ static int16_t wave_sample(struct channel *s) {
     return sample;
 }
 
-static int16_t noise_sample(struct channel *s) {
+static int16_t noise_sample(struct gameboy *gb) {
     extern unsigned char noise7[], noise15[];
+    struct channel *s = &gb->ch[3];
     uint32_t idx;
     int16_t sample;
     uint8_t *tab;
@@ -103,39 +74,38 @@ static int16_t noise_sample(struct channel *s) {
     returns 1 when `index' is greater than or equal to `size'
 */
 
-static int write_sounds(uint8_t *buf, uint32_t size) {
+static int write_sounds(struct gameboy *gb) {
     int32_t left, right, sample;
-    static uint32_t index;
 
-    if (!size) {
-        state->audio_render = 1;
-        return state->audio_render;
+    if (!SOUND_BUF_SIZE) {
+        gb->audio_render = 1;
+        return gb->audio_render;
     }
 
-    index %= size;
+    gb->samples_index %= SOUND_BUF_SIZE;
     left = right = 0;
-    sample = tone_sample(&ch[0]);
-    left += (gb_mem[rAUDTERM] & AUDTERM_1_LEFT) ? sample : 0;
-    right += (gb_mem[rAUDTERM] & AUDTERM_1_RIGHT) ? sample : 0;
-    sample = tone_sample(&ch[1]);
-    left += (gb_mem[rAUDTERM] & AUDTERM_2_LEFT) ? sample : 0;
-    right += (gb_mem[rAUDTERM] & AUDTERM_2_RIGHT) ? sample : 0;
-    sample = wave_sample(&ch[2]);
-    left += (gb_mem[rAUDTERM] & AUDTERM_3_LEFT) ? sample : 0;
-    right += (gb_mem[rAUDTERM] & AUDTERM_3_RIGHT) ? sample : 0;
-    sample = noise_sample(&ch[3]);
-    left += (gb_mem[rAUDTERM] & AUDTERM_4_LEFT) ? sample : 0;
-    right += (gb_mem[rAUDTERM] & AUDTERM_4_RIGHT) ? sample : 0;
+    sample = tone_sample(gb, 0);
+    left += (gb->memory[rAUDTERM] & AUDTERM_1_LEFT) ? sample : 0;
+    right += (gb->memory[rAUDTERM] & AUDTERM_1_RIGHT) ? sample : 0;
+    sample = tone_sample(gb, 1);
+    left += (gb->memory[rAUDTERM] & AUDTERM_2_LEFT) ? sample : 0;
+    right += (gb->memory[rAUDTERM] & AUDTERM_2_RIGHT) ? sample : 0;
+    sample = wave_sample(gb);
+    left += (gb->memory[rAUDTERM] & AUDTERM_3_LEFT) ? sample : 0;
+    right += (gb->memory[rAUDTERM] & AUDTERM_3_RIGHT) ? sample : 0;
+    sample = noise_sample(gb);
+    left += (gb->memory[rAUDTERM] & AUDTERM_4_LEFT) ? sample : 0;
+    right += (gb->memory[rAUDTERM] & AUDTERM_4_RIGHT) ? sample : 0;
     left <<= 4;
-    left *= (((gb_mem[rAUDVOL] >> 4) & 7) + 1);
+    left *= (((gb->memory[rAUDVOL] >> 4) & 7) + 1);
     right <<= 4;
-    right *= ((gb_mem[rAUDVOL] & 7) + 1);
-    *(int16_t *) &buf[index] = (int16_t)left;
-    *(int16_t *) &buf[index + 2] = (int16_t)right;
+    right *= ((gb->memory[rAUDVOL] & 7) + 1);
+    *(int16_t *) &gb->sound_buf[gb->samples_index] = (int16_t)left;
+    *(int16_t *) &gb->sound_buf[gb->samples_index + 2] = (int16_t)right;
     /* one frame == 2 sixteen bit samples: L, R */
-    index += 4;
-    state->audio_render = index >= size;
-    return state->audio_render;
+    gb->samples_index += 4;
+    gb->audio_render = gb->samples_index >= SOUND_BUF_SIZE;
+    return gb->audio_render;
 }
 
 static void volume_tick(struct channel *s) {
@@ -160,7 +130,8 @@ static void volume_tick(struct channel *s) {
     }
 }
 
-static void sweep_calc(struct channel *s, int update) {
+static void sweep_calc(struct gameboy *gb, int update) {
+    struct channel *s = &gb->ch[0];
     int32_t d = s->shadow_freq >> s->sweep_shift;
 
     if (s->sweep_neg) {
@@ -178,87 +149,88 @@ static void sweep_calc(struct channel *s, int update) {
         if ((s->sweep_shift) && (update)) {
             s->shadow_freq = s->freq = f;
             s->period = (2048 - s->freq) << 2;
-            gb_mem[rAUD1LOW] = f & 255;
-            gb_mem[rAUD1HIGH] &= ~7;
-            gb_mem[rAUD1HIGH] |= ((f >> 8) & 7);
+            gb->memory[rAUD1LOW] = f & 255;
+            gb->memory[rAUD1HIGH] &= ~7;
+            gb->memory[rAUD1HIGH] |= ((f >> 8) & 7);
         }
     }
 }
 
-static void sweep_tick(struct channel *s) {
+static void sweep_tick(struct gameboy *gb) {
+    struct channel *s = &gb->ch[0];
+
     if ((s->sweep_on) && (!--(s->sweep_ctr))) {
         s->sweep_ctr = s->sweep_period ? s->sweep_period : 8;
 
         if (s->sweep_period) {
-            (void)sweep_calc(s, 1);
-            (void)sweep_calc(s, 0);
+            (void)sweep_calc(gb, 1);
+            (void)sweep_calc(gb, 0);
         }
     }
 }
 
-int sound_update(uint8_t *gb_mem, t_state *state, int clocks) {
-    static int i, samples;
-    static int once;
+int sound_update(struct gameboy *gb) {
+    static int i, once, clocks = 4;
 
     if (!once) {
-        once = ch[0].on = 1;
+        once = gb->ch[0].on = 1;
     }
 
-    if (gb_mem[rAUDENA] & AUDENA_ON) {
-        seq_clocks += clocks;
+    if (gb->memory[rAUDENA] & AUDENA_ON) {
+        gb->seq_clocks += clocks;
     }
 
-    if ((gb_mem[rAUDENA] & AUDENA_ON) && (seq_clocks >= 8192)) {
-        seq_clocks -= 8192;
-        seq_frame = (seq_frame + 1) & 7;
+    if ((gb->memory[rAUDENA] & AUDENA_ON) && (gb->seq_clocks >= 8192)) {
+        gb->seq_clocks -= 8192;
+        gb->seq_frame = (gb->seq_frame + 1) & 7;
 
-        if ((seq_frame & 1) == 0) {
+        if ((gb->seq_frame & 1) == 0) {
             for (i = 0; i < 4; i++) {
-                if ((ch[i].len_enabled) && (ch[i].length)) {
-                    if (!--(ch[i].length)) {
-                        ch[i].on = 0;
+                if ((gb->ch[i].len_enabled) && (gb->ch[i].length)) {
+                    if (!--(gb->ch[i].length)) {
+                        gb->ch[i].on = 0;
                     }
                 }
             }
         }
 
-        if ((seq_frame & 3) == 2)  {
-            sweep_tick(&ch[0]);
+        if ((gb->seq_frame & 3) == 2)  {
+            sweep_tick(gb);
         }
 
-        if ((seq_frame & 7) == 7) {
-            volume_tick(&ch[0]);
-            volume_tick(&ch[1]);
-            volume_tick(&ch[3]);
+        if ((gb->seq_frame & 7) == 7) {
+            volume_tick(&gb->ch[0]);
+            volume_tick(&gb->ch[1]);
+            volume_tick(&gb->ch[3]);
         }
     }
 
-    gb_mem[rAUDENA] &= AUDENA_ON;
+    gb->memory[rAUDENA] &= AUDENA_ON;
 
     for (i = 0; i < 4; i++) {
-        gb_mem[rAUDENA] |= ch[i].on << i;
+        gb->memory[rAUDENA] |= gb->ch[i].on << i;
 
-        if (ch[i].on && ch[i].period) {
-            ch[i].counter -= clocks;
+        if ((gb->ch[i].on) && (gb->ch[i].period)) {
+            gb->ch[i].counter -= clocks;
 
-            if (ch[i].counter <= 0) {
-                ch[i].counter += ch[i].period;
-                ch[i].phase++;
+            if (gb->ch[i].counter <= 0) {
+                gb->ch[i].counter += gb->ch[i].period;
+                gb->ch[i].phase++;
             }
         }
     }
 
-    samples += clocks;
+    gb->samples_clock += clocks;
 
-    if (samples >= SAMPLE_CLOCK) {
-        samples -= SAMPLE_CLOCK;
-        return write_sounds(state->sound_buf, SOUND_BUF_SIZE);
+    if (gb->samples_clock >= SAMPLE_CLOCK) {
+        gb->samples_clock -= SAMPLE_CLOCK;
+        return write_sounds(gb);
     }
 
     return 0;
 }
 
-uint8_t sound_read_u8(uint16_t addr) {
+uint8_t sound_read_u8(struct gameboy *gb, uint16_t addr) {
     // blargg dmg_sound 01-registers.s, 0xff10 to 0xff3f
     uint8_t masks[] = {
         0x80, 0x3f, 0x00, 0xff, 0xbf,
@@ -270,83 +242,83 @@ uint8_t sound_read_u8(uint16_t addr) {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     };
-    return gb_mem[addr] | masks[addr - 0xff10];
+    return gb->memory[addr] | masks[addr - 0xff10];
 }
 
-void channel_reload(struct channel ch[4], int i, uint8_t data) {
+void channel_reload(struct gameboy *gb, int i, uint8_t data) {
     int trigger = (data & 128) != 0;
     int len_enabled = (data & 64) != 0;
     int max_lengths[] = {64, 64, 256, 64};
-    gb_mem[rAUD1HIGH + (i * 5)] = data;
+    gb->memory[rAUD1HIGH + (i * 5)] = data;
 
     if (i != 3) { // not noise
-        ch[i].freq = (gb_mem[rAUD1HIGH + (i * 5)] & 7) << 8;
-        ch[i].freq |= gb_mem[rAUD1LOW + (i * 5)];
-        ch[i].period = (2048 - ch[i].freq) << (2 - (i >> 1));
+        gb->ch[i].freq = (gb->memory[rAUD1HIGH + (i * 5)] & 7) << 8;
+        gb->ch[i].freq |= gb->memory[rAUD1LOW + (i * 5)];
+        gb->ch[i].period = (2048 - gb->ch[i].freq) << (2 - (i >> 1));
     }
 
     if (trigger) {
-        ch[i].on = ch[i].dac;
+        gb->ch[i].on = gb->ch[i].dac;
 
         if (i != 2) { // not wave
-            ch[i].volume = gb_mem[rAUD1ENV + (i * 5)] >> 4;
-            ch[i].env_on = ch[i].env_period != 0;
-            ch[i].env_ctr = ch[i].env_period;
+            gb->ch[i].volume = gb->memory[rAUD1ENV + (i * 5)] >> 4;
+            gb->ch[i].env_on = gb->ch[i].env_period != 0;
+            gb->ch[i].env_ctr = gb->ch[i].env_period;
         }
 
-        if (!ch[i].length) {
-            ch[i].length = max_lengths[i];
-            ch[i].len_enabled = 0;
+        if (!gb->ch[i].length) {
+            gb->ch[i].length = max_lengths[i];
+            gb->ch[i].len_enabled = 0;
         }
     }
 
-    if ((len_enabled) && (!ch[i].len_enabled)) {
-        if ((ch[i].length) && (!(seq_frame & 1))) {
-            if (!--(ch[i].length)) {
+    if ((len_enabled) && (!gb->ch[i].len_enabled)) {
+        if ((gb->ch[i].length) && (!(gb->seq_frame & 1))) {
+            if (!--(gb->ch[i].length)) {
                 if (trigger) {
-                    ch[i].length = max_lengths[i] - 1;
+                    gb->ch[i].length = max_lengths[i] - 1;
                 } else {
-                    ch[i].on = 0;
+                    gb->ch[i].on = 0;
                 }
             }
         }
     }
 
-    ch[i].len_enabled = len_enabled;
+    gb->ch[i].len_enabled = len_enabled;
 }
 
-void sound_write_u8(uint16_t addr, uint8_t data) {
+void sound_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
 //    if ((addr >= 0xff10) && (addr < 0xff40)) {
 //        (void)printf("write() addr = %04x val = %02x", addr, data);
 //        (void)printf(" %s\n", ((addr != rAUDENA) &&
-//                               (!(gb_mem[rAUDENA] & AUDENA_ON))) ? "return" : "continue");
+//                               (!(gb->memory[rAUDENA] & AUDENA_ON))) ? "return" : "continue");
 //        (void)fflush(stdout);
 //    }
     if (addr != rAUDENA) {
-        if (!(gb_mem[rAUDENA] & AUDENA_ON)) {
+        if (!(gb->memory[rAUDENA] & AUDENA_ON)) {
             //DMG specific: lengths are writable when powered-off
             switch (addr) {
             case rAUD1LEN:
-                gb_mem[addr] &= ~63;
-                gb_mem[addr] |= data & 63;
-                ch[0].length = 64 - (gb_mem[rAUD1LEN] & 63);
+                gb->memory[addr] &= ~63;
+                gb->memory[addr] |= data & 63;
+                gb->ch[0].length = 64 - (gb->memory[rAUD1LEN] & 63);
                 break;
 
             case rAUD2LEN:
-                gb_mem[addr] &= ~63;
-                gb_mem[addr] |= data & 63;
-                ch[1].length = 64 - (gb_mem[rAUD2LEN] & 63);
+                gb->memory[addr] &= ~63;
+                gb->memory[addr] |= data & 63;
+                gb->ch[1].length = 64 - (gb->memory[rAUD2LEN] & 63);
                 break;
 
             case rAUD3LEN:
-                gb_mem[addr] = data;
-                ch[2].length = 256 - gb_mem[rAUD3LEN];
+                gb->memory[addr] = data;
+                gb->ch[2].length = 256 - gb->memory[rAUD3LEN];
                 break;
 
             case rAUD4LEN:
-                gb_mem[addr] &= ~63;
-                gb_mem[addr] |= data & 63;
-                ch[3].length = 64 - (gb_mem[rAUD4LEN] & 63);
+                gb->memory[addr] &= ~63;
+                gb->memory[addr] |= data & 63;
+                gb->ch[3].length = 64 - (gb->memory[rAUD4LEN] & 63);
                 break;
             }
 
@@ -356,168 +328,169 @@ void sound_write_u8(uint16_t addr, uint8_t data) {
 
     switch (addr) {
     case rAUD1SWEEP:    // rNR10
-        gb_mem[rAUD1SWEEP] = data;
-        ch[0].sweep_period = (gb_mem[rAUD1SWEEP] >> 4) & 7; // 3 bits
-        ch[0].sweep_shift = gb_mem[rAUD1SWEEP] & 7; // 3 bits
-        ch[0].sweep_neg = gb_mem[rAUD1SWEEP] & 8;   // 1 bit
+        gb->memory[rAUD1SWEEP] = data;
+        gb->ch[0].sweep_period = (gb->memory[rAUD1SWEEP] >> 4) & 7; // 3 bits
+        gb->ch[0].sweep_shift = gb->memory[rAUD1SWEEP] & 7; // 3 bits
+        gb->ch[0].sweep_neg = gb->memory[rAUD1SWEEP] & 8;   // 1 bit
 
-        if ((ch[0].sweep_down) && (!ch[0].sweep_neg)) {
-            ch[0].on = 0;
+        if ((gb->ch[0].sweep_down) && (!gb->ch[0].sweep_neg)) {
+            gb->ch[0].on = 0;
         }
 
         break;
 
     case rAUD1LEN:      // rNR11
-        gb_mem[rAUD1LEN] = data;
-        ch[0].duty = gb_mem[rAUD1LEN] >> 6;         // 2 bits
-        ch[0].length = 64 - (gb_mem[rAUD1LEN] & 63);
+        gb->memory[rAUD1LEN] = data;
+        gb->ch[0].duty = gb->memory[rAUD1LEN] >> 6;         // 2 bits
+        gb->ch[0].length = 64 - (gb->memory[rAUD1LEN] & 63);
         break;
 
     case rAUD1ENV:      // rNR12
-        gb_mem[rAUD1ENV] = data;
-        ch[0].volume = gb_mem[rAUD1ENV] >> 4;       // 4 bits
-        ch[0].env_dir = gb_mem[rAUD1ENV] & 8;       // 1 bit
-        ch[0].env_period = gb_mem[rAUD1ENV] & 7;    // 3 bits
-        ch[0].dac = (gb_mem[rAUD1ENV] & 0xf8) != 0;
-        ch[0].on &= ch[0].dac;
+        gb->memory[rAUD1ENV] = data;
+        gb->ch[0].volume = gb->memory[rAUD1ENV] >> 4;       // 4 bits
+        gb->ch[0].env_dir = gb->memory[rAUD1ENV] & 8;       // 1 bit
+        gb->ch[0].env_period = gb->memory[rAUD1ENV] & 7;    // 3 bits
+        gb->ch[0].dac = (gb->memory[rAUD1ENV] & 0xf8) != 0;
+        gb->ch[0].on &= gb->ch[0].dac;
         break;
 
     case rAUD1LOW:      // rNR13
-        gb_mem[rAUD1LOW] = data;
-        ch[0].freq = ((gb_mem[rAUD1HIGH] & 7) << 8) | gb_mem[rAUD1LOW];
-        ch[0].period = (2048 - ch[0].freq) << 2;
+        gb->memory[rAUD1LOW] = data;
+        gb->ch[0].freq = ((gb->memory[rAUD1HIGH] & 7) << 8) | gb->memory[rAUD1LOW];
+        gb->ch[0].period = (2048 - gb->ch[0].freq) << 2;
         break;
 
     case rAUD1HIGH:     // rNR14
-        channel_reload(ch, 0, data);
+        channel_reload(gb, 0, data);
 
         if (data & 128) {
-            ch[0].shadow_freq = ch[0].freq;
-            ch[0].sweep_ctr = ch[0].sweep_period ? ch[0].sweep_period : 8;
-            ch[0].sweep_on = (ch[0].sweep_period != 0) || (ch[0].sweep_shift != 0);
-            ch[0].sweep_down = 0;
+            gb->ch[0].shadow_freq = gb->ch[0].freq;
+            gb->ch[0].sweep_ctr = gb->ch[0].sweep_period ? gb->ch[0].sweep_period : 8;
+            gb->ch[0].sweep_on = (gb->ch[0].sweep_period != 0) ||
+                                 (gb->ch[0].sweep_shift != 0);
+            gb->ch[0].sweep_down = 0;
 
-            if (ch[0].sweep_shift) {
-                (void)sweep_calc(&ch[0], 0);
+            if (gb->ch[0].sweep_shift) {
+                (void)sweep_calc(gb, 0);
             }
         }
 
         break;
 
     case rAUD2LEN:      // rNR21
-        gb_mem[rAUD2LEN] = data;
-        ch[1].duty = gb_mem[rAUD2LEN] >> 6;         // 2 bits
-        ch[1].length = 64 - (gb_mem[rAUD2LEN] & 63);    // 6 bits
+        gb->memory[rAUD2LEN] = data;
+        gb->ch[1].duty = gb->memory[rAUD2LEN] >> 6;         // 2 bits
+        gb->ch[1].length = 64 - (gb->memory[rAUD2LEN] & 63);    // 6 bits
         break;
 
     case rAUD2ENV:      // rNR22
-        gb_mem[rAUD2ENV] = data;
-        ch[1].volume = gb_mem[rAUD2ENV] >> 4;       // 4 bits
-        ch[1].env_dir = gb_mem[rAUD2ENV] & 8;       // 1 bit
-        ch[1].env_period = gb_mem[rAUD2ENV] & 7;    // 3 bits
-        ch[1].dac = (gb_mem[rAUD2ENV] & 0xf8) != 0;
-        ch[1].on &= ch[1].dac;
+        gb->memory[rAUD2ENV] = data;
+        gb->ch[1].volume = gb->memory[rAUD2ENV] >> 4;       // 4 bits
+        gb->ch[1].env_dir = gb->memory[rAUD2ENV] & 8;       // 1 bit
+        gb->ch[1].env_period = gb->memory[rAUD2ENV] & 7;    // 3 bits
+        gb->ch[1].dac = (gb->memory[rAUD2ENV] & 0xf8) != 0;
+        gb->ch[1].on &= gb->ch[1].dac;
         break;
 
     case rAUD2LOW:      // rNR23
-        gb_mem[rAUD2LOW] = data;
-        ch[1].freq = ((gb_mem[rAUD2HIGH] & 7) << 8) | gb_mem[rAUD2LOW];
-        ch[1].period = (2048 - ch[1].freq) << 2;
+        gb->memory[rAUD2LOW] = data;
+        gb->ch[1].freq = ((gb->memory[rAUD2HIGH] & 7) << 8) | gb->memory[rAUD2LOW];
+        gb->ch[1].period = (2048 - gb->ch[1].freq) << 2;
         break;
 
     case rAUD2HIGH:     // rNR24
-        channel_reload(ch, 1, data);
+        channel_reload(gb, 1, data);
         break;
 
     case rAUD3ENA:      // rNR30
-        gb_mem[rAUD3ENA] = data;
-        ch[2].dac = (gb_mem[rAUD3ENA] & 128) != 0;
-        ch[2].on &= ch[2].dac;
+        gb->memory[rAUD3ENA] = data;
+        gb->ch[2].dac = (gb->memory[rAUD3ENA] & 128) != 0;
+        gb->ch[2].on &= gb->ch[2].dac;
         break;
 
     case rAUD3LEN:      // rNR31
-        gb_mem[rAUD3LEN] = data;
-        ch[2].length = 256 - gb_mem[rAUD3LEN];
+        gb->memory[rAUD3LEN] = data;
+        gb->ch[2].length = 256 - gb->memory[rAUD3LEN];
         break;
 
     case rAUD3LEVEL:    // rNR32
-        gb_mem[rAUD3LEVEL] = data;
-        ch[2].volume = (gb_mem[rAUD3LEVEL] >> 5) & 3;
+        gb->memory[rAUD3LEVEL] = data;
+        gb->ch[2].volume = (gb->memory[rAUD3LEVEL] >> 5) & 3;
         break;
 
     case rAUD3LOW:      // rNR33
-        gb_mem[rAUD3LOW] = data;
-        ch[2].freq = ((gb_mem[rAUD3HIGH] & 7) << 8) | gb_mem[rAUD3LOW];
-        ch[2].period = (2048 - ch[2].freq) << 1;
+        gb->memory[rAUD3LOW] = data;
+        gb->ch[2].freq = ((gb->memory[rAUD3HIGH] & 7) << 8) | gb->memory[rAUD3LOW];
+        gb->ch[2].period = (2048 - gb->ch[2].freq) << 1;
         break;
 
     case rAUD3HIGH:     // rNR34
-        channel_reload(ch, 2, data);
+        channel_reload(gb, 2, data);
         break;
 
     case rAUD4LEN:      // rNR41
-        gb_mem[rAUD4LEN] = data;
-        ch[3].length = 64 - (gb_mem[rAUD4LEN] & 63);
+        gb->memory[rAUD4LEN] = data;
+        gb->ch[3].length = 64 - (gb->memory[rAUD4LEN] & 63);
         break;
 
     case rAUD4ENV:      // rNR42
-        gb_mem[rAUD4ENV] = data;
-        ch[3].volume = gb_mem[rAUD4ENV] >> 4;
-        ch[3].env_dir = gb_mem[rAUD4ENV] & 8;
-        ch[3].env_period = gb_mem[rAUD4ENV] & 7;
-        ch[3].dac = (gb_mem[rAUD4ENV] & 0xf8) != 0;
-        ch[3].on &= ch[3].dac;
+        gb->memory[rAUD4ENV] = data;
+        gb->ch[3].volume = gb->memory[rAUD4ENV] >> 4;
+        gb->ch[3].env_dir = gb->memory[rAUD4ENV] & 8;
+        gb->ch[3].env_period = gb->memory[rAUD4ENV] & 7;
+        gb->ch[3].dac = (gb->memory[rAUD4ENV] & 0xf8) != 0;
+        gb->ch[3].on &= gb->ch[3].dac;
         break;
 
     case rAUD4POLY:     // rNR43
-        gb_mem[rAUD4POLY] = data;
+        gb->memory[rAUD4POLY] = data;
         uint32_t f = 524288, shift, ratio;
         uint32_t tab[] = {f * 2, f, f / 2, f / 3, f / 4, f / 5, f / 6, f / 7};
-        ch[3].lfsr_width = gb_mem[rAUD4POLY] & 8;
-        shift = gb_mem[rAUD4POLY] >> 4;
-        ratio = gb_mem[rAUD4POLY] & 7;
+        gb->ch[3].lfsr_width = gb->memory[rAUD4POLY] & 8;
+        shift = gb->memory[rAUD4POLY] >> 4;
+        ratio = gb->memory[rAUD4POLY] & 7;
 
         if (shift >= 14) {
-            ch[3].freq = ch[3].period = 0;
+            gb->ch[3].freq = gb->ch[3].period = 0;
         } else {
-            ch[3].freq = tab[ratio] >> (shift + 1);
-            ch[3].period = 4194304 / ch[3].freq;
+            gb->ch[3].freq = tab[ratio] >> (shift + 1);
+            gb->ch[3].period = 4194304 / gb->ch[3].freq;
         }
 
         break;
 
     case rAUD4GO:       // rNR44
-        channel_reload(ch, 3, data);
+        channel_reload(gb, 3, data);
         break;
 
     case rAUDVOL:       // rNR50
-        gb_mem[rAUDVOL] = data;
+        gb->memory[rAUDVOL] = data;
         break;
 
     case rAUDTERM:      // rNR51
-        gb_mem[rAUDTERM] = data;
+        gb->memory[rAUDTERM] = data;
         break;
 
     case rAUDENA:       // rNR52
-        gb_mem[rAUDENA] = data & 128;
+        gb->memory[rAUDENA] = data & 128;
 
-        if (!(gb_mem[rAUDENA] & 128)) {
+        if (!(gb->memory[rAUDENA] & 128)) {
             for (int i = 0; i < 4; i++) {
                 //DMG specific: length preservation on power-off
-                uint32_t length = ch[i].length;
-                (void)memset(&ch[i], 0, sizeof(struct channel));
-                ch[i].length = length;
+                uint32_t length = gb->ch[i].length;
+                (void)memset(&gb->ch[i], 0, sizeof(struct channel));
+                gb->ch[i].length = length;
             }
 
-            (void)memset(&gb_mem[0xff10], 0, 0x20);
-            seq_clocks = 0;
-            seq_frame = 7;
+            (void)memset(&gb->memory[0xff10], 0, 0x20);
+            gb->seq_clocks = 0;
+            gb->seq_frame = 7;
         }
 
         break;
 
     default:
-        gb_mem[addr] = data;
+        gb->memory[addr] = data;
     }
 }
 

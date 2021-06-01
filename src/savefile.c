@@ -3,8 +3,8 @@
 #include <errno.h>
 #include <ctype.h>
 
-static bool has_battery() {
-    switch (gb_mem[0x147]) {
+static bool has_battery(struct gameboy *gb) {
+    switch (gb->memory[0x147]) {
     case CART_ROM_MBC1_RAM_BAT:
     case CART_ROM_MBC2_BAT:
     case CART_ROM_RAM_BAT:
@@ -45,39 +45,40 @@ char *replace_exten(char *fn, char *ext) {
     return res;
 }
 
-int savefile_read() {
+int savefile_read(struct gameboy *gb) {
     int ret, fd;
     struct stat st;
 
-    if (!has_battery()) {
+    if (!has_battery(gb)) {
         return 1;
     }
 
-    state->ram_file = replace_exten(state->rom_file, ".sav");
+    // TODO: free on exit
+    gb->ram_file = replace_exten(gb->rom_file, ".sav");
 
-    if (stat(state->ram_file, &st) != 0) {
+    if (stat(gb->ram_file, &st) != 0) {
         return errno == ENOENT;
     }
 
-    if ((fd = open(state->ram_file, O_RDONLY | O_BINARY)) == -1) {
+    if ((fd = open(gb->ram_file, O_RDONLY | O_BINARY)) == -1) {
         return 0;
     }
 
-    ret = read(fd, state->ram_banks, RAM_SIZE * 16);
+    ret = read(fd, gb->ram_banks, RAM_SIZE * 16);
     (void)close(fd);
     return ret != -1;
 }
 
-int savefile_write() {
+int savefile_write(struct gameboy *gb) {
     int fd, ret, size;
 
-    if (!has_battery()) {
+    if (!has_battery(gb)) {
         return 1;
     }
 
     size = (RAM_SIZE * 16) - 1;
 
-    while ((size >= 0) && (!state->ram_banks[size])) {
+    while ((size >= 0) && (!gb->ram_banks[size])) {
         size--;
     }
 
@@ -88,13 +89,13 @@ int savefile_write() {
         return 1;
     }
 
-    fd = open(state->ram_file, O_CREAT | O_TRUNC | O_WRONLY | O_BINARY, 0644);
+    fd = open(gb->ram_file, O_CREAT | O_TRUNC | O_WRONLY | O_BINARY, 0644);
 
     if (fd == -1) {
         return 0;
     }
 
-    ret = write(fd, state->ram_banks, size);
+    ret = write(fd, gb->ram_banks, size);
     (void)close(fd);
     return ret != -1;
 }
