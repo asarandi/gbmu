@@ -42,18 +42,17 @@ bool is_window_pixel(struct gameboy *gb, uint8_t y, uint8_t x) {
     return (y >= gb->memory[rWY]) && ((x + 7) >= gb->memory[rWX]);
 }
 
-uint8_t get_sprite_pixel(struct gameboy *gb, uint8_t idx, uint8_t y,
-                         uint8_t x) {
+uint8_t get_sprite_pixel(struct gameboy *gb, int i, uint8_t y, uint8_t x) {
     uint8_t obj_height, coord_y, coord_x, obj_num;
     uint8_t *tile_data, tile0, tile1, pixel;
     struct OAM_ATTRS *obj;
 
-    if ((idx == 0xff) || (!(gb->memory[rLCDC] & LCDCF_OBJON))) {
+    if (!(gb->memory[rLCDC] & LCDCF_OBJON)) {
         return 0;
     }
 
+    obj = gb->sprites[i];
     obj_height = (gb->memory[rLCDC] & LCDCF_OBJ16) ? 16 : 8;
-    obj = (void *)&gb->memory[_OAMRAM + idx];
     coord_y = (y + 16 - obj->OAMA_Y) % obj_height;
     coord_x = (x + 8 - obj->OAMA_X) % 8;
     obj_num = obj->OAMA_TILEID;
@@ -83,58 +82,43 @@ uint8_t get_sprite_pixel(struct gameboy *gb, uint8_t idx, uint8_t y,
     return (pixel | (obj->OAMA_FLAGS & 0xf0));
 }
 
-
-static int sprites_compare_dmg(const void *a, const void *b, void *ptr) {
-    /* dmg priority */
-    struct gameboy *gb = (struct gameboy *)ptr;
-    int m = gb->memory[_OAMRAM + *(uint8_t *)a + 1];
-    int n = gb->memory[_OAMRAM + *(uint8_t *)b + 1];
-    return m - n;
-}
-
-//static int sprites_compare_cgb(const void *a, const void *b) {
-//    /* cgb priority */
-//    return (int)(*(uint8_t *)a - *(uint8_t *)b);
-//}
-
-extern void qsort_r(void *, size_t, size_t, int (*)(const void *, const void *,
-                    void *), void *);
-
-/* fills `uint8_t *sprites' with indexes to oam */
-void get_sprites(struct gameboy *gb, uint8_t lcd_y, uint8_t *sprites) {
-    uint8_t *oam = &gb->memory[0xfe00];
-    uint8_t idx, sprites_idx, obj_y;
-    uint8_t obj_height = (gb->memory[rLCDC] & 4) ? 16 : 8;
-    (void)memset(sprites, 0xff, 10);
+void get_sprites(struct gameboy *gb) {
+    int i, j, ct, hgt, ly;
+    struct OAM_ATTRS *obj;
 
     if (!(gb->memory[rLCDC] & LCDCF_OBJON)) {
         return;
     }
 
-    idx = 0;
-    sprites_idx = 0;
+    (void)memset(gb->sprites, 0, sizeof(gb->sprites));
+    hgt = (gb->memory[rLCDC] & 4) ? 16 : 8;
+    ly = gb->memory[rLY];
 
-    for (idx = 0; idx < 160; idx += 4) {
-        obj_y = oam[idx];
+    for (i = ct = 0; (i < 40) && (ct < 10); i++) {
+        obj = (struct OAM_ATTRS *)&gb->memory[_OAMRAM + (i << 2)];
 
-        if ((obj_y == 0) || (obj_y > 160)) {
+        if ((obj->OAMA_Y == 0) || (obj->OAMA_Y > 160)) {
             continue;
         }
 
-        if ((obj_y <= 8) && (obj_height == 8)) {
+        if ((obj->OAMA_Y <= 8) && (hgt == 8)) {
             continue;
         }
 
-        if ((lcd_y + 16 >= obj_y) && (lcd_y + 16 < obj_y + obj_height)) {
-            sprites[sprites_idx++] = idx;
+        if (!((ly + 16 >= obj->OAMA_Y) && (ly + 16 < obj->OAMA_Y + hgt))) {
+            continue;
         }
 
-        if (sprites_idx >= 10) {
-            break;
+        j = ct;
+
+        while ((j > 0) && (gb->sprites[j - 1]->OAMA_X > obj->OAMA_X)) {
+            gb->sprites[j] = gb->sprites[j - 1];
+            --j;
         }
+
+        gb->sprites[j] = obj;
+        ++ct;
     }
-
-    (void)qsort_r(sprites, sprites_idx, 1, &sprites_compare_dmg, gb);
 }
 
 void draw_bg(struct gameboy *gb, uint8_t *out, uint8_t *bg_data, uint8_t y) {
@@ -160,11 +144,9 @@ void draw_bg(struct gameboy *gb, uint8_t *out, uint8_t *bg_data, uint8_t y) {
     wy += wq;
 }
 
-void screen_update(struct gameboy *gb, uint8_t *sprites) {
+void screen_update(struct gameboy *gb) {
     uint8_t y = gb->memory[rLY], x, i, p, pal;
     uint8_t obj_data[160] = {0}, bg_data[160] = {0};
-    uint8_t oam_idx;
-    uint8_t *oam = &gb->memory[_OAMRAM];
     uint8_t *out = &gb->screen_buf[y * 160];
 
     if (y > 143) {
@@ -180,12 +162,14 @@ void screen_update(struct gameboy *gb, uint8_t *sprites) {
         (void)memset(out, gb->memory[rBGP] & 3, 160);
     }
 
+    if (!(gb->memory[rLCDC] & LCDCF_OBJON)) {
+        return;
+    }
+
     (void)memset(obj_data, 0, 160);
 
     for (i = 0; i < 10; i++) {
-        oam_idx = sprites[i];
-
-        if (oam_idx == 0xff) {
+        if (!gb->sprites[i]) {
             break;
         }
 
@@ -194,15 +178,15 @@ void screen_update(struct gameboy *gb, uint8_t *sprites) {
                 continue;
             }
 
-            if (x + 8 < oam[oam_idx + 1]) {
+            if (x + 8 < gb->sprites[i]->OAMA_X) {
                 continue;
             }
 
-            if (x >= oam[oam_idx + 1]) {
+            if (x >= gb->sprites[i]->OAMA_X) {
                 break;
             }
 
-            p = get_sprite_pixel(gb, oam_idx, y, x);
+            p = get_sprite_pixel(gb, i, y, x);
 
             if (!p) {
                 continue;
@@ -221,7 +205,6 @@ void screen_update(struct gameboy *gb, uint8_t *sprites) {
 int lcd_update(struct gameboy *gb) {
     const uint32_t nskipfram = 1; // skip first frame after lcd on
     static uint32_t on, lcd_cycle, frames;
-    static uint8_t sprites[10];
     gb->video_render = 0;
 
     if (gb->memory[rLCDC] & LCDCF_ON) {
@@ -262,7 +245,7 @@ int lcd_update(struct gameboy *gb) {
             // mode 3
             if ((gb->memory[rSTAT] & STATF_LCD) == STATF_OAM) { //once
                 if (frames >= nskipfram) {
-                    get_sprites(gb, gb->memory[rLY], sprites);
+                    get_sprites(gb);
                 }
             }
 
@@ -271,7 +254,7 @@ int lcd_update(struct gameboy *gb) {
             // mode 0
             if ((gb->memory[rSTAT] & STATF_LCD) == STATF_LCD) { //once
                 if (frames >= nskipfram) {
-                    screen_update(gb, sprites);
+                    screen_update(gb);
                 }
             }
 

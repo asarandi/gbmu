@@ -44,6 +44,7 @@ struct gameboy {
     uint32_t div_cycles;
     uint32_t cycles;
     uint8_t screen_buf[144 * 160];
+    struct OAM_ATTRS *sprites[10];
     int video_render;
     struct channel ch[4];
     uint8_t sound_buf[SOUND_BUF_SIZE];
