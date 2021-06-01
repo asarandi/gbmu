@@ -6,19 +6,21 @@ int interrupt_step(struct gameboy *gb) {
     static int i, step, interrupt;
 
     if (step == 0) {
-        gb->cpu.ime = false;
+        gb->cpu.ime = 0;
         ++step;
     } else if (step == 1) {
         ++step;
     } else if (step == 2) {
-        write_u8(gb, --(gb->cpu.sp), gb->cpu.pc >> 8);
+        --(gb->cpu.sp);
+        write_u8(gb, gb->cpu.sp, gb->cpu.pc >> 8);
         ++step;
     } else if (step == 3) {
         interrupt = gb->memory[rIE] & gb->memory[rIF] & 31;
-        write_u8(gb, --(gb->cpu.sp), gb->cpu.pc & 255);
+        --(gb->cpu.sp);
+        write_u8(gb, gb->cpu.sp, gb->cpu.pc & 255);
         ++step;
     } else if (step == 4) {
-        step = gb->cpu.pc = gb->interrupt_dispatch = 0;
+        step = gb->cpu.pc = gb->cpu.interrupt_dispatch = 0;
 
         for (i = 0; i < 5; i++) {
             if (interrupt & (1 << i)) {
@@ -42,30 +44,30 @@ int interrupts_update(struct gameboy *gb) {
     stat_irq_old = gb->stat_irq;
 
     if (gb->memory[rIE] & gb->memory[rIF] & 31) {
-        gb->halt = false;
+        gb->cpu.state = RUNNING;
     }
 
-    if (gb->instr_cycles) {
+    if (gb->cpu.instr_cycles) {
         return 0;
     }
 
-    if (gb->interrupt_dispatch) {
+    if (gb->cpu.interrupt_dispatch) {
         return 0;
     }
 
-    if (gb->ime_scheduled) {
-        gb->ime_scheduled = false;
+    if (gb->cpu.ime_scheduled) {
+        gb->cpu.ime_scheduled = false;
 
-        if (!gb->ime) {
-            gb->ime = true;
+        if (!gb->cpu.ime) {
+            gb->cpu.ime = true;
             return 0;
         }
     }
 
-    if (!gb->ime) {
+    if (!gb->cpu.ime) {
         return 0;
     }
 
-    gb->interrupt_dispatch = (gb->memory[rIE] & gb->memory[rIF] & 31) != 0;
-    return gb->interrupt_dispatch;
+    gb->cpu.interrupt_dispatch = (gb->memory[rIE] & gb->memory[rIF] & 31) != 0;
+    return gb->cpu.interrupt_dispatch;
 }

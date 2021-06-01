@@ -310,7 +310,7 @@ int lcd_update(struct gameboy *gb) {
 void dma_update(struct gameboy *gb) {
     static uint16_t dma_source, idx;
 
-    if (gb->halt) {
+    if (gb->cpu.state == HALTED) {
         return ;
     }
 

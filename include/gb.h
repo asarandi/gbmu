@@ -26,12 +26,7 @@
 struct gameboy {
     struct cpu cpu;
     uint8_t memory[0x10000];
-    bool ime_scheduled;
-    bool ime;
-    bool halt;
-    bool halt_bug;
     bool stat_irq;
-    bool stop;
     bool ram_enabled;
     bool done;
     bool debug;
@@ -46,33 +41,22 @@ struct gameboy {
     size_t file_size;
     uint8_t *file_contents;
     uint8_t ram_banks[RAM_SIZE * 16];
-    int interrupt_dispatch;
-    uint32_t instr_cycles;
     uint32_t div_cycles;
     uint32_t cycles;
     uint8_t screen_buf[144 * 160];
     int video_render;
-
     struct channel ch[4];
     uint8_t sound_buf[SOUND_BUF_SIZE];
     uint32_t seq_clocks, seq_frame;
     int32_t samples_clock, samples_index;
     int audio_render;
-
     uint8_t buttons[8];
-
     uint8_t (*ram_read_u8)(struct gameboy *, uint16_t);
-
     void (*ram_write_u8)(struct gameboy *, uint16_t, uint8_t);
-
     uint8_t (*rom_read_u8)(struct gameboy *, uint16_t);
-
     void (*rom_write_u8)(struct gameboy *, uint16_t, uint8_t);
-
     void (*testing_run_hook)(struct gameboy *);
-
     void (*testing_write_hook)(struct gameboy *, uint16_t, uint8_t);
-
 };
 
 struct io_register {
@@ -87,8 +71,6 @@ int screenshot(struct gameboy *gb, char *filename);
 char *replace_exten(char *rom, char *ext);
 
 void debug(struct gameboy *gb);
-
-//int get_num_cycles(struct gameboy *gb);
 
 int lcd_update(struct gameboy *gb);
 
@@ -133,17 +115,6 @@ int cartridge_init(struct gameboy *gb);
 int savefile_read(struct gameboy *gb);
 
 int savefile_write(struct gameboy *gb);
-
-/* jump tables */
-
-//extern void (*ops0[])(void *, t_state *, uint8_t *);
-//
-//extern void (*ops1[])(void *, t_state *, uint8_t *);
-//
-//extern int byte_lens0[];
-//extern int byte_lens1[];
-//extern char *op_names0[];
-//extern char *op_names1[];
 
 /* serial */
 
