@@ -13,7 +13,10 @@ struct cpu {
     uint8_t hi, lo;
     int16_t i16;
     uint16_t u16;
-    int cpu_state;
+    int interrupt_dispatch;
+    int instr_cycles;
+    int state;
+    int halt_bug;
     int ime;
     int ime_scheduled;
 };

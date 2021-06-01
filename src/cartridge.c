@@ -84,6 +84,7 @@ uint8_t mbc1_rom_read_u8(struct gameboy *gb, uint16_t addr) {
 
 void mbc1_rom_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
     (void)gb;
+
     if (addr <= 0x1fff) {
         ramg = data & 0x0f;
     }
@@ -140,6 +141,7 @@ uint8_t mbc2_rom_read_u8(struct gameboy *gb, uint16_t addr) {
 
 void mbc2_rom_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
     (void)gb;
+
     if (addr <= 0x3fff) {
         if (addr & 0x100) {
             romb0 = data & 15;
@@ -188,6 +190,7 @@ uint8_t mbc3_rom_read_u8(struct gameboy *gb, uint16_t addr) {
 
 void mbc3_rom_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
     (void)gb;
+
     if (addr <= 0x1fff) {
         ramg = data;
     }
@@ -250,6 +253,7 @@ uint8_t mbc5_rom_read_u8(struct gameboy *gb, uint16_t addr) {
 
 void mbc5_rom_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
     (void)gb;
+
     if (addr <= 0x1fff) {
         ramg = data;
     }

@@ -264,7 +264,7 @@ struct io_register io_registers[] = {
 
 void set_initial_register_values(struct gameboy *gb) {
     gb->cpu.r8[0] = 0x00, gb->cpu.r8[1] = 0x13; // bc = 0x0013
-    gb->cpu.r8[2] = 0x00, gb->cpu.r8[3] = 0x8d; // de = 0x00d8
+    gb->cpu.r8[2] = 0x00, gb->cpu.r8[3] = 0xd8; // de = 0x00d8
     gb->cpu.r8[4] = 0x01, gb->cpu.r8[5] = 0x4d; // hl = 0x014d
     gb->cpu.r8[7] = 0x01, gb->cpu.r8[6] = 0xb0; // af = 0x01b0
     gb->cpu.sp = 0xfffe;

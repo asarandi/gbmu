@@ -122,10 +122,10 @@ int main(int ac, char **av) {
     while (!gb->done) {
         (void)interrupts_update(gb);
 
-        if (gb->interrupt_dispatch) {
+        if (gb->cpu.interrupt_dispatch) {
             (void)interrupt_step(gb);
         } else {
-            //(void)instruction(gb);
+            (void)instruction(gb);
         }
 
         (void)timers_update(gb);
