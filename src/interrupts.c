@@ -1,28 +1,29 @@
 #include "gb.h"
+#include "cpu.h"
 #include "hardware.h"
 
-int interrupt_step(uint8_t *mem, t_state *state, t_r16 *r16) {
+int interrupt_step(struct gameboy *gb) {
     static int i, step, interrupt;
 
     if (step == 0) {
-        state->ime = false;
+        gb->cpu.ime = false;
         ++step;
     } else if (step == 1) {
         ++step;
     } else if (step == 2) {
-        write_u8(--(r16->SP), r16->PC >> 8);
+        write_u8(gb, --(gb->cpu.sp), gb->cpu.pc >> 8);
         ++step;
     } else if (step == 3) {
-        interrupt = mem[rIE] & mem[rIF] & 31;
-        write_u8(--(r16->SP), r16->PC & 255);
+        interrupt = gb->memory[rIE] & gb->memory[rIF] & 31;
+        write_u8(gb, --(gb->cpu.sp), gb->cpu.pc & 255);
         ++step;
     } else if (step == 4) {
-        step = r16->PC = state->interrupt_dispatch = 0;
+        step = gb->cpu.pc = gb->interrupt_dispatch = 0;
 
         for (i = 0; i < 5; i++) {
             if (interrupt & (1 << i)) {
-                mem[rIF] &= ~(1 << i);
-                r16->PC = 0x40 + (i << 3);
+                gb->memory[rIF] &= ~(1 << i);
+                gb->cpu.pc = 0x40 + (i << 3);
                 break ;
             }
         }
@@ -31,41 +32,40 @@ int interrupt_step(uint8_t *mem, t_state *state, t_r16 *r16) {
     return step;
 }
 
-int interrupts_update(uint8_t *mem, t_state *state, t_r16 *r16) {
-    (void)r16;
+int interrupts_update(struct gameboy *gb) {
     static bool stat_irq_old;
 
-    if ((state->stat_irq) && (!stat_irq_old)) {
-        mem[rIF] |= IEF_LCDC;
+    if ((gb->stat_irq) && (!stat_irq_old)) {
+        gb->memory[rIF] |= IEF_LCDC;
     }
 
-    stat_irq_old = state->stat_irq;
+    stat_irq_old = gb->stat_irq;
 
-    if (mem[rIE] & mem[rIF] & 31) {
-        state->halt = false;
+    if (gb->memory[rIE] & gb->memory[rIF] & 31) {
+        gb->halt = false;
     }
 
-    if (state->instr_cycles) {
+    if (gb->instr_cycles) {
         return 0;
     }
 
-    if (state->interrupt_dispatch) {
+    if (gb->interrupt_dispatch) {
         return 0;
     }
 
-    if (state->ime_scheduled) {
-        state->ime_scheduled = false;
+    if (gb->ime_scheduled) {
+        gb->ime_scheduled = false;
 
-        if (!state->ime) {
-            state->ime = true;
+        if (!gb->ime) {
+            gb->ime = true;
             return 0;
         }
     }
 
-    if (!state->ime) {
+    if (!gb->ime) {
         return 0;
     }
 
-    state->interrupt_dispatch = (mem[rIE] & mem[rIF] & 31) != 0;
-    return state->interrupt_dispatch;
+    gb->interrupt_dispatch = (gb->memory[rIE] & gb->memory[rIF] & 31) != 0;
+    return gb->interrupt_dispatch;
 }

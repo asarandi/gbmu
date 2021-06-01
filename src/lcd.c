@@ -3,26 +3,26 @@
 
 #define FRAME_DURATION  70224
 
-uint8_t bg_pixel(uint8_t *gb_mem, uint8_t y, uint8_t x, int win) {
+uint8_t bg_pixel(struct gameboy *gb, uint8_t y, uint8_t x, int win) {
     uint16_t addr;
     uint8_t *data, a, b;
 
     if (win) {
-        x = x - gb_mem[rWX] + 7;
+        x = x - gb->memory[rWX] + 7;
         b = LCDCF_WIN9C00;
     } else {
-        y += gb_mem[rSCY];
-        x += gb_mem[rSCX];
+        y += gb->memory[rSCY];
+        x += gb->memory[rSCX];
         b = LCDCF_BG9C00;
     }
 
-    addr = (gb_mem[rLCDC] & b) ? 0x9c00 : 0x9800;
+    addr = (gb->memory[rLCDC] & b) ? 0x9c00 : 0x9800;
     addr += ((y >> 3) << 5) + (x >> 3);
 
-    if (gb_mem[rLCDC] & LCDCF_BG8000) {
-        data = &gb_mem[0x8000 + ((uint8_t)gb_mem[addr] << 4)];
+    if (gb->memory[rLCDC] & LCDCF_BG8000) {
+        data = &gb->memory[0x8000 + ((uint8_t)gb->memory[addr] << 4)];
     } else {
-        data = &gb_mem[0x9000 + ((int8_t)gb_mem[addr] << 4)];
+        data = &gb->memory[0x9000 + ((int8_t)gb->memory[addr] << 4)];
     }
 
     data += (y & 7) << 1;
@@ -30,29 +30,30 @@ uint8_t bg_pixel(uint8_t *gb_mem, uint8_t y, uint8_t x, int win) {
     return ((a >> (7 - (x & 7))) & 1) | (((b >> (7 - (x & 7))) << 1) & 3);
 }
 
-bool is_window_pixel(uint8_t *gb_mem, uint8_t y, uint8_t x) {
-    if (!(gb_mem[rLCDC] & LCDCF_WINON)) {
+bool is_window_pixel(struct gameboy *gb, uint8_t y, uint8_t x) {
+    if (!(gb->memory[rLCDC] & LCDCF_WINON)) {
         return false;
     }
 
-    if ((gb_mem[rWY] > 143) || (gb_mem[rWX] > 166)) {
+    if ((gb->memory[rWY] > 143) || (gb->memory[rWX] > 166)) {
         return false;
     }
 
-    return (y >= gb_mem[rWY]) && ((x + 7) >= gb_mem[rWX]);
+    return (y >= gb->memory[rWY]) && ((x + 7) >= gb->memory[rWX]);
 }
 
-uint8_t get_sprite_pixel(uint8_t *gb_mem, uint8_t idx, uint8_t y, uint8_t x) {
+uint8_t get_sprite_pixel(struct gameboy *gb, uint8_t idx, uint8_t y,
+                         uint8_t x) {
     uint8_t obj_height, coord_y, coord_x, obj_num;
     uint8_t *tile_data, tile0, tile1, pixel;
     struct OAM_ATTRS *obj;
 
-    if ((idx == 0xff) || (!(gb_mem[rLCDC] & LCDCF_OBJON))) {
+    if ((idx == 0xff) || (!(gb->memory[rLCDC] & LCDCF_OBJON))) {
         return 0;
     }
 
-    obj_height = (gb_mem[rLCDC] & LCDCF_OBJ16) ? 16 : 8;
-    obj = (void *)&gb_mem[_OAMRAM + idx];
+    obj_height = (gb->memory[rLCDC] & LCDCF_OBJ16) ? 16 : 8;
+    obj = (void *)&gb->memory[_OAMRAM + idx];
     coord_y = (y + 16 - obj->OAMA_Y) % obj_height;
     coord_x = (x + 8 - obj->OAMA_X) % 8;
     obj_num = obj->OAMA_TILEID;
@@ -69,7 +70,7 @@ uint8_t get_sprite_pixel(uint8_t *gb_mem, uint8_t idx, uint8_t y, uint8_t x) {
         coord_x = 7 - coord_x;
     }
 
-    tile_data = &gb_mem[_VRAM + (obj_num << 4)];
+    tile_data = &gb->memory[_VRAM + (obj_num << 4)];
     tile0 = tile_data[coord_y << 1];
     tile1 = tile_data[(coord_y << 1) + 1];
     pixel = ((tile0 >> (7 - (coord_x))) & 1) |
@@ -82,10 +83,12 @@ uint8_t get_sprite_pixel(uint8_t *gb_mem, uint8_t idx, uint8_t y, uint8_t x) {
     return (pixel | (obj->OAMA_FLAGS & 0xf0));
 }
 
-static int sprites_compare_dmg(const void *a, const void *b) {
+
+static int sprites_compare_dmg(const void *a, const void *b, void *ptr) {
     /* dmg priority */
-    int m = gb_mem[_OAMRAM + *(uint8_t *)a + 1];
-    int n = gb_mem[_OAMRAM + *(uint8_t *)b + 1];
+    struct gameboy *gb = (struct gameboy *)ptr;
+    int m = gb->memory[_OAMRAM + *(uint8_t *)a + 1];
+    int n = gb->memory[_OAMRAM + *(uint8_t *)b + 1];
     return m - n;
 }
 
@@ -94,14 +97,17 @@ static int sprites_compare_dmg(const void *a, const void *b) {
 //    return (int)(*(uint8_t *)a - *(uint8_t *)b);
 //}
 
+extern void qsort_r(void *, size_t, size_t, int (*)(const void *, const void *,
+                    void *), void *);
+
 /* fills `uint8_t *sprites' with indexes to oam */
-void get_sprites(uint8_t *gb_mem, uint8_t lcd_y, uint8_t *sprites) {
-    uint8_t *oam = &gb_mem[0xfe00];
+void get_sprites(struct gameboy *gb, uint8_t lcd_y, uint8_t *sprites) {
+    uint8_t *oam = &gb->memory[0xfe00];
     uint8_t idx, sprites_idx, obj_y;
-    uint8_t obj_height = (gb_mem[rLCDC] & 4) ? 16 : 8;
+    uint8_t obj_height = (gb->memory[rLCDC] & 4) ? 16 : 8;
     (void)memset(sprites, 0xff, 10);
 
-    if (!(gb_mem[rLCDC] & LCDCF_OBJON)) {
+    if (!(gb->memory[rLCDC] & LCDCF_OBJON)) {
         return;
     }
 
@@ -128,11 +134,11 @@ void get_sprites(uint8_t *gb_mem, uint8_t lcd_y, uint8_t *sprites) {
         }
     }
 
-    (void)qsort(sprites, sprites_idx, 1, &sprites_compare_dmg);
+    (void)qsort_r(sprites, sprites_idx, 1, &sprites_compare_dmg, gb);
 }
 
-void draw_bg(uint8_t *out, uint8_t *bg_data, uint8_t y) {
-    uint8_t pal = gb_mem[rBGP], p, x;
+void draw_bg(struct gameboy *gb, uint8_t *out, uint8_t *bg_data, uint8_t y) {
+    uint8_t pal = gb->memory[rBGP], p, x;
     static uint8_t wy, wq; // window line counter
 
     if (y == 0) {
@@ -140,11 +146,11 @@ void draw_bg(uint8_t *out, uint8_t *bg_data, uint8_t y) {
     }
 
     for (x = wq = 0; x < 160; x++) {
-        if (is_window_pixel(gb_mem, y, x)) {
-            p = bg_pixel(gb_mem, wy, x, 1);
+        if (is_window_pixel(gb, y, x)) {
+            p = bg_pixel(gb, wy, x, 1);
             wq = 1;
         } else {
-            p = bg_pixel(gb_mem, y, x, 0);
+            p = bg_pixel(gb, y, x, 0);
         }
 
         out[x] = (pal >> ((p & 3) << 1)) & 3;
@@ -154,12 +160,12 @@ void draw_bg(uint8_t *out, uint8_t *bg_data, uint8_t y) {
     wy += wq;
 }
 
-void screen_update(uint8_t *gb_mem, t_state *state, uint8_t *sprites) {
-    uint8_t y = gb_mem[rLY], x, i, p, pal;
+void screen_update(struct gameboy *gb, uint8_t *sprites) {
+    uint8_t y = gb->memory[rLY], x, i, p, pal;
     uint8_t obj_data[160] = {0}, bg_data[160] = {0};
     uint8_t oam_idx;
-    uint8_t *oam = &gb_mem[_OAMRAM];
-    uint8_t *out = &state->screen_buf[y * 160];
+    uint8_t *oam = &gb->memory[_OAMRAM];
+    uint8_t *out = &gb->screen_buf[y * 160];
 
     if (y > 143) {
         return;
@@ -168,10 +174,10 @@ void screen_update(uint8_t *gb_mem, t_state *state, uint8_t *sprites) {
     (void)memset(out, 0, 160);
     (void)memset(bg_data, 0, 160);
 
-    if (gb_mem[rLCDC] & LCDCF_BGON) {
-        (void)draw_bg(out, bg_data, y);
+    if (gb->memory[rLCDC] & LCDCF_BGON) {
+        (void)draw_bg(gb, out, bg_data, y);
     } else {
-        (void)memset(out, gb_mem[rBGP] & 3, 160);
+        (void)memset(out, gb->memory[rBGP] & 3, 160);
     }
 
     (void)memset(obj_data, 0, 160);
@@ -196,14 +202,14 @@ void screen_update(uint8_t *gb_mem, t_state *state, uint8_t *sprites) {
                 break;
             }
 
-            p = get_sprite_pixel(gb_mem, oam_idx, y, x);
+            p = get_sprite_pixel(gb, oam_idx, y, x);
 
             if (!p) {
                 continue;
             }
 
             if ((!(p & OAMF_PRI)) || (!(bg_data[x]))) {
-                pal = (p & OAMF_PAL1) ? gb_mem[rOBP1] : gb_mem[rOBP0];
+                pal = (p & OAMF_PAL1) ? gb->memory[rOBP1] : gb->memory[rOBP0];
                 out[x] = (pal >> ((p & 3) << 1)) & 3;
             }
 
@@ -212,110 +218,109 @@ void screen_update(uint8_t *gb_mem, t_state *state, uint8_t *sprites) {
     }
 }
 
-int lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles) {
+int lcd_update(struct gameboy *gb) {
     const uint32_t nskipfram = 1; // skip first frame after lcd on
     static uint32_t on, lcd_cycle, frames;
     static uint8_t sprites[10];
-    state->video_render = 0;
+    gb->video_render = 0;
 
-    if (gb_mem[rLCDC] & LCDCF_ON) {
+    if (gb->memory[rLCDC] & LCDCF_ON) {
         on = 1;
     } else if (on) {
-        gb_mem[rSTAT] &= ~STATF_LCD;
-        gb_mem[rLY] = on = frames = 0;
+        gb->memory[rSTAT] &= ~STATF_LCD;
+        gb->memory[rLY] = on = frames = 0;
         lcd_cycle = 248; // start in mode 0
         // show "blank" screen when lcd off
-        (void)memset(state->screen_buf, 0, sizeof(state->screen_buf));
-        state->video_render = 1;
-        return state->video_render;
+        (void)memset(gb->screen_buf, 0, sizeof(gb->screen_buf));
+        gb->video_render = 1;
+        return gb->video_render;
     } else {
-        return state->video_render;
+        return gb->video_render;
     }
 
-    lcd_cycle += current_cycles;
+    lcd_cycle += 4;
     lcd_cycle %= FRAME_DURATION;
-    gb_mem[rLY] = lcd_cycle / 456;
+    gb->memory[rLY] = lcd_cycle / 456;
 
-    if (gb_mem[rLY] == gb_mem[rLYC]) {
-        gb_mem[rSTAT] |= STATF_LYCF;
-        state->stat_irq = (gb_mem[rSTAT] & STATF_LYC) ? true : false;
+    if (gb->memory[rLY] == gb->memory[rLYC]) {
+        gb->memory[rSTAT] |= STATF_LYCF;
+        gb->stat_irq = (gb->memory[rSTAT] & STATF_LYC) ? true : false;
     } else {
-        gb_mem[rSTAT] &= ~STATF_LYCF;
-        state->stat_irq = false;
+        gb->memory[rSTAT] &= ~STATF_LYCF;
+        gb->stat_irq = false;
     }
 
-    if (gb_mem[rLY] < 144) {
+    if (gb->memory[rLY] < 144) {
         // mode 2
         if ((lcd_cycle % 456) < 80) {
-            if (gb_mem[rSTAT] & STATF_MODE10) {
-                state->stat_irq = true;
+            if (gb->memory[rSTAT] & STATF_MODE10) {
+                gb->stat_irq = true;
             }
 
-            gb_mem[rSTAT] = (gb_mem[rSTAT] & ~STATF_LCD) | STATF_OAM;
+            gb->memory[rSTAT] = (gb->memory[rSTAT] & ~STATF_LCD) | STATF_OAM;
         } else if ((lcd_cycle % 456) < 252) {
             // mode 3
-            if ((gb_mem[rSTAT] & STATF_LCD) == STATF_OAM) { //once
+            if ((gb->memory[rSTAT] & STATF_LCD) == STATF_OAM) { //once
                 if (frames >= nskipfram) {
-                    get_sprites(gb_mem, gb_mem[rLY], sprites);
+                    get_sprites(gb, gb->memory[rLY], sprites);
                 }
             }
 
-            gb_mem[rSTAT] |= STATF_LCD;
+            gb->memory[rSTAT] |= STATF_LCD;
         } else {
             // mode 0
-            if ((gb_mem[rSTAT] & STATF_LCD) == STATF_LCD) { //once
+            if ((gb->memory[rSTAT] & STATF_LCD) == STATF_LCD) { //once
                 if (frames >= nskipfram) {
-                    screen_update(gb_mem, state, sprites);
+                    screen_update(gb, sprites);
                 }
             }
 
-            if (gb_mem[rSTAT] & STATF_MODE00) {
-                state->stat_irq = true;
+            if (gb->memory[rSTAT] & STATF_MODE00) {
+                gb->stat_irq = true;
             }
 
-            gb_mem[rSTAT] &= ~STATF_LCD;
+            gb->memory[rSTAT] &= ~STATF_LCD;
         }
     } else {
         // mode 1
-        if (!(gb_mem[rSTAT] & STATF_VBL)) { //once
-            if (gb_mem[rSTAT] & STATF_MODE10) {
-                state->stat_irq = true;
+        if (!(gb->memory[rSTAT] & STATF_VBL)) { //once
+            if (gb->memory[rSTAT] & STATF_MODE10) {
+                gb->stat_irq = true;
             }
 
-            gb_mem[rIF] |= IEF_VBLANK;
+            gb->memory[rIF] |= IEF_VBLANK;
 
             if (frames >= nskipfram) {
-                state->video_render = 1;
+                gb->video_render = 1;
             }
 
             ++frames;
         }
 
-        if (gb_mem[rSTAT] & STATF_MODE01) {
-            state->stat_irq = true;
+        if (gb->memory[rSTAT] & STATF_MODE01) {
+            gb->stat_irq = true;
         }
 
-        gb_mem[rSTAT] = (gb_mem[rSTAT] & ~STATF_LCD) | STATF_VBL;
+        gb->memory[rSTAT] = (gb->memory[rSTAT] & ~STATF_LCD) | STATF_VBL;
     }
 
-    return state->video_render;
+    return gb->video_render;
 }
 
-void dma_update(uint8_t *mem, t_state *state, t_r16 *r16) {
+void dma_update(struct gameboy *gb) {
     static uint16_t dma_source, idx;
-    (void)r16;
 
-    if (state->halt) {
+    if (gb->halt) {
         return ;
     }
 
-    if (state->dma_clocks) {
-        state->dma_clocks -= 4;
+    if (gb->dma_clocks) {
+        gb->dma_clocks -= 4;
 
-        if (state->dma_clocks == 0) {
-            state->is_dma = 1;
+        if (gb->dma_clocks == 0) {
+            gb->is_dma = 1;
             idx = 0;
-            dma_source = mem[rDMA] << 8;
+            dma_source = gb->memory[rDMA] << 8;
 
             if (dma_source >= _RAM + 0x2000) {
                 dma_source = _RAM | (dma_source & 0x1fff);
@@ -323,8 +328,8 @@ void dma_update(uint8_t *mem, t_state *state, t_r16 *r16) {
         }
     }
 
-    if (state->is_dma) {
-        mem[_OAMRAM + idx] = read_u8(dma_source + idx);
-        state->is_dma = (++idx < 0xa0);
+    if (gb->is_dma) {
+        gb->memory[_OAMRAM + idx] = read_u8(gb, dma_source + idx);
+        gb->is_dma = (++idx < 0xa0);
     }
 }

@@ -1,31 +1,32 @@
 #include "gb.h"
 #include "hardware.h"
 
-void timers_update(uint8_t *gb_mem, t_state *state, int current_cycles) {
+void timers_update(struct gameboy *gb) {
+    const uint32_t current_cycles = 4;
     static uint8_t tima, counter;
     static bool current, prev, overflow;
     uint8_t shifts[] = {9, 3, 5, 7};
     int f;
-    state->div_cycles += current_cycles;
-    state->div_cycles &= 0xffff;
-    gb_mem[rDIV] = state->div_cycles >> 8;
-    f = gb_mem[rTAC] & 3;
-    current = (state->div_cycles >> shifts[f]) & 1;
-    current &= (gb_mem[rTAC] >> 2) & 1;
+    gb->div_cycles += current_cycles;
+    gb->div_cycles &= 0xffff;
+    gb->memory[rDIV] = gb->div_cycles >> 8;
+    f = gb->memory[rTAC] & 3;
+    current = (gb->div_cycles >> shifts[f]) & 1;
+    current &= (gb->memory[rTAC] >> 2) & 1;
 
     if (overflow) {
         counter++;
 
-        if ((tima != gb_mem[rTIMA]) && (counter == 1)) {
+        if ((tima != gb->memory[rTIMA]) && (counter == 1)) {
             overflow = false;
         }
     }
 
     if (overflow) {
-        gb_mem[rTIMA] = gb_mem[rTMA];
+        gb->memory[rTIMA] = gb->memory[rTMA];
 
         if (counter == 1) {
-            gb_mem[rIF] |= IEF_TIMER;
+            gb->memory[rIF] |= IEF_TIMER;
         }
 
         if (counter > 1) {
@@ -34,14 +35,14 @@ void timers_update(uint8_t *gb_mem, t_state *state, int current_cycles) {
     }
 
     if (!current && prev) {
-        gb_mem[rTIMA]++;
+        gb->memory[rTIMA]++;
 
-        if (!gb_mem[rTIMA]) {
+        if (!gb->memory[rTIMA]) {
             overflow = true;
             counter = 0;
         }
     }
 
     prev = current;
-    tima = gb_mem[rTIMA];
+    tima = gb->memory[rTIMA];
 }

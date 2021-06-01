@@ -3,48 +3,48 @@
 
 extern struct io_register io_registers[];
 
-uint8_t read_u8(uint16_t addr) {
+uint8_t read_u8(struct gameboy *gb, uint16_t addr) {
     /* mbc/rom */
     if (addr < _VRAM) {
-        return state->rom_read_u8(addr);
+        return gb->rom_read_u8(gb, addr);
     }
 
     /* mbc/ram */
     if ((addr >= _SRAM) && (addr < _SRAM + 0x2000)) {
-        return state->ram_read_u8(addr);
+        return gb->ram_read_u8(gb, addr);
     }
 
     /* ignore reads from vram in lcd-mode-3 */
     if ((addr >= _VRAM) && (addr < _VRAM + 0x2000)) {
-        if ((gb_mem[rSTAT] & STATF_LCD) == 3) {
+        if ((gb->memory[rSTAT] & STATF_LCD) == 3) {
             return 0xff;
         }
     }
 
     /* ignore reads from oam in lcd mode 2 and 3 */
     if ((addr >= _OAMRAM) && (addr < _OAMRAM + 0xa0)) {
-        if (((gb_mem[rSTAT] & STATF_LCD) >= 2) || (state->is_dma)) {
+        if (((gb->memory[rSTAT] & STATF_LCD) >= 2) || (gb->is_dma)) {
             return 0xff;
         }
     }
 
     if (addr >= _IO) {
-        return io_read_u8(addr);
+        return io_read_u8(gb, addr);
     }
 
-    return gb_mem[addr];
+    return gb->memory[addr];
 }
 
-uint16_t read_u16(uint16_t addr) {
-    return ((read_u8(addr + 1) << 8) | read_u8(addr));
+uint16_t read_u16(struct gameboy *gb, uint16_t addr) {
+    return ((read_u8(gb, addr + 1) << 8) | read_u8(gb, addr));
 }
 
-void write_u8(uint16_t addr, uint8_t data) {
-    if (state->testing) {
-        (void)state->testing_write_hook(addr, data);
+void write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
+    if (gb->testing) {
+        (void)gb->testing_write_hook(gb, addr, data);
     }
 
-    if ((state->log_io) && (addr >= _IO)) {
+    if ((gb->log_io) && (addr >= _IO)) {
         char *io_reg_name = io_registers[addr - _IO].name;
 
         if (addr >= _HRAM) {
@@ -58,24 +58,24 @@ void write_u8(uint16_t addr, uint8_t data) {
 
     /* mbc/rom */
     if (addr < _VRAM) {
-        return state->rom_write_u8(addr, data);
+        return gb->rom_write_u8(gb, addr, data);
     }
 
     /* mbc/ram */
     if ((addr >= _SRAM) && (addr < _SRAM + 0x2000)) {
-        return state->ram_write_u8(addr, data);
+        return gb->ram_write_u8(gb, addr, data);
     }
 
     /* ignore writes to vram in lcd-mode-3 */
     if ((addr >= _VRAM) && (addr < _VRAM + 0x2000)) {
-        if ((gb_mem[rSTAT] & STATF_LCD) == 3) {
+        if ((gb->memory[rSTAT] & STATF_LCD) == 3) {
             return;
         }
     }
 
     /* ignore writes to oam in lcd mode 2 and 3 */
     if ((addr >= _OAMRAM) && (addr < _OAMRAM + 0xa0)) {
-        if ((gb_mem[rSTAT] & STATF_LCD) >= 2) {
+        if ((gb->memory[rSTAT] & STATF_LCD) >= 2) {
             return;
         }
     }
@@ -86,20 +86,20 @@ void write_u8(uint16_t addr, uint8_t data) {
 
     /* echo */
     if ((addr >= 0xc000) && (addr <= 0xddff)) {
-        gb_mem[addr + 0x2000] = data;
+        gb->memory[addr + 0x2000] = data;
     }
 
     if (addr == rP1) {
-        return joypad_write(data);
+        return joypad_write(gb, data);
     }
 
     if ((addr == rSB) || (addr == rSC)) {
-        return serial_write_u8(addr, data);
+        return serial_write_u8(gb, addr, data);
     }
 
     /* reset DIV if written to */
     if (addr == rDIV) {
-        state->div_cycles = 0;
+        gb->div_cycles = 0;
         data = 0;
     }
 
@@ -109,26 +109,26 @@ void write_u8(uint16_t addr, uint8_t data) {
     }
 
     if ((addr >= rNR10) && (addr < rNR10 + 0x30)) {
-        return sound_write_u8(addr, data);
+        return sound_write_u8(gb, addr, data);
     }
 
     if (addr == rSTAT) {
         // dmg specific:
         // any write while lcd is `on` and - in mode `0` - or - mode `1`
         // will set bit 1 in IF register
-        if (gb_mem[rLCDC] & LCDCF_ON) {
-            if ((gb_mem[rSTAT] & STATF_LCD) < 2) {
-                state->stat_irq = true;
+        if (gb->memory[rLCDC] & LCDCF_ON) {
+            if ((gb->memory[rSTAT] & STATF_LCD) < 2) {
+                gb->stat_irq = true;
             }
         }
 
         // bottom 3 bits are read-only
-        gb_mem[rSTAT] = (data & 0xf8) | (gb_mem[rSTAT] & 7);
+        gb->memory[rSTAT] = (data & 0xf8) | (gb->memory[rSTAT] & 7);
         return;
     }
 
     if (addr == rDMA) {
-        state->dma_clocks = 12;
+        gb->dma_clocks = 12;
     }
 
     /* read only as per pandocs */
@@ -142,10 +142,10 @@ void write_u8(uint16_t addr, uint8_t data) {
     }
 
     /* finally */
-    gb_mem[addr] = data;
+    gb->memory[addr] = data;
 }
 
-void write_u16(uint16_t addr, uint16_t data) {
-    (void) write_u8(addr, (uint8_t) data & 0xff);
-    (void) write_u8(addr + 1, (uint8_t)(data >> 8));
+void write_u16(struct gameboy *gb, uint16_t addr, uint16_t data) {
+    (void) write_u8(gb, addr, (uint8_t) data & 0xff);
+    (void) write_u8(gb, addr + 1, (uint8_t)(data >> 8));
 }
