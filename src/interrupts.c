@@ -47,7 +47,7 @@ int interrupts_update(struct gameboy *gb) {
         gb->cpu.state = RUNNING;
     }
 
-    if (gb->cpu.instr_cycles) {
+    if (gb->cpu.step) {
         return 0;
     }
 
