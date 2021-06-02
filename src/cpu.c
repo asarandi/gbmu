@@ -1,3 +1,14 @@
+//(1,) ['nop', 'inc_r', 'dec_r', 'rlca', 'rrca', 'stop', 'rla', 'rra', 'daa', 'cpl', 'scf', 'ccf', 'ld_r_r', 'halt', 'add_r', 'adc_r', 'sub_r', 'sbc_r', 'and_r', 'xor_r', 'or_r', 'cp_r', '0', 'jp_hl', 'di', 'ei']
+//(3,) ['ld_rr_d16', 'jr_e', 'inc_hl', 'dec_hl', 'ld_hl_d8', 'pop_rr', 'ldh_a8_a', 'ldh_a_a8', 'ld_hl_sp_e', 'bit_hl']
+//(2,) ['ld_bc_a', 'inc_rr', 'ld_r_d8', 'add_hl_rr', 'ld_a_bc', 'dec_rr', 'ld_de_a', 'ld_a_de', 'ld_hli_a', 'ld_a_hli', 'ld_hld_a', 'ld_a_hld', 'ld_r_hl', 'ld_hl_r', 'add_hl', 'adc_hl', 'sub_hl', 'sbc_hl', 'and_hl', 'xor_hl', 'or_hl', 'cp_hl', 'add_n', 'adc_n', 'sub_n', 'sbc_n', 'ldh_c_a', 'and_n', 'xor_n', 'ldh_a_c', 'or_n', 'ld_sp_hl', 'cp_n', 'rlc_r', 'rrc_r', 'rl_r', 'rr_r', 'sla_r', 'sra_r', 'swap_r', 'srl_r', 'bit_r', 'res_r', 'set_r']
+//(5,) ['ld_a16_sp']
+//(3, 2) ['jr_cc_e']
+//(5, 2) ['ret_cc']
+//(4, 3) ['jp_cc_a16']
+//(4,) ['jp_a16', 'push_rr', 'rst', 'ret', 'reti', 'add_sp_e', 'ld_a16_a', 'ld_a_a16', 'rlc_hl', 'rrc_hl', 'rl_hl', 'rr_hl', 'sla_hl', 'sra_hl', 'swap_hl', 'srl_hl', 'res_hl', 'set_hl']
+//(6, 3) ['call_cc_a16']
+//(6,) ['call_a16']
+
 #include "gb.h"
 #include "cpu.h"
 #include "hardware.h"
@@ -574,12 +585,21 @@ void rra(struct gameboy *gb)     { rr_r(gb);  CLEAR_Z_FLAG; };
 
 // 0xc3, 3 bytes, 4 cycles
 void jp_a16(struct gameboy *gb) {
-    gb->cpu.pc++;
-    gb->cpu.lo = read_u8(gb, gb->cpu.pc);
-    gb->cpu.pc++;
-    gb->cpu.hi = read_u8(gb, gb->cpu.pc);
-    gb->cpu.pc++;
-    gb->cpu.pc = A16;
+    if (gb->cpu.step == 0) {
+        gb->cpu.pc++;
+        gb->cpu.step = 1;
+    } else if (gb->cpu.step == 1) {
+        gb->cpu.lo = read_u8(gb, gb->cpu.pc);
+        gb->cpu.pc++;
+        gb->cpu.step = 2;
+    } else if (gb->cpu.step == 2) {
+        gb->cpu.hi = read_u8(gb, gb->cpu.pc);
+        gb->cpu.pc++;
+        gb->cpu.step = 3;
+    } else if (gb->cpu.step == 3) {
+        gb->cpu.pc = A16;
+        gb->cpu.step = 0;
+    }
 }
 
 // 0xe9, 1 byte, 1 cycle
@@ -591,109 +611,188 @@ void jp_hl(struct gameboy *gb) {
 // 0b110cc010: 0xc2 (NZ), 0xca (Z), 0xd2 (NC), 0xda (C)
 // 3 bytes, 3 cycles (cc false) - or - 4 cycles (cc true)
 void jp_cc_a16(struct gameboy *gb) {
-    gb->cpu.pc++;
-    gb->cpu.lo = read_u8(gb, gb->cpu.pc);
-    gb->cpu.pc++;
-    gb->cpu.hi = read_u8(gb, gb->cpu.pc);
-    gb->cpu.pc++;
-    if (CONDITION) {
+    if (gb->cpu.step == 0) {
+        gb->cpu.pc++;
+        gb->cpu.step = 1;
+    } else if (gb->cpu.step == 1) {
+        gb->cpu.lo = read_u8(gb, gb->cpu.pc);
+        gb->cpu.pc++;
+        gb->cpu.step = 2;
+    } else if (gb->cpu.step == 2) {
+        gb->cpu.hi = read_u8(gb, gb->cpu.pc);
+        gb->cpu.pc++;
+        gb->cpu.step = (CONDITION) ? 3 : 0;
+    } else if (gb->cpu.step == 3) {
         gb->cpu.pc = A16;
+        gb->cpu.step = 0;
     }
 }
 
 // 0x18, 2 bytes, 3 cycles
 void jr_e(struct gameboy *gb) {
-    gb->cpu.pc++;
-    gb->cpu.i16 = (int8_t)read_u8(gb, gb->cpu.pc); //signed XXX
-    gb->cpu.pc++;
-    gb->cpu.pc += gb->cpu.i16;
+    if (gb->cpu.step == 0) {
+        gb->cpu.pc++;
+        gb->cpu.step = 1;
+    } else if (gb->cpu.step == 1) {
+        gb->cpu.i16 = (int8_t)read_u8(gb, gb->cpu.pc); //signed XXX
+        gb->cpu.pc++;
+        gb->cpu.step = 2;
+    } else if (gb->cpu.step == 2) {
+        gb->cpu.pc += gb->cpu.i16;
+        gb->cpu.step = 0;
+    }
 }
 
 // 0b001cc000: 0x20 (NZ), 0x28 (Z), 0x30 (NC), 0x38 (C)
 // 2 bytes, 2 cycles (cc false) - or - 3 cycles (cc true)
 void jr_cc_e(struct gameboy *gb) {
-    gb->cpu.pc++;
-    gb->cpu.i16 = (int8_t)read_u8(gb, gb->cpu.pc); //signed XXX
-    gb->cpu.pc++;
-    if (CONDITION) {
+    if (gb->cpu.step == 0) {
+        gb->cpu.pc++;
+        gb->cpu.step = 1;
+    } else if (gb->cpu.step == 1) {
+        gb->cpu.i16 = (int8_t)read_u8(gb, gb->cpu.pc); //signed XXX
+        gb->cpu.pc++;
+        gb->cpu.step = (CONDITION) ? 2 : 0;
+    } else if (gb->cpu.step == 2) {
         gb->cpu.pc += gb->cpu.i16;
+        gb->cpu.step = 0;
     }
 }
 
 // 0xcd, 3 bytes, 6 cycles
 void call_a16(struct gameboy *gb) {
-    gb->cpu.pc++;
-    gb->cpu.lo = read_u8(gb, gb->cpu.pc);
-    gb->cpu.pc++;
-    gb->cpu.hi = read_u8(gb, gb->cpu.pc);
-    gb->cpu.pc++;
-    gb->cpu.sp--;
-    write_u8(gb, gb->cpu.sp, gb->cpu.pc >> 8);
-    gb->cpu.sp--;
-    write_u8(gb, gb->cpu.sp, gb->cpu.pc & 255);
-    gb->cpu.pc = A16;
+    if (gb->cpu.step == 0) {
+        gb->cpu.pc++;
+        gb->cpu.step = 1;
+    } else if (gb->cpu.step == 1) {
+        gb->cpu.lo = read_u8(gb, gb->cpu.pc);
+        gb->cpu.pc++;
+        gb->cpu.step = 2;
+    } else if (gb->cpu.step == 2) {
+        gb->cpu.hi = read_u8(gb, gb->cpu.pc);
+        gb->cpu.pc++;
+        gb->cpu.step = 3;
+    } else if (gb->cpu.step == 3) {
+        gb->cpu.step = 4;
+    } else if (gb->cpu.step == 4) {
+        gb->cpu.sp--;
+        write_u8(gb, gb->cpu.sp, gb->cpu.pc >> 8);
+        gb->cpu.step = 5;
+    } else if (gb->cpu.step == 5) {
+        gb->cpu.sp--;
+        write_u8(gb, gb->cpu.sp, gb->cpu.pc & 255);
+        gb->cpu.pc = A16;
+        gb->cpu.step = 0;
+    }
 }
 
 // 0b110cc100: 0xc4 (NZ) 0xcc (Z), 0xd4 (NC), 0xdc (C)
 // 3 bytes, 3 cycles (cc false) - or - 6 cycles (cc true)
 void call_cc_a16(struct gameboy *gb) {
-    gb->cpu.pc++;
-    gb->cpu.lo = read_u8(gb, gb->cpu.pc);
-    gb->cpu.pc++;
-    gb->cpu.hi = read_u8(gb, gb->cpu.pc);
-    gb->cpu.pc++;
-    if (CONDITION) {
+    if (gb->cpu.step == 0) {
+        gb->cpu.pc++;
+        gb->cpu.step = 1;
+    } else if (gb->cpu.step == 1) {
+        gb->cpu.lo = read_u8(gb, gb->cpu.pc);
+        gb->cpu.pc++;
+        gb->cpu.step = 2;
+    } else if (gb->cpu.step == 2) {
+        gb->cpu.hi = read_u8(gb, gb->cpu.pc);
+        gb->cpu.pc++;
+        gb->cpu.step = (CONDITION) ? 3 : 0;
+    } else if (gb->cpu.step == 3) {
+        gb->cpu.step = 4;
+    } else if (gb->cpu.step == 4) {
         gb->cpu.sp--;
         write_u8(gb, gb->cpu.sp, gb->cpu.pc >> 8);
+        gb->cpu.step = 5;
+    } else if (gb->cpu.step == 5) {
         gb->cpu.sp--;
         write_u8(gb, gb->cpu.sp, gb->cpu.pc & 255);
         gb->cpu.pc = A16;
+        gb->cpu.step = 0;
     }
 }
 
 // 0xc9, 1 byte, 4 cycles
 void ret(struct gameboy *gb) {
-    gb->cpu.pc++;
-    gb->cpu.lo = read_u8(gb, gb->cpu.sp);
-    gb->cpu.sp++;
-    gb->cpu.hi = read_u8(gb, gb->cpu.sp);
-    gb->cpu.sp++;
-    gb->cpu.pc = A16;
+    if (gb->cpu.step == 0) {
+        gb->cpu.pc++;
+        gb->cpu.step = 1;
+    } else if (gb->cpu.step == 1) {
+        gb->cpu.lo = read_u8(gb, gb->cpu.sp);
+        gb->cpu.sp++;
+        gb->cpu.step = 2;
+    } else if (gb->cpu.step == 2) {
+        gb->cpu.hi = read_u8(gb, gb->cpu.sp);
+        gb->cpu.sp++;
+        gb->cpu.step = 3;
+    } else if (gb->cpu.step == 3) {
+        gb->cpu.pc = A16;
+        gb->cpu.step = 0;
+    }
 }
 
 // 0b110cc000: 0xc0 (NZ), 0xc8 (Z), 0xd0 (NC), 0xd8 (C)
 // 1 byte, 2 cycles (cc false) - or - 5 cycles (cc true)
 void ret_cc(struct gameboy *gb) {
-    gb->cpu.pc++;
-    if (CONDITION) {
+    if (gb->cpu.step == 0) {
+        gb->cpu.pc++;
+        gb->cpu.step = 1;
+    } else if (gb->cpu.step == 1) {
+        gb->cpu.step = (CONDITION) ? 2 : 0;
+    } else if (gb->cpu.step == 2) {
         gb->cpu.lo = read_u8(gb, gb->cpu.sp);
         gb->cpu.sp++;
+        gb->cpu.step = 3;
+    } else if (gb->cpu.step == 3) {
         gb->cpu.hi = read_u8(gb, gb->cpu.sp);
         gb->cpu.sp++;
+        gb->cpu.step = 4;
+    } else if (gb->cpu.step == 4) {
         gb->cpu.pc = A16;
+        gb->cpu.step = 0;
     }
 }
 
 // 0xd9, 1 byte, 4 cycles
 void reti(struct gameboy *gb) {
-    gb->cpu.pc++;
-    gb->cpu.lo = read_u8(gb, gb->cpu.sp);
-    gb->cpu.sp++;
-    gb->cpu.hi = read_u8(gb, gb->cpu.sp);
-    gb->cpu.sp++;
-    gb->cpu.pc = A16;
-    gb->cpu.ime = 1;
+    if (gb->cpu.step == 0) {
+        gb->cpu.pc++;
+        gb->cpu.step = 1;
+    } else if (gb->cpu.step == 1) {
+        gb->cpu.lo = read_u8(gb, gb->cpu.sp);
+        gb->cpu.sp++;
+        gb->cpu.step = 2;
+    } else if (gb->cpu.step == 2) {
+        gb->cpu.hi = read_u8(gb, gb->cpu.sp);
+        gb->cpu.sp++;
+        gb->cpu.step = 3;
+    } else if (gb->cpu.step == 3) {
+        gb->cpu.pc = A16;
+        gb->cpu.ime = 1;
+        gb->cpu.step = 0;
+    }
 }
 
 // 0b11xxx111: c7,cf,d7,df,e7,ef,f7,ff
 // 1 byte, 4 cycles;
 void rst(struct gameboy *gb) {
-    gb->cpu.pc++;
-    gb->cpu.sp--;
-    write_u8(gb, gb->cpu.sp, gb->cpu.pc >> 8);
-    gb->cpu.sp--;
-    write_u8(gb, gb->cpu.sp, gb->cpu.pc & 255);
-    gb->cpu.pc = gb->cpu.opcode & 0b00111000;
+    if (gb->cpu.step == 0) {
+        gb->cpu.pc++;
+        gb->cpu.step = 1;
+    } else if (gb->cpu.step == 1) {
+        gb->cpu.step = 2;
+    } else if (gb->cpu.step == 2) {
+        gb->cpu.sp--;
+        write_u8(gb, gb->cpu.sp, gb->cpu.pc >> 8);
+        gb->cpu.step = 3;
+    } else if (gb->cpu.step == 3) {
+        gb->cpu.sp--;
+        write_u8(gb, gb->cpu.sp, gb->cpu.pc & 255);
+        gb->cpu.pc = gb->cpu.opcode & 0b00111000;
+        gb->cpu.step = 0;
+    }
 }
 
 /*
