@@ -642,7 +642,7 @@ void add_sp_e(struct gameboy *gb) {
         (gb->cpu.sp & 0xf) + (gb->cpu.i16 & 0xf) > 0xf ? SET_H_FLAG : CLEAR_H_FLAG;
         (gb->cpu.sp & 0xff) + (gb->cpu.i16 & 0xff) > 0xff ? SET_C_FLAG : CLEAR_C_FLAG;
         gb->cpu.sp += gb->cpu.i16;
-    } else if (gb->cpu.step == 2) {
+    } else if (gb->cpu.step == 3) {
         gb->cpu.step = 0;
     }
 }
@@ -721,13 +721,19 @@ void add_sp_e(struct gameboy *gb) {
     gb->cpu.lo |= (1 << U3DST);
 
 
-// CB-prefix + 1 cycle
+// 2 cycles
 #define CBR8(FUNC,MACRO)                    \
 void FUNC(struct gameboy *gb)   {           \
-    gb->cpu.pc++;                           \
-    gb->cpu.lo = gb->cpu.r8[U3SRC];         \
-    MACRO;                                  \
-    gb->cpu.r8[U3SRC] = gb->cpu.lo;         \
+    if (gb->cpu.step == 0) {                \
+        gb->cpu.step = 1;                   \
+        gb->cpu.pc++;                       \
+    } else if (gb->cpu.step == 1) {         \
+        gb->cpu.step = 0;                   \
+        gb->cpu.pc++;                       \
+        gb->cpu.lo = gb->cpu.r8[U3SRC];     \
+        MACRO;                              \
+        gb->cpu.r8[U3SRC] = gb->cpu.lo;     \
+    }                                       \
 }
 
 CBR8(rlc_r,_RLC);
@@ -742,7 +748,7 @@ CBR8(bit_r,_BIT);
 CBR8(res_r,_RES);
 CBR8(set_r,_SET);
 
-// CB-prefix + 3 cycles, except `bit' => 2 cycles
+// 4 cycles, except `bit' => 3 cycles
 #define CBHL(FUNC,MACRO)                    \
 void FUNC(struct gameboy *gb)  {            \
     if (gb->cpu.step == 0) {                \
@@ -750,8 +756,11 @@ void FUNC(struct gameboy *gb)  {            \
         gb->cpu.pc++;                       \
     } else if (gb->cpu.step == 1) {         \
         gb->cpu.step = 2;                   \
-        gb->cpu.lo = read_u8(gb, R16HL);    \
+        gb->cpu.pc++;                       \
     } else if (gb->cpu.step == 2) {         \
+        gb->cpu.step = 3;                   \
+        gb->cpu.lo = read_u8(gb, R16HL);    \
+    } else if (gb->cpu.step == 3) {         \
         gb->cpu.step = 0;                   \
         MACRO;                              \
         write_u8(gb, R16HL, gb->cpu.lo);    \
@@ -769,12 +778,15 @@ CBHL(srl_hl,_SRL);
 CBHL(res_hl,_RES);
 CBHL(set_hl,_SET);
 
-// CB cycle + 2 cycles
+// 3 cycles
 void bit_hl(struct gameboy *gb)  {
     if (gb->cpu.step == 0) {
         gb->cpu.step = 1;
         gb->cpu.pc++;
     } else if (gb->cpu.step == 1) {
+        gb->cpu.step = 2;
+        gb->cpu.pc++;
+    } else if (gb->cpu.step == 2) {
         gb->cpu.step = 0;
         gb->cpu.lo = read_u8(gb, R16HL);
         _BIT;
@@ -783,22 +795,34 @@ void bit_hl(struct gameboy *gb)  {
 }
 
 void rlca(struct gameboy *gb)    {
-    rlc_r(gb);
+    gb->cpu.pc++;
+    gb->cpu.lo = gb->cpu.r8[7];
+    _RLC;
+    gb->cpu.r8[7] = gb->cpu.lo;
     CLEAR_Z_FLAG;
 };
 
 void rrca(struct gameboy *gb)    {
-    rrc_r(gb);
+    gb->cpu.pc++;
+    gb->cpu.lo = gb->cpu.r8[7];
+    _RRC;
+    gb->cpu.r8[7] = gb->cpu.lo;
     CLEAR_Z_FLAG;
 };
 
 void rla(struct gameboy *gb)     {
-    rl_r(gb);
+    gb->cpu.pc++;
+    gb->cpu.lo = gb->cpu.r8[7];
+    _RL;
+    gb->cpu.r8[7] = gb->cpu.lo;
     CLEAR_Z_FLAG;
 };
 
 void rra(struct gameboy *gb)     {
-    rr_r(gb);
+    gb->cpu.pc++;
+    gb->cpu.lo = gb->cpu.r8[7];
+    _RR;
+    gb->cpu.r8[7] = gb->cpu.lo;
     CLEAR_Z_FLAG;
 };
 
@@ -1247,154 +1271,14 @@ int byte_lens1[] = {
     2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2
 };
 
-/*
-
- -    0 : no condition,          use either table
- Z    1 : if Z flag is set,      use cycle table 0,  else use cycle table 1
-NZ    2 : if Z flag is NOT set,  use cycle table 0,  else use cycle table 1
- C    3 : if C flag is set,      use cycle table 0,  else use cycle table 1
-NC    4 : if C flag is NOT set,  use cycle table 0,  else use cycle table 1
-*/
-
-int is_conditional_num_cycles[] = {
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    2, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
-    4, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    2, 0, 2, 0, 2, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0,
-    4, 0, 4, 0, 4, 0, 0, 0, 3, 0, 3, 0, 3, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-};
-
-int cycles_table0[] = {
-    4, 12, 8, 8, 4, 4, 8, 4, 20, 8, 8, 8, 4, 4, 8, 4,
-    0, 12, 8, 8, 4, 4, 8, 4, 12, 8, 8, 8, 4, 4, 8, 4,
-    12, 12, 8, 8, 4, 4, 8, 4, 12, 8, 8, 8, 4, 4, 8, 4,
-    12, 12, 8, 8, 12, 12, 12, 4, 12, 8, 8, 8, 4, 4, 8, 4,
-    4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4,
-    4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4,
-    4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4,
-    8, 8, 8, 8, 8, 8, 0, 8, 4, 4, 4, 4, 4, 4, 8, 4,
-    4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4,
-    4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4,
-    4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4,
-    4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4,
-    20, 12, 16, 16, 24, 16, 8, 16, 20, 16, 16, 0, 24, 24, 8, 16,
-    20, 12, 16, 0, 24, 16, 8, 16, 20, 16, 16, 0, 24, 0, 8, 16,
-    12, 12, 8, 0, 0, 16, 8, 16, 16, 4, 16, 0, 0, 0, 8, 16,
-    12, 12, 8, 4, 0, 16, 8, 16, 12, 8, 16, 4, 0, 0, 8, 16,
-    8, 8, 8, 8, 8, 8, 16, 8, 8, 8, 8, 8, 8, 8, 16, 8,
-    8, 8, 8, 8, 8, 8, 16, 8, 8, 8, 8, 8, 8, 8, 16, 8,
-    8, 8, 8, 8, 8, 8, 16, 8, 8, 8, 8, 8, 8, 8, 16, 8,
-    8, 8, 8, 8, 8, 8, 16, 8, 8, 8, 8, 8, 8, 8, 16, 8,
-    8, 8, 8, 8, 8, 8, 12, 8, 8, 8, 8, 8, 8, 8, 12, 8,
-    8, 8, 8, 8, 8, 8, 12, 8, 8, 8, 8, 8, 8, 8, 12, 8,
-    8, 8, 8, 8, 8, 8, 12, 8, 8, 8, 8, 8, 8, 8, 12, 8,
-    8, 8, 8, 8, 8, 8, 12, 8, 8, 8, 8, 8, 8, 8, 12, 8,
-    8, 8, 8, 8, 8, 8, 16, 8, 8, 8, 8, 8, 8, 8, 16, 8,
-    8, 8, 8, 8, 8, 8, 16, 8, 8, 8, 8, 8, 8, 8, 16, 8,
-    8, 8, 8, 8, 8, 8, 16, 8, 8, 8, 8, 8, 8, 8, 16, 8,
-    8, 8, 8, 8, 8, 8, 16, 8, 8, 8, 8, 8, 8, 8, 16, 8,
-    8, 8, 8, 8, 8, 8, 16, 8, 8, 8, 8, 8, 8, 8, 16, 8,
-    8, 8, 8, 8, 8, 8, 16, 8, 8, 8, 8, 8, 8, 8, 16, 8,
-    8, 8, 8, 8, 8, 8, 16, 8, 8, 8, 8, 8, 8, 8, 16, 8,
-    8, 8, 8, 8, 8, 8, 16, 8, 8, 8, 8, 8, 8, 8, 16, 8
-};
-
-int cycles_table1[] = {
-    4, 12, 8, 8, 4, 4, 8, 4, 20, 8, 8, 8, 4, 4, 8, 4,
-    0, 12, 8, 8, 4, 4, 8, 4, 12, 8, 8, 8, 4, 4, 8, 4,
-    8, 12, 8, 8, 4, 4, 8, 4, 8, 8, 8, 8, 4, 4, 8, 4,
-    8, 12, 8, 8, 12, 12, 12, 4, 8, 8, 8, 8, 4, 4, 8, 4,
-    4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4,
-    4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4,
-    4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4,
-    8, 8, 8, 8, 8, 8, 0, 8, 4, 4, 4, 4, 4, 4, 8, 4,
-    4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4,
-    4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4,
-    4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4,
-    4, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 4, 8, 4,
-    8, 12, 12, 16, 12, 16, 8, 16, 8, 16, 12, 0, 12, 24, 8, 16,
-    8, 12, 12, 0, 12, 16, 8, 16, 8, 16, 12, 0, 12, 0, 8, 16,
-    12, 12, 8, 0, 0, 16, 8, 16, 16, 4, 16, 0, 0, 0, 8, 16,
-    12, 12, 8, 4, 0, 16, 8, 16, 12, 8, 16, 4, 0, 0, 8, 16,
-    8, 8, 8, 8, 8, 8, 16, 8, 8, 8, 8, 8, 8, 8, 16, 8,
-    8, 8, 8, 8, 8, 8, 16, 8, 8, 8, 8, 8, 8, 8, 16, 8,
-    8, 8, 8, 8, 8, 8, 16, 8, 8, 8, 8, 8, 8, 8, 16, 8,
-    8, 8, 8, 8, 8, 8, 16, 8, 8, 8, 8, 8, 8, 8, 16, 8,
-    8, 8, 8, 8, 8, 8, 12, 8, 8, 8, 8, 8, 8, 8, 12, 8,
-    8, 8, 8, 8, 8, 8, 12, 8, 8, 8, 8, 8, 8, 8, 12, 8,
-    8, 8, 8, 8, 8, 8, 12, 8, 8, 8, 8, 8, 8, 8, 12, 8,
-    8, 8, 8, 8, 8, 8, 12, 8, 8, 8, 8, 8, 8, 8, 12, 8,
-    8, 8, 8, 8, 8, 8, 16, 8, 8, 8, 8, 8, 8, 8, 16, 8,
-    8, 8, 8, 8, 8, 8, 16, 8, 8, 8, 8, 8, 8, 8, 16, 8,
-    8, 8, 8, 8, 8, 8, 16, 8, 8, 8, 8, 8, 8, 8, 16, 8,
-    8, 8, 8, 8, 8, 8, 16, 8, 8, 8, 8, 8, 8, 8, 16, 8,
-    8, 8, 8, 8, 8, 8, 16, 8, 8, 8, 8, 8, 8, 8, 16, 8,
-    8, 8, 8, 8, 8, 8, 16, 8, 8, 8, 8, 8, 8, 8, 16, 8,
-    8, 8, 8, 8, 8, 8, 16, 8, 8, 8, 8, 8, 8, 8, 16, 8,
-    8, 8, 8, 8, 8, 8, 16, 8, 8, 8, 8, 8, 8, 8, 16, 8
-};
-
-int get_num_cycles(struct gameboy *gb) {
-    int idx = read_u8(gb, gb->cpu.pc);
-
-    if (idx == 0xcb) {
-        idx = 256 + read_u8(gb, gb->cpu.pc + 1);
-    }
-
-    switch (is_conditional_num_cycles[idx]) {
-    case 1:
-        return (IS_Z_FLAG) ? cycles_table0[idx] : cycles_table1[idx];
-
-    case 2:
-        return (!IS_Z_FLAG) ? cycles_table0[idx] : cycles_table1[idx];
-
-    case 3:
-        return (IS_C_FLAG) ? cycles_table0[idx] : cycles_table1[idx];
-
-    case 4:
-        return (!IS_C_FLAG) ? cycles_table0[idx] : cycles_table1[idx];
-    }
-
-    return cycles_table0[idx];
-}
-
 int instruction(struct gameboy *gb) {
     static void (*instr)(struct gameboy *gb) = NULL;
 
-    if ((gb->cpu.state != HALTED) && (!instr)) {
-        gb->cpu.instr_cycles += get_num_cycles(gb);
+    if ((gb->cpu.state != HALTED) && (!instr) && (!gb->cpu.step)) {
         gb->cpu.opcode = read_u8(gb, gb->cpu.pc);
 
         if (gb->cpu.opcode == 0xcb) {
-            gb->cpu.pc++;
-            gb->cpu.opcode = read_u8(gb, gb->cpu.pc);
+            gb->cpu.opcode = read_u8(gb, gb->cpu.pc + 1);
             instr = instruct[256 + gb->cpu.opcode];
         } else {
             instr = instruct[gb->cpu.opcode];
@@ -1406,20 +1290,17 @@ int instruction(struct gameboy *gb) {
         }
     }
 
-    if (gb->cpu.instr_cycles) {
-        gb->cpu.instr_cycles -= 4;
-    }
+    if ((gb->cpu.state != HALTED) && (instr)) {
+        (void)debug(gb); /* XXX */
+        (void)instr(gb);
 
-    if (!gb->cpu.instr_cycles) {
-        if ((gb->cpu.state != HALTED) && (instr)) {
-            (void)debug(gb); /* XXX */
-            (void)instr(gb);
+        if (!gb->cpu.step) {
             instr = NULL;
+        }
 
-            if (gb->cpu.state == HALTED) {
-                if ((gb->memory[rIF] & gb->memory[rIE] & 0x1f) != 0) {
-                    gb->cpu.halt_bug = !gb->cpu.ime;
-                }
+        if (gb->cpu.state == HALTED) {
+            if ((gb->memory[rIF] & gb->memory[rIE] & 0x1f) != 0) {
+                gb->cpu.halt_bug = !gb->cpu.ime;
             }
         }
     }
