@@ -11,7 +11,8 @@ static SDL_Renderer *renderer = NULL;
 static SDL_Texture *texture = NULL;
 static int scale_factor = 3;
 
-int video_open() {
+int video_open(struct gameboy *gb) {
+    (void)gb;
     int f = scale_factor;
 
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0) {
@@ -46,7 +47,9 @@ int video_open() {
     return 1;
 }
 
-int video_close() {
+int video_close(struct gameboy *gb) {
+    (void)gb;
+
     if (texture) {
         SDL_DestroyTexture(texture);
         texture = NULL;
@@ -66,7 +69,8 @@ int video_close() {
     return 1;
 }
 
-int video_write(uint8_t *data, uint32_t size) {
+int video_write(struct gameboy *gb, uint8_t *data, uint32_t size) {
+    (void)gb;
     uint32_t palette[] = {0xffffff, 0xaaaaaa, 0x555555, 0x000000};
     uint32_t *pixels, px;
     int pitch, y, x;
@@ -95,7 +99,7 @@ int video_write(uint8_t *data, uint32_t size) {
 * inputs
 */
 
-static void set_button_states(uint32_t key, uint8_t value) {
+static void set_button_states(struct gameboy *gb, uint32_t key, uint8_t value) {
     uint32_t i, controls[] = {
         SDLK_DOWN, SDLK_UP, SDLK_LEFT, SDLK_RIGHT,
         SDLK_RETURN, SDLK_RSHIFT, SDLK_z, SDLK_x,
@@ -103,52 +107,54 @@ static void set_button_states(uint32_t key, uint8_t value) {
 
     for (i = 0; i < 8; i++) {
         if (key == controls[i]) {
-            state->buttons[i] = value;
-            joypad_request_interrupt();
+            gb->buttons[i] = value;
+            joypad_request_interrupt(gb); //TODO: fix bad design
         }
     }
 }
 
-int input_open() {
+int input_open(struct gameboy *gb) {
+    (void)gb;
     return 1;
 }
 
-int input_close() {
+int input_close(struct gameboy *gb) {
+    (void)gb;
     return 1;
 }
 
-int input_read() {
+int input_read(struct gameboy *gb) {
     SDL_Event event;
 
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
         case SDL_QUIT:
-            state->done = true;
+            gb->done = true;
             break;
 
         case SDL_KEYDOWN:
-            set_button_states(event.key.keysym.sym, 1);
+            set_button_states(gb, event.key.keysym.sym, 1);
 
             if (event.key.keysym.sym == SDLK_ESCAPE) {
-                state->done = true;
+                gb->done = true;
             }
 
             if (event.key.keysym.sym == SDLK_d) {
-                state->debug = !state->debug;
+                gb->debug = !gb->debug;
             }
 
             if (event.key.keysym.sym == SDLK_s) {
-                state->screenshot = true;
+                gb->screenshot = true;
             }
 
             if (event.key.keysym.sym == SDLK_i) {
-                state->log_io = true;
+                gb->log_io = true;
             }
 
             break;
 
         case SDL_KEYUP:
-            set_button_states(event.key.keysym.sym, 0);
+            set_button_states(gb, event.key.keysym.sym, 0);
             break;
         }
     }
@@ -160,7 +166,8 @@ int input_read() {
 * sync
 */
 
-int av_sync() {
+int av_sync(struct gameboy *gb) {
+    (void)gb;
     return 1;
 }
 
@@ -172,7 +179,8 @@ static SDL_AudioDeviceID audio_device;
 static uint8_t sdl_sound_buffer[SOUND_BUF_SIZE];
 static volatile int audio_done;
 
-int audio_write(uint8_t *data, uint32_t size) {
+int audio_write(struct gameboy *gb, uint8_t *data, uint32_t size) {
+    (void)gb;
     memcpy(sdl_sound_buffer, data, size);
     audio_done = 0;
 
@@ -190,7 +198,8 @@ static void audio_callback(void *userdata, Uint8 *stream, int len) {
 }
 
 /* to be called after SDL_Init() */
-int audio_open() {
+int audio_open(struct gameboy *gb) {
+    (void)gb;
     SDL_AudioSpec want, have;
     int ret;
     SDL_memset(&have, 0, sizeof(SDL_AudioSpec));
@@ -231,7 +240,9 @@ int audio_open() {
     return ret;
 }
 
-int audio_close() {
+int audio_close(struct gameboy *gb) {
+    (void)gb;
+
     if (!audio_device) {
         return 1;
     }

@@ -1,5 +1,5 @@
-#ifndef GB_H
-# define GB_H
+#ifndef GAMEBOY_H
+# define GAMEBOY_H
 
 #include <stdbool.h>
 #include <stdio.h>
@@ -11,6 +11,9 @@
 #include <unistd.h>
 #include <time.h>
 
+#include "sound.h"
+#include "cpu.h"
+
 #ifndef O_BINARY
 # define O_BINARY 0
 #endif
@@ -20,43 +23,10 @@
 #define RAM_ADDRESS 0xa000
 #define RAM_SIZE    0x2000
 
-typedef struct s_r16 {
-    uint16_t AF;
-    uint16_t BC;
-    uint16_t DE;
-    uint16_t HL;
-    uint16_t SP;
-    uint16_t PC;
-} t_r16;
-
-typedef struct s_r8 {
-    uint8_t F;
-    uint8_t A;
-    uint8_t C;
-    uint8_t B;
-    uint8_t E;
-    uint8_t D;
-    uint8_t L;
-    uint8_t H;
-    uint16_t SP;
-    uint16_t PC;
-} t_r8;
-
-#define  SAMPLING_FREQUENCY 32768
-#define  NUM_FRAMES         1024
-#define  NUM_CHANNELS       2
-#define  SAMPLE_SIZE        2
-#define  SOUND_BUF_SIZE     (NUM_FRAMES * SAMPLE_SIZE * NUM_CHANNELS)
-
-typedef struct s_state {
-    void *gameboy_memory;
-    void *gameboy_registers;
-    bool ime_scheduled;
-    bool ime;
-    bool halt;
-    bool halt_bug;
+struct gameboy {
+    struct cpu cpu;
+    uint8_t memory[0x10000];
     bool stat_irq;
-    bool stop;
     bool ram_enabled;
     bool done;
     bool debug;
@@ -71,29 +41,24 @@ typedef struct s_state {
     size_t file_size;
     uint8_t *file_contents;
     uint8_t ram_banks[RAM_SIZE * 16];
-    int interrupt_dispatch;
-    uint32_t instr_cycles;
     uint32_t div_cycles;
     uint32_t cycles;
     uint8_t screen_buf[144 * 160];
+    struct OAM_ATTRS *sprites[10 + 1];
     int video_render;
+    struct channel ch[4];
     uint8_t sound_buf[SOUND_BUF_SIZE];
+    uint32_t seq_clocks, seq_frame;
+    int32_t samples_clock, samples_index;
     int audio_render;
     uint8_t buttons[8];
-
-    uint8_t (*ram_read_u8)(uint16_t);
-
-    void (*ram_write_u8)(uint16_t, uint8_t);
-
-    uint8_t (*rom_read_u8)(uint16_t);
-
-    void (*rom_write_u8)(uint16_t, uint8_t);
-
-    void (*testing_run_hook)();
-
-    void (*testing_write_hook)(uint16_t, uint8_t);
-
-} t_state;
+    uint8_t (*ram_read_u8)(struct gameboy *, uint16_t);
+    void (*ram_write_u8)(struct gameboy *, uint16_t, uint8_t);
+    uint8_t (*rom_read_u8)(struct gameboy *, uint16_t);
+    void (*rom_write_u8)(struct gameboy *, uint16_t, uint8_t);
+    void (*testing_run_hook)(struct gameboy *);
+    void (*testing_write_hook)(struct gameboy *, uint16_t, uint8_t);
+};
 
 struct io_register {
     char      *name;
@@ -101,116 +66,93 @@ struct io_register {
     uint8_t    mask;
 };
 
-extern struct io_register io_registers[];
-extern uint8_t gb_mem[];
-extern t_state *state;
 
-#define CLEAR_Z_FLAG     (r8->F &= (~0x80))
-#define CLEAR_N_FLAG     (r8->F &= (~0x40))
-#define CLEAR_H_FLAG     (r8->F &= (~0x20))
-#define CLEAR_C_FLAG     (r8->F &= (~0x10))
-
-#define SET_Z_FLAG       (r8->F |= 0x80)
-#define SET_N_FLAG       (r8->F |= 0x40)
-#define SET_H_FLAG       (r8->F |= 0x20)
-#define SET_C_FLAG       (r8->F |= 0x10)
-
-#define IS_Z_FLAG        (r8->F & 0x80 ? 1:0)
-#define IS_N_FLAG        (r8->F & 0x40 ? 1:0)
-#define IS_H_FLAG        (r8->F & 0x20 ? 1:0)
-#define IS_C_FLAG        (r8->F & 0x10 ? 1:0)
-
-int screenshot(t_state *state, char *filename);
+int screenshot(struct gameboy *gb, char *filename);
 
 char *replace_exten(char *rom, char *ext);
 
-void debug(uint8_t *mem, t_state *state, t_r16 *r16);
+void debug(struct gameboy *gb);
 
-int get_num_cycles(void *gb_reg, void *gb_mem);
+int lcd_update(struct gameboy *gb);
 
-int lcd_update(uint8_t *gb_mem, t_state *state, int current_cycles);
+int interrupts_update(struct gameboy *gb);
 
-int interrupts_update(uint8_t *mem, t_state *state, t_r16 *r16);
+int interrupt_step(struct gameboy *gb);
 
-int interrupt_step(uint8_t *mem, t_state *state, t_r16 *r16);
+int instruction(struct gameboy *gb);
 
-int instruction(uint8_t *mem, t_state *state, t_r16 *r16);
+void timers_update(struct gameboy *gb);
 
-void timers_update(uint8_t *gb_mem, t_state *state, int current_cycles);
+int sound_update(struct gameboy *gb);
 
-int sound_update(uint8_t *gb_mem, t_state *state, int current_cycles);
+void sound_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data);
 
-void sound_write_u8(uint16_t addr, uint8_t data);
+void dma_update(struct gameboy *gb);
 
-void dma_update(uint8_t *gb_mem, t_state *state, t_r16 *r16);
+uint8_t sound_read_u8(struct gameboy *gb, uint16_t addr);
 
-uint8_t sound_read_u8(uint16_t addr);
+uint8_t joypad_read(struct gameboy *gb);
 
-int video_open();
+void joypad_write(struct gameboy *gb, uint8_t data);
 
-int video_close();
+void joypad_request_interrupt(struct gameboy *gb);
 
-int video_write(uint8_t *data, uint32_t size);
+void set_initial_register_values(struct gameboy *gb);
 
-int audio_open();
+uint8_t io_read_u8(struct gameboy *gb, uint16_t addr);
 
-int audio_close();
+uint8_t read_u8(struct gameboy *gb, uint16_t addr);
 
-int audio_write(uint8_t *data, uint32_t size);
+uint16_t read_u16(struct gameboy *gb, uint16_t addr);
 
-int input_open();
+void write_u8(struct gameboy *gb, uint16_t addr, uint8_t data);
 
-int input_close();
-
-int input_read();
-
-int av_sync();
-
-uint8_t joypad_read();
-
-void joypad_write(uint8_t data);
-
-void joypad_request_interrupt();
-
-void set_initial_register_values();
-
-uint8_t io_read_u8(uint16_t addr);
-
-uint8_t read_u8(uint16_t addr);
-
-uint16_t read_u16(uint16_t addr);
-
-void write_u8(uint16_t addr, uint8_t data);
-
-void write_u16(uint16_t addr, uint16_t data);
+void write_u16(struct gameboy *gb, uint16_t addr, uint16_t data);
 
 /* cartridge/mbc */
 
-int cartridge_init();
+int cartridge_init(struct gameboy *gb);
 
-int savefile_read();
+int savefile_read(struct gameboy *gb);
 
-int savefile_write();
-
-/* jump tables */
-
-extern void (*ops0[])(void *, t_state *, uint8_t *);
-
-extern void (*ops1[])(void *, t_state *, uint8_t *);
-
-extern int byte_lens0[];
-extern int byte_lens1[];
-extern char *op_names0[];
-extern char *op_names1[];
+int savefile_write(struct gameboy *gb);
 
 /* serial */
 
-uint8_t serial_read_u8(uint16_t addr);
+uint8_t serial_read_u8(struct gameboy *gb, uint16_t addr);
 
-void serial_write_u8(uint16_t addr, uint8_t data);
+void serial_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data);
 
 /* testing  */
 
-int testing_setup();
+int testing_setup(struct gameboy *gb, char *test_name);
+
+/* host */
+
+int video_open(struct gameboy *gb);
+
+int video_close(struct gameboy *gb);
+
+int video_write(struct gameboy *gb, uint8_t *data, uint32_t size);
+
+int audio_open(struct gameboy *gb);
+
+int audio_close(struct gameboy *gb);
+
+int audio_write(struct gameboy *gb, uint8_t *data, uint32_t size);
+
+int input_open(struct gameboy *gb);
+
+int input_close(struct gameboy *gb);
+
+int input_read(struct gameboy *gb);
+
+int av_sync(struct gameboy *gb);
+
+/* hash.c */
+
+unsigned long crc32(unsigned char *buf, int len);
+
+unsigned long adler32(unsigned char *buf, int len);
 
 #endif
