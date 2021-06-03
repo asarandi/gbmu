@@ -12,15 +12,13 @@
 ** 8-bit load instructions
 */
 
-// 0b01xxxyyy except 110yyy and xxx110
-// 1 byte, 1 cycle
+// 0b01xxxyyy except 110yyy and xxx110 - 1 byte, 1 cycle
 void ld_r_r(struct gameboy *gb) {
     gb->cpu.pc++;
     gb->cpu.r8[U3DST] = gb->cpu.r8[U3SRC];
 }
 
-// 0b00xxx110 except 0x36 (0v X6, XE)
-// 2 bytes, 2 cycles
+// 0b00xxx110 except 0x36 (0v X6, XE) - 2 bytes, 2 cycles
 void ld_r_d8(struct gameboy *gb) {
     if (gb->cpu.step == 0) {
         gb->cpu.step = 1;
@@ -33,8 +31,7 @@ void ld_r_d8(struct gameboy *gb) {
     }
 }
 
-// 0b01xxx110 except 0x76 (4v X6, XE)
-// 1 byte, 2 cycles
+// 0b01xxx110 except 0x76 (4v X6, XE) - 1 byte, 2 cycles
 void ld_r_hl(struct gameboy *gb) {
     if (gb->cpu.step == 0) {
         gb->cpu.step = 1;
@@ -45,8 +42,7 @@ void ld_r_hl(struct gameboy *gb) {
     }
 }
 
-// 0b01110xxx except 0x76 (h 70-77)
-// 1 byte, 2 cycles
+// 0b01110xxx except 0x76 (h 70-77) - 1 byte, 2 cycles
 void ld_hl_r(struct gameboy *gb) {
     if (gb->cpu.step == 0) {
         gb->cpu.step = 1;
@@ -268,8 +264,7 @@ void ld_hli_a(struct gameboy *gb) {
 ** 16-bit load instructions
 */
 
-// 0x01, 0x11, 0x21, 0x31
-// 3 bytes, 3 cycles
+// 0x01, 0x11, 0x21, 0x31 - 3 bytes, 3 cycles
 void ld_rr_d16(struct gameboy *gb) {
     if (gb->cpu.step == 0) {
         gb->cpu.step = 1;
@@ -345,8 +340,7 @@ void ld_hl_sp_e(struct gameboy *gb) {
     }
 }
 
-// 0b11xx0101: 0xc5, 0xd5, 0xe5, 0xf5; bc,de,hl,af
-// 1 byte, 4 cycles
+// 0b11xx0101: 0xc5, 0xd5, 0xe5, 0xf5; bc,de,hl,af - 1 byte, 4 cycles
 void push_rr(struct gameboy *gb) {
     if (gb->cpu.step == 0) {
         gb->cpu.step = 1;
@@ -374,8 +368,7 @@ void push_rr(struct gameboy *gb) {
     }
 }
 
-// 0b11xx0001: 0xc1, 0xd1, 0xe1, 0xf1; bc,de,hl,af
-// 1 byte, 3 cycles
+// 0b11xx0001: 0xc1, 0xd1, 0xe1, 0xf1; bc,de,hl,af - 1 byte, 3 cycles
 void pop_rr(struct gameboy *gb) {
     if (gb->cpu.step == 0) {
         gb->cpu.step = 1;
@@ -720,9 +713,8 @@ void add_sp_e(struct gameboy *gb) {
 #define _SET \
     gb->cpu.lo |= (1 << U3DST);
 
-
-// 2 cycles
-#define CBR8(FUNC,MACRO)                    \
+// all CB-prefixed opcodes except X6 and XE opcodes - 2 bytes, 2 cycles
+#define CB_R(FUNC,MACRO)                    \
 void FUNC(struct gameboy *gb)   {           \
     if (gb->cpu.step == 0) {                \
         gb->cpu.step = 1;                   \
@@ -736,20 +728,20 @@ void FUNC(struct gameboy *gb)   {           \
     }                                       \
 }
 
-CBR8(rlc_r,_RLC);
-CBR8(rrc_r,_RRC);
-CBR8(rl_r,_RL);
-CBR8(rr_r,_RR);
-CBR8(sla_r,_SLA);
-CBR8(sra_r,_SRA);
-CBR8(swap_r,_SWAP);
-CBR8(srl_r,_SRL);
-CBR8(bit_r,_BIT);
-CBR8(res_r,_RES);
-CBR8(set_r,_SET);
+CB_R(rlc_r,_RLC);
+CB_R(rrc_r,_RRC);
+CB_R(rl_r,_RL);
+CB_R(rr_r,_RR);
+CB_R(sla_r,_SLA);
+CB_R(sra_r,_SRA);
+CB_R(swap_r,_SWAP);
+CB_R(srl_r,_SRL);
+CB_R(bit_r,_BIT);
+CB_R(res_r,_RES);
+CB_R(set_r,_SET);
 
-// 4 cycles, except `bit' => 3 cycles
-#define CBHL(FUNC,MACRO)                    \
+// 4 cycles, except `bit u3, (HL)' => 3 cycles
+#define CB_HL(FUNC,MACRO)                   \
 void FUNC(struct gameboy *gb)  {            \
     if (gb->cpu.step == 0) {                \
         gb->cpu.step = 1;                   \
@@ -767,16 +759,16 @@ void FUNC(struct gameboy *gb)  {            \
     }                                       \
 }
 
-CBHL(rlc_hl,_RLC);
-CBHL(rrc_hl,_RRC);
-CBHL(rl_hl,_RL);
-CBHL(rr_hl,_RR);
-CBHL(sla_hl,_SLA);
-CBHL(sra_hl,_SRA);
-CBHL(swap_hl,_SWAP);
-CBHL(srl_hl,_SRL);
-CBHL(res_hl,_RES);
-CBHL(set_hl,_SET);
+CB_HL(rlc_hl,_RLC);
+CB_HL(rrc_hl,_RRC);
+CB_HL(rl_hl,_RL);
+CB_HL(rr_hl,_RR);
+CB_HL(sla_hl,_SLA);
+CB_HL(sra_hl,_SRA);
+CB_HL(swap_hl,_SWAP);
+CB_HL(srl_hl,_SRL);
+CB_HL(res_hl,_RES);
+CB_HL(set_hl,_SET);
 
 // 3 cycles
 void bit_hl(struct gameboy *gb)  {
@@ -794,37 +786,19 @@ void bit_hl(struct gameboy *gb)  {
     }
 }
 
-void rlca(struct gameboy *gb)    {
-    gb->cpu.pc++;
-    gb->cpu.lo = gb->cpu.r8[7];
-    _RLC;
-    gb->cpu.r8[7] = gb->cpu.lo;
-    CLEAR_Z_FLAG;
+#define ROTA(FUNC,MACRO)            \
+void FUNC(struct gameboy *gb) {     \
+    gb->cpu.pc++;                   \
+    gb->cpu.lo = gb->cpu.r8[7];     \
+    MACRO;                          \
+    gb->cpu.r8[7] = gb->cpu.lo;     \
+    CLEAR_Z_FLAG;                   \
 };
 
-void rrca(struct gameboy *gb)    {
-    gb->cpu.pc++;
-    gb->cpu.lo = gb->cpu.r8[7];
-    _RRC;
-    gb->cpu.r8[7] = gb->cpu.lo;
-    CLEAR_Z_FLAG;
-};
-
-void rla(struct gameboy *gb)     {
-    gb->cpu.pc++;
-    gb->cpu.lo = gb->cpu.r8[7];
-    _RL;
-    gb->cpu.r8[7] = gb->cpu.lo;
-    CLEAR_Z_FLAG;
-};
-
-void rra(struct gameboy *gb)     {
-    gb->cpu.pc++;
-    gb->cpu.lo = gb->cpu.r8[7];
-    _RR;
-    gb->cpu.r8[7] = gb->cpu.lo;
-    CLEAR_Z_FLAG;
-};
+ROTA(rlca,_RLC);
+ROTA(rrca,_RRC);
+ROTA(rla,_RL);
+ROTA(rra,_RR);
 
 /*
 ** control flow instructions
