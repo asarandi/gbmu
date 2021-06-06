@@ -212,7 +212,7 @@ int lcd_update(struct gameboy *gb) {
     } else if (on) {
         gb->memory[rSTAT] &= ~STATF_LCD;
         gb->memory[rLY] = on = frames = 0;
-        lcd_cycle = 248; // start in mode 0
+        lcd_cycle = 252; // start in mode 0
         // show "blank" screen when lcd off
         (void)memset(gb->screen_buf, 0, sizeof(gb->screen_buf));
         gb->video_render = 1;
@@ -221,23 +221,21 @@ int lcd_update(struct gameboy *gb) {
         return gb->video_render;
     }
 
-    lcd_cycle += 4;
-    lcd_cycle %= FRAME_DURATION;
     gb->memory[rLY] = lcd_cycle / 456;
 
     if (gb->memory[rLY] == gb->memory[rLYC]) {
         gb->memory[rSTAT] |= STATF_LYCF;
-        gb->stat_irq = (gb->memory[rSTAT] & STATF_LYC) ? true : false;
+        gb->cpu.stat_irq = (gb->memory[rSTAT] & STATF_LYC) ? true : false;
     } else {
         gb->memory[rSTAT] &= ~STATF_LYCF;
-        gb->stat_irq = false;
+        gb->cpu.stat_irq = false;
     }
 
     if (gb->memory[rLY] < 144) {
         // mode 2
         if ((lcd_cycle % 456) < 80) {
             if (gb->memory[rSTAT] & STATF_MODE10) {
-                gb->stat_irq = true;
+                gb->cpu.stat_irq |= true;
             }
 
             gb->memory[rSTAT] = (gb->memory[rSTAT] & ~STATF_LCD) | STATF_OAM;
@@ -259,7 +257,7 @@ int lcd_update(struct gameboy *gb) {
             }
 
             if (gb->memory[rSTAT] & STATF_MODE00) {
-                gb->stat_irq = true;
+                gb->cpu.stat_irq |= true;
             }
 
             gb->memory[rSTAT] &= ~STATF_LCD;
@@ -268,7 +266,7 @@ int lcd_update(struct gameboy *gb) {
         // mode 1
         if (!(gb->memory[rSTAT] & STATF_VBL)) { //once
             if (gb->memory[rSTAT] & STATF_MODE10) {
-                gb->stat_irq = true;
+                gb->cpu.stat_irq |= true;
             }
 
             gb->memory[rIF] |= IEF_VBLANK;
@@ -281,12 +279,14 @@ int lcd_update(struct gameboy *gb) {
         }
 
         if (gb->memory[rSTAT] & STATF_MODE01) {
-            gb->stat_irq = true;
+            gb->cpu.stat_irq |= true;
         }
 
         gb->memory[rSTAT] = (gb->memory[rSTAT] & ~STATF_LCD) | STATF_VBL;
     }
 
+    lcd_cycle += 4;
+    lcd_cycle %= FRAME_DURATION;
     return gb->video_render;
 }
 

@@ -1137,8 +1137,12 @@ void (*instruct[])(struct gameboy *gb) = {
     set_r,    set_r,     set_r,     set_r,   set_r,       set_r,   set_hl,   set_r,   set_r,      set_r,     set_r,     set_r,  set_r,       set_r,    set_hl,  set_r,
 };
 
-int instruction(struct gameboy *gb) {
+int cpu_update(struct gameboy *gb) {
     static void (*instr)(struct gameboy *gb) = NULL;
+
+    if (gb->cpu.state == INTERRUPT_DISPATCH) {
+        return interrupt_step(gb);
+    }
 
     if ((gb->cpu.state != HALTED) && (!instr) && (!gb->cpu.step)) {
         gb->cpu.opcode = read_u8(gb, gb->cpu.pc);
@@ -1174,5 +1178,8 @@ int instruction(struct gameboy *gb) {
         }
     }
 
+//    if (!gb->cpu.step) {
+//        return interrupts_update(gb);
+//    }
     return instr != NULL;
 }

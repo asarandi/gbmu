@@ -118,7 +118,7 @@ void write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
         // will set bit 1 in IF register
         if (gb->memory[rLCDC] & LCDCF_ON) {
             if ((gb->memory[rSTAT] & STATF_LCD) < 2) {
-                gb->stat_irq = true;
+                gb->cpu.stat_irq |= true;
             }
         }
 

@@ -169,6 +169,36 @@ static void sweep_tick(struct gameboy *gb) {
     }
 }
 
+int sequencer_step(struct gameboy *gb) {
+    if (!(gb->memory[rAUDENA] & AUDENA_ON)) {
+        return gb->seq_frame;
+    }
+
+    gb->seq_frame = (gb->seq_frame + 1) & 7;
+
+    if ((gb->seq_frame & 1) == 0) {
+        for (int i = 0; i < 4; i++) {
+            if ((gb->ch[i].len_enabled) && (gb->ch[i].length)) {
+                if (!--(gb->ch[i].length)) {
+                    gb->ch[i].on = 0;
+                }
+            }
+        }
+    }
+
+    if ((gb->seq_frame & 3) == 2)  {
+        sweep_tick(gb);
+    }
+
+    if ((gb->seq_frame & 7) == 7) {
+        volume_tick(&gb->ch[0]);
+        volume_tick(&gb->ch[1]);
+        volume_tick(&gb->ch[3]);
+    }
+
+    return gb->seq_frame;
+}
+
 int sound_update(struct gameboy *gb) {
     static int i, once, clocks = 4;
 
@@ -176,35 +206,12 @@ int sound_update(struct gameboy *gb) {
         once = gb->ch[0].on = 1;
     }
 
-    if (gb->memory[rAUDENA] & AUDENA_ON) {
-        gb->seq_clocks += clocks;
-    }
-
-    if ((gb->memory[rAUDENA] & AUDENA_ON) && (gb->seq_clocks >= 8192)) {
-        gb->seq_clocks -= 8192;
-        gb->seq_frame = (gb->seq_frame + 1) & 7;
-
-        if ((gb->seq_frame & 1) == 0) {
-            for (i = 0; i < 4; i++) {
-                if ((gb->ch[i].len_enabled) && (gb->ch[i].length)) {
-                    if (!--(gb->ch[i].length)) {
-                        gb->ch[i].on = 0;
-                    }
-                }
-            }
-        }
-
-        if ((gb->seq_frame & 3) == 2)  {
-            sweep_tick(gb);
-        }
-
-        if ((gb->seq_frame & 7) == 7) {
-            volume_tick(&gb->ch[0]);
-            volume_tick(&gb->ch[1]);
-            volume_tick(&gb->ch[3]);
-        }
-    }
-
+//    gb->seq_clocks += clocks;
+//
+//    if ((gb->seq_clocks >= 8192)) {
+//        gb->seq_clocks -= 8192;
+//        sequencer_step(gb);
+//    }
     gb->memory[rAUDENA] &= AUDENA_ON;
 
     for (i = 0; i < 4; i++) {
@@ -217,6 +224,8 @@ int sound_update(struct gameboy *gb) {
                 gb->ch[i].counter += gb->ch[i].period;
                 gb->ch[i].phase++;
             }
+        } else {
+            gb->ch[i].counter = 0;
         }
     }
 

@@ -118,18 +118,16 @@ int main(int ac, char **av) {
     }
 
     gb->div_cycles = 0xabcc;
+    gb->serial_cycles = gb->div_cycles;
 
     while (!gb->done) {
-        (void)interrupts_update(gb);
-
-        if (gb->cpu.interrupt_dispatch) {
-            (void)interrupt_step(gb);
-        } else {
-            (void)instruction(gb);
-        }
-
-        (void)timers_update(gb);
         (void)dma_update(gb);
+        (void)cpu_update(gb);
+        (void)serial_update(gb);
+
+        if (timers_update(gb)) {
+            sequencer_step(gb);
+        }
 
         if (lcd_update(gb)) {
             if (!gb->testing) {
@@ -151,6 +149,12 @@ int main(int ac, char **av) {
 
         if (gb->testing) {
             (void)gb->testing_run_hook(gb);
+        }
+
+        if (!(gb->cpu.state == INTERRUPT_DISPATCH)) {
+            if (!gb->cpu.step) {
+                interrupts_update(gb);
+            }
         }
 
         gb->cycles += 4;

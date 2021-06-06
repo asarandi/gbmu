@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-enum CPU_STATE { RUNNING, HALTED, STOPPED };
+enum CPU_STATE { RUNNING, HALTED, STOPPED, INTERRUPT_DISPATCH };
 
 struct cpu {
     uint8_t opcode;
@@ -13,8 +13,10 @@ struct cpu {
     uint8_t hi, lo;
     int16_t i16;
     uint16_t u16;
+    int stat_irq;
+    int stat_irq_old;
     int step;
-    int interrupt_dispatch;
+    int interrupt;
     int instr_cycles;
     int state;
     int halt_bug;

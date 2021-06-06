@@ -1,12 +1,14 @@
 #include "gb.h"
 #include "hardware.h"
 
-void timers_update(struct gameboy *gb) {
+int timers_update(struct gameboy *gb) {
     const uint32_t current_cycles = 4;
     static uint8_t tima, counter;
     static bool current, prev, overflow;
     uint8_t shifts[] = {9, 3, 5, 7};
-    int f;
+    int f, bitflip;
+    bitflip = ((gb->div_cycles & (1 << 13)) !=
+               ((gb->div_cycles + current_cycles) & (1 << 13)));
     gb->div_cycles += current_cycles;
     gb->div_cycles &= 0xffff;
     gb->memory[rDIV] = gb->div_cycles >> 8;
@@ -45,4 +47,5 @@ void timers_update(struct gameboy *gb) {
 
     prev = current;
     tima = gb->memory[rTIMA];
+    return bitflip;
 }

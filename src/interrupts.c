@@ -3,27 +3,26 @@
 #include "hardware.h"
 
 int interrupt_step(struct gameboy *gb) {
-    static int i, step, interrupt;
-
-    if (step == 0) {
+    if (gb->cpu.step == 0) {
+        gb->cpu.step = 1;
         gb->cpu.ime = 0;
-        ++step;
-    } else if (step == 1) {
-        ++step;
-    } else if (step == 2) {
-        --(gb->cpu.sp);
+    } else if (gb->cpu.step == 1) {
+        gb->cpu.step = 2;
+    } else if (gb->cpu.step == 2) {
+        gb->cpu.step = 3;
+        gb->cpu.sp--;
         write_u8(gb, gb->cpu.sp, gb->cpu.pc >> 8);
-        ++step;
-    } else if (step == 3) {
-        interrupt = gb->memory[rIE] & gb->memory[rIF] & 31;
-        --(gb->cpu.sp);
+    } else if (gb->cpu.step == 3) {
+        gb->cpu.step = 4;
+        gb->cpu.interrupt = gb->memory[rIE] & gb->memory[rIF] & 31;
+        gb->cpu.sp--;
         write_u8(gb, gb->cpu.sp, gb->cpu.pc & 255);
-        ++step;
-    } else if (step == 4) {
-        step = gb->cpu.pc = gb->cpu.interrupt_dispatch = 0;
+    } else if (gb->cpu.step == 4) {
+        gb->cpu.step = gb->cpu.pc = 0;
+        gb->cpu.state = RUNNING;
 
-        for (i = 0; i < 5; i++) {
-            if (interrupt & (1 << i)) {
+        for (int i = 0; i < 5; i++) {
+            if (gb->cpu.interrupt & (1 << i)) {
                 gb->memory[rIF] &= ~(1 << i);
                 gb->cpu.pc = 0x40 + (i << 3);
                 break ;
@@ -31,28 +30,18 @@ int interrupt_step(struct gameboy *gb) {
         }
     }
 
-    return step;
+    return gb->cpu.step;
 }
 
 int interrupts_update(struct gameboy *gb) {
-    static bool stat_irq_old;
-
-    if ((gb->stat_irq) && (!stat_irq_old)) {
+    if ((gb->cpu.stat_irq) && (!gb->cpu.stat_irq_old)) {
         gb->memory[rIF] |= IEF_LCDC;
     }
 
-    stat_irq_old = gb->stat_irq;
+    gb->cpu.stat_irq_old = gb->cpu.stat_irq;
 
     if (gb->memory[rIE] & gb->memory[rIF] & 31) {
         gb->cpu.state = RUNNING;
-    }
-
-    if (gb->cpu.step) {
-        return 0;
-    }
-
-    if (gb->cpu.interrupt_dispatch) {
-        return 0;
     }
 
     if (gb->cpu.ime_scheduled) {
@@ -68,6 +57,9 @@ int interrupts_update(struct gameboy *gb) {
         return 0;
     }
 
-    gb->cpu.interrupt_dispatch = (gb->memory[rIE] & gb->memory[rIF] & 31) != 0;
-    return gb->cpu.interrupt_dispatch;
+    if ((gb->memory[rIE] & gb->memory[rIF] & 31) != 0) {
+        gb->cpu.state = INTERRUPT_DISPATCH;
+    }
+
+    return gb->cpu.state;
 }

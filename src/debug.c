@@ -78,13 +78,16 @@ static void dump_io(struct gameboy *gb) {
         uint16_t   addr;
         uint8_t    mask;
     } io_registers[] = {
-        {"IF",     0xFF0F, 0b11100000},
-        {"IE",     0xFFFF, 0b00000000},
-        {"LCDC",   0xFF40, 0b00000000},
-        {"STAT",   0xFF41, 0b10000000},
-        {"LY",     0xFF44, 0b00000000},
-        {"LYC",    0xFF45, 0b00000000},
-        {"DMA",    0xFF46, 0b00000000},
+        {"IF",     rIF,   0b11100000},
+        {"IE",     rIE,   0b00000000},
+        {"LCDC",   rLCDC, 0b00000000},
+        {"STAT",   rSTAT, 0b10000000},
+//        {"LY",     rLY,   0b00000000},
+//        {"LYC",    rLYC,  0b00000000},
+//        {"DMA",    rDMA,  0b00000000},
+        {"DIV",   rDIV,   0b00000000},
+        {"SC",    rSC,    0b00000000},
+        {"SB",    rSB,    0b00000000},
     };
     int i;
 

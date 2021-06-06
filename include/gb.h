@@ -26,7 +26,6 @@
 struct gameboy {
     struct cpu cpu;
     uint8_t memory[0x10000];
-    bool stat_irq;
     bool ram_enabled;
     bool done;
     bool debug;
@@ -34,6 +33,8 @@ struct gameboy {
     bool screenshot;
     bool testing;
     int dma_clocks;
+    uint16_t serial_cycles;
+    int serial_ctr;
     bool is_dma;
     int exit_code;
     char *rom_file;
@@ -79,11 +80,13 @@ int interrupts_update(struct gameboy *gb);
 
 int interrupt_step(struct gameboy *gb);
 
-int instruction(struct gameboy *gb);
+int cpu_update(struct gameboy *gb);
 
-void timers_update(struct gameboy *gb);
+int timers_update(struct gameboy *gb);
 
 int sound_update(struct gameboy *gb);
+
+int sequencer_step(struct gameboy *gb);
 
 void sound_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data);
 
@@ -118,6 +121,8 @@ int savefile_read(struct gameboy *gb);
 int savefile_write(struct gameboy *gb);
 
 /* serial */
+
+int serial_update(struct gameboy *gb);
 
 uint8_t serial_read_u8(struct gameboy *gb, uint16_t addr);
 
