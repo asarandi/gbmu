@@ -67,58 +67,37 @@ struct io_register {
     uint8_t    mask;
 };
 
-
 int screenshot(struct gameboy *gb, char *filename);
 
 char *replace_exten(char *rom, char *ext);
 
 void debug(struct gameboy *gb);
 
+void dma_update(struct gameboy *gb);
+
 int lcd_update(struct gameboy *gb);
+
+/* io registers, cpu, interrupts */
+
+void io_init(struct gameboy *gb);
+
+uint8_t io_read_u8(struct gameboy *gb, uint16_t addr);
+
+void io_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data);
+
+int cpu_update(struct gameboy *gb);
 
 int interrupts_update(struct gameboy *gb);
 
 int interrupt_step(struct gameboy *gb);
 
-int cpu_update(struct gameboy *gb);
+/* joypad */
 
-int timers_update(struct gameboy *gb);
+uint8_t joypad_read_u8(struct gameboy *gb, uint16_t addr);
 
-int sound_update(struct gameboy *gb);
-
-int sequencer_step(struct gameboy *gb);
-
-void sound_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data);
-
-void dma_update(struct gameboy *gb);
-
-uint8_t sound_read_u8(struct gameboy *gb, uint16_t addr);
-
-uint8_t joypad_read(struct gameboy *gb);
-
-void joypad_write(struct gameboy *gb, uint8_t data);
+void joypad_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data);
 
 void joypad_request_interrupt(struct gameboy *gb);
-
-void set_initial_register_values(struct gameboy *gb);
-
-uint8_t io_read_u8(struct gameboy *gb, uint16_t addr);
-
-uint8_t read_u8(struct gameboy *gb, uint16_t addr);
-
-uint16_t read_u16(struct gameboy *gb, uint16_t addr);
-
-void write_u8(struct gameboy *gb, uint16_t addr, uint8_t data);
-
-void write_u16(struct gameboy *gb, uint16_t addr, uint16_t data);
-
-/* cartridge/mbc */
-
-int cartridge_init(struct gameboy *gb);
-
-int savefile_read(struct gameboy *gb);
-
-int savefile_write(struct gameboy *gb);
 
 /* serial */
 
@@ -127,6 +106,38 @@ int serial_update(struct gameboy *gb);
 uint8_t serial_read_u8(struct gameboy *gb, uint16_t addr);
 
 void serial_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data);
+
+/* timer*/
+
+uint8_t timer_read_u8(struct gameboy *gb, uint16_t addr);
+
+void timer_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data);
+
+int timer_update(struct gameboy *gb);
+
+/* sound */
+
+uint8_t sound_read_u8(struct gameboy *gb, uint16_t addr);
+
+void sound_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data);
+
+int sound_update(struct gameboy *gb);
+
+int sequencer_step(struct gameboy *gb);
+
+/* bus */
+
+uint8_t read_u8(struct gameboy *gb, uint16_t addr);
+
+void write_u8(struct gameboy *gb, uint16_t addr, uint8_t data);
+
+/* cartridge/mbc */
+
+int cartridge_init(struct gameboy *gb);
+
+int savefile_read(struct gameboy *gb);
+
+int savefile_write(struct gameboy *gb);
 
 /* testing  */
 

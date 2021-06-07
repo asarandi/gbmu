@@ -1,25 +1,24 @@
 CFLAGS += -O2 -Wall -Werror -Wextra -I include/
 SRC := \
+    src/bus.c \
     src/cartridge.c \
     src/cpu.c \
     src/debug.c \
     src/hash.c \
-    src/init.c \
     src/interrupts.c \
+    src/io.c \
     src/joypad.c \
     src/lcd.c \
     src/main.c \
-    src/mmu.c \
     src/savefile.c \
     src/sdl.c \
     src/serial.c \
     src/sound.c \
     src/testing.c \
-    src/timers.c
+    src/timer.c
 
-src/debug.o: CFLAGS  += -Wno-unused-function -Wno-unused-result
-src/ops.o:   CFLAGS  += -Wno-unused-variable -Wno-unused-parameter
-src/sdl.o:   CFLAGS  += $(shell sdl2-config --cflags) -Wno-unused-result
+src/debug.o: CFLAGS  += -Wno-unused-result
+src/sdl.o:   CFLAGS  += $(shell sdl2-config --cflags)
 gbmu:        LDFLAGS += $(shell sdl2-config --libs)
 
 all: gbmu
@@ -28,7 +27,7 @@ gbmu: $(SRC:.c=.o)
 	$(CC) -o $@ $^ $(LDFLAGS)
 
 clean:
-	$(RM) $(SRC:.c=.o)
+	$(RM) src/*.o
 
 fclean: clean
 	$(RM) gbmu

@@ -5,7 +5,8 @@ void joypad_request_interrupt(struct gameboy *gb) {
     gb->memory[rIF] |= IEF_HILO;
 }
 
-uint8_t joypad_read(struct gameboy *gb) {
+uint8_t joypad_read_u8(struct gameboy *gb, uint16_t addr) {
+    (void)addr;
     uint8_t i, res;
     res = (gb->memory[rP1] & 0x30) | (~0x30);
 
@@ -22,6 +23,7 @@ uint8_t joypad_read(struct gameboy *gb) {
     return res;
 }
 
-void joypad_write(struct gameboy *gb, uint8_t data) {
+void joypad_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
+    (void)addr;
     gb->memory[rP1] = data & 0b00110000;
 }

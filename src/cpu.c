@@ -1178,8 +1178,5 @@ int cpu_update(struct gameboy *gb) {
         }
     }
 
-//    if (!gb->cpu.step) {
-//        return interrupts_update(gb);
-//    }
     return instr != NULL;
 }

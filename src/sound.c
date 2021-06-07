@@ -206,12 +206,6 @@ int sound_update(struct gameboy *gb) {
         once = gb->ch[0].on = 1;
     }
 
-//    gb->seq_clocks += clocks;
-//
-//    if ((gb->seq_clocks >= 8192)) {
-//        gb->seq_clocks -= 8192;
-//        sequencer_step(gb);
-//    }
     gb->memory[rAUDENA] &= AUDENA_ON;
 
     for (i = 0; i < 4; i++) {

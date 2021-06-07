@@ -262,7 +262,7 @@ struct io_register io_registers[] = {
 
 /* http://gbdev.gg8.se/wiki/articles/Power_Up_Sequence */
 
-void set_initial_register_values(struct gameboy *gb) {
+void io_init(struct gameboy *gb) {
     gb->cpu.r8[0] = 0x00, gb->cpu.r8[1] = 0x13; // bc = 0x0013
     gb->cpu.r8[2] = 0x00, gb->cpu.r8[3] = 0xd8; // de = 0x00d8
     gb->cpu.r8[4] = 0x01, gb->cpu.r8[5] = 0x4d; // hl = 0x014d
@@ -318,29 +318,92 @@ void set_initial_register_values(struct gameboy *gb) {
 }
 
 uint8_t io_read_u8(struct gameboy *gb, uint16_t addr) {
-    uint8_t val, mask;
+    uint8_t data, mask;
     mask = io_registers[addr & 255].mask;
-    val = gb->memory[addr];
+    data = gb->memory[addr];
 
     switch (addr) {
     case rP1:
-        val = joypad_read(gb);
+        data = joypad_read_u8(gb, addr);
         break ;
 
     case rSB:
     case rSC:
-        val = serial_read_u8(gb, addr);
+        data = serial_read_u8(gb, addr);
+        break ;
+
+    case rDIV:
+    case rTIMA:
+    case rTMA:
+    case rTAC:
+        data = timer_read_u8(gb, addr);
         break ;
 
     default:
         break ;
     }
 
-    val |= mask;
+    data |= mask;
 
     if ((addr >= 0xff10) && (addr < 0xff40)) {
-        val = sound_read_u8(gb, addr);
+        data = sound_read_u8(gb, addr);
     }
 
-    return val;
+    return data;
+}
+
+void io_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
+    if (gb->log_io) {
+        char *io_reg_name = io_registers[addr - _IO].name;
+
+        if (addr >= _HRAM) {
+            io_reg_name = "HRAM";
+        }
+
+        (void)printf("IO: addr = %04x data = %02x register = %s\n",
+                     addr, data, io_reg_name);
+        (void)fflush(stdout);
+    }
+
+    switch (addr) {
+    case rP1:
+        return joypad_write_u8(gb, addr, data);
+
+    case rSB:
+    case rSC:
+        return serial_write_u8(gb, addr, data);
+
+    case rDIV:
+    case rTIMA:
+    case rTMA:
+    case rTAC:
+        return timer_write_u8(gb, addr, data);
+
+    case rSTAT:
+        if (gb->memory[rLCDC] & LCDCF_ON) {
+            if ((gb->memory[rSTAT] & STATF_LCD) < 2) {
+                gb->cpu.stat_irq |= true;
+            }
+        }
+
+        data = 128 | (data & 0b01111000) | (gb->memory[rSTAT] & 7);
+        break ;
+
+    case rDMA:
+        gb->dma_clocks = 12;
+        break ;
+
+    case rPCM12:
+    case rPCM34:
+        return;
+
+    default:
+        break ;
+    }
+
+    if ((addr >= rNR10) && (addr < rNR10 + 0x30)) {
+        return sound_write_u8(gb, addr, data);
+    }
+
+    gb->memory[addr] = data;
 }

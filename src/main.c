@@ -92,7 +92,7 @@ int main(int ac, char **av) {
     }
 
     (void)memcpy(gb->memory, gb->file_contents, 0x8000);
-    set_initial_register_values(gb);
+    io_init(gb);
 
     if (!cartridge_init(gb)) {
         return cleanup(gb, 0);
@@ -125,7 +125,7 @@ int main(int ac, char **av) {
         (void)cpu_update(gb);
         (void)serial_update(gb);
 
-        if (timers_update(gb)) {
+        if (timer_update(gb)) {
             sequencer_step(gb);
         }
 
