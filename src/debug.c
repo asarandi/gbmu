@@ -78,24 +78,23 @@ static void dump_io(struct gameboy *gb) {
         uint16_t   addr;
         uint8_t    mask;
     } io_registers[] = {
-        {"IF",     rIF,   0b11100000},
-        {"IE",     rIE,   0b00000000},
-        {"LCDC",   rLCDC, 0b00000000},
-        {"STAT",   rSTAT, 0b10000000},
-//        {"LY",     rLY,   0b00000000},
-//        {"LYC",    rLYC,  0b00000000},
-//        {"DMA",    rDMA,  0b00000000},
-        {"DIV",   rDIV,   0b00000000},
-        {"SC",    rSC,    0b00000000},
-        {"SB",    rSB,    0b00000000},
+        {"IF",    rIF,   0b11100000},
+        {"IE",    rIE,   0b00000000},
+        {"LCDC",  rLCDC, 0b00000000},
+        {"STAT",  rSTAT, 0b10000000},
+        {"LY",    rLY,   0b00000000},
+        {"DIV",   rDIV,  0b00000000},
+        {"TIMA",  rTIMA, 0b00000000},
+        {"TMA",   rTMA,  0b00000000},
+        {"TAC",   rTAC,  0b00000000},
     };
     int i;
 
-    for (i = 0; i < 7; i++) {
+    for (i = 0; i < 9; i++) {
         printf("%s%.4s %02x",
                i > 0 ? " " : "",
                io_registers[i].name,
-               gb->memory[io_registers[i].addr]
+               read_u8(gb, io_registers[i].addr)
               );
     }
 

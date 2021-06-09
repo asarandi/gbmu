@@ -271,7 +271,7 @@ void io_init(struct gameboy *gb) {
     gb->cpu.pc = 0x0100;
     gb->memory[rP1] = 0xcf;
     gb->memory[rSB] = 0x00;
-    gb->memory[rDIV] = 0x00;
+    gb->timer.div = 0xabcc;
     gb->memory[rTIMA] = 0x00;
     gb->memory[rTMA] = 0x00;
     gb->memory[rTAC] = 0x00;

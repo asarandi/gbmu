@@ -117,8 +117,7 @@ int main(int ac, char **av) {
         }
     }
 
-    gb->div_cycles = 0xabcc;
-    gb->serial_cycles = gb->div_cycles;
+    gb->serial_cycles = 0xabcc;
 
     while (!gb->done) {
         (void)dma_update(gb);

@@ -12,6 +12,7 @@
 #include <time.h>
 
 #include "sound.h"
+#include "timer.h"
 #include "cpu.h"
 
 #ifndef O_BINARY
@@ -42,7 +43,7 @@ struct gameboy {
     size_t file_size;
     uint8_t *file_contents;
     uint8_t ram_banks[RAM_SIZE * 16];
-    uint32_t div_cycles;
+    struct timer timer;
     uint32_t cycles;
     uint8_t screen_buf[144 * 160];
     struct OAM_ATTRS *sprites[10 + 1];
