@@ -290,29 +290,36 @@ int lcd_update(struct gameboy *gb) {
     return gb->video_render;
 }
 
-void dma_update(struct gameboy *gb) {
-    static uint16_t dma_source, idx;
-
-    if (gb->cpu.state == HALTED) {
-        return ;
+uint8_t dma_read_u8(struct gameboy *gb, uint16_t addr) {
+    if (addr < _VRAM) {
+        return gb->rom_read_u8(gb, addr);
     }
 
-    if (gb->dma_clocks) {
-        gb->dma_clocks -= 4;
+    if ((addr >= _SRAM) && (addr < _SRAM + 0x2000)) {
+        return gb->ram_read_u8(gb, addr);
+    }
 
-        if (gb->dma_clocks == 0) {
-            gb->is_dma = 1;
-            idx = 0;
-            dma_source = gb->memory[rDMA] << 8;
+    return gb->memory[addr];
+}
 
-            if (dma_source >= _RAM + 0x2000) {
-                dma_source = _RAM | (dma_source & 0x1fff);
+void dma_update(struct gameboy *gb) {
+    if (gb->dma.clocks) {
+        gb->dma.clocks -= 4;
+
+        if (!gb->dma.clocks) {
+            gb->dma.active = 1;
+            gb->dma.index = 0;
+            gb->dma.source = gb->memory[rDMA] << 8;
+
+            if (gb->dma.source > 0xdfff) {
+                gb->dma.source &= 0xdfff;
             }
         }
     }
 
-    if (gb->is_dma) {
-        gb->memory[_OAMRAM + idx] = read_u8(gb, dma_source + idx);
-        gb->is_dma = (++idx < 0xa0);
+    if (gb->dma.active) {
+        gb->dma.byte = dma_read_u8(gb, gb->dma.source + gb->dma.index);
+        gb->memory[_OAMRAM + gb->dma.index] = gb->dma.byte;
+        gb->dma.active = (++gb->dma.index < 0xa0);
     }
 }

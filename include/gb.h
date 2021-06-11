@@ -24,6 +24,14 @@
 #define RAM_ADDRESS 0xa000
 #define RAM_SIZE    0x2000
 
+struct dma {
+    int index;
+    int clocks;
+    bool active;
+    uint8_t byte;
+    uint16_t source;
+};
+
 struct gameboy {
     struct cpu cpu;
     uint8_t memory[0x10000];
@@ -33,10 +41,9 @@ struct gameboy {
     bool log_io;
     bool screenshot;
     bool testing;
-    int dma_clocks;
+    struct dma dma;
     uint16_t serial_cycles;
     int serial_ctr;
-    bool is_dma;
     int exit_code;
     char *rom_file;
     char *ram_file;

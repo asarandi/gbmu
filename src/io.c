@@ -390,7 +390,7 @@ void io_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
         break ;
 
     case rDMA:
-        gb->dma_clocks = 12;
+        gb->dma.clocks = 12;
         break ;
 
     case rPCM12:

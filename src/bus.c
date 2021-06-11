@@ -21,7 +21,7 @@ uint8_t read_u8(struct gameboy *gb, uint16_t addr) {
 
     /* ignore reads from oam in lcd mode 2 and 3 */
     if ((addr >= _OAMRAM) && (addr < _OAMRAM + 0xa0)) {
-        if (((gb->memory[rSTAT] & STATF_LCD) >= 2) || (gb->is_dma)) {
+        if (((gb->memory[rSTAT] & STATF_LCD) >= 2) || (gb->dma.active)) {
             return 0xff;
         }
     }
@@ -36,6 +36,10 @@ uint8_t read_u8(struct gameboy *gb, uint16_t addr) {
 void write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
     if (gb->testing) {
         (void)gb->testing_write_hook(gb, addr, data);
+    }
+
+    if ((gb->dma.active) && (addr < _IO)) {
+        return;
     }
 
     /* mbc/rom */

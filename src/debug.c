@@ -83,14 +83,11 @@ static void dump_io(struct gameboy *gb) {
         {"LCDC",  rLCDC, 0b00000000},
         {"STAT",  rSTAT, 0b10000000},
         {"LY",    rLY,   0b00000000},
-        {"DIV",   rDIV,  0b00000000},
-        {"TIMA",  rTIMA, 0b00000000},
-        {"TMA",   rTMA,  0b00000000},
-        {"TAC",   rTAC,  0b00000000},
+        {"DMA",   rDMA,  0b00000000},
     };
     int i;
 
-    for (i = 0; i < 9; i++) {
+    for (i = 0; i < 6; i++) {
         printf("%s%.4s %02x",
                i > 0 ? " " : "",
                io_registers[i].name,
@@ -98,7 +95,8 @@ static void dump_io(struct gameboy *gb) {
               );
     }
 
-    (void)printf(" ime %02x dma %02x cycles %u", gb->cpu.ime, gb->is_dma,
+    (void)printf(" ime %02x dma %02x dmacy %02x dmab %02x cyc %u", gb->cpu.ime,
+                 gb->dma.active, gb->dma.clocks, gb->dma.byte,
                  gb->cycles);
 }
 
