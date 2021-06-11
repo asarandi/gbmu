@@ -120,8 +120,8 @@ int main(int ac, char **av) {
     gb->serial_cycles = 0xabcc;
 
     while (!gb->done) {
-        (void)dma_update(gb);
         (void)cpu_update(gb);
+        (void)dma_update(gb);
         (void)serial_update(gb);
 
         if (timer_update(gb)) {

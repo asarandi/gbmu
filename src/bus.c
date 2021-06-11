@@ -21,7 +21,11 @@ uint8_t read_u8(struct gameboy *gb, uint16_t addr) {
 
     /* ignore reads from oam in lcd mode 2 and 3 */
     if ((addr >= _OAMRAM) && (addr < _OAMRAM + 0xa0)) {
-        if (((gb->memory[rSTAT] & STATF_LCD) >= 2) || (gb->dma.active)) {
+        if (gb->dma.active) {
+            return 0xff;
+        }
+
+        if ((gb->memory[rSTAT] & STATF_LCD) >= 2) {
             return 0xff;
         }
     }

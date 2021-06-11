@@ -303,6 +303,12 @@ uint8_t dma_read_u8(struct gameboy *gb, uint16_t addr) {
 }
 
 void dma_update(struct gameboy *gb) {
+    if (gb->dma.active) {
+        gb->dma.byte = dma_read_u8(gb, gb->dma.source + gb->dma.index);
+        gb->memory[_OAMRAM + gb->dma.index] = gb->dma.byte;
+        gb->dma.active = (++gb->dma.index < 0xa0);
+    }
+
     if (gb->dma.clocks) {
         gb->dma.clocks -= 4;
 
@@ -315,11 +321,5 @@ void dma_update(struct gameboy *gb) {
                 gb->dma.source &= 0xdfff;
             }
         }
-    }
-
-    if (gb->dma.active) {
-        gb->dma.byte = dma_read_u8(gb, gb->dma.source + gb->dma.index);
-        gb->memory[_OAMRAM + gb->dma.index] = gb->dma.byte;
-        gb->dma.active = (++gb->dma.index < 0xa0);
     }
 }
