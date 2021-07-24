@@ -15,7 +15,7 @@ int video_open(struct gameboy *gb) {
     (void)gb;
     int f = scale_factor;
 
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0) {
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK) != 0) {
         printf("failed to initialise SDL\n");
         return 0;
     }
@@ -99,16 +99,22 @@ int video_write(struct gameboy *gb, uint8_t *data, uint32_t size) {
 * inputs
 */
 
+static SDL_Joystick *joystick = NULL;
+
 static void set_button_states(struct gameboy *gb, uint32_t key, uint8_t value) {
-    uint32_t i, controls[] = {
+    uint32_t i, prev_val, controls[] = {
         SDLK_DOWN, SDLK_UP, SDLK_LEFT, SDLK_RIGHT,
         SDLK_RETURN, SDLK_RSHIFT, SDLK_z, SDLK_x,
     };
 
     for (i = 0; i < 8; i++) {
         if (key == controls[i]) {
+            prev_val = gb->buttons[i];
             gb->buttons[i] = value;
-            joypad_request_interrupt(gb); //TODO: fix bad design
+
+            if (prev_val != value) {
+                joypad_request_interrupt(gb); //TODO: fix bad design
+            }
         }
     }
 }
@@ -120,6 +126,12 @@ int input_open(struct gameboy *gb) {
 
 int input_close(struct gameboy *gb) {
     (void)gb;
+
+    if (joystick) {
+        SDL_JoystickClose(joystick);
+        joystick = NULL;
+    }
+
     return 1;
 }
 
@@ -155,6 +167,77 @@ int input_read(struct gameboy *gb) {
 
         case SDL_KEYUP:
             set_button_states(gb, event.key.keysym.sym, 0);
+            break;
+
+        case SDL_JOYAXISMOTION: {
+            int axis = event.jaxis.axis;
+            int value = event.jaxis.value;
+            struct {
+                int axis, value, k1, v1, k2, v2;
+            } tab[] = {
+                {0,  32767, SDLK_RIGHT, 1, SDLK_LEFT, 0},
+                {0, -32768, SDLK_RIGHT, 0, SDLK_LEFT, 1},
+                {0,      0, SDLK_RIGHT, 0, SDLK_LEFT, 0},
+                {1,  32767, SDLK_DOWN, 1, SDLK_UP, 0},
+                {1, -32768, SDLK_DOWN, 0, SDLK_UP, 1},
+                {1,      0, SDLK_DOWN, 0, SDLK_UP, 0},
+            };
+
+            for (int i=0; i<6; i++) {
+                if ((tab[i].axis == axis) && (tab[i].value == value)) {
+                    set_button_states(gb, tab[i].k1, tab[i].v1);
+                    set_button_states(gb, tab[i].k2, tab[i].v2);
+                    break ;
+                }
+            }
+        }
+        break;
+
+        case SDL_JOYBUTTONDOWN:
+        case SDL_JOYBUTTONUP: {
+            int button = event.jbutton.button;
+            int value = event.jbutton.state;
+
+            for (int i=0; i<6; i++) {
+                struct {
+                    int button, key;
+                } tab[] = {
+                    {9, SDLK_RETURN},
+                    {8, SDLK_RSHIFT},
+                    {2, SDLK_z},
+                    {1, SDLK_x},
+                    {3, SDLK_z},
+                    {0, SDLK_x},
+                };
+
+                if (tab[i].button == button) {
+                    set_button_states(gb, tab[i].key, value);
+                    break ;
+                }
+            }
+        }
+        break;
+
+        case SDL_JOYDEVICEADDED:
+            if (!joystick) {
+                joystick = SDL_JoystickOpen(event.jdevice.which);
+
+                if (!joystick) {
+                    SDL_Log("could not open joystick: %s", SDL_GetError());
+                } else {
+                    SDL_Log("joystick added");
+                }
+            }
+
+            break;
+
+        case SDL_JOYDEVICEREMOVED:
+            if ((joystick) && (SDL_JoystickInstanceID(joystick) == event.jdevice.which)) {
+                SDL_JoystickClose(joystick);
+                joystick = NULL;
+                SDL_Log("joystick removed");
+            }
+
             break;
         }
     }
