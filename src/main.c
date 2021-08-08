@@ -1,8 +1,20 @@
 #include "gb.h"
 #include "hardware.h"
 
+static int print_usage(struct gameboy *gb, int ac, char **av)  {
+    (void)gb;
+    (void)ac;
+    (void)fprintf(stdout, "usage: %s romfile.gb\n", av[0]);
+    return 0;
+}
+
 static int arg_parse(struct gameboy *gb, int ac, char **av) {
     int c, ret = 1;
+
+    if (ac < 2) {
+        (void)print_usage(gb, ac, av);
+        return 0;
+    }
 
     while ((c = getopt(ac, av, "dt:")) != -1) {
         switch (c) {
@@ -103,15 +115,15 @@ int main(int ac, char **av) {
             int(*f)(struct gameboy *gb);
             char *n;
         } fn[] = {
-            {&savefile_read, "savefile_read"},
-            {&video_open, "video_open"},
-            {&audio_open, "audio_open"},
-            {&input_open, "input_open"},
+            {&savefile_read, "savefile_read()"},
+            {&video_open, "video_open()"},
+            {&audio_open, "audio_open()"},
+            {&input_open, "input_open()"},
         };
 
         for (i = 0; i < 4; i++) {
             if (!fn[i].f(gb)) {
-                (void)perror(fn[i].n);
+                (void)fprintf(stderr, "%s: failed\n", fn[i].n);
                 return cleanup(gb, 0);
             }
         }
