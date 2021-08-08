@@ -16,7 +16,7 @@ int video_open(struct gameboy *gb) {
     int f = scale_factor;
 
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK) != 0) {
-        printf("failed to initialise SDL\n");
+        SDL_Log("SDL_Init(): %s", SDL_GetError());
         return 0;
     }
 
@@ -25,14 +25,14 @@ int video_open(struct gameboy *gb) {
                               SCRN_X * f, SCRN_Y * f, 0);
 
     if (!window) {
-        SDL_Log("could not create window: %s", SDL_GetError());
+        SDL_Log("SDL_CreateWindow(): %s", SDL_GetError());
         return 0;
     }
 
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
     if (!renderer) {
-        SDL_Log("could not create renderer: %s", SDL_GetError());
+        SDL_Log("SDL_CreateRenderer(): %s", SDL_GetError());
         return 0;
     }
 
@@ -41,7 +41,8 @@ int video_open(struct gameboy *gb) {
                                 SDL_TEXTUREACCESS_STREAMING, SCRN_X, SCRN_Y);
 
     if (!texture) {
-        SDL_Log("could not create texture: %s", SDL_GetError());
+        SDL_Log("SDL_CreateTexture(): %s", SDL_GetError());
+        return 0;
     }
 
     return 1;
@@ -77,7 +78,7 @@ int video_write(struct gameboy *gb, uint8_t *data, uint32_t size) {
     (void)size;
 
     if (SDL_LockTexture(texture, NULL, (void *)&pixels, &pitch) < 0) {
-        SDL_Log("couldn't lock texture: %s\n", SDL_GetError());
+        SDL_Log("SDL_LockTexture(): %s", SDL_GetError());
         return 0;
     }
 
@@ -223,7 +224,7 @@ int input_read(struct gameboy *gb) {
                 joystick = SDL_JoystickOpen(event.jdevice.which);
 
                 if (!joystick) {
-                    SDL_Log("could not open joystick: %s", SDL_GetError());
+                    SDL_Log("SDL_JoystickOpen(): %s", SDL_GetError());
                 } else {
                     SDL_Log("joystick added");
                 }
@@ -283,8 +284,8 @@ static void audio_callback(void *userdata, Uint8 *stream, int len) {
 /* to be called after SDL_Init() */
 int audio_open(struct gameboy *gb) {
     (void)gb;
+    int retval;
     SDL_AudioSpec want, have;
-    int ret;
     SDL_memset(&have, 0, sizeof(SDL_AudioSpec));
     SDL_memset(&want, 0, sizeof(SDL_AudioSpec));
     want.freq = SAMPLING_FREQUENCY;
@@ -293,34 +294,38 @@ int audio_open(struct gameboy *gb) {
     want.samples = NUM_FRAMES;
     want.callback = audio_callback;
     audio_device = SDL_OpenAudioDevice(NULL, 0, &want, &have, 0);
-    ret = (audio_device != 0);
+    retval = audio_device != 0;
 
     if (!audio_device) {
-        return ret;
+        SDL_Log("SDL_OpenAudioDevice(): %s", SDL_GetError());
+        retval = 0;
     }
 
     if (want.freq != have.freq) {
-        printf("  freq want: %d, have: %d\n", want.freq, have.freq);
-        ret = 0;
+        SDL_Log("frequency want: %d, have: %d", want.freq, have.freq);
+        retval = 0;
     }
 
     if (want.format != have.format) {
-        printf("format want: %d, have: %d\n", want.format, have.format);
-        ret = 0;
+        SDL_Log("   format want: %d, have: %d", want.format, have.format);
+        retval = 0;
     }
 
     if (want.channels != have.channels) {
-        printf("  chan want: %d, have: %d\n", want.channels, have.channels);
-        ret = 0;
+        SDL_Log(" channels want: %d, have: %d", want.channels, have.channels);
+        retval = 0;
     }
 
     if (want.samples != have.samples) {
-        printf("sample want: %d, have: %d\n", want.samples,have.samples);
-        ret = 0;
+        SDL_Log("  samples want: %d, have: %d", want.samples, have.samples);
+        retval = 0;
     }
 
-    SDL_PauseAudioDevice(audio_device, 0);
-    return ret;
+    if (retval) {
+        SDL_PauseAudioDevice(audio_device, 0);
+    }
+
+    return retval;
 }
 
 int audio_close(struct gameboy *gb) {
