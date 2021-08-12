@@ -5,6 +5,7 @@ SRC := \
     src/cpu.c \
     src/debug.c \
     src/hash.c \
+    src/init.c \
     src/interrupts.c \
     src/io.c \
     src/joypad.c \

@@ -62,7 +62,7 @@ static int cleanup(struct gameboy *gb, bool save) {
     return gb->exit_code;
 }
 int main(int ac, char **av) {
-    static struct gameboy gameboy;
+    static struct gameboy gameboy = {0};
     struct gameboy *gb = &gameboy;
     static int fd, i, ret;
     struct stat stat_buf;

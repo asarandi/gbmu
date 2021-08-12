@@ -2,14 +2,14 @@
 #include "hardware.h"
 
 struct io_register io_registers[] = {
-    {"rP1",     0xFF00, 0b11000000},
-    {"rSB",     0xFF01, 0b00000000},
-    {"rSC",     0xFF02, 0b01111110},
+    {"rP1",     0xff00, 0b11000000},
+    {"rSB",     0xff01, 0b00000000},
+    {"rSC",     0xff02, 0b01111110},
     {"",        0xff03, 0b11111111},
-    {"rDIV",    0xFF04, 0b00000000},
-    {"rTIMA",   0xFF05, 0b00000000},
-    {"rTMA",    0xFF06, 0b00000000},
-    {"rTAC",    0xFF07, 0b11111000},
+    {"rDIV",    0xff04, 0b00000000},
+    {"rTIMA",   0xff05, 0b00000000},
+    {"rTMA",    0xff06, 0b00000000},
+    {"rTAC",    0xff07, 0b11111000},
     {"",        0xff08, 0b11111111},
     {"",        0xff09, 0b11111111},
     {"",        0xff0a, 0b11111111},
@@ -17,30 +17,30 @@ struct io_register io_registers[] = {
     {"",        0xff0c, 0b11111111},
     {"",        0xff0d, 0b11111111},
     {"",        0xff0e, 0b11111111},
-    {"rIF",     0xFF0F, 0b11100000},
-    {"rNR10",   0xFF10, 0b10000000},
-    {"rNR11",   0xFF11, 0b00000000},
-    {"rNR12",   0xFF12, 0b00000000},
-    {"rNR13",   0xFF13, 0b00000000},
-    {"rNR14",   0xFF14, 0b00000000},
+    {"rIF",     0xff0f, 0b11100000},
+    {"rNR10",   0xff10, 0b10000000},
+    {"rNR11",   0xff11, 0b00000000},
+    {"rNR12",   0xff12, 0b00000000},
+    {"rNR13",   0xff13, 0b00000000},
+    {"rNR14",   0xff14, 0b00000000},
     {"",        0xff15, 0b11111111},
-    {"rNR21",   0xFF16, 0b00000000},
-    {"rNR22",   0xFF17, 0b00000000},
-    {"rNR23",   0xFF18, 0b00000000},
-    {"rNR24",   0xFF19, 0b00000000},
-    {"rNR30",   0xFF1A, 0b01111111},
-    {"rNR31",   0xFF1B, 0b00000000},
-    {"rNR32",   0xFF1C, 0b10011111},
-    {"rNR33",   0xFF1D, 0b00000000},
-    {"rNR34",   0xFF1E, 0b00000000},
+    {"rNR21",   0xff16, 0b00000000},
+    {"rNR22",   0xff17, 0b00000000},
+    {"rNR23",   0xff18, 0b00000000},
+    {"rNR24",   0xff19, 0b00000000},
+    {"rNR30",   0xff1a, 0b01111111},
+    {"rNR31",   0xff1b, 0b00000000},
+    {"rNR32",   0xff1c, 0b10011111},
+    {"rNR33",   0xff1d, 0b00000000},
+    {"rNR34",   0xff1e, 0b00000000},
     {"",        0xff1f, 0b11111111},
-    {"rNR41",   0xFF20, 0b11000000},
-    {"rNR42",   0xFF21, 0b00000000},
-    {"rNR43",   0xFF22, 0b00000000},
-    {"rNR44",   0xFF23, 0b00111111},
-    {"rNR50",   0xFF24, 0b00000000},
-    {"rNR51",   0xFF25, 0b00000000},
-    {"rNR52",   0xFF26, 0b01110000},
+    {"rNR41",   0xff20, 0b11000000},
+    {"rNR42",   0xff21, 0b00000000},
+    {"rNR43",   0xff22, 0b00000000},
+    {"rNR44",   0xff23, 0b00111111},
+    {"rNR50",   0xff24, 0b00000000},
+    {"rNR51",   0xff25, 0b00000000},
+    {"rNR52",   0xff26, 0b01110000},
     {"",        0xff27, 0b11111111},
     {"",        0xff28, 0b11111111},
     {"",        0xff29, 0b11111111},
@@ -66,29 +66,29 @@ struct io_register io_registers[] = {
     {"WAVED",   0xff3d, 0b00000000},
     {"WAVEE",   0xff3e, 0b00000000},
     {"WAVEF",   0xff3f, 0b00000000},
-    {"rLCDC",   0xFF40, 0b00000000},
-    {"rSTAT",   0xFF41, 0b10000000},
-    {"rSCY",    0xFF42, 0b00000000},
-    {"rSCX",    0xFF43, 0b00000000},
-    {"rLY",     0xFF44, 0b00000000},
-    {"rLYC",    0xFF45, 0b00000000},
-    {"rDMA",    0xFF46, 0b00000000},
-    {"rBGP",    0xFF47, 0b00000000},
-    {"rOBP0",   0xFF48, 0b00000000},
-    {"rOBP1",   0xFF49, 0b00000000},
-    {"rWY",     0xFF4A, 0b00000000},
-    {"rWX",     0xFF4B, 0b00000000},
+    {"rLCDC",   0xff40, 0b00000000},
+    {"rSTAT",   0xff41, 0b10000000},
+    {"rSCY",    0xff42, 0b00000000},
+    {"rSCX",    0xff43, 0b00000000},
+    {"rLY",     0xff44, 0b00000000},
+    {"rLYC",    0xff45, 0b00000000},
+    {"rDMA",    0xff46, 0b00000000},
+    {"rBGP",    0xff47, 0b00000000},
+    {"rOBP0",   0xff48, 0b00000000},
+    {"rOBP1",   0xff49, 0b00000000},
+    {"rWY",     0xff4a, 0b00000000},
+    {"rWX",     0xff4b, 0b00000000},
     {"",        0xff4c, 0b11111111},
-    {"rKEY1",   0xFF4D, 0b11111111},
+    {"rKEY1",   0xff4d, 0b11111111},
     {"",        0xff4e, 0b11111111},
-    {"rVBK",    0xFF4F, 0b11111111},
+    {"rVBK",    0xff4f, 0b11111111},
     {"",        0xff50, 0b11111111},
-    {"rHDMA1",  0xFF51, 0b11111111},
-    {"rHDMA2",  0xFF52, 0b11111111},
-    {"rHDMA3",  0xFF53, 0b11111111},
-    {"rHDMA4",  0xFF54, 0b11111111},
-    {"rHDMA5",  0xFF55, 0b11111111},
-    {"rRP",     0xFF56, 0b11111111},
+    {"rHDMA1",  0xff51, 0b11111111},
+    {"rHDMA2",  0xff52, 0b11111111},
+    {"rHDMA3",  0xff53, 0b11111111},
+    {"rHDMA4",  0xff54, 0b11111111},
+    {"rHDMA5",  0xff55, 0b11111111},
+    {"rRP",     0xff56, 0b11111111},
     {"",        0xff57, 0b11111111},
     {"",        0xff58, 0b11111111},
     {"",        0xff59, 0b11111111},
@@ -106,22 +106,22 @@ struct io_register io_registers[] = {
     {"",        0xff65, 0b11111111},
     {"",        0xff66, 0b11111111},
     {"",        0xff67, 0b11111111},
-    {"rBCPS",   0xFF68, 0b11111111},
-    {"rBCPD",   0xFF69, 0b11111111},
-    {"rOCPS",   0xFF6A, 0b11111111},
-    {"rOCPD",   0xFF6B, 0b11111111},
+    {"rBCPS",   0xff68, 0b11111111},
+    {"rBCPD",   0xff69, 0b11111111},
+    {"rOCPS",   0xff6a, 0b11111111},
+    {"rOCPD",   0xff6b, 0b11111111},
     {"",        0xff6c, 0b11111111},
     {"",        0xff6d, 0b11111111},
     {"",        0xff6e, 0b11111111},
     {"",        0xff6f, 0b11111111},
-    {"rSVBK",   0xFF70, 0b11111111},
+    {"rSVBK",   0xff70, 0b11111111},
     {"",        0xff71, 0b11111111},
     {"",        0xff72, 0b11111111},
     {"",        0xff73, 0b11111111},
     {"",        0xff74, 0b11111111},
     {"",        0xff75, 0b11111111},
-    {"rPCM12",  0xFF76, 0b11111111},
-    {"rPCM34",  0xFF77, 0b11111111},
+    {"rPCM12",  0xff76, 0b11111111},
+    {"rPCM34",  0xff77, 0b11111111},
     {"",        0xff78, 0b11111111},
     {"",        0xff79, 0b11111111},
     {"",        0xff7a, 0b11111111},
@@ -257,65 +257,10 @@ struct io_register io_registers[] = {
     {"",        0xfffc, 0b00000000},
     {"",        0xfffd, 0b00000000},
     {"",        0xfffe, 0b00000000},
-    {"rIE",     0xFFFF, 0b00000000},
+    {"rIE",     0xffff, 0b00000000},
 };
 
 /* http://gbdev.gg8.se/wiki/articles/Power_Up_Sequence */
-
-void io_init(struct gameboy *gb) {
-    gb->cpu.r8[0] = 0x00, gb->cpu.r8[1] = 0x13; // bc = 0x0013
-    gb->cpu.r8[2] = 0x00, gb->cpu.r8[3] = 0xd8; // de = 0x00d8
-    gb->cpu.r8[4] = 0x01, gb->cpu.r8[5] = 0x4d; // hl = 0x014d
-    gb->cpu.r8[7] = 0x01, gb->cpu.r8[6] = 0xb0; // af = 0x01b0
-    gb->cpu.sp = 0xfffe;
-    gb->cpu.pc = 0x0100;
-    gb->memory[rP1] = 0xcf;
-    gb->memory[rSB] = 0x00;
-    gb->timer.div = 0xabcc;
-    gb->memory[rTIMA] = 0x00;
-    gb->memory[rTMA] = 0x00;
-    gb->memory[rTAC] = 0x00;
-    gb->memory[rIF] = 0xe1;
-    gb->memory[rNR10] = 0x80;
-    gb->memory[rNR11] = 0xbf;
-    gb->memory[rNR12] = 0xf3;
-    gb->memory[rNR13] = 0xff;
-    gb->memory[rNR14] = 0xbf;
-    gb->memory[rNR21] = 0x3f;
-    gb->memory[rNR22] = 0x00;
-    gb->memory[rNR23] = 0xff;
-    gb->memory[rNR24] = 0xbf;
-    gb->memory[rNR30] = 0x7f;
-    gb->memory[rNR31] = 0xff;
-    gb->memory[rNR32] = 0x9f;
-    gb->memory[rNR33] = 0xff;
-    gb->memory[rNR34] = 0xbf;
-    gb->memory[rNR41] = 0xff;
-    gb->memory[rNR42] = 0x00;
-    gb->memory[rNR43] = 0x00;
-    gb->memory[rNR44] = 0xbf;
-    gb->memory[rNR50] = 0x77;
-    gb->memory[rNR51] = 0xf3;
-    gb->memory[rNR52] = 0xf1;
-    gb->memory[rLCDC] = 0x91;
-    gb->memory[rSTAT] = 0x80;
-    gb->memory[rSCY] = 0x00;
-    gb->memory[rSCX] = 0x00;
-    gb->memory[rLYC] = 0x00;
-    gb->memory[rBGP] = 0xfc;
-    gb->memory[rOBP0] = 0xff;
-    gb->memory[rOBP1] = 0xff;
-    gb->memory[rWY] = 0x00;
-    gb->memory[rWX] = 0x00;
-    gb->memory[rIE] = 0x00;
-    uint8_t dmg_wave[] = {0x84, 0x40, 0x43, 0xaa, 0x2d, 0x78, 0x92, 0x3c,
-                          0x60, 0x59, 0x59, 0xb0, 0x34, 0xb8, 0x2e, 0xda,
-                         };
-//    uint8_t cgb_wave[] =  {0x00, 0xff, 0x00, 0xff, 0x00, 0xff, 0x00, 0xff,
-//                           0x00, 0xff, 0x00, 0xff, 0x00, 0xff, 0x00, 0xff,
-//                          };
-    (void)memcpy(gb->memory + _AUD3WAVERAM, dmg_wave, 16);
-}
 
 uint8_t io_read_u8(struct gameboy *gb, uint16_t addr) {
     uint8_t data, mask;

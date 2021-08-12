@@ -1,7 +1,24 @@
 #include "gb.h"
 #include "hardware.h"
 
+static int is_video_ram_bus(uint16_t addr) {
+    return ((addr >= _VRAM) && (addr < _VRAM + 0x2000));
+}
+
+static int is_same_bus(uint16_t a1, uint16_t a2) {
+    return is_video_ram_bus(a1) == is_video_ram_bus(a2);
+}
+
+static int is_dma_conflict(struct gameboy *gb, uint16_t addr) {
+    uint16_t dma_addr = gb->dma.source + gb->dma.index;
+    return (gb->dma.active) && (addr < _OAMRAM) && (is_same_bus(dma_addr, addr));
+}
+
 uint8_t read_u8(struct gameboy *gb, uint16_t addr) {
+    if (is_dma_conflict(gb, addr)) {
+        return gb->dma.byte;
+    }
+
     /* mbc/rom */
     if (addr < _VRAM) {
         return gb->rom_read_u8(gb, addr);
@@ -32,6 +49,11 @@ uint8_t read_u8(struct gameboy *gb, uint16_t addr) {
 
     if (addr >= _IO) {
         return io_read_u8(gb, addr);
+    }
+
+    /* echo ram */
+    if ((addr >= 0xe000) && (addr < 0xfe00)) {
+        addr -= 0x2000;
     }
 
     return gb->memory[addr];
@@ -74,13 +96,13 @@ void write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
         return;
     }
 
-    /* echo */
-    if ((addr >= 0xc000) && (addr <= 0xddff)) {
-        gb->memory[addr + 0x2000] = data;
-    }
-
     if (addr >= _IO) {
         return io_write_u8(gb, addr, data);
+    }
+
+    /* echo ram */
+    if ((addr >= 0xe000) && (addr < 0xfe00)) {
+        addr -= 0x2000;
     }
 
     /* finally */
