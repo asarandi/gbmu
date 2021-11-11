@@ -16,14 +16,38 @@ static bool has_battery(struct gameboy *gb) {
     case CART_ROM_MBC5_RAM_BAT:
     case CART_ROM_MBC5_RAM_BAT_RUMBLE:
     case CART_ROM_MBC7_RAM_BAT_GYRO:
-        break;
-
-    default:
-        return false;
+        return true;
     }
 
-    return true;
+    return false;
 }
+
+static size_t get_ram_size(struct gameboy *gb) {
+    if (!has_battery(gb)) {
+        return 0;
+    }
+
+    if (gb->memory[0x147] == CART_ROM_MBC2_BAT) {
+        return 512;
+    }
+
+    switch (gb->memory[0x149]) {
+    case CART_SRAM_8KB:
+        return 8192;
+
+    case CART_SRAM_32KB:
+        return 32768;
+
+    case CART_SRAM_128KB:
+        return 131072;
+
+    case 5: // missing hardware.inc def
+        return 65536;
+    }
+
+    return 0;
+}
+
 
 // f("myfile.gb", ".sav") => "myfile.sav"
 char *replace_exten(char *fn, char *ext) {
@@ -48,44 +72,44 @@ char *replace_exten(char *fn, char *ext) {
 int savefile_read(struct gameboy *gb) {
     int ret, fd;
     struct stat st;
+    gb->ram_size = get_ram_size(gb);
 
-    if (!has_battery(gb)) {
+    if (!gb->ram_size) {
         return 1;
     }
 
-    // TODO: free on exit
+    // freed in `savefile_write()' below
     gb->ram_file = replace_exten(gb->rom_file, ".sav");
 
     if (stat(gb->ram_file, &st) != 0) {
-        return errno == ENOENT;
+        if (errno == ENOENT) {
+            return 1;
+        } else {
+            (void)perror("stat()");
+            return 0;
+        }
     }
 
-    if ((fd = open(gb->ram_file, O_RDONLY | O_BINARY)) == -1) {
+    if ((size_t)st.st_size != gb->ram_size) {
+        (void)fprintf(stderr, "expecting %lu bytes, but file is %lu bytes\n",
+                      gb->ram_size, st.st_size);
         return 0;
     }
 
-    ret = read(fd, gb->ram_banks, RAM_SIZE * 16);
+    if ((fd = open(gb->ram_file, O_RDONLY | O_BINARY)) == -1) {
+        (void)perror("open()");
+        return 0;
+    }
+
+    ret = read(fd, gb->ram_banks, gb->ram_size);
     (void)close(fd);
-    return ret != -1;
+    return (size_t)ret == gb->ram_size;
 }
 
 int savefile_write(struct gameboy *gb) {
-    int fd, ret, size;
+    int fd, ret;
 
-    if (!has_battery(gb)) {
-        return 1;
-    }
-
-    size = (RAM_SIZE * 16) - 1;
-
-    while ((size >= 0) && (!gb->ram_banks[size])) {
-        size--;
-    }
-
-    size++;
-
-    /* no ram data ? */
-    if (!size) {
+    if (!gb->ram_size) {
         return 1;
     }
 
@@ -95,7 +119,10 @@ int savefile_write(struct gameboy *gb) {
         return 0;
     }
 
-    ret = write(fd, gb->ram_banks, size);
+    ret = write(fd, gb->ram_banks, gb->ram_size);
     (void)close(fd);
-    return ret != -1;
+    // free allocated mem
+    (void)free(gb->ram_file);
+    gb->ram_file = NULL;
+    return (size_t)ret == gb->ram_size;
 }

@@ -46,9 +46,10 @@ struct gameboy {
     int serial_ctr;
     int exit_code;
     char *rom_file;
-    char *ram_file;
     size_t file_size;
     uint8_t *file_contents;
+    char *ram_file;
+    size_t ram_size;
     uint8_t ram_banks[RAM_SIZE * 16];
     struct timer timer;
     uint32_t cycles;
