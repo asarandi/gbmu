@@ -92,7 +92,7 @@ int savefile_read(struct gameboy *gb) {
 
     if ((size_t)st.st_size != gb->ram_size) {
         (void)fprintf(stderr, "expecting %lu bytes, but file is %lu bytes\n",
-                      gb->ram_size, st.st_size);
+                      gb->ram_size, (size_t)st.st_size);
         return 0;
     }
 

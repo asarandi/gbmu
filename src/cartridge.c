@@ -3,6 +3,70 @@
 
 static uint8_t ramg, romb0 = 1, romb1, ramb, mode;
 
+// https://gbdev.io/pandocs/MBC3.html#mbc3
+// https://github.com/aaaaaa123456789/rtc3test/blob/master/tests.md
+//
+//  08h  RTC S   Seconds   0-59 (0-3Bh)
+//  09h  RTC M   Minutes   0-59 (0-3Bh)
+//  0Ah  RTC H   Hours     0-23 (0-17h)
+//  0Bh  RTC DL  Lower 8 bits of Day Counter (0-FFh)
+//  0Ch  RTC DH  Upper 1 bit of Day Counter, Carry Bit, Halt Flag
+//        Bit 0  Most significant bit of Day Counter (Bit 8)
+//        Bit 6  Halt (0=Active, 1=Stop Timer)
+//        Bit 7  Day Counter Carry Bit (1=Counter Overflow)
+
+struct rtc {
+    uint8_t s;
+    uint8_t m;
+    uint8_t h;
+    uint8_t dl;
+    uint8_t dh;
+};
+
+struct rtc rtc = {.dh = 0b10000000}; // set day counter carry bit
+struct rtc rtc2 = {.dh = 0b10000000}; // set day counter carry bit
+
+void rtc_tick() {
+    static uint32_t t = 0;
+    t += 3125;
+    t %= 100000;
+
+    if (t) {
+        return ;
+    }
+
+    if (rtc.dh & 0x40) {
+        return ;    // timer halt
+    }
+
+    ++rtc.s;
+
+    if (rtc.s == 60) {
+        rtc.s = 0;
+        ++rtc.m;
+    }
+
+    rtc.s &= 63;
+
+    if (rtc.m == 60) {
+        rtc.m = 0;
+        ++rtc.h;
+    }
+
+    rtc.m &= 63;
+
+    if (rtc.h == 24) {
+        rtc.h = 0;
+
+        if (++rtc.dl == 0) {
+            rtc.dh ^= 1;
+            rtc.dh |= (rtc.dh & 1) ? 0 : 0x80;
+        }
+    }
+
+    rtc.h &= 31;
+}
+
 void default_ram_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
     (void)gb;
     (void)addr;
@@ -160,7 +224,32 @@ void mbc3_ram_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
         return;
     }
 
-    gb->ram_banks[(ramb << 13) + (addr & 0x1fff)] = data;
+    if (ramb <= 3) {
+        gb->ram_banks[(ramb << 13) + (addr & 0x1fff)] = data;
+        return ;
+    }
+
+    switch (ramb) {
+    case 8:
+        rtc.s = data & 63;
+        break ;
+
+    case 9:
+        rtc.m = data & 63;
+        break ;
+
+    case 10:
+        rtc.h = data & 31;
+        break ;
+
+    case 11:
+        rtc.dl = data;
+        break ;
+
+    case 12:
+        rtc.dh = data & 0b11000001;
+        break ;
+    }
 }
 
 uint8_t mbc3_ram_read_u8(struct gameboy *gb, uint16_t addr) {
@@ -168,7 +257,28 @@ uint8_t mbc3_ram_read_u8(struct gameboy *gb, uint16_t addr) {
         return 0xff;
     }
 
-    return gb->ram_banks[(ramb << 13) + (addr & 0x1fff)];
+    if (ramb <= 3) {
+        return gb->ram_banks[(ramb << 13) + (addr & 0x1fff)];
+    }
+
+    switch (ramb) {
+    case 8:
+        return rtc2.s;
+
+    case 9:
+        return rtc2.m;
+
+    case 10:
+        return rtc2.h;
+
+    case 11:
+        return rtc2.dl;
+
+    case 12:
+        return rtc2.dh;
+    }
+
+    return 0xff;
 }
 
 uint8_t mbc3_rom_read_u8(struct gameboy *gb, uint16_t addr) {
@@ -190,6 +300,7 @@ uint8_t mbc3_rom_read_u8(struct gameboy *gb, uint16_t addr) {
 
 void mbc3_rom_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
     (void)gb;
+    static int prev_data = -1;
 
     if (addr <= 0x1fff) {
         ramg = data;
@@ -204,17 +315,17 @@ void mbc3_rom_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
     }
 
     if ((addr >= 0x4000) && (addr <= 0x5fff)) {
-        data &= 0x0f;
-
-        if (data <= 3) {
-            ramb = data & 3;
-        } else {
-            printf("mbc3 rtc register select, data = %02x\n", data);    /* TODO */
+        if ((data <= 3) || ((8 <= data) && (data <= 12))) {
+            ramb = data;
         }
     }
 
     if ((addr >= 0x6000) && (addr <= 0x7fff)) {
-        printf("mbc3 latch clock data, data = %02x\n", data);    /* TODO */
+        if ((prev_data == 0) && (data == 1)) {
+            (void)memcpy(&rtc2, &rtc, sizeof(struct rtc));
+        }
+
+        prev_data = data;
     }
 }
 
@@ -297,6 +408,7 @@ int cartridge_init(struct gameboy *gb) {
         gb->rom_write_u8 = &mbc2_rom_write_u8;
         break;
 
+    case CART_ROM_MBC3_BAT_RTC:         // 0x0F
     case CART_ROM_MBC3_RAM_BAT_RTC:     // 0x10
     case CART_ROM_MBC3:                 // 0x11
     case CART_ROM_MBC3_RAM:             // 0x12, untested
