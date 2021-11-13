@@ -1,10 +1,9 @@
 #include "gb.h"
 #include "hardware.h"
 
-static uint8_t ramg, romb0 = 1, romb1, ramb, mode;
-
 // https://gbdev.io/pandocs/MBC3.html#mbc3
 // https://github.com/aaaaaa123456789/rtc3test/blob/master/tests.md
+// https://bgb.bircd.org/rtcsave.html
 //
 //  08h  RTC S   Seconds   0-59 (0-3Bh)
 //  09h  RTC M   Minutes   0-59 (0-3Bh)
@@ -21,6 +20,11 @@ struct rtc {
     uint8_t h;
     uint8_t dl;
     uint8_t dh;
+};
+
+struct rtcx {
+    uint32_t hidden[5];
+    uint32_t latched[5];
 };
 
 struct rtc rtc = {.dh = 0b10000000}; // set day counter carry bit
@@ -82,7 +86,7 @@ uint8_t default_ram_read_u8(struct gameboy *gb, uint16_t addr) {
 
 uint8_t default_rom_read_u8(struct gameboy *gb, uint16_t addr) {
     (void)addr;
-    return gb->file_contents[addr & 0x7fff];
+    return gb->cartridge.data[addr & 0x7fff];
 }
 
 void default_rom_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
@@ -93,14 +97,14 @@ void default_rom_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
 }
 
 void mbc1_ram_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
-    uint8_t *f = gb->file_contents;
+    uint8_t *f = gb->cartridge.data;
 
-    if (ramg != 0x0a) {
+    if (gb->cartridge.ramg != 0x0a) {
         return;
     }
 
-    if ((mode == 1) && (f[0x149] > 2)) {
-        gb->ram_banks[(romb1 << 13) + (addr & 0x1fff)] = data;
+    if ((gb->cartridge.mode == 1) && (f[0x149] > 2)) {
+        gb->ram_banks[(gb->cartridge.romb1 << 13) + (addr & 0x1fff)] = data;
         return;
     }
 
@@ -108,38 +112,39 @@ void mbc1_ram_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
 }
 
 uint8_t mbc1_ram_read_u8(struct gameboy *gb, uint16_t addr) {
-    uint8_t *f = gb->file_contents;
+    uint8_t *f = gb->cartridge.data;
 
-    if (ramg != 0x0a) {
+    if (gb->cartridge.ramg != 0x0a) {
         return 0xff;
     }
 
-    if ((mode == 1) && (f[0x149] > 2)) {
-        return gb->ram_banks[(romb1 << 13) + (addr & 0x1fff)];
+    if ((gb->cartridge.mode == 1) && (f[0x149] > 2)) {
+        return gb->ram_banks[(gb->cartridge.romb1 << 13) + (addr & 0x1fff)];
     }
 
     return gb->ram_banks[addr & 0x1fff];
 }
 
 uint8_t mbc1_rom_read_u8(struct gameboy *gb, uint16_t addr) {
-    uint8_t *f = gb->file_contents;
+    uint8_t *f = gb->cartridge.data;
     int idx;
 
     if (addr <= 0x3fff) {
-        if (mode == 0) {
+        if (gb->cartridge.mode == 0) {
             return f[addr];
         }
 
-        if (mode == 1) {
-            idx = (romb1 << 19) + addr;
-            idx &= gb->file_size - 1;
+        if (gb->cartridge.mode == 1) {
+            idx = (gb->cartridge.romb1 << 19) + addr;
+            idx &= gb->cartridge.size - 1;
             return f[idx];
         }
     }
 
     if ((addr >= 0x4000) && (addr <= 0x7fff)) {
-        idx = (((romb1 << 5) | romb0) << 14) | (addr & 0x3fff);
-        idx &= gb->file_size - 1;
+        idx = (((gb->cartridge.romb1 << 5) | gb->cartridge.romb0) << 14) |
+              (addr & 0x3fff);
+        idx &= gb->cartridge.size - 1;
         return f[idx];
     }
 
@@ -150,28 +155,28 @@ void mbc1_rom_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
     (void)gb;
 
     if (addr <= 0x1fff) {
-        ramg = data & 0x0f;
+        gb->cartridge.ramg = data & 0x0f;
     }
 
     if ((addr >= 0x2000) && (addr <= 0x3fff)) {
-        romb0 = data & 0x1f;
+        gb->cartridge.romb0 = data & 0x1f;
 
-        if (romb0 == 0) {
-            romb0 = 1;
+        if (gb->cartridge.romb0 == 0) {
+            gb->cartridge.romb0 = 1;
         }
     }
 
     if ((addr >= 0x4000) && (addr <= 0x5fff)) {
-        romb1 = data & 3;
+        gb->cartridge.romb1 = data & 3;
     }
 
     if ((addr >= 0x6000) && (addr <= 0x7fff)) {
-        mode = data & 1;
+        gb->cartridge.mode = data & 1;
     }
 }
 
 void mbc2_ram_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
-    if (ramg != 0x0a) {
+    if (gb->cartridge.ramg != 0x0a) {
         return;
     }
 
@@ -179,7 +184,7 @@ void mbc2_ram_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
 }
 
 uint8_t mbc2_ram_read_u8(struct gameboy *gb, uint16_t addr) {
-    if (ramg != 0x0a) {
+    if (gb->cartridge.ramg != 0x0a) {
         return 0xff;
     }
 
@@ -187,7 +192,7 @@ uint8_t mbc2_ram_read_u8(struct gameboy *gb, uint16_t addr) {
 }
 
 uint8_t mbc2_rom_read_u8(struct gameboy *gb, uint16_t addr) {
-    uint8_t *f = gb->file_contents;
+    uint8_t *f = gb->cartridge.data;
     int idx;
 
     if (addr <= 0x3fff) {
@@ -195,8 +200,8 @@ uint8_t mbc2_rom_read_u8(struct gameboy *gb, uint16_t addr) {
     }
 
     if ((addr >= 0x4000) && (addr <= 0x7fff)) {
-        idx = (romb0 << 14) | (addr & 0x3fff);
-        idx &= gb->file_size - 1;
+        idx = (gb->cartridge.romb0 << 14) | (addr & 0x3fff);
+        idx &= gb->cartridge.size - 1;
         return f[idx];
     }
 
@@ -208,28 +213,28 @@ void mbc2_rom_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
 
     if (addr <= 0x3fff) {
         if (addr & 0x100) {
-            romb0 = data & 15;
+            gb->cartridge.romb0 = data & 15;
 
-            if (romb0 == 0) {
-                romb0 = 1;
+            if (gb->cartridge.romb0 == 0) {
+                gb->cartridge.romb0 = 1;
             }
         } else {
-            ramg = data & 15;
+            gb->cartridge.ramg = data & 15;
         }
     }
 }
 
 void mbc3_ram_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
-    if (ramg != 0x0a) {
+    if (gb->cartridge.ramg != 0x0a) {
         return;
     }
 
-    if (ramb <= 3) {
-        gb->ram_banks[(ramb << 13) + (addr & 0x1fff)] = data;
+    if (gb->cartridge.ramb <= 3) {
+        gb->ram_banks[(gb->cartridge.ramb << 13) + (addr & 0x1fff)] = data;
         return ;
     }
 
-    switch (ramb) {
+    switch (gb->cartridge.ramb) {
     case 8:
         rtc.s = data & 63;
         break ;
@@ -253,15 +258,15 @@ void mbc3_ram_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
 }
 
 uint8_t mbc3_ram_read_u8(struct gameboy *gb, uint16_t addr) {
-    if (ramg != 0x0a) {
+    if (gb->cartridge.ramg != 0x0a) {
         return 0xff;
     }
 
-    if (ramb <= 3) {
-        return gb->ram_banks[(ramb << 13) + (addr & 0x1fff)];
+    if (gb->cartridge.ramb <= 3) {
+        return gb->ram_banks[(gb->cartridge.ramb << 13) + (addr & 0x1fff)];
     }
 
-    switch (ramb) {
+    switch (gb->cartridge.ramb) {
     case 8:
         return rtc2.s;
 
@@ -282,7 +287,7 @@ uint8_t mbc3_ram_read_u8(struct gameboy *gb, uint16_t addr) {
 }
 
 uint8_t mbc3_rom_read_u8(struct gameboy *gb, uint16_t addr) {
-    uint8_t *f = gb->file_contents;
+    uint8_t *f = gb->cartridge.data;
     int idx;
 
     if (addr <= 0x3fff) {
@@ -290,8 +295,8 @@ uint8_t mbc3_rom_read_u8(struct gameboy *gb, uint16_t addr) {
     }
 
     if ((addr >= 0x4000) && (addr <= 0x7fff)) {
-        idx = (romb0 << 14) | (addr & 0x3fff);
-        idx &= gb->file_size - 1;
+        idx = (gb->cartridge.romb0 << 14) | (addr & 0x3fff);
+        idx &= gb->cartridge.size - 1;
         return f[idx];
     }
 
@@ -303,20 +308,20 @@ void mbc3_rom_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
     static int prev_data = -1;
 
     if (addr <= 0x1fff) {
-        ramg = data;
+        gb->cartridge.ramg = data;
     }
 
     if ((addr >= 0x2000) && (addr <= 0x3fff)) {
-        romb0 = data;
+        gb->cartridge.romb0 = data;
 
-        if (romb0 == 0) {
-            romb0 = 1;
+        if (gb->cartridge.romb0 == 0) {
+            gb->cartridge.romb0 = 1;
         }
     }
 
     if ((addr >= 0x4000) && (addr <= 0x5fff)) {
         if ((data <= 3) || ((8 <= data) && (data <= 12))) {
-            ramb = data;
+            gb->cartridge.ramb = data;
         }
     }
 
@@ -330,23 +335,23 @@ void mbc3_rom_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
 }
 
 void mbc5_ram_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
-    if (ramg != 0x0a) {
+    if (gb->cartridge.ramg != 0x0a) {
         return;
     }
 
-    gb->ram_banks[(ramb << 13) + (addr & 0x1fff)] = data;
+    gb->ram_banks[(gb->cartridge.ramb << 13) + (addr & 0x1fff)] = data;
 }
 
 uint8_t mbc5_ram_read_u8(struct gameboy *gb, uint16_t addr) {
-    if (ramg != 0x0a) {
+    if (gb->cartridge.ramg != 0x0a) {
         return 0xff;
     }
 
-    return gb->ram_banks[(ramb << 13) + (addr & 0x1fff)];
+    return gb->ram_banks[(gb->cartridge.ramb << 13) + (addr & 0x1fff)];
 }
 
 uint8_t mbc5_rom_read_u8(struct gameboy *gb, uint16_t addr) {
-    uint8_t *f = gb->file_contents;
+    uint8_t *f = gb->cartridge.data;
     int idx;
 
     if (addr <= 0x3fff) {
@@ -354,8 +359,9 @@ uint8_t mbc5_rom_read_u8(struct gameboy *gb, uint16_t addr) {
     }
 
     if ((addr >= 0x4000) && (addr <= 0x7fff)) {
-        idx = (((romb1 << 8) | romb0) << 14) | (addr & 0x3fff);
-        idx &= gb->file_size - 1;
+        idx = (((gb->cartridge.romb1 << 8) | gb->cartridge.romb0) << 14) |
+              (addr & 0x3fff);
+        idx &= gb->cartridge.size - 1;
         return f[idx];
     }
 
@@ -366,19 +372,19 @@ void mbc5_rom_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
     (void)gb;
 
     if (addr <= 0x1fff) {
-        ramg = data;
+        gb->cartridge.ramg = data;
     }
 
     if ((addr >= 0x2000) && (addr <= 0x2fff)) {
-        romb0 = data;
+        gb->cartridge.romb0 = data;
     }
 
     if ((addr >= 0x3000) && (addr <= 0x3fff)) {
-        romb1 = data & 1;
+        gb->cartridge.romb1 = data & 1;
     }
 
     if ((addr >= 0x4000) && (addr <= 0x5fff)) {
-        ramb = data & 15;
+        gb->cartridge.ramb = data & 15;
     }
 }
 
@@ -433,6 +439,7 @@ int cartridge_init(struct gameboy *gb) {
 
     default:
         fprintf(stderr, "unsupported cartridge type %02x\n", gb->memory[0x147]);
+        fflush(stderr);
         return 0;
     }
 

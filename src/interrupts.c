@@ -3,6 +3,8 @@
 #include "hardware.h"
 
 int interrupt_step(struct gameboy *gb) {
+    int i;
+
     if (gb->cpu.step == 0) {
         gb->cpu.step = 1;
         gb->cpu.ime = 0;
@@ -21,7 +23,7 @@ int interrupt_step(struct gameboy *gb) {
         gb->cpu.step = gb->cpu.pc = 0;
         gb->cpu.state = RUNNING;
 
-        for (int i = 0; i < 5; i++) {
+        for (i = 0; i < 5; i++) {
             if (gb->cpu.interrupt & (1 << i)) {
                 gb->memory[rIF] &= ~(1 << i);
                 gb->cpu.pc = 0x40 + (i << 3);

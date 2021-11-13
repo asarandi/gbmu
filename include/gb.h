@@ -19,10 +19,14 @@
 # define O_BINARY 0
 #endif
 
+#define FRAME_DURATION  70224
+
 #define ROM_ADDRESS 0x4000
 #define ROM_SIZE    0x4000
 #define RAM_ADDRESS 0xa000
 #define RAM_SIZE    0x2000
+
+#define VIDEO_BUF_SIZE (160 * 144)
 
 struct dma {
     int index;
@@ -30,6 +34,26 @@ struct dma {
     bool active;
     uint8_t byte;
     uint16_t source;
+};
+
+struct cartridge {
+    uint8_t *data;
+    size_t size;
+    uint8_t ramg;
+    uint8_t romb0;
+    uint8_t romb1;
+    uint8_t ramb;
+    uint8_t mode;
+};
+
+struct lcd {
+    int on;
+    int frames;
+    int render;
+    int wy;
+    uint32_t cycle;
+    uint8_t buf[160 * 144];
+    struct OAM_ATTRS *sprites[10 + 1];
 };
 
 struct gameboy {
@@ -45,22 +69,21 @@ struct gameboy {
     uint16_t serial_cycles;
     int serial_ctr;
     int exit_code;
+    struct cartridge cartridge;
+    struct lcd lcd;
     char *rom_file;
-    size_t file_size;
-    uint8_t *file_contents;
     char *ram_file;
     size_t ram_size;
     uint8_t ram_banks[RAM_SIZE * 16];
     struct timer timer;
     uint32_t cycles;
-    uint8_t screen_buf[144 * 160];
-    struct OAM_ATTRS *sprites[10 + 1];
-    int video_render;
     struct channel ch[4];
     uint8_t sound_buf[SOUND_BUF_SIZE];
+    uint8_t video_buf[VIDEO_BUF_SIZE];
+    uint8_t prev_frame[VIDEO_BUF_SIZE];
+    int audio_render;
     uint32_t seq_clocks, seq_frame;
     int32_t samples_clock, samples_index;
-    int audio_render;
     uint8_t buttons[8];
     uint8_t (*ram_read_u8)(struct gameboy *, uint16_t);
     void (*ram_write_u8)(struct gameboy *, uint16_t, uint8_t);

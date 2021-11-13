@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd extras/roms/blargg-gb-tests/
+cd extras/roms/gb-test-roms/
 if [ $? -ne 0 ]; then
     echo "failed to change dir" >&2
     exit 1

@@ -54,9 +54,9 @@ static int cleanup(struct gameboy *gb, bool save) {
         }
     }
 
-    if (gb->file_contents) {
-        (void)free(gb->file_contents);
-        gb->file_contents = NULL;
+    if (gb->cartridge.data) {
+        (void)free(gb->cartridge.data);
+        gb->cartridge.data = NULL;
     }
 
     return gb->exit_code;
@@ -95,18 +95,18 @@ int main(int ac, char **av) {
         return 1;
     }
 
-    gb->file_contents = malloc(stat_buf.st_size);
-    gb->file_size = stat_buf.st_size;
-    ret = read(fd, gb->file_contents, stat_buf.st_size);
+    gb->cartridge.data = malloc(stat_buf.st_size);
+    gb->cartridge.size = stat_buf.st_size;
+    ret = read(fd, gb->cartridge.data, gb->cartridge.size);
     (void)close(fd);
 
     if (ret != stat_buf.st_size) {
         (void)fprintf(stderr, "read() failed\n");
-        (void)free(gb->file_contents);
+        (void)free(gb->cartridge.data);
         return 1;
     }
 
-    (void)memcpy(gb->memory, gb->file_contents, 0x8000);
+    (void)memcpy(gb->memory, gb->cartridge.data, 0x8000);
     io_init(gb);
 
     if (!cartridge_init(gb)) {
@@ -132,10 +132,8 @@ int main(int ac, char **av) {
         }
     }
 
-    gb->serial_cycles = 0xabcc;
-
     while (!gb->done) {
-        (void)cpu_update(gb);
+        gb->done |= cpu_update(gb) < 0;
         (void)dma_update(gb);
         (void)serial_update(gb);
 
@@ -145,7 +143,7 @@ int main(int ac, char **av) {
 
         if (lcd_update(gb)) {
             if (!gb->testing) {
-                (void)video_write(gb, gb->screen_buf, 160 * 144);
+                (void)video_write(gb, gb->lcd.buf, VIDEO_BUF_SIZE);
                 (void)input_read(gb);
             }
 

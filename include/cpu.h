@@ -5,6 +5,8 @@
 
 enum CPU_STATE { RUNNING, HALTED, STOPPED, INTERRUPT_DISPATCH };
 
+struct gameboy;
+
 struct cpu {
     uint8_t opcode;
     uint8_t r8[8];
@@ -22,6 +24,7 @@ struct cpu {
     int halt_bug;
     int ime;
     int ime_scheduled;
+    void (*instr)(struct gameboy *gb);
 };
 
 #define R16BC        ((gb->cpu.r8[0] << 8) | (gb->cpu.r8[1]))

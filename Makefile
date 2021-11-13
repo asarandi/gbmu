@@ -4,6 +4,7 @@ SRC := \
     src/cartridge.c \
     src/cpu.c \
     src/debug.c \
+    src/endian.c \
     src/hash.c \
     src/init.c \
     src/interrupts.c \
@@ -20,7 +21,7 @@ SRC := \
 
 src/debug.o: CFLAGS  += -Wno-unused-result
 src/sdl.o:   CFLAGS  += $(shell sdl2-config --cflags)
-gbmu:        LDFLAGS += $(shell sdl2-config --libs)
+gbmu:        LDFLAGS += -O2 $(shell sdl2-config --libs)
 
 all: gbmu
 

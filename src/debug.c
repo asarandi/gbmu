@@ -1,6 +1,7 @@
 #include "gb.h"
 #include "cpu.h"
 #include "hardware.h"
+#include "endian.h"
 
 struct {
     int n;
@@ -132,12 +133,6 @@ static void dump_instr(struct gameboy *gb) {
            R16AF, R16BC, R16DE, R16HL, R16PC, R16SP, hexdump, name);
 }
 
-void write_be32(uint8_t *dst, uint32_t val) {
-    for (int i = 0; i < 4; i++) {
-        dst[i] = (val >> ((3 - i) << 3)) & 255;
-    }
-}
-
 int screenshot(struct gameboy *gb, char *filename) {
     uint8_t buf[5972] = {0};
     const uint8_t png_head[] = {
@@ -162,10 +157,10 @@ int screenshot(struct gameboy *gb, char *filename) {
             buf[o++] = 0;
         }
 
-        buf[o] = (3 - gb->screen_buf[i++]) << 6;
-        buf[o] |= (3 - gb->screen_buf[i++]) << 4;
-        buf[o] |= (3 - gb->screen_buf[i++]) << 2;
-        buf[o++] |= 3 - gb->screen_buf[i++];
+        buf[o] = (3 - gb->lcd.buf[i++]) << 6;
+        buf[o] |= (3 - gb->lcd.buf[i++]) << 4;
+        buf[o] |= (3 - gb->lcd.buf[i++]) << 2;
+        buf[o++] |= 3 - gb->lcd.buf[i++];
     }
 
     (void)write_be32(buf + o, adler32(buf + 48, 5904)); // zlib

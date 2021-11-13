@@ -49,8 +49,7 @@ static int16_t wave_sample(struct gameboy *gb) {
 static int16_t noise_sample(struct gameboy *gb) {
     extern unsigned char noise7[], noise15[];
     struct channel *s = &gb->ch[3];
-    uint32_t idx;
-    int16_t sample;
+    int16_t idx, sample;
     uint8_t *tab;
 
     if ((!s->on) || (s->len_enabled && !s->length) || (!s->volume) || (!s->freq)) {
@@ -170,6 +169,8 @@ static void sweep_tick(struct gameboy *gb) {
 }
 
 int sequencer_step(struct gameboy *gb) {
+    int i;
+
     if (!(gb->memory[rAUDENA] & AUDENA_ON)) {
         return gb->seq_frame;
     }
@@ -177,7 +178,7 @@ int sequencer_step(struct gameboy *gb) {
     gb->seq_frame = (gb->seq_frame + 1) & 7;
 
     if ((gb->seq_frame & 1) == 0) {
-        for (int i = 0; i < 4; i++) {
+        for (i = 0; i < 4; i++) {
             if ((gb->ch[i].len_enabled) && (gb->ch[i].length)) {
                 if (!--(gb->ch[i].length)) {
                     gb->ch[i].on = 0;
@@ -200,12 +201,8 @@ int sequencer_step(struct gameboy *gb) {
 }
 
 int sound_update(struct gameboy *gb) {
-    static int i, once, clocks = 4;
-
-    if (!once) {
-        once = gb->ch[0].on = 1;
-    }
-
+    const int clocks = 4;
+    int i;
     gb->memory[rAUDENA] &= AUDENA_ON;
 
     for (i = 0; i < 4; i++) {

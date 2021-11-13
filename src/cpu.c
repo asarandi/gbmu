@@ -1138,20 +1138,22 @@ void (*instruct[])(struct gameboy *gb) = {
 };
 
 int cpu_update(struct gameboy *gb) {
-    static void (*instr)(struct gameboy *gb) = NULL;
-
     if (gb->cpu.state == INTERRUPT_DISPATCH) {
         return interrupt_step(gb);
     }
 
-    if ((gb->cpu.state != HALTED) && (!instr) && (!gb->cpu.step)) {
+    if ((gb->cpu.state != HALTED) && (!gb->cpu.instr) && (!gb->cpu.step)) {
         gb->cpu.opcode = read_u8(gb, gb->cpu.pc);
 
         if (gb->cpu.opcode == 0xcb) {
             gb->cpu.opcode = read_u8(gb, gb->cpu.pc + 1);
-            instr = instruct[256 + gb->cpu.opcode];
+            gb->cpu.instr = instruct[256 + gb->cpu.opcode];
         } else {
-            instr = instruct[gb->cpu.opcode];
+            gb->cpu.instr = instruct[gb->cpu.opcode];
+        }
+
+        if (!gb->cpu.instr) {
+            return -1; //crash
         }
 
         if (gb->cpu.halt_bug) {
@@ -1160,15 +1162,15 @@ int cpu_update(struct gameboy *gb) {
         }
     }
 
-    if ((gb->cpu.state != HALTED) && (instr)) {
+    if ((gb->cpu.state != HALTED) && (gb->cpu.instr)) {
         if (!gb->cpu.step) {
             (void)debug(gb); /* XXX */
         }
 
-        (void)instr(gb);
+        (void)gb->cpu.instr(gb);
 
         if (!gb->cpu.step) {
-            instr = NULL;
+            gb->cpu.instr = NULL;
         }
 
         if (gb->cpu.state == HALTED) {
@@ -1178,5 +1180,5 @@ int cpu_update(struct gameboy *gb) {
         }
     }
 
-    return instr != NULL;
+    return gb->cpu.instr != NULL;
 }

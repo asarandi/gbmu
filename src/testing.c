@@ -59,7 +59,7 @@ void screenshot_run_hook(struct gameboy *gb) {
         return ;
     }
 
-    if ((gb->cycles >= (40 * 4194304)) && (gb->video_render)) {
+    if ((gb->cycles >= (40 * 4194304)) && (gb->lcd.render)) {
         (void)screenshot_and_exit(gb, "-1.png");
     }
 

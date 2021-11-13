@@ -2,6 +2,7 @@
 #include "hardware.h"
 
 int set_dmg_initial_memory_values(struct gameboy *gb) {
+    int i;
     // hacktix/BullyGB
     const uint8_t dmg_initial_tile_data_at_0x8010[] = {
         0xf0, 0xf0, 0xfc, 0xfc, 0xfc, 0xfc, 0xf3, 0xf3,
@@ -31,7 +32,7 @@ int set_dmg_initial_memory_values(struct gameboy *gb) {
         0x3c, 0x42, 0xb9, 0xa5, 0xb9, 0xa5, 0x42, 0x3c,
     };
 
-    for (int i = 0; i < 200; i++) {
+    for (i = 0; i < 200; i++) {
         gb->memory[0x8010 + i * 2] = dmg_initial_tile_data_at_0x8010[i];
     }
 
@@ -60,6 +61,10 @@ int set_dmg_initial_memory_values(struct gameboy *gb) {
 }
 
 int set_dmg_initial_register_values(struct gameboy *gb) {
+    gb->ch[0].on = 1;
+    gb->cartridge.romb0 = 1;
+    gb->serial_cycles = 0xabcc;
+    gb->timer.div = 0xabcc;
     gb->cpu.r8[0] = 0x00, gb->cpu.r8[1] = 0x13; // bc = 0x0013
     gb->cpu.r8[2] = 0x00, gb->cpu.r8[3] = 0xd8; // de = 0x00d8
     gb->cpu.r8[4] = 0x01, gb->cpu.r8[5] = 0x4d; // hl = 0x014d
@@ -68,7 +73,6 @@ int set_dmg_initial_register_values(struct gameboy *gb) {
     gb->cpu.pc = 0x0100;
     gb->memory[rP1] = 0xcf;
     gb->memory[rSB] = 0x00;
-    gb->timer.div = 0xabcc;
     gb->memory[rTIMA] = 0x00;
     gb->memory[rTMA] = 0x00;
     gb->memory[rTAC] = 0x00;
@@ -110,7 +114,6 @@ int set_dmg_initial_register_values(struct gameboy *gb) {
 
 void io_init(struct gameboy *gb) {
     (void)memset(gb->memory + _RAM, 255, 0x2000);
-    (void)memset(gb->ram_banks, 255, sizeof(gb->ram_banks));
     (void)set_dmg_initial_memory_values(gb);
     (void)set_dmg_initial_register_values(gb);
 }
