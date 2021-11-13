@@ -62,8 +62,6 @@ static int cleanup(struct gameboy *gb, bool save) {
     return gb->exit_code;
 }
 
-void rtc_tick();
-
 int main(int ac, char **av) {
     static struct gameboy gameboy = {0};
     struct gameboy *gb = &gameboy;
@@ -154,7 +152,7 @@ int main(int ac, char **av) {
         }
 
         if (sound_update(gb)) {
-            rtc_tick();
+            rtc_tick(gb);
 
             if (!gb->testing) {
                 (void)audio_write(gb, gb->sound_buf, SOUND_BUF_SIZE);

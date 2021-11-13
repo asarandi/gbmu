@@ -1,6 +1,8 @@
 #ifndef ENDIAN_IO_H
 # define ENDIAN_IO_H
 
+# include <stdint.h>
+
 void write_be16(uint8_t *dst, uint16_t val);
 uint16_t read_be16(uint8_t *src);
 void write_be32(uint8_t *dst, uint32_t val);

@@ -20,13 +20,15 @@
 #endif
 
 #define FRAME_DURATION  70224
+#define VIDEO_BUF_SIZE (160 * 144)
+#define RTC_TICK_INCREMENT 3125
+#define RTC_TICK_MODULO 100000
 
 #define ROM_ADDRESS 0x4000
 #define ROM_SIZE    0x4000
 #define RAM_ADDRESS 0xa000
 #define RAM_SIZE    0x2000
 
-#define VIDEO_BUF_SIZE (160 * 144)
 
 struct dma {
     int index;
@@ -34,6 +36,14 @@ struct dma {
     bool active;
     uint8_t byte;
     uint16_t source;
+};
+
+struct rtc {
+    uint32_t ticks;
+    uint32_t hidden[5];
+    uint32_t latched[5];
+    uint32_t time;
+    uint8_t buf[48];
 };
 
 struct cartridge {
@@ -44,6 +54,8 @@ struct cartridge {
     uint8_t romb1;
     uint8_t ramb;
     uint8_t mode;
+    uint8_t last_write;
+    struct rtc rtc;
 };
 
 struct lcd {
@@ -170,6 +182,8 @@ int cartridge_init(struct gameboy *gb);
 int savefile_read(struct gameboy *gb);
 
 int savefile_write(struct gameboy *gb);
+
+void rtc_tick(struct gameboy *gb);
 
 /* testing  */
 

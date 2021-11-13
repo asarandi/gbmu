@@ -63,6 +63,9 @@ int set_dmg_initial_memory_values(struct gameboy *gb) {
 int set_dmg_initial_register_values(struct gameboy *gb) {
     gb->ch[0].on = 1;
     gb->cartridge.romb0 = 1;
+    gb->cartridge.last_write = 255; // rtc3
+    gb->cartridge.rtc.hidden[4] = 0x80; // rtc3
+    gb->cartridge.rtc.latched[4] = 0x80; // rtc3
     gb->serial_cycles = 0xabcc;
     gb->timer.div = 0xabcc;
     gb->cpu.r8[0] = 0x00, gb->cpu.r8[1] = 0x13; // bc = 0x0013

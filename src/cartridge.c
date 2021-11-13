@@ -14,61 +14,112 @@
 //        Bit 6  Halt (0=Active, 1=Stop Timer)
 //        Bit 7  Day Counter Carry Bit (1=Counter Overflow)
 
-struct rtc {
-    uint8_t s;
-    uint8_t m;
-    uint8_t h;
-    uint8_t dl;
-    uint8_t dh;
-};
+const uint32_t rtc_masks[5] = {63, 63, 31, 255, 193};
 
-struct rtcx {
-    uint32_t hidden[5];
-    uint32_t latched[5];
-};
+int rtc_update_to_current(struct gameboy *gb) {
+    struct rtc *rtc = &(gb->cartridge.rtc);
+    uint32_t t, d;
+    t = time(NULL);
 
-struct rtc rtc = {.dh = 0b10000000}; // set day counter carry bit
-struct rtc rtc2 = {.dh = 0b10000000}; // set day counter carry bit
+    if (t < rtc->time) {
+        fprintf(stderr, "rtc time is in the future?\n");
+        fflush(stderr);
+        return 0;
+    }
 
-void rtc_tick() {
-    static uint32_t t = 0;
-    t += 3125;
-    t %= 100000;
+    d = t - rtc->time;
+    d += rtc->hidden[0];
+    d += rtc->hidden[1] * 60;
+    d += rtc->hidden[2] * 3600;
+    d += rtc->hidden[3] * 86400;
+    d += rtc->hidden[4] & 1 ? 256 * 86400 : 0;
+    rtc->hidden[0] = d % 60;
+    rtc->hidden[1] = (d / 60) % 60;
+    rtc->hidden[2] = (d / 3600) % 24;
+    rtc->hidden[3] = (d / 86400) % 256;
+    rtc->hidden[4] |= (d / 86400) > 255 ? 1 : 0;
+    rtc->hidden[4] |= (d / 86400) > 511 ? 0x80 : 0;
+    rtc->time = t;
+    return 1;
+}
 
-    if (t) {
+int rtc_deserialize(struct gameboy *gb) {
+    struct rtc *rtc = &(gb->cartridge.rtc);
+    int i;
+
+    for (i = 0; i < 5; i++) {
+        rtc->hidden[i] = read_le32(&(rtc->buf[i * 4]));
+        rtc->latched[i] = read_le32(&(rtc->buf[i * 4 + 20]));
+    }
+
+    rtc->time = read_le32(&(rtc->buf[40]));
+    return rtc_update_to_current(gb);
+}
+
+int rtc_serialize(struct gameboy *gb) {
+    struct rtc *rtc = &(gb->cartridge.rtc);
+    int i;
+
+    if (!rtc_update_to_current(gb)) {
+        return 0;
+    }
+
+    (void)memset(rtc->buf, 0, sizeof(rtc->buf));
+
+    for (i = 0; i < 5; i++) {
+        (void)write_le32(&(rtc->buf[i * 4]), rtc->hidden[i]);
+        (void)write_le32(&(rtc->buf[i * 4 + 20]), rtc->latched[i]);
+    }
+
+    (void)write_le32(&(rtc->buf[40]), rtc->time);
+    return 1;
+}
+
+void rtc_tick(struct gameboy *gb) {
+    struct rtc *rtc = &(gb->cartridge.rtc);
+    rtc->ticks += RTC_TICK_INCREMENT;
+    rtc->ticks %= RTC_TICK_MODULO;
+
+    if (rtc->ticks) {
         return ;
     }
 
-    if (rtc.dh & 0x40) {
+    if (rtc->hidden[4] & 0x40) {
         return ;    // timer halt
     }
 
-    ++rtc.s;
+    rtc->hidden[0]++;
+    rtc->hidden[0] &= rtc_masks[0];
 
-    if (rtc.s == 60) {
-        rtc.s = 0;
-        ++rtc.m;
+    if (rtc->hidden[0] == 60) {
+        rtc->hidden[0] = 0;
+        rtc->hidden[1]++;
     }
 
-    rtc.s &= 63;
+    rtc->hidden[1] &= rtc_masks[1];
 
-    if (rtc.m == 60) {
-        rtc.m = 0;
-        ++rtc.h;
+    if (rtc->hidden[1] == 60) {
+        rtc->hidden[1] = 0;
+        rtc->hidden[2]++;
     }
 
-    rtc.m &= 63;
+    rtc->hidden[2] &= rtc_masks[2];
 
-    if (rtc.h == 24) {
-        rtc.h = 0;
-
-        if (++rtc.dl == 0) {
-            rtc.dh ^= 1;
-            rtc.dh |= (rtc.dh & 1) ? 0 : 0x80;
-        }
+    if (rtc->hidden[2] != 24) {
+        return ;
     }
 
-    rtc.h &= 31;
+    rtc->hidden[2] = 0;
+    rtc->hidden[3]++;
+    rtc->hidden[3] &= rtc_masks[3];
+
+    if (rtc->hidden[3] != 0) {
+        return ;
+    }
+
+    rtc->hidden[4] ^= 1;
+    rtc->hidden[4] |= (rtc->hidden[4] & 1) ? 0 : 128;
+    rtc->hidden[4] &= rtc_masks[4];
 }
 
 void default_ram_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
@@ -85,7 +136,6 @@ uint8_t default_ram_read_u8(struct gameboy *gb, uint16_t addr) {
 }
 
 uint8_t default_rom_read_u8(struct gameboy *gb, uint16_t addr) {
-    (void)addr;
     return gb->cartridge.data[addr & 0x7fff];
 }
 
@@ -152,8 +202,6 @@ uint8_t mbc1_rom_read_u8(struct gameboy *gb, uint16_t addr) {
 }
 
 void mbc1_rom_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
-    (void)gb;
-
     if (addr <= 0x1fff) {
         gb->cartridge.ramg = data & 0x0f;
     }
@@ -209,8 +257,6 @@ uint8_t mbc2_rom_read_u8(struct gameboy *gb, uint16_t addr) {
 }
 
 void mbc2_rom_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
-    (void)gb;
-
     if (addr <= 0x3fff) {
         if (addr & 0x100) {
             gb->cartridge.romb0 = data & 15;
@@ -225,6 +271,8 @@ void mbc2_rom_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
 }
 
 void mbc3_ram_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
+    int i;
+
     if (gb->cartridge.ramg != 0x0a) {
         return;
     }
@@ -234,30 +282,13 @@ void mbc3_ram_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
         return ;
     }
 
-    switch (gb->cartridge.ramb) {
-    case 8:
-        rtc.s = data & 63;
-        break ;
-
-    case 9:
-        rtc.m = data & 63;
-        break ;
-
-    case 10:
-        rtc.h = data & 31;
-        break ;
-
-    case 11:
-        rtc.dl = data;
-        break ;
-
-    case 12:
-        rtc.dh = data & 0b11000001;
-        break ;
-    }
+    i = gb->cartridge.ramb - 8;
+    gb->cartridge.rtc.hidden[i] = data & rtc_masks[i];
 }
 
 uint8_t mbc3_ram_read_u8(struct gameboy *gb, uint16_t addr) {
+    int i;
+
     if (gb->cartridge.ramg != 0x0a) {
         return 0xff;
     }
@@ -266,24 +297,8 @@ uint8_t mbc3_ram_read_u8(struct gameboy *gb, uint16_t addr) {
         return gb->ram_banks[(gb->cartridge.ramb << 13) + (addr & 0x1fff)];
     }
 
-    switch (gb->cartridge.ramb) {
-    case 8:
-        return rtc2.s;
-
-    case 9:
-        return rtc2.m;
-
-    case 10:
-        return rtc2.h;
-
-    case 11:
-        return rtc2.dl;
-
-    case 12:
-        return rtc2.dh;
-    }
-
-    return 0xff;
+    i = gb->cartridge.ramb - 8;
+    return gb->cartridge.rtc.latched[i];
 }
 
 uint8_t mbc3_rom_read_u8(struct gameboy *gb, uint16_t addr) {
@@ -304,9 +319,6 @@ uint8_t mbc3_rom_read_u8(struct gameboy *gb, uint16_t addr) {
 }
 
 void mbc3_rom_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
-    (void)gb;
-    static int prev_data = -1;
-
     if (addr <= 0x1fff) {
         gb->cartridge.ramg = data;
     }
@@ -326,11 +338,12 @@ void mbc3_rom_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
     }
 
     if ((addr >= 0x6000) && (addr <= 0x7fff)) {
-        if ((prev_data == 0) && (data == 1)) {
-            (void)memcpy(&rtc2, &rtc, sizeof(struct rtc));
+        if ((gb->cartridge.last_write == 0) && (data == 1)) {
+            (void)memcpy(gb->cartridge.rtc.latched,
+                         gb->cartridge.rtc.hidden, 20);
         }
 
-        prev_data = data;
+        gb->cartridge.last_write = data;
     }
 }
 
@@ -369,8 +382,6 @@ uint8_t mbc5_rom_read_u8(struct gameboy *gb, uint16_t addr) {
 }
 
 void mbc5_rom_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
-    (void)gb;
-
     if (addr <= 0x1fff) {
         gb->cartridge.ramg = data;
     }
