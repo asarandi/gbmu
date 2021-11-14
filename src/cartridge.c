@@ -59,6 +59,7 @@ int rtc_deserialize(struct gameboy *gb) {
 int rtc_serialize(struct gameboy *gb) {
     struct rtc *rtc = &(gb->cartridge.rtc);
     int i;
+    gb->cartridge.rtc.time = time(NULL);
 
     if (!rtc_update_to_current(gb)) {
         return 0;
@@ -75,17 +76,17 @@ int rtc_serialize(struct gameboy *gb) {
     return 1;
 }
 
-void rtc_tick(struct gameboy *gb) {
+int rtc_tick(struct gameboy *gb) {
     struct rtc *rtc = &(gb->cartridge.rtc);
     rtc->ticks += RTC_TICK_INCREMENT;
-    rtc->ticks %= RTC_TICK_MODULO;
+    rtc->ticks %= RTC_TICK_DIVISOR;
 
     if (rtc->ticks) {
-        return ;
+        return 1;
     }
 
     if (rtc->hidden[4] & 0x40) {
-        return ;    // timer halt
+        return 1;    // timer halt
     }
 
     rtc->hidden[0]++;
@@ -106,7 +107,7 @@ void rtc_tick(struct gameboy *gb) {
     rtc->hidden[2] &= rtc_masks[2];
 
     if (rtc->hidden[2] != 24) {
-        return ;
+        return 1;
     }
 
     rtc->hidden[2] = 0;
@@ -114,12 +115,13 @@ void rtc_tick(struct gameboy *gb) {
     rtc->hidden[3] &= rtc_masks[3];
 
     if (rtc->hidden[3] != 0) {
-        return ;
+        return 1;
     }
 
     rtc->hidden[4] ^= 1;
     rtc->hidden[4] |= (rtc->hidden[4] & 1) ? 0 : 128;
     rtc->hidden[4] &= rtc_masks[4];
+    return 1;
 }
 
 void default_ram_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {

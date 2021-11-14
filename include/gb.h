@@ -22,7 +22,7 @@
 #define FRAME_DURATION  70224
 #define VIDEO_BUF_SIZE (160 * 144)
 #define RTC_TICK_INCREMENT 3125
-#define RTC_TICK_MODULO 100000
+#define RTC_TICK_DIVISOR 100000
 
 #define ROM_ADDRESS 0x4000
 #define ROM_SIZE    0x4000
@@ -183,7 +183,13 @@ int savefile_read(struct gameboy *gb);
 
 int savefile_write(struct gameboy *gb);
 
-void rtc_tick(struct gameboy *gb);
+int rtc_serialize(struct gameboy *gb);
+
+int rtc_deserialize(struct gameboy *gb);
+
+int rtc_update_to_current(struct gameboy *gb);
+
+int rtc_tick(struct gameboy *gb);
 
 /* testing  */
 

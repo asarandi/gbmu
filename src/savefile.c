@@ -3,8 +3,18 @@
 #include <errno.h>
 #include <ctype.h>
 
+static bool has_rtc(struct gameboy *gb) {
+    switch (gb->cartridge.data[0x147]) {
+    case CART_ROM_MBC3_BAT_RTC:
+    case CART_ROM_MBC3_RAM_BAT_RTC:
+        return true;
+    }
+
+    return false;
+}
+
 static bool has_battery(struct gameboy *gb) {
-    switch (gb->memory[0x147]) {
+    switch (gb->cartridge.data[0x147]) {
     case CART_ROM_MBC1_RAM_BAT:
     case CART_ROM_MBC2_BAT:
     case CART_ROM_RAM_BAT:
@@ -70,8 +80,9 @@ char *replace_exten(char *fn, char *ext) {
 }
 
 int savefile_read(struct gameboy *gb) {
-    int ret, fd;
+    int fd, ok;
     struct stat st;
+    bool a, b, c;
     gb->ram_size = get_ram_size(gb);
 
     if (!gb->ram_size) {
@@ -90,9 +101,13 @@ int savefile_read(struct gameboy *gb) {
         }
     }
 
-    if ((size_t)st.st_size != gb->ram_size) {
-        (void)fprintf(stderr, "expecting %lu bytes, but file is %lu bytes\n",
-                      gb->ram_size, (size_t)st.st_size);
+    a = st.st_size == (ssize_t)gb->ram_size;
+    b = has_rtc(gb) && st.st_size == (ssize_t)gb->ram_size + 48;
+    c = has_rtc(gb) && st.st_size == (ssize_t)gb->ram_size + 44;
+
+    if (!(a || b || c)) {
+        (void)fprintf(stderr, "expecting %lu bytes, but file is %ld bytes\n",
+                      gb->ram_size, st.st_size);
         return 0;
     }
 
@@ -101,13 +116,30 @@ int savefile_read(struct gameboy *gb) {
         return 0;
     }
 
-    ret = read(fd, gb->ram_banks, gb->ram_size);
+    ok = read(fd, gb->ram_banks, gb->ram_size) == (ssize_t)gb->ram_size;
+
+    if (ok && b) {
+        ok = read(fd, gb->cartridge.rtc.buf, 48) == 48;
+    }
+
+    if (ok && c) {
+        ok = read(fd, gb->cartridge.rtc.buf, 44) == 44;
+    }
+
+    if (ok && (b || c)) {
+        ok = rtc_deserialize(gb) == 1;
+    }
+
+    if (b || c) {
+        fprintf(stderr, "rtc load %s\n", ok ? "ok" : "failed");
+    }
+
     (void)close(fd);
-    return (size_t)ret == gb->ram_size;
+    return ok;
 }
 
 int savefile_write(struct gameboy *gb) {
-    int fd, ret;
+    int fd, ok;
 
     if (!gb->ram_size) {
         return 1;
@@ -119,10 +151,16 @@ int savefile_write(struct gameboy *gb) {
         return 0;
     }
 
-    ret = write(fd, gb->ram_banks, gb->ram_size);
+    ok = write(fd, gb->ram_banks, gb->ram_size) == (ssize_t)gb->ram_size;
+
+    if (ok && has_rtc(gb)) {
+        ok = rtc_serialize(gb) && write(fd, gb->cartridge.rtc.buf, 48) == 48;
+        fprintf(stderr, "rtc save %s\n", ok ? "ok":"failed");
+    }
+
     (void)close(fd);
     // free allocated mem
     (void)free(gb->ram_file);
     gb->ram_file = NULL;
-    return (size_t)ret == gb->ram_size;
+    return ok;
 }
