@@ -736,7 +736,6 @@ CB_R(sla_r,_SLA);
 CB_R(sra_r,_SRA);
 CB_R(swap_r,_SWAP);
 CB_R(srl_r,_SRL);
-CB_R(bit_r,_BIT);
 CB_R(res_r,_RES);
 CB_R(set_r,_SET);
 
@@ -770,6 +769,19 @@ CB_HL(srl_hl,_SRL);
 CB_HL(res_hl,_RES);
 CB_HL(set_hl,_SET);
 
+// 2 cycles
+void bit_r(struct gameboy *gb) {
+    if (gb->cpu.step == 0) {
+        gb->cpu.step = 1;
+        gb->cpu.pc++;
+    } else if (gb->cpu.step == 1) {
+        gb->cpu.step = 0;
+        gb->cpu.pc++;
+        gb->cpu.lo = gb->cpu.r8[U3SRC];
+        _BIT;
+    }
+}
+
 // 3 cycles
 void bit_hl(struct gameboy *gb)  {
     if (gb->cpu.step == 0) {
@@ -782,7 +794,6 @@ void bit_hl(struct gameboy *gb)  {
         gb->cpu.step = 0;
         gb->cpu.lo = read_u8(gb, R16HL);
         _BIT;
-        write_u8(gb, R16HL, gb->cpu.lo);
     }
 }
 

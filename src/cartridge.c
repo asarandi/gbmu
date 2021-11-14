@@ -322,15 +322,12 @@ uint8_t mbc3_rom_read_u8(struct gameboy *gb, uint16_t addr) {
 
 void mbc3_rom_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
     if (addr <= 0x1fff) {
-        gb->cartridge.ramg = data;
+        gb->cartridge.ramg = data & 15;
     }
 
     if ((addr >= 0x2000) && (addr <= 0x3fff)) {
-        gb->cartridge.romb0 = data;
-
-        if (gb->cartridge.romb0 == 0) {
-            gb->cartridge.romb0 = 1;
-        }
+        // FIXME: MBC30 (Pokemon Crystal JP) has 256 rom banks, 8 ram banks
+        gb->cartridge.romb0 = data & 127 ? data & 127 : 1;
     }
 
     if ((addr >= 0x4000) && (addr <= 0x5fff)) {
