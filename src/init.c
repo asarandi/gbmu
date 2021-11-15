@@ -117,6 +117,7 @@ int set_dmg_initial_register_values(struct gameboy *gb) {
 
 void io_init(struct gameboy *gb) {
     (void)memset(gb->memory + _RAM, 255, 0x2000);
+    (void)memset(gb->ram_banks, 255, sizeof(gb->ram_banks));
     (void)set_dmg_initial_memory_values(gb);
     (void)set_dmg_initial_register_values(gb);
 }

@@ -1,5 +1,6 @@
 #include "gb.h"
 #include "hardware.h"
+#include "endian.h"
 
 // https://gbdev.io/pandocs/MBC3.html#mbc3
 // https://github.com/aaaaaa123456789/rtc3test/blob/master/tests.md
@@ -209,11 +210,7 @@ void mbc1_rom_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
     }
 
     if ((addr >= 0x2000) && (addr <= 0x3fff)) {
-        gb->cartridge.romb0 = data & 0x1f;
-
-        if (gb->cartridge.romb0 == 0) {
-            gb->cartridge.romb0 = 1;
-        }
+        gb->cartridge.romb0 = data & 31 ? data & 31 : 1;
     }
 
     if ((addr >= 0x4000) && (addr <= 0x5fff)) {
@@ -261,11 +258,7 @@ uint8_t mbc2_rom_read_u8(struct gameboy *gb, uint16_t addr) {
 void mbc2_rom_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
     if (addr <= 0x3fff) {
         if (addr & 0x100) {
-            gb->cartridge.romb0 = data & 15;
-
-            if (gb->cartridge.romb0 == 0) {
-                gb->cartridge.romb0 = 1;
-            }
+            gb->cartridge.romb0 = data & 15 ? data & 15 : 1;
         } else {
             gb->cartridge.ramg = data & 15;
         }

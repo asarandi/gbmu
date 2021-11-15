@@ -2,6 +2,7 @@
 #include "hardware.h"
 #include <errno.h>
 #include <ctype.h>
+#include <inttypes.h>
 
 static bool has_rtc(struct gameboy *gb) {
     switch (gb->cartridge.data[0x147]) {
@@ -32,7 +33,7 @@ static bool has_battery(struct gameboy *gb) {
     return false;
 }
 
-static size_t get_ram_size(struct gameboy *gb) {
+static uint64_t get_ram_size(struct gameboy *gb) {
     if (!has_battery(gb)) {
         return 0;
     }
@@ -101,13 +102,13 @@ int savefile_read(struct gameboy *gb) {
         }
     }
 
-    a = st.st_size == (ssize_t)gb->ram_size;
-    b = has_rtc(gb) && st.st_size == (ssize_t)gb->ram_size + 48;
-    c = has_rtc(gb) && st.st_size == (ssize_t)gb->ram_size + 44;
+    a = (uint64_t)st.st_size == gb->ram_size;
+    b = has_rtc(gb) && (uint64_t)st.st_size == gb->ram_size + 48;
+    c = has_rtc(gb) && (uint64_t)st.st_size == gb->ram_size + 44;
 
     if (!(a || b || c)) {
-        (void)fprintf(stderr, "expecting %lu bytes, but file is %ld bytes\n",
-                      gb->ram_size, st.st_size);
+        (void)fprintf(stderr, "expecting %" PRIu64 " bytes, but file is %" PRIu64
+                      " bytes\n", gb->ram_size, (uint64_t)st.st_size);
         return 0;
     }
 

@@ -85,7 +85,7 @@ struct gameboy {
     struct lcd lcd;
     char *rom_file;
     char *ram_file;
-    size_t ram_size;
+    uint64_t ram_size;
     uint8_t ram_banks[RAM_SIZE * 16];
     struct timer timer;
     uint32_t cycles;
