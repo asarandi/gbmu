@@ -115,10 +115,29 @@ int set_dmg_initial_register_values(struct gameboy *gb) {
     return 0;
 }
 
+void dummy_run_hook(struct gameboy *gb) {
+    (void)gb;
+}
+
+void dummy_write_hook(struct gameboy *gb, uint16_t addr, uint8_t data) {
+    (void)gb;
+    (void)addr;
+    (void)data;
+}
+
+
 void io_init(struct gameboy *gb) {
     (void)memset(gb->memory + _RAM, 255, 0x2000);
     (void)memset(gb->ram_banks, 255, sizeof(gb->ram_banks));
     (void)set_dmg_initial_memory_values(gb);
     (void)set_dmg_initial_register_values(gb);
+
+    if (!gb->testing_run_hook) {
+        gb->testing_run_hook = &dummy_run_hook;
+    }
+
+    if (!gb->testing_write_hook) {
+        gb->testing_write_hook = &dummy_write_hook;
+    }
 }
 

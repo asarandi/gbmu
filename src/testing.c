@@ -9,7 +9,7 @@
 #define RESULT_TIMEOUT 12
 #define RESULT_ERROR   13
 
-void default_run_hook(struct gameboy *);
+void timeout_run_hook(struct gameboy *);
 void blargg1_write_hook(struct gameboy *, uint16_t, uint8_t);
 void blargg2_run_hook(struct gameboy *);
 void blargg2_write_hook(struct gameboy *, uint16_t, uint8_t);
@@ -24,9 +24,9 @@ int testing_setup(struct gameboy *gb, char *test_name) {
         void (*run)(struct gameboy *);
         void (*write)(struct gameboy *, uint16_t, uint8_t);
     } tests[] = {
-        {"blargg1", &default_run_hook, &blargg1_write_hook},
+        {"blargg1", &timeout_run_hook, &blargg1_write_hook},
         {"blargg2", &blargg2_run_hook, &blargg2_write_hook},
-        {"mooneye", &default_run_hook, &mooneye_write_hook},
+        {"mooneye", &timeout_run_hook, &mooneye_write_hook},
         {"screenshot", &screenshot_run_hook, &screenshot_write_hook},
         {"mealybug", &mealybug_run_hook, &screenshot_write_hook},
     };
@@ -90,7 +90,7 @@ void screenshot_write_hook(struct gameboy *gb, uint16_t addr, uint8_t data) {
     }
 }
 
-void default_run_hook(struct gameboy *gb) {
+void timeout_run_hook(struct gameboy *gb) {
     static time_t start;
 
     if (!gb->testing) {
