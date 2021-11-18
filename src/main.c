@@ -133,7 +133,7 @@ int main(int ac, char **av) {
     while (!gb->done) {
         gb->done |= cpu_update(gb) < 0;
         (void)dma_update(gb);
-        (void)serial_update(gb);
+        (void)serial_update(gb, 0);
 
         if (timer_update(gb)) {
             sequencer_step(gb);

@@ -1,7 +1,7 @@
 #ifndef SOUND_H
 # define SOUND_H
 
-#define  SAMPLING_FREQUENCY 32768
+#define  SAMPLING_FREQUENCY 65536
 #define  NUM_FRAMES         1024
 #define  NUM_CHANNELS       2
 #define  SAMPLE_SIZE        2

@@ -1,7 +1,7 @@
 #include "gb.h"
 #include "hardware.h"
 
-struct io_register io_registers[] = {
+const struct io_register io_registers[] = {
     {"rP1",     0xff00, 0b11000000},
     {"rSB",     0xff01, 0b00000000},
     {"rSC",     0xff02, 0b01111110},
@@ -298,17 +298,7 @@ uint8_t io_read_u8(struct gameboy *gb, uint16_t addr) {
 }
 
 void io_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
-    if (gb->log_io) {
-        char *io_reg_name = io_registers[addr - _IO].name;
-
-        if (addr >= _HRAM) {
-            io_reg_name = "HRAM";
-        }
-
-        (void)printf("IO: addr = %04x data = %02x register = %s\n",
-                     addr, data, io_reg_name);
-        (void)fflush(stdout);
-    }
+    (void)debug_log_io(gb, addr, data);
 
     switch (addr) {
     case rP1:

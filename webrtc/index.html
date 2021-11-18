@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      .column {
+        float: left;
+        width: 50%;
+        padding: 10px;
+      }
+      .row:after {
+        content: "";
+        display: table;
+        clear: both;
+      }
+      video {
+        width: 480px !important;
+        height: 432px !important;
+        image-rendering: pixelated !important;
+      }
+      label {
+        display: block;
+      }
+    </style>
+    <script
+      type="text/javascript"
+      src="https://webrtchacks.github.io/adapter/adapter-latest.js"
+    ></script>
+  </head>
+  <body>
+    <div class="row">
+      <div style="margin: 1rem">
+        <label for="romInput">upload rom:</label>
+        <input type="file" id="romInput" name="romInput" accept=".gb,.gbc" />
+        <label for="ramInput">upload ram:</label>
+        <input type="file" id="ramInput" name="ramInput" accept=".sav" />
+        <button type="button" id="ramOutput" name="ramOutput">save ram</button>
+        <a id="ramDownload" name="ramDownload" style="display: none"></a>
+        <button type="button" id="reload" name="reload">reload</button>
+        <button type="button" id="fblend" name="fblend" value="0">
+          fblend off
+        </button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="column">
+        <video id="player0" controls autoplay muted></video>
+      </div>
+      <div class="column">
+        <video id="player1" controls autoplay muted></video>
+      </div>
+    </div>
+
+    <script>
+      const config = {
+        iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+      };
+
+      const pc = new RTCPeerConnection(config);
+
+      let peerId = "";
+      fetch("/offer", { method: "get" })
+        .then((response) => {
+          peerId = response.headers.get("x-peer-id");
+          return response.json();
+        })
+        .then((offer) =>
+          pc.setRemoteDescription(new RTCSessionDescription(offer))
+        )
+        .then(() => pc.createAnswer())
+        .then((answer) => pc.setLocalDescription(answer))
+        .catch(console.error);
+      pc.onicecandidate = (event) => {
+        if (event.candidate === null) {
+          fetch("/answer", {
+            method: "post",
+            headers: { "x-peer-id": peerId },
+            body: JSON.stringify(pc.localDescription),
+          });
+        }
+      };
+      pc.oniceconnectionstatechange = (event) => {
+        console.log("connection state change", pc.iceConnectionState);
+      };
+      pc.ontrack = (event) => {
+        console.log("Got track event", event);
+        for (let i = 0; i < event.streams.length; i++) {
+          const streamId = event.streams[i].id;
+          const elem = document.getElementById(streamId);
+          if (elem) {
+            elem.srcObject = event.streams[i];
+          }
+        }
+      };
+
+      let chatChannel = null;
+      let joypadChannel = null;
+
+      pc.ondatachannel = function (event) {
+        if (event.channel.label === `chat`) chatChannel = event.channel;
+        if (event.channel.label === `joypad`) joypadChannel = event.channel;
+        event.channel.onopen = function () {
+          console.log(`data channel`, `onOpen`, event.channel.label);
+        };
+        event.channel.onclose = function () {
+          console.log(`data channel`, `onClose`, event.channel.label);
+        };
+        event.channel.onmessage = function (msg) {
+          console.log(`data channel`, `onMessage`, event.channel.label, msg);
+        };
+        event.channel.onerror = function (err) {
+          console.log(`data channel`, `onError`, event.channel.label, err);
+        };
+      };
+
+      const keyMapping = {
+        40: 0x80, //PADF_DOWN
+        38: 0x40, //PADF_UP
+        37: 0x20, //PADF_LEFT
+        39: 0x10, //PADF_RIGHT
+        13: 0x08, //PADF_START
+        16: 0x04, //PADF_SELECT
+        90: 0x02, //PADF_B
+        88: 0x01, //PADF_A
+      };
+
+      let joyBefore = 0,
+        joyAfter = 0;
+      const updateJoypad = () => {
+        if (!joypadChannel) return;
+        if (joyBefore !== joyAfter) {
+          joypadChannel.send(new Uint8Array([joyAfter]));
+        }
+        joyBefore = joyAfter;
+      };
+
+      let body = document.querySelector("body");
+      body.addEventListener("keydown", function (event) {
+        if (event.keyCode in keyMapping) {
+          event.preventDefault();
+          joyAfter |= keyMapping[event.keyCode];
+          joyAfter &= joyAfter & 0x80 ? ~0x40 : 0xff;
+          joyAfter &= joyAfter & 0x20 ? ~0x10 : 0xff;
+          updateJoypad();
+        }
+      });
+      body.addEventListener("keyup", function (event) {
+        if (event.keyCode in keyMapping) {
+          event.preventDefault();
+          joyAfter &= ~keyMapping[event.keyCode];
+          updateJoypad();
+        }
+      });
+
+      const romInput = document.querySelector("input#romInput");
+      romInput.addEventListener(
+        "change",
+        function (event) {
+          if (romInput.files.length !== 1) {
+            return;
+          }
+          const file = romInput.files[0];
+          const n = file.size;
+          if (!(32768 <= n && n <= 4194304 && (n & (n - 1)) === 0)) {
+            console.error("unsupported file size", n);
+            return;
+          }
+          file
+            .arrayBuffer()
+            .then((buffer) => {
+              return fetch("/upload", {
+                method: "post",
+                headers: { "x-peer-id": peerId },
+                body: buffer,
+              });
+            })
+            .then((response) => {
+              console.log("upload done!", response.status);
+            })
+            .catch(console.error);
+        },
+        false
+      );
+
+      const ramInput = document.querySelector("input#ramInput");
+      ramInput.addEventListener(
+        "change",
+        function (event) {
+          if (ramInput.files.length !== 1) {
+            return;
+          }
+          const file = ramInput.files[0];
+          const n = file.size;
+          if (!(512 <= n && n <= 131072)) {
+            console.error("unsupported ram file size", n);
+            return;
+          }
+          file
+            .arrayBuffer()
+            .then((buffer) => {
+              return fetch("/save", {
+                method: "post",
+                headers: { "x-peer-id": peerId },
+                body: buffer,
+              });
+            })
+            .then((response) => {
+              console.log("ram upload done!", response.status);
+            })
+            .catch(console.error);
+        },
+        false
+      );
+
+      const ramDownload = document.querySelector("a#ramDownload");
+      const ramOutput = document.querySelector("button#ramOutput");
+      ramOutput.addEventListener(
+        "click",
+        function (event) {
+          fetch("/save", {
+            method: "get",
+            headers: { "x-peer-id": peerId },
+          })
+            .then((response) => {
+              if (response.status === 200) {
+                return Promise.all([
+                  response.blob(),
+                  response.headers.get(`x-filename`),
+                ]);
+              } else {
+                return Promise.reject(new Error(response.statusText));
+              }
+            })
+            .then((data) => {
+              return Promise.all([URL.createObjectURL(data[0]), data[1]]);
+            })
+            .then((data) => {
+              ramDownload.href = data[0];
+              ramDownload.download = data[1];
+              ramDownload.click();
+              URL.revokeObjectURL(data[0]);
+              ramDownload.href = ``;
+              ramDownload.download = ``;
+            })
+            .catch(console.error);
+        },
+        false
+      );
+
+      const reload = document.querySelector("button#reload");
+      reload.addEventListener(
+        "click",
+        function (event) {
+          fetch("/reload", {
+            method: "post",
+            headers: { "x-peer-id": peerId },
+          })
+            .then((response) => {
+              console.log("reload!", response.status);
+            })
+            .catch(console.error);
+        },
+        false
+      );
+
+      const fblend = document.querySelector("button#fblend");
+      fblend.addEventListener(
+        "click",
+        function (event) {
+          const toggle = fblend.value === "0" ? "1" : "0";
+          fetch(`/frame-blending/${toggle}`, {
+            method: "post",
+            headers: { "x-peer-id": peerId },
+          })
+            .then((response) => {
+              console.log("frame-blending!", toggle, response.status);
+              if (response.ok) {
+                fblend.value = toggle;
+                fblend.innerHTML = toggle === "0" ? "fblend off" : "fblend on";
+              }
+            })
+            .catch(console.error);
+        },
+        false
+      );
+    </script>
+  </body>
+</html>

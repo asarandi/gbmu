@@ -52,7 +52,7 @@ format:
 	--indent-continuation=1 \
 	--lineend=linux \
 	--suffix=none \
-	src/*.c include/*.h
+	src/*.c include/*.h webrtc/*.c webrtc/*.h
 
 tests: gbmu
 	./tests/mealybug.sh > tests/mealybug.results.csv

@@ -59,6 +59,40 @@ static uint64_t get_ram_size(struct gameboy *gb) {
     return 0;
 }
 
+int save_deserialize_from_bytes(struct gameboy *gb, uint8_t *bytes,
+                                uint64_t size) {
+    gb->ram_size = get_ram_size(gb);
+
+    if (gb->ram_size == size) {
+        (void)memcpy(gb->ram_banks, bytes, size);
+        return 1;
+    }
+
+    bool ok = has_rtc(gb) && ((size == gb->ram_size + 48) ||
+                              (size == gb->ram_size + 44));
+
+    if (!ok) {
+        return 0;
+    }
+
+    (void)memcpy(gb->ram_banks, bytes, gb->ram_size);
+    (void)memcpy(gb->cartridge.rtc.buf, bytes + gb->ram_size, size - gb->ram_size);
+    return rtc_deserialize(gb);
+}
+
+int save_serialize_to_bytes(struct gameboy *gb, uint8_t *bytes, uint64_t size) {
+    (void)size;
+    gb->ram_size = get_ram_size(gb);
+    (void)memcpy(bytes, gb->ram_banks, gb->ram_size);
+
+    if (!has_rtc(gb)) {
+        return gb->ram_size;
+    }
+
+    (void)rtc_serialize(gb);
+    (void)memcpy(bytes + gb->ram_size, gb->cartridge.rtc.buf, 48);
+    return gb->ram_size + 48;
+}
 
 // f("myfile.gb", ".sav") => "myfile.sav"
 char *replace_exten(char *fn, char *ext) {

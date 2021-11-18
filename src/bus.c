@@ -60,9 +60,7 @@ uint8_t read_u8(struct gameboy *gb, uint16_t addr) {
 }
 
 void write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
-    if (gb->testing) {
-        (void)gb->testing_write_hook(gb, addr, data);
-    }
+    (void)gb->testing_write_hook(gb, addr, data);
 
     if ((gb->dma.active) && (addr < _IO)) {
         return;

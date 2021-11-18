@@ -21,8 +21,8 @@
 
 #define FRAME_DURATION  70224
 #define VIDEO_BUF_SIZE (160 * 144)
-#define RTC_TICK_INCREMENT 3125
-#define RTC_TICK_DIVISOR 100000
+#define RTC_TICK_INCREMENT 15625
+#define RTC_TICK_DIVISOR 1000000
 
 #define ROM_ADDRESS 0x4000
 #define ROM_SIZE    0x4000
@@ -115,7 +115,9 @@ int screenshot(struct gameboy *gb, char *filename);
 
 char *replace_exten(char *rom, char *ext);
 
-void debug(struct gameboy *gb);
+void debug_cpu_instr(struct gameboy *gb);
+
+void debug_log_io(struct gameboy *gb, uint16_t addr, uint8_t data);
 
 void dma_update(struct gameboy *gb);
 
@@ -145,7 +147,7 @@ void joypad_request_interrupt(struct gameboy *gb);
 
 /* serial */
 
-int serial_update(struct gameboy *gb);
+int serial_update(struct gameboy *p, struct gameboy *q);
 
 uint8_t serial_read_u8(struct gameboy *gb, uint16_t addr);
 

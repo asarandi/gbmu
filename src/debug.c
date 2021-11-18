@@ -2,6 +2,7 @@
 #include "cpu.h"
 #include "hardware.h"
 #include "endian.h"
+#include "hash.h"
 
 struct {
     int n;
@@ -163,8 +164,8 @@ int screenshot(struct gameboy *gb, char *filename) {
         buf[o++] |= 3 - gb->lcd.buf[i++];
     }
 
-    (void)write_be32(buf + o, adler32(buf + 48, 5904)); // zlib
-    (void)write_be32(buf + o + 4, crc32(buf + 37, 5919)); // idat
+    (void)write_be32(buf + o, my_adler32(buf + 48, 5904)); // zlib
+    (void)write_be32(buf + o + 4, my_crc32(buf + 37, 5919)); // idat
     fd = open(filename, O_CREAT | O_WRONLY | O_TRUNC | O_BINARY, 0644);
 
     if (fd < 1) {
@@ -177,7 +178,24 @@ int screenshot(struct gameboy *gb, char *filename) {
     return 1;
 }
 
-void debug(struct gameboy *gb) {
+void debug_log_io(struct gameboy *gb, uint16_t addr, uint8_t data) {
+    if (!gb->log_io) {
+        return ;
+    }
+
+    extern struct io_register io_registers[];
+    char *io_reg_name = io_registers[addr - _IO].name;
+
+    if (addr >= _HRAM) {
+        io_reg_name = "HRAM";
+    }
+
+    (void)printf("IO: addr = %04x data = %02x register = %s\n",
+                 addr, data, io_reg_name);
+    (void)fflush(stdout);
+}
+
+void debug_cpu_instr(struct gameboy *gb) {
     if (gb->debug) {
         dump_instr(gb);
         printf("    ");

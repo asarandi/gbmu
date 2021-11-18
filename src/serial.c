@@ -14,23 +14,50 @@ uint8_t serial_read_u8(struct gameboy *gb, uint16_t addr) {
 }
 
 // send/receive 1 bit every 512 clock cycles
-int serial_update(struct gameboy *gb) {
-    int bitflip = (gb->serial_cycles & (1 << 9)) !=
-                  ((gb->serial_cycles + 4) & (1 << 9));
-    gb->serial_cycles += 4;
+int serial_update(struct gameboy *p, struct gameboy *q) {
+    static struct gameboy *transfer = NULL;
+    bool bitflip, pb, qb;
+    bitflip = (p->serial_cycles & (1 << 9)) !=
+              ((p->serial_cycles + 4) & (1 << 9));
+    p->serial_cycles += 4;
 
-    if ((bitflip) && ((gb->memory[rSC] & 0x81) == 0x81)) {
-        gb->memory[rSB] <<= 1; // send
-        gb->memory[rSB] |= 1; // receive
-        gb->serial_ctr = (gb->serial_ctr + 1) & 7;
-
-        if (!gb->serial_ctr) {
-            gb->memory[rSC] &= 1;
-            gb->memory[rIF] |= IEF_SERIAL;
-        }
+    if (!bitflip) {
+        return 0;
     }
 
-    return (gb->memory[rSC] & 0b10000000) != 0;
+    if ((!transfer) && ((p->memory[rSC] & 0x81) == 0x81)) {
+        transfer = p;
+        p->serial_ctr = 8;
+    }
+
+    if (transfer != p) {
+        return 1;
+    }
+
+    pb = (p->memory[rSB] >> 7) & 1;
+    qb = q ? (q->memory[rSB] >> 7) & 1 : 1;
+    p->memory[rSB] <<= 1;
+    p->memory[rSB] |= qb;
+
+    if (q) {
+        q->memory[rSB] <<= 1;
+        q->memory[rSB] |= pb;
+    }
+
+    if (--(p->serial_ctr) > 0) {
+        return 2;
+    }
+
+    p->memory[rIF] |= IEF_SERIAL;
+    p->memory[rSC] &= ~0x80;
+
+    if (q) {
+        q->memory[rIF] |= IEF_SERIAL;
+        q->memory[rSC] &= ~0x80;
+    }
+
+    transfer = NULL;
+    return 3;
 }
 
 void serial_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
@@ -38,9 +65,5 @@ void serial_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
         gb->memory[rSB] = data;
     } else if (addr == rSC) {
         gb->memory[rSC] = data & 0x81;
-
-        if ((gb->memory[rSC] & 0x81) == 0x81) {
-            gb->serial_ctr = 0;
-        }
     }
 }

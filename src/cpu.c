@@ -1174,10 +1174,7 @@ int cpu_update(struct gameboy *gb) {
     }
 
     if ((gb->cpu.state != HALTED) && (gb->cpu.instr)) {
-        if (!gb->cpu.step) {
-            (void)debug(gb); /* XXX */
-        }
-
+        (void)debug_cpu_instr(gb);
         (void)gb->cpu.instr(gb);
 
         if (!gb->cpu.step) {
