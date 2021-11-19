@@ -33,6 +33,8 @@
   <body>
     <div class="row">
       <div style="margin: 1rem">
+        <span id="indicatorImage"></span>
+        <span id="indicatorText"></span>
         <label for="romInput">upload rom:</label>
         <input type="file" id="romInput" name="romInput" accept=".gb,.gbc" />
         <label for="ramInput">upload ram:</label>
@@ -82,8 +84,35 @@
           });
         }
       };
+      pc.onconnectionstatechange = function (event) {
+        console.log(`onConnectionStateChange: ${pc.connectionState}`);
+        const setIndicator = (message, color) => {
+          const image = document.querySelector("span#indicatorImage");
+          image.style = `width: 1rem; height: 1rem; border-radius: 50%; display: inline-block; background-color: ${color};`;
+          const text = document.querySelector("span#indicatorText");
+          text.style = `display: inline-block;`;
+          text.innerText = message;
+        };
+        switch (pc.connectionState) {
+          case "connected":
+            setIndicator(pc.connectionState, "green");
+            break;
+          case "disconnected":
+            setIndicator(pc.connectionState, "red");
+            break;
+          case "failed":
+            setIndicator(pc.connectionState, "black");
+            break;
+          case "closed":
+            setIndicator(pc.connectionState, "grey");
+            break;
+          default:
+            setIndicator(pc.connectionState, "orange");
+            break;
+        }
+      };
       pc.oniceconnectionstatechange = (event) => {
-        console.log("connection state change", pc.iceConnectionState);
+        console.log("onIceConnectionStateChange", pc.iceConnectionState);
       };
       pc.ontrack = (event) => {
         console.log("Got track event", event);
