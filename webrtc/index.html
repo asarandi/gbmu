@@ -45,6 +45,14 @@
         <button type="button" id="fblend" name="fblend" value="0">
           fblend off
         </button>
+        <label for="scale">scale:</label>
+        <select name="scale" id="scale">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3" selected>3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+        </select>
       </div>
     </div>
     <div class="row">
@@ -312,6 +320,21 @@
               }
             })
             .catch(console.error);
+        },
+        false
+      );
+
+      const scale = document.querySelector("select#scale");
+      scale.addEventListener(
+        "change",
+        function (event) {
+          const val = parseInt(event.target.value, 10);
+          document.querySelectorAll("video").forEach((element) => {
+            element.style = `
+              image-rendering: pixelated !important;
+              width: ${val * 160}px!important;
+              height: ${val * 144}px!important;`;
+          });
         },
         false
       );
