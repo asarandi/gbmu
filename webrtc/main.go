@@ -51,15 +51,7 @@ func rtcpLoop(rtpSender *webrtc.RTPSender) {
 }
 
 func peerLoop(peer *peer) {
-	defer func() {
-		peer.broadcast = false
-		peersDel(peer.id)
-		log.Println("peerLoop(): done", peer.id)
-		err := peer.pc.Close()
-		if err != nil {
-			panic(err)
-		}
-	}()
+	defer onPeerLeaving(peer)
 	done := make(chan bool)
 	timeout := time.NewTimer(5 * time.Second)
 	peer.pc.OnConnectionStateChange(func(state webrtc.PeerConnectionState) {
@@ -69,7 +61,7 @@ func peerLoop(peer *peer) {
 				go rtcpLoop(sender)
 			}
 			peer.broadcast = true
-			onPeerAdded(peer)
+			go onPeerAdded(peer)
 		} else if state > webrtc.PeerConnectionStateConnected {
 			done <- true
 		}
@@ -94,8 +86,6 @@ loop:
 			SetCartridge(peer.playerId, b)
 		case b := <-peer.save:
 			SetSavefile(peer.playerId, b)
-		case b := <-peer.frameBlending:
-			SetFrameBlending(peer.playerId, b)
 		case <-timeout.C:
 			if !peer.broadcast {
 				break loop
@@ -134,8 +124,6 @@ func answer(w http.ResponseWriter, r *http.Request) {
 	switch r.RequestURI {
 	case `/answer`:
 		peer.answer <- data
-	case `/reload`:
-		ReloadBoth()
 	case `/upload`:
 		peer.upload <- data
 	case `/save`:
@@ -156,10 +144,6 @@ func answer(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set(`content-length`, fmt.Sprintf(`%d`, len(data)))
 			_, err = w.Write(data)
 		}
-	case `/frame-blending/0`:
-		peer.frameBlending <- false
-	case `/frame-blending/1`:
-		peer.frameBlending <- true
 	}
 }
 
@@ -242,8 +226,6 @@ type player struct {
 	frameBlending bool
 }
 
-/* TODO: make a generic per-player-settings-channel with iota's */
-
 func (p peer) String() string {
 	return fmt.Sprintf("%#v %#v %#v", p.ua, p.remote, p.xfwd)
 }
@@ -266,7 +248,7 @@ const (
 	ctrlConcedeNack
 	ctrlSetJoypad
 	ctrlSetFrameBlending
-	unknown
+	ctrlReload
 )
 
 func dcBroadcast(data []byte) {
@@ -309,13 +291,45 @@ func sendTime(peer *peer) {
 			fmt.Println("Done!")
 			return
 		case t := <-ticker.C:
+			if peer.dc == nil {
+				return
+			}
 			fmt.Println("Current time: ", t)
 			peer.dc.Send([]byte(t.String()))
 		}
 	}
 }
 
-func handleDataChannel(peer *peer) {
+func onPeerLeaving(peer *peer) {
+	peersMux.Lock()
+	defer peersMux.Unlock()
+	if peer.pc == nil {
+		return
+	}
+
+	log.Println(`onPeerLeaving()`, peer.id, `playerId`, peer.playerId)
+
+	peer.dc.Close()
+	peer.dc = nil
+	peer.pc.Close()
+	peer.pc = nil
+	peer.broadcast = false
+	delete(peers, peer.id)
+	i := peer.playerId
+	peer.playerId = -1
+	if i == -1 {
+		return
+	}
+
+	playersMux.Lock()
+	defer playersMux.Unlock()
+
+	SetInput(i, 0)
+	players[i].peer = nil
+	go dcBroadcast([]byte{ctrlAvailable, byte(i)})
+}
+
+func onPeerAdded(peer *peer) {
 	dc := peer.dc
 	label := dc.Label()
 	dc.OnOpen(func() {
@@ -369,8 +383,14 @@ func handleDataChannel(peer *peer) {
 				SetInput(peer.playerId, b)
 			}
 		case ctrlSetFrameBlending:
+			log.Println(`ctrlSetFrameBlending`, peer.playerId, b)
 			if peer.playerId != -1 {
+				players[peer.playerId].frameBlending = b != 0
 				SetFrameBlending(peer.playerId, b != 0)
+			}
+		case ctrlReload:
+			if peer.playerId != -1 {
+				ReloadBoth()
 			}
 		default:
 			log.Println(`received`, a, `via data channel ?`)
@@ -378,42 +398,11 @@ func handleDataChannel(peer *peer) {
 	})
 	dc.OnClose(func() {
 		log.Println(`player`, peer.id, `DataChannel`, label, `onClose`)
-		i := peer.playerId
-		if i == -1 {
-			return
-		}
-		SetInput(i, 0)
-		peer.playerId = -1
-		peersDel(peer.id)
-		playersMux.Lock()
-		defer playersMux.Unlock()
-		players[i].peer = nil
-		go dcBroadcast([]byte{ctrlAvailable, byte(i)})
+		go onPeerLeaving(peer)
 	})
 	dc.OnError(func(err error) {
 		log.Println(`player`, peer.id, `DataChannel`, label, `onError`, err)
 	})
-}
-
-func onPeerAdded(peer *peer) {
-	go handleDataChannel(peer)
-
-	//	id := -1
-	//	if players[0].peer == nil {
-	//		id = 0
-	//	} else if players[1].peer == nil {
-	//		id = 1
-	//	}
-	//	peer.playerId = id
-	//	if id == -1 {
-	//		return
-	//	}
-	//	log.Println(`adding player id`, id)
-	//	players[id].peer = peer
-	//	//done := make(chan bool, 2)
-	//	//go handleJoypad(peer, id, done)
-	//	//<-done
-	//	players[id].peer = nil
 }
 
 func peersGet(key uuid.UUID) *peer {
@@ -448,9 +437,6 @@ func main() {
 	http.HandleFunc(`/answer`, answer)
 	http.HandleFunc(`/upload`, answer)
 	http.HandleFunc(`/save`, answer)
-	http.HandleFunc(`/reload`, answer)
-	http.HandleFunc(`/frame-blending/0`, answer)
-	http.HandleFunc(`/frame-blending/1`, answer)
 	http.HandleFunc(`/app.js`, serveFile(`app.js`))
 	http.HandleFunc(`/app.css`, serveFile(`app.css`))
 	http.HandleFunc(`/`, serveFile(`index.html`))

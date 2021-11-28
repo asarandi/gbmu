@@ -175,7 +175,7 @@ function connect() {
           break;
         case 9: // ctrlSetFrameBlending 9
           break;
-        case 10: // unknown 10
+        case 10: // ctrlReload 10
           break;
         default:
           newMessage(String.fromCharCode.apply(null, data));
@@ -338,14 +338,9 @@ function setupEventListeners() {
   reload.addEventListener(
     "click",
     (event) => {
-      fetch("/reload", {
-        method: "post",
-        headers: { "x-peer-id": peerId },
-      })
-        .then((response) => {
-          console.log("reload!", response.status);
-        })
-        .catch(console.error);
+      if (!dataChannel) return;
+      // ctrlReload 10
+      dataChannel.send(new Uint8Array([10]));
     },
     false
   );
@@ -354,7 +349,9 @@ function setupEventListeners() {
   frameBlending.addEventListener(
     "change",
     (event) => {
-      console.log(event.target.checked);
+      if (!dataChannel) return;
+      // ctrlFrameBlending 9
+      dataChannel.send(new Uint8Array([9, event.target.checked]));
     },
     false
   );
