@@ -1,0 +1,38 @@
+* {
+  box-sizing: border-box;
+}
+
+input[type="file"] {
+  display: none;
+}
+.column {
+  float: left;
+  width: 50%;
+  padding: 10px;
+}
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.inline {
+  display: inline-block;
+}
+.margin {
+  margin: 0.5rem;
+}
+.block {
+  display: block;
+  margin: 0.5rem;
+}
+video {
+  width: 320px !important;
+  height: 288px !important;
+  image-rendering: pixelated !important;
+}
+label {
+  display: block;
+}
+.active-player {
+  box-shadow: 0 0 3px blue;
+}
