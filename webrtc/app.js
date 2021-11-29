@@ -4,7 +4,7 @@ let dataChannel = null;
 let peerId = "";
 let ctrlState = [0, 0];
 
-function setClaimButton(i, s) {
+const setClaimButton = (i, s) => {
   const ids = ["#claim0", "#claim1"];
   const states = ["busy", "play", "quit"];
   let elem = document.querySelector(ids[i]);
@@ -14,9 +14,9 @@ function setClaimButton(i, s) {
   } else {
     elem.removeAttribute("disabled");
   }
-}
+};
 
-function enablePlayer(enabled) {
+const enablePlayer = (enabled) => {
   document.querySelectorAll(".player").forEach((elem) => {
     if (!enabled) {
       elem.setAttribute("disabled", "true");
@@ -24,9 +24,9 @@ function enablePlayer(enabled) {
       elem.removeAttribute("disabled");
     }
   });
-}
+};
 
-function activePlayerIndicator() {
+const activePlayerIndicator = () => {
   for (let i = 0; i < 2; i++) {
     const elem = document.querySelector(`video#player${i}`);
     if (ctrlState[i] == 2) {
@@ -35,9 +35,9 @@ function activePlayerIndicator() {
       elem.classList.remove("active-player");
     }
   }
-}
+};
 
-function connect() {
+const connect = () => {
   const pcConfig = {
     iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
   };
@@ -63,7 +63,7 @@ function connect() {
     }
   };
 
-  pc.onconnectionstatechange = function (event) {
+  pc.onconnectionstatechange = (event) => {
     console.log(`onConnectionStateChange: ${pc.connectionState}`);
     const setIndicator = (message, color) => {
       const image = document.querySelector("span#indicatorImage");
@@ -120,25 +120,18 @@ function connect() {
     mi = (mi + 1) % messages.length;
   };
 
-  pc.ondatachannel = function (event) {
-    event.channel.onopen = function () {
+  pc.ondatachannel = (event) => {
+    event.channel.onopen = () => {
       console.log(`data channel`, `onOpen`, event.channel.label);
       if (event.channel.label === `events`) {
         dataChannel = event.channel;
         event.channel.binaryType = "arraybuffer";
       }
     };
-    event.channel.onclose = function () {
+    event.channel.onclose = () => {
       console.log(`data channel`, `onClose`, event.channel.label);
     };
-    event.channel.onmessage = function (msg) {
-      console.log(
-        `data channel`,
-        `onMessage`,
-        event.channel.label,
-        msg.data,
-        typeof msg.data
-      );
+    event.channel.onmessage = (msg) => {
       const data = new Uint8Array(msg.data);
       const a = data.length > 0 ? data[0] : 255;
       const b = data.length > 1 ? data[1] : 255;
@@ -181,11 +174,11 @@ function connect() {
           newMessage(String.fromCharCode.apply(null, data));
       }
     };
-    event.channel.onerror = function (err) {
+    event.channel.onerror = (err) => {
       console.log(`data channel`, `onError`, event.channel.label, err);
     };
   };
-}
+};
 
 const keyMapping = {
   40: 0x80, //PADF_DOWN
@@ -209,9 +202,9 @@ const updateJoypad = () => {
   joyBefore = joyAfter;
 };
 
-function setupEventListeners() {
+const setupEventListeners = () => {
   const body = document.querySelector("body");
-  body.addEventListener("keydown", function (event) {
+  body.addEventListener("keydown", (event) => {
     if (event.keyCode in keyMapping) {
       event.preventDefault();
       joyAfter |= keyMapping[event.keyCode];
@@ -221,7 +214,7 @@ function setupEventListeners() {
     }
   });
 
-  body.addEventListener("keyup", function (event) {
+  body.addEventListener("keyup", (event) => {
     if (event.keyCode in keyMapping) {
       event.preventDefault();
       joyAfter &= ~keyMapping[event.keyCode];
@@ -391,7 +384,20 @@ function setupEventListeners() {
   claim1.addEventListener("click", (event) => {
     claimControls(1);
   });
-}
+
+  const chatMessage = document.querySelector("input#chatMessage");
+  const chatSend = document.querySelector("button#chatSend");
+  const encoder = new TextEncoder("utf-8");
+  chatSend.addEventListener("click", (event) => {
+    if (!dataChannel) return;
+    if (!encoder) return;
+    const data = encoder.encode(chatMessage.value);
+    chatMessage.value = ``;
+    if (data.length < 256) {
+      dataChannel.send(data);
+    }
+  });
+};
 
 window.addEventListener("DOMContentLoaded", (event) => {
   enablePlayer(false);
