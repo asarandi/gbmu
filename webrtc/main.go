@@ -412,9 +412,7 @@ func main() {
 	http.HandleFunc(`/answer`, httpHandler)
 	http.HandleFunc(`/upload`, httpHandler)
 	http.HandleFunc(`/save`, httpHandler)
-	http.HandleFunc(`/app.js`, serveFile(`app.js`))
-	http.HandleFunc(`/app.css`, serveFile(`app.css`))
-	http.HandleFunc(`/`, serveFile(`index.html`))
+	http.Handle(`/`, http.FileServer(http.Dir(`web`)))
 
 	server := &http.Server{
 		Addr:         `:8080`,

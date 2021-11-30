@@ -58,8 +58,8 @@ static GstFlowReturn new_sample(GstElement *sink, void *data) {
 #define VIDEO_PIPELINE(APPSRC, APPSINK)                                        \
   "appsrc name=" #APPSRC " is-live=true do-timestamp=true format=time ! "      \
   "video/x-raw, format=GRAY8, width=160, height=144, framerate=64/1 ! "        \
-  "videoconvert ! x264enc tune=zerolatency ! video/x-h264, "                   \
-  "profile=constrained-baseline ! "                                            \
+  "videoconvert ! x264enc speed-preset=ultrafast tune=zerolatency ! "          \
+  "video/x-h264, profile=constrained-baseline ! "                              \
   "rtph264pay ! appsink name=" #APPSINK " emit-signals=true"
 
 struct pipeline {

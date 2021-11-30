@@ -203,8 +203,38 @@ const updateJoypad = () => {
 };
 
 const setupEventListeners = () => {
+  const chatInput = document.querySelector("input#chatMessage");
+  const encoder = new TextEncoder("utf-8");
+
+  const sendChatMessage = () => {
+    if (!encoder) return;
+    if (!dataChannel) return;
+    const data = encoder.encode(chatInput.value.trim());
+    chatInput.value = ``;
+    if (!data.length) return;
+    if (data.length < 256) {
+      dataChannel.send(data);
+    }
+  };
+
+  let isChatFocus = false;
+  chatInput.addEventListener("focus", (event) => {
+    isChatFocus = true;
+  });
+  chatInput.addEventListener("blur", (event) => {
+    isChatFocus = false;
+  });
+  chatInput.addEventListener("keydown", (event) => {
+    if (event.keyCode === 13) sendChatMessage();
+  });
+
+  document
+    .querySelector("button#chatSend")
+    .addEventListener("click", sendChatMessage);
+
   const body = document.querySelector("body");
   body.addEventListener("keydown", (event) => {
+    if (isChatFocus) return;
     if (event.keyCode in keyMapping) {
       event.preventDefault();
       joyAfter |= keyMapping[event.keyCode];
@@ -215,6 +245,7 @@ const setupEventListeners = () => {
   });
 
   body.addEventListener("keyup", (event) => {
+    if (isChatFocus) return;
     if (event.keyCode in keyMapping) {
       event.preventDefault();
       joyAfter &= ~keyMapping[event.keyCode];
@@ -383,19 +414,6 @@ const setupEventListeners = () => {
   const claim1 = document.querySelector("button#claim1");
   claim1.addEventListener("click", (event) => {
     claimControls(1);
-  });
-
-  const chatMessage = document.querySelector("input#chatMessage");
-  const chatSend = document.querySelector("button#chatSend");
-  const encoder = new TextEncoder("utf-8");
-  chatSend.addEventListener("click", (event) => {
-    if (!dataChannel) return;
-    if (!encoder) return;
-    const data = encoder.encode(chatMessage.value);
-    chatMessage.value = ``;
-    if (data.length < 256) {
-      dataChannel.send(data);
-    }
   });
 };
 
