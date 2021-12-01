@@ -279,6 +279,7 @@ const setupEventListeners = () => {
           console.log("upload done!", response.status);
         })
         .catch(console.error);
+      romInput.value = null;
     },
     false
   );
@@ -314,6 +315,7 @@ const setupEventListeners = () => {
           console.log("ram upload done!", response.status);
         })
         .catch(console.error);
+      ramInput.value = null;
     },
     false
   );
