@@ -4,6 +4,9 @@ let dataChannel = null;
 let peerId = "";
 let ctrlState = [0, 0];
 
+const textEncoder = new TextEncoder("utf-8");
+const textDecoder = new TextDecoder("utf-8");
+
 const setClaimButton = (i, s) => {
   const ids = ["#claim0", "#claim1"];
   const states = ["busy", "play", "quit"];
@@ -171,7 +174,9 @@ const connect = () => {
         case 10: // ctrlReload 10
           break;
         default:
-          newMessage(String.fromCharCode.apply(null, data));
+          if (textDecoder) {
+            newMessage(textDecoder.decode(data));
+          }
       }
     };
     event.channel.onerror = (err) => {
@@ -204,12 +209,10 @@ const updateJoypad = () => {
 
 const setupEventListeners = () => {
   const chatInput = document.querySelector("input#chatMessage");
-  const encoder = new TextEncoder("utf-8");
-
   const sendChatMessage = () => {
-    if (!encoder) return;
+    if (!textEncoder) return;
     if (!dataChannel) return;
-    const data = encoder.encode(chatInput.value.trim());
+    const data = textEncoder.encode(chatInput.value.trim());
     chatInput.value = ``;
     if (!data.length) return;
     if (data.length < 256) {
