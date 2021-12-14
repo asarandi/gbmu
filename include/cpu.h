@@ -19,7 +19,6 @@ struct cpu {
     int stat_irq_old;
     int step;
     int interrupt;
-    int instr_cycles;
     int state;
     int halt_bug;
     int ime;

@@ -6,9 +6,6 @@
 #define  NUM_CHANNELS       2
 #define  SAMPLE_SIZE        2
 #define  SOUND_BUF_SIZE     (NUM_FRAMES * SAMPLE_SIZE * NUM_CHANNELS)
-#define  VOLUME_CLOCK       (4194304 /  64)
-#define  SWEEP_CLOCK        (4194304 / 128)
-#define  FREQUENCY_CLOCK    (4194304 / 512)
 #define  SAMPLE_CLOCK       (4194304 / SAMPLING_FREQUENCY)
 
 struct channel {
@@ -33,7 +30,6 @@ struct channel {
     uint32_t phase;
     uint32_t freq;
     int32_t period;
-    uint32_t clocks;
     int32_t counter;
 };
 #endif

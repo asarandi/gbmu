@@ -24,12 +24,6 @@
 #define RTC_TICK_INCREMENT 15625
 #define RTC_TICK_DIVISOR 1000000
 
-#define ROM_ADDRESS 0x4000
-#define ROM_SIZE    0x4000
-#define RAM_ADDRESS 0xa000
-#define RAM_SIZE    0x2000
-
-
 struct dma {
     int index;
     int clocks;
@@ -71,7 +65,6 @@ struct lcd {
 struct gameboy {
     struct cpu cpu;
     uint8_t memory[0x10000];
-    bool ram_enabled;
     bool done;
     bool debug;
     bool log_io;
@@ -86,7 +79,7 @@ struct gameboy {
     char *rom_file;
     char *ram_file;
     uint64_t ram_size;
-    uint8_t ram_banks[RAM_SIZE * 16];
+    uint8_t ram_banks[0x2000 * 16];
     struct timer timer;
     uint32_t cycles;
     struct channel ch[4];
@@ -94,7 +87,7 @@ struct gameboy {
     uint8_t video_buf[VIDEO_BUF_SIZE];
     uint8_t prev_frame[VIDEO_BUF_SIZE];
     int audio_render;
-    uint32_t seq_clocks, seq_frame;
+    uint32_t seq_frame;
     int32_t samples_clock, samples_index;
     uint8_t buttons[8];
     uint8_t (*ram_read_u8)(struct gameboy *, uint16_t);
@@ -106,9 +99,9 @@ struct gameboy {
 };
 
 struct io_register {
-    char      *name;
-    uint16_t   addr;
-    uint8_t    mask;
+    char *name;
+    uint16_t addr;
+    uint8_t mask;
 };
 
 int screenshot(struct gameboy *gb, char *filename);
@@ -216,13 +209,5 @@ int input_open(struct gameboy *gb);
 int input_close(struct gameboy *gb);
 
 int input_read(struct gameboy *gb);
-
-int av_sync(struct gameboy *gb);
-
-/* hash.c */
-
-unsigned long crc32(unsigned char *buf, int len);
-
-unsigned long adler32(unsigned char *buf, int len);
 
 #endif

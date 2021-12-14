@@ -49,7 +49,6 @@ void screenshot_and_exit(struct gameboy *gb, char *exten) {
     char *fn = replace_exten(gb->rom_file, exten);
     screenshot(gb, fn);
     free(fn);
-    fn = NULL;
     gb->exit_code = 0;
     gb->done = 1;
 }
@@ -185,7 +184,7 @@ void blargg2_write_hook(struct gameboy *gb, uint16_t addr, uint8_t data) {
         gb->memory[addr] = data;
     }
 
-    if (memcmp((const void *)&gb->memory[_SRAM + 1], sig, 3)) {
+    if (memcmp((const void *)&gb->memory[_SRAM + 1], sig, 3) != 0) {
         return;
     }
 

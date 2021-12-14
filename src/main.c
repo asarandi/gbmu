@@ -109,7 +109,7 @@ int main(int ac, char **av) {
 
     if (!cartridge_init(gb)) {
         return cleanup(gb, 0);
-    };
+    }
 
     if (!gb->testing) {
         struct fn {

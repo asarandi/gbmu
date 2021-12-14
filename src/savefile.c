@@ -91,7 +91,7 @@ int save_serialize_to_bytes(struct gameboy *gb, uint8_t *bytes, uint64_t size) {
 
     (void)rtc_serialize(gb);
     (void)memcpy(bytes + gb->ram_size, gb->cartridge.rtc.buf, 48);
-    return gb->ram_size + 48;
+    return (int)(gb->ram_size + 48);
 }
 
 // f("myfile.gb", ".sav") => "myfile.sav"

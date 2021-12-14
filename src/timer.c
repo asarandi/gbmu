@@ -25,6 +25,9 @@ uint8_t timer_read_u8(struct gameboy *gb, uint16_t addr) {
 
     case rTAC:
         return 0b11111000 | (gb->timer.tac & 7);
+
+    default:
+        break;
     }
 
     return 0xff;
@@ -73,6 +76,9 @@ void timer_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
 
         gb->timer.tac = data & 7;
         break ;
+
+    default:
+        break;
     }
 }
 

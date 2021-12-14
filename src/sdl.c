@@ -247,15 +247,6 @@ int input_read(struct gameboy *gb) {
 }
 
 /*
-* sync
-*/
-
-int av_sync(struct gameboy *gb) {
-    (void)gb;
-    return 1;
-}
-
-/*
 * audio
 */
 

@@ -320,6 +320,9 @@ void sound_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
                 gb->memory[addr] |= data & 63;
                 gb->ch[3].length = 64 - (gb->memory[rAUD4LEN] & 63);
                 break;
+
+            default:
+                break;
             }
 
             return;
@@ -483,7 +486,6 @@ void sound_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
             }
 
             (void)memset(&gb->memory[0xff10], 0, 0x20);
-            gb->seq_clocks = 0;
             gb->seq_frame = 7;
         }
 
@@ -498,7 +500,6 @@ unsigned char noise7[] = {
     0xfe, 0x04, 0x18, 0x51, 0xe4, 0x59, 0xd4, 0xfa,
     0x1c, 0x49, 0xb5, 0xbd, 0x8d, 0x2e, 0xe6, 0x55
 };
-unsigned int noise7_len = 16;
 
 unsigned char noise15[] = {
     0xff, 0xfe, 0x00, 0x04, 0x00, 0x18, 0x00, 0x50,
@@ -1014,4 +1015,3 @@ unsigned char noise15[] = {
     0xe3, 0xb6, 0x49, 0xb5, 0xb5, 0xbd, 0xbd, 0x8d,
     0x8d, 0x2d, 0x2e, 0xee, 0xe6, 0x66, 0x55, 0x55
 };
-unsigned int noise15_len = 4096;
