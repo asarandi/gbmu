@@ -101,6 +101,7 @@ int video_write(struct gameboy *gb, uint8_t *data, uint32_t size) {
 */
 
 static SDL_Joystick *joystick = NULL;
+const char *joystick_name = NULL;
 
 static void set_button_states(struct gameboy *gb, uint32_t key, uint8_t value) {
     uint32_t i, prev_val, controls[] = {
@@ -171,20 +172,22 @@ int input_read(struct gameboy *gb) {
             break;
 
         case SDL_JOYAXISMOTION: {
-            int axis = event.jaxis.axis;
-            int value = event.jaxis.value;
             struct {
                 int axis, value, k1, v1, k2, v2;
             } tab[] = {
-                {0,  32767, SDLK_RIGHT, 1, SDLK_LEFT, 0},
-                {0, -32768, SDLK_RIGHT, 0, SDLK_LEFT, 1},
-                {0,      0, SDLK_RIGHT, 0, SDLK_LEFT, 0},
-                {1,  32767, SDLK_DOWN, 1, SDLK_UP, 0},
-                {1, -32768, SDLK_DOWN, 0, SDLK_UP, 1},
-                {1,      0, SDLK_DOWN, 0, SDLK_UP, 0},
+                {0,  1, SDLK_RIGHT, 1, SDLK_LEFT, 0},
+                {0, -1, SDLK_RIGHT, 0, SDLK_LEFT, 1},
+                {0,  0, SDLK_RIGHT, 0, SDLK_LEFT, 0},
+                {1,  1, SDLK_DOWN, 1, SDLK_UP, 0},
+                {1, -1, SDLK_DOWN, 0, SDLK_UP, 1},
+                {1,  0, SDLK_DOWN, 0, SDLK_UP, 0},
             };
+            int axis, value, i;
+            axis = event.jaxis.axis;
+            value = event.jaxis.value;
+            value = value > 0 ? 1 : value < 0 ? -1 : 0;
 
-            for (int i=0; i<6; i++) {
+            for (i=0; i<6; i++) {
                 if ((tab[i].axis == axis) && (tab[i].value == value)) {
                     set_button_states(gb, tab[i].k1, tab[i].v1);
                     set_button_states(gb, tab[i].k2, tab[i].v2);
@@ -196,21 +199,21 @@ int input_read(struct gameboy *gb) {
 
         case SDL_JOYBUTTONDOWN:
         case SDL_JOYBUTTONUP: {
-            int button = event.jbutton.button;
-            int value = event.jbutton.state;
+            struct {
+                int button, key;
+            } tab[] = {
+                {9, SDLK_RETURN},
+                {8, SDLK_RSHIFT},
+                {2, SDLK_z},
+                {1, SDLK_x},
+                {3, SDLK_z},
+                {0, SDLK_x},
+            };
+            int button, value, i;
+            button = event.jbutton.button;
+            value = event.jbutton.state;
 
-            for (int i=0; i<6; i++) {
-                struct {
-                    int button, key;
-                } tab[] = {
-                    {9, SDLK_RETURN},
-                    {8, SDLK_RSHIFT},
-                    {2, SDLK_z},
-                    {1, SDLK_x},
-                    {3, SDLK_z},
-                    {0, SDLK_x},
-                };
-
+            for (i=0; i<6; i++) {
                 if (tab[i].button == button) {
                     set_button_states(gb, tab[i].key, value);
                     break ;
@@ -225,18 +228,30 @@ int input_read(struct gameboy *gb) {
 
                 if (!joystick) {
                     SDL_Log("SDL_JoystickOpen(): %s", SDL_GetError());
-                } else {
-                    SDL_Log("joystick added");
+                    break ;
                 }
+
+                joystick_name = SDL_JoystickName(joystick);
+
+                if (SDL_JoystickNumAxes(joystick) != 2) {
+                    SDL_Log("joystick does not have 2 axes, skipping: %s", joystick_name);
+                    SDL_JoystickClose(joystick);
+                    joystick_name = NULL;
+                    joystick = NULL;
+                    break ;
+                }
+
+                SDL_Log("joystick added: %s", joystick_name);
             }
 
             break;
 
         case SDL_JOYDEVICEREMOVED:
             if ((joystick) && (SDL_JoystickInstanceID(joystick) == event.jdevice.which)) {
+                SDL_Log("joystick removed: %s", joystick_name);
                 SDL_JoystickClose(joystick);
+                joystick_name = NULL;
                 joystick = NULL;
-                SDL_Log("joystick removed");
             }
 
             break;
