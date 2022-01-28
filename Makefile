@@ -61,4 +61,9 @@ tests: gbmu
 	./tests/blargg1.sh > tests/blargg1.results.csv
 	./tests/blargg2.sh > tests/blargg2.results.csv
 
+tests-gambatte: gbmu
+	./tests/gambatte.sh div > tests/gambatte-div.results.csv
+	./tests/gambatte.sh tima > tests/gambatte-tima.results.csv
+	./tests/gambatte.sh serial > tests/gambatte-serial.results.csv
+
 .PHONY: tests
