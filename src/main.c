@@ -1,18 +1,11 @@
 #include "gb.h"
 #include "hardware.h"
 
-static int print_usage(struct gameboy *gb, int ac, char **av)  {
-    (void)gb;
-    (void)ac;
-    (void)fprintf(stdout, "usage: %s romfile.gb\n", av[0]);
-    return 0;
-}
-
 static int arg_parse(struct gameboy *gb, int ac, char **av) {
     int c, ret = 1;
 
     if (ac < 2) {
-        (void)print_usage(gb, ac, av);
+        (void)fprintf(stdout, "usage: %s romfile.gb\n", av[0]);
         return 0;
     }
 
@@ -105,7 +98,7 @@ int main(int ac, char **av) {
     }
 
     (void)memcpy(gb->memory, gb->cartridge.data, 0x8000);
-    io_init(gb);
+    (void)io_init(gb);
 
     if (!cartridge_init(gb)) {
         return cleanup(gb, 0);
@@ -131,42 +124,27 @@ int main(int ac, char **av) {
     }
 
     while (!gb->done) {
-        gb->done |= cpu_update(gb) < 0;
         (void)dma_update(gb);
-        (void)serial_update(gb, 0);
-
-        if (timer_update(gb)) {
-            sequencer_step(gb);
-        }
+        gb->done |= cpu_update(gb) < 0;
 
         if (lcd_update(gb)) {
-            if (!gb->testing) {
-                (void)video_write(gb, gb->lcd.buf, VIDEO_BUF_SIZE);
-                (void)input_read(gb);
-            }
-
-            if (gb->screenshot) {
-                screenshot(gb, "screenshot.png");
-                gb->screenshot = false;
-            }
+            (void)video_write(gb, gb->lcd.buf, VIDEO_BUF_SIZE);
+            (void)input_read(gb);
         }
 
-        if (sound_update(gb)) {
-            rtc_tick(gb);
+        if (timer_update(gb)) {
+            (void)sequencer_step(gb);
+        }
 
-            if (!gb->testing) {
-                (void)audio_write(gb, gb->sound_buf, SOUND_BUF_SIZE);
-            }
+        (void)serial_update(gb, 0);
+
+        if (sound_update(gb)) {
+            (void)audio_write(gb, gb->sound_buf, SOUND_BUF_SIZE);
+            (void)rtc_tick(gb);
         }
 
         if (gb->testing) {
             (void)gb->testing_run_hook(gb);
-        }
-
-        if (!(gb->cpu.state == INTERRUPT_DISPATCH)) {
-            if (!gb->cpu.step) {
-                interrupts_update(gb);
-            }
         }
 
         gb->cycles += 4;

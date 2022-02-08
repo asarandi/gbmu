@@ -71,11 +71,19 @@ int video_close(struct gameboy *gb) {
 }
 
 int video_write(struct gameboy *gb, uint8_t *data, uint32_t size) {
-    (void)gb;
     uint32_t palette[] = {0xffffff, 0xaaaaaa, 0x555555, 0x000000};
     uint32_t *pixels, px;
     int pitch, y, x;
     (void)size;
+
+    if (gb->screenshot) {
+        screenshot(gb, "screenshot.png");
+        gb->screenshot = false;
+    }
+
+    if (gb->testing) {
+        return 1;
+    }
 
     if (SDL_LockTexture(texture, NULL, (void *)&pixels, &pitch) < 0) {
         SDL_Log("SDL_LockTexture(): %s", SDL_GetError());
@@ -139,6 +147,10 @@ int input_close(struct gameboy *gb) {
 
 int input_read(struct gameboy *gb) {
     SDL_Event event;
+
+    if (gb->testing) {
+        return 1;
+    }
 
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
@@ -270,7 +282,10 @@ static uint8_t sdl_sound_buffer[SOUND_BUF_SIZE];
 static volatile int audio_done;
 
 int audio_write(struct gameboy *gb, uint8_t *data, uint32_t size) {
-    (void)gb;
+    if (gb->testing) {
+        return 1;
+    }
+
     memcpy(sdl_sound_buffer, data, size);
     audio_done = 0;
 

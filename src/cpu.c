@@ -1149,6 +1149,12 @@ void (*instruct[])(struct gameboy *gb) = {
 };
 
 int cpu_update(struct gameboy *gb) {
+    if (!(gb->cpu.state == INTERRUPT_DISPATCH)) {
+        if (!gb->cpu.step) {
+            (void)interrupts_update(gb);
+        }
+    }
+
     if (gb->cpu.state == INTERRUPT_DISPATCH) {
         return interrupt_step(gb);
     }
@@ -1174,7 +1180,10 @@ int cpu_update(struct gameboy *gb) {
     }
 
     if ((gb->cpu.state != HALTED) && (gb->cpu.instr)) {
-        (void)debug_cpu_instr(gb);
+        if (!gb->cpu.step) {
+            (void)debug_cpu_instr(gb);
+        }
+
         (void)gb->cpu.instr(gb);
 
         if (!gb->cpu.step) {
