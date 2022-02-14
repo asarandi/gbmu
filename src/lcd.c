@@ -81,33 +81,40 @@ uint8_t get_sprite_pixel(struct gameboy *gb, int i, uint8_t y, uint8_t x) {
 }
 
 void get_sprites(struct gameboy *gb) {
-    int i, j, ct, hgt, ly;
+    int i, j, ly, height;
     struct OAM_ATTRS *obj;
+    i = gb->lcd.cycle % 456 * 2;
 
-    if (!(gb->memory[rLCDC] & LCDCF_OBJON)) {
+    if (i == 0) {
+        gb->lcd.sprite_ct = 0;
+    }
+
+    if ((gb->memory[rLCDC] & LCDCF_OBJON) == 0) {
         return;
     }
 
-    (void)memset(gb->lcd.sprites, 0, sizeof(gb->lcd.sprites));
-    hgt = (gb->memory[rLCDC] & 4) ? 16 : 8;
     ly = gb->memory[rLY];
+    obj = (struct OAM_ATTRS *)&gb->memory[_OAMRAM + i];
+    height = (gb->memory[rLCDC] & LCDCF_OBJ16) ? 16 : 8;
 
-    for (i = ct = 0; (i < 40) && (ct < 10); i++) {
-        obj = (struct OAM_ATTRS *)&gb->memory[_OAMRAM + (i << 2)];
+    for (i = 0; i < 2; i++, obj++) {
+        if (!(gb->lcd.sprite_ct < 10)) {
+            break;
+        }
 
         if ((obj->OAMA_Y == 0) || (obj->OAMA_Y > 160)) {
             continue;
         }
 
-        if ((obj->OAMA_Y <= 8) && (hgt == 8)) {
+        if ((obj->OAMA_Y <= 8) && (height == 8)) {
             continue;
         }
 
-        if (!((ly + 16 >= obj->OAMA_Y) && (ly + 16 < obj->OAMA_Y + hgt))) {
+        if (!((ly + 16 >= obj->OAMA_Y) && (ly + 16 < obj->OAMA_Y + height))) {
             continue;
         }
 
-        j = ct;
+        j = gb->lcd.sprite_ct;
 
         while ((j > 0) && (gb->lcd.sprites[j - 1]->OAMA_X > obj->OAMA_X)) {
             gb->lcd.sprites[j] = gb->lcd.sprites[j - 1];
@@ -115,7 +122,7 @@ void get_sprites(struct gameboy *gb) {
         }
 
         gb->lcd.sprites[j] = obj;
-        ++ct;
+        (gb->lcd.sprite_ct)++;
     }
 }
 
@@ -165,11 +172,7 @@ void screen_update(struct gameboy *gb) {
 
     (void)memset(obj_data, 0, 160);
 
-    for (i = 0; i < 10; i++) {
-        if (!gb->lcd.sprites[i]) {
-            break;
-        }
-
+    for (i = 0; i < gb->lcd.sprite_ct; i++) {
         for (x = 0; x < 160; x++) {
             if (obj_data[x]) {
                 continue;
@@ -237,14 +240,8 @@ int lcd_update(struct gameboy *gb) {
             }
 
             gb->memory[rSTAT] = (gb->memory[rSTAT] & ~STATF_LCD) | STATF_OAM;
+            (void)get_sprites(gb);
         } else if ((gb->lcd.cycle % 456) < 252) {
-            // mode 3
-            if ((gb->memory[rSTAT] & STATF_LCD) == STATF_OAM) { //once
-                if (gb->lcd.frames >= nskipfram) {
-                    get_sprites(gb);
-                }
-            }
-
             gb->memory[rSTAT] |= STATF_LCD;
         } else {
             // mode 0

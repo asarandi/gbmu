@@ -29,7 +29,7 @@ int video_open(struct gameboy *gb) {
         return 0;
     }
 
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    renderer = SDL_CreateRenderer(window, -1, 0);
 
     if (!renderer) {
         SDL_Log("SDL_CreateRenderer(): %s", SDL_GetError());
@@ -278,28 +278,29 @@ int input_read(struct gameboy *gb) {
 */
 
 static SDL_AudioDeviceID audio_device;
-static uint8_t sdl_sound_buffer[SOUND_BUF_SIZE];
-static volatile int audio_done;
+static uint8_t sdl_sound_buffer[SOUND_BUF_SIZE * 4];
+static volatile int audio_index_write, audio_index_read, audio_num_available;
 
 int audio_write(struct gameboy *gb, uint8_t *data, uint32_t size) {
     if (gb->testing) {
         return 1;
     }
 
-    memcpy(sdl_sound_buffer, data, size);
-    audio_done = 0;
-
-    while (!audio_done) {
+    while (audio_num_available > (SOUND_BUF_SIZE * 3)) {
         SDL_Delay(1);    /* wait */
     }
 
+    memcpy(sdl_sound_buffer + audio_index_write, data, size);
+    audio_index_write = (audio_index_write + size) % (SOUND_BUF_SIZE * 4);
+    audio_num_available += size;
     return 1;
 }
 
 static void audio_callback(void *userdata, Uint8 *stream, int len) {
     (void)userdata;
-    memcpy(stream, sdl_sound_buffer, len);
-    audio_done = 1; /* signal */
+    memcpy(stream, sdl_sound_buffer + audio_index_read, len);
+    audio_index_read = (audio_index_read + len) % (SOUND_BUF_SIZE * 4);
+    audio_num_available -= len;
 }
 
 /* to be called after SDL_Init() */

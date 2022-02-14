@@ -60,6 +60,7 @@ struct lcd {
     uint32_t cycle;
     uint8_t buf[160 * 144];
     struct OAM_ATTRS *sprites[10 + 1];
+    int sprite_ct;
 };
 
 struct gameboy {
