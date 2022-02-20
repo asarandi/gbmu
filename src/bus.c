@@ -68,12 +68,14 @@ void write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
 
     /* mbc/rom */
     if (addr < _VRAM) {
-        return gb->rom_write_u8(gb, addr, data);
+        (void)gb->rom_write_u8(gb, addr, data);
+        return;
     }
 
     /* mbc/ram */
     if ((addr >= _SRAM) && (addr < _SRAM + 0x2000)) {
-        return gb->ram_write_u8(gb, addr, data);
+        (void)gb->ram_write_u8(gb, addr, data);
+        return;
     }
 
     /* ignore writes to vram in lcd-mode-3 */
@@ -95,7 +97,8 @@ void write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
     }
 
     if (addr >= _IO) {
-        return io_write_u8(gb, addr, data);
+        (void)io_write_u8(gb, addr, data);
+        return;
     }
 
     /* echo ram */

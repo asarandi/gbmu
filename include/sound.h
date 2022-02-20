@@ -1,6 +1,8 @@
 #ifndef SOUND_H
 # define SOUND_H
 
+#include <stdint.h>
+
 #define  SAMPLING_FREQUENCY 65536
 #define  NUM_FRAMES         1024
 #define  NUM_CHANNELS       2

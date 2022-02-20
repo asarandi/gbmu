@@ -1,4 +1,3 @@
-CFLAGS += -O2 -Wall -Werror -Wextra -I include/
 SRC := \
     src/bus.c \
     src/cartridge.c \
@@ -19,9 +18,11 @@ SRC := \
     src/testing.c \
     src/timer.c
 
-src/debug.o: CFLAGS  += -Wno-unused-result
-src/sdl.o:   CFLAGS  += $(shell sdl2-config --cflags)
-gbmu:        LDFLAGS += -O2 $(shell sdl2-config --libs)
+src/debug.o: CFLAGS += -Wno-unused-result
+
+CFLAGS += -O2 -Wall -Werror -Wextra -I include/
+CFLAGS += $(shell sdl2-config --cflags)
+LDFLAGS += -O2 $(shell sdl2-config --libs)
 
 all: gbmu
 
@@ -35,6 +36,9 @@ fclean: clean
 	$(RM) gbmu
 
 re: fclean all
+
+tidy: src/*.c include/*.h
+	clang-tidy $^ -checks=-clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling -- $(CFLAGS)
 
 format:
 	astyle -A14 \

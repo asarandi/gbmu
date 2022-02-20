@@ -1,6 +1,9 @@
 #ifndef TIMER_H
 # define TIMER_H
 
+#include <stdbool.h>
+#include <stdint.h>
+
 struct timer {
     uint16_t div;
     uint8_t tima, tma, tac;

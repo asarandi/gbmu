@@ -90,11 +90,11 @@ static void dump_io(struct gameboy *gb) {
     int i;
 
     for (i = 0; i < 6; i++) {
-        printf("%s%.4s %02x",
-               i > 0 ? " " : "",
-               io_registers[i].name,
-               read_u8(gb, io_registers[i].addr)
-              );
+        (void)printf("%s%.4s %02x",
+                     i > 0 ? " " : "",
+                     io_registers[i].name,
+                     read_u8(gb, io_registers[i].addr)
+                    );
     }
 
     (void)printf(" ime %02x dma %02x dmacy %02x dmab %02x cyc %u", gb->cpu.ime,
@@ -115,23 +115,23 @@ static void dump_instr(struct gameboy *gb) {
 
     if (i == 0xcb) {
         i = 256 + buf[1];
-        sprintf(name, "%s", opcodes[i].s);
-        sprintf(hexdump, "%02x%02x", buf[0], buf[1]);
+        (void)sprintf(name, "%s", opcodes[i].s);
+        (void)sprintf(hexdump, "%02x%02x", buf[0], buf[1]);
     } else {
         if (opcodes[i].n == 1) {
-            sprintf(name, opcodes[i].s, buf[1]);
-            sprintf(hexdump, "%02x%02x", buf[0], buf[1]);
+            (void)sprintf(name, opcodes[i].s, buf[1]);
+            (void)sprintf(hexdump, "%02x%02x", buf[0], buf[1]);
         } else if (opcodes[i].n == 2) {
-            sprintf(name, opcodes[i].s, buf[1] | buf[2] << 8);
-            sprintf(hexdump, "%02x%02x%02x", buf[0], buf[1], buf[2]);
+            (void)sprintf(name, opcodes[i].s, buf[1] | buf[2] << 8);
+            (void)sprintf(hexdump, "%02x%02x%02x", buf[0], buf[1], buf[2]);
         } else {
-            sprintf(name, "%s", opcodes[i].s);
-            sprintf(hexdump, "%02x", buf[0]);
+            (void)sprintf(name, "%s", opcodes[i].s);
+            (void)sprintf(hexdump, "%02x", buf[0]);
         }
     }
 
-    printf("af:%04x bc:%04x de:%04x hl:%04x pc:%04x sp:%04x   %-8s  %-16s",
-           R16AF, R16BC, R16DE, R16HL, R16PC, R16SP, hexdump, name);
+    (void)printf("af:%04x bc:%04x de:%04x hl:%04x pc:%04x sp:%04x   %-8s  %-16s",
+                 R16AF, R16BC, R16DE, R16HL, R16PC, R16SP, hexdump, name);
 }
 
 int screenshot(struct gameboy *gb, char *filename) {
@@ -169,7 +169,7 @@ int screenshot(struct gameboy *gb, char *filename) {
     fd = open(filename, O_CREAT | O_WRONLY | O_TRUNC | O_BINARY, 0644);
 
     if (fd < 1) {
-        perror(__func__);
+        (void)perror(__func__);
         return 0;
     }
 
@@ -196,11 +196,13 @@ void debug_log_io(struct gameboy *gb, uint16_t addr, uint8_t data) {
 }
 
 void debug_cpu_instr(struct gameboy *gb) {
-    if (gb->debug) {
-        dump_instr(gb);
-        printf("    ");
-        dump_io(gb);
-        printf("\n");
-        fflush(stdout);
+    if (!gb->debug) {
+        return ;
     }
+
+    (void)dump_instr(gb);
+    (void)printf("    ");
+    (void)dump_io(gb);
+    (void)printf("\n");
+    (void)fflush(stdout);
 }

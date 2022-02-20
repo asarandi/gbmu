@@ -544,14 +544,14 @@ void FUNC_N(struct gameboy *gb)  {              \
     }                                           \
 }
 
-ARITHMETIC(add_r, add_hl, add_n, _ADD);
-ARITHMETIC(adc_r, adc_hl, adc_n, _ADC);
-ARITHMETIC(sub_r, sub_hl, sub_n, _SUB);
-ARITHMETIC(sbc_r, sbc_hl, sbc_n, _SBC);
-ARITHMETIC(and_r, and_hl, and_n, _AND);
-ARITHMETIC(xor_r, xor_hl, xor_n, _XOR);
-ARITHMETIC(or_r,  or_hl,  or_n, _OR);
-ARITHMETIC(cp_r,  cp_hl,  cp_n, _CP);
+ARITHMETIC(add_r, add_hl, add_n, _ADD)
+ARITHMETIC(adc_r, adc_hl, adc_n, _ADC)
+ARITHMETIC(sub_r, sub_hl, sub_n, _SUB)
+ARITHMETIC(sbc_r, sbc_hl, sbc_n, _SBC)
+ARITHMETIC(and_r, and_hl, and_n, _AND)
+ARITHMETIC(xor_r, xor_hl, xor_n, _XOR)
+ARITHMETIC(or_r,  or_hl,  or_n, _OR)
+ARITHMETIC(cp_r,  cp_hl,  cp_n, _CP)
 
 
 /*
@@ -728,16 +728,16 @@ void FUNC(struct gameboy *gb)   {           \
     }                                       \
 }
 
-CB_R(rlc_r,_RLC);
-CB_R(rrc_r,_RRC);
-CB_R(rl_r,_RL);
-CB_R(rr_r,_RR);
-CB_R(sla_r,_SLA);
-CB_R(sra_r,_SRA);
-CB_R(swap_r,_SWAP);
-CB_R(srl_r,_SRL);
-CB_R(res_r,_RES);
-CB_R(set_r,_SET);
+CB_R(rlc_r,_RLC)
+CB_R(rrc_r,_RRC)
+CB_R(rl_r,_RL)
+CB_R(rr_r,_RR)
+CB_R(sla_r,_SLA)
+CB_R(sra_r,_SRA)
+CB_R(swap_r,_SWAP)
+CB_R(srl_r,_SRL)
+CB_R(res_r,_RES)
+CB_R(set_r,_SET)
 
 // 4 cycles, except `bit u3, (HL)' => 3 cycles
 #define CB_HL(FUNC,MACRO)                   \
@@ -758,16 +758,16 @@ void FUNC(struct gameboy *gb)  {            \
     }                                       \
 }
 
-CB_HL(rlc_hl,_RLC);
-CB_HL(rrc_hl,_RRC);
-CB_HL(rl_hl,_RL);
-CB_HL(rr_hl,_RR);
-CB_HL(sla_hl,_SLA);
-CB_HL(sra_hl,_SRA);
-CB_HL(swap_hl,_SWAP);
-CB_HL(srl_hl,_SRL);
-CB_HL(res_hl,_RES);
-CB_HL(set_hl,_SET);
+CB_HL(rlc_hl,_RLC)
+CB_HL(rrc_hl,_RRC)
+CB_HL(rl_hl,_RL)
+CB_HL(rr_hl,_RR)
+CB_HL(sla_hl,_SLA)
+CB_HL(sra_hl,_SRA)
+CB_HL(swap_hl,_SWAP)
+CB_HL(srl_hl,_SRL)
+CB_HL(res_hl,_RES)
+CB_HL(set_hl,_SET)
 
 // 2 cycles
 void bit_r(struct gameboy *gb) {
@@ -804,12 +804,12 @@ void FUNC(struct gameboy *gb) {     \
     MACRO;                          \
     gb->cpu.r8[7] = gb->cpu.lo;     \
     CLEAR_Z_FLAG;                   \
-};
+}
 
-ROTA(rlca,_RLC);
-ROTA(rrca,_RRC);
-ROTA(rla,_RL);
-ROTA(rra,_RR);
+ROTA(rlca,_RLC)
+ROTA(rrca,_RRC)
+ROTA(rla,_RL)
+ROTA(rra,_RR)
 
 /*
 ** control flow instructions

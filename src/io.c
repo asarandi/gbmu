@@ -302,17 +302,20 @@ void io_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
 
     switch (addr) {
     case rP1:
-        return joypad_write_u8(gb, addr, data);
+        (void)joypad_write_u8(gb, addr, data);
+        return;
 
     case rSB:
     case rSC:
-        return serial_write_u8(gb, addr, data);
+        (void)serial_write_u8(gb, addr, data);
+        return;
 
     case rDIV:
     case rTIMA:
     case rTMA:
     case rTAC:
-        return timer_write_u8(gb, addr, data);
+        (void)timer_write_u8(gb, addr, data);
+        return;
 
     case rSTAT:
         if (gb->memory[rLCDC] & LCDCF_ON) {
@@ -340,7 +343,8 @@ void io_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
     }
 
     if ((addr >= rNR10) && (addr < rNR10 + 0x30)) {
-        return sound_write_u8(gb, addr, data);
+        (void)sound_write_u8(gb, addr, data);
+        return;
     }
 
     gb->memory[addr] = data;
