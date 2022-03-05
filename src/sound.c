@@ -1,6 +1,7 @@
 #include "gb.h"
 #include "sound.h"
 #include "hardware.h"
+#include "filter.h"
 
 /* http://gbdev.gg8.se/wiki/articles/Sound_Controller */
 /* http://gbdev.gg8.se/wiki/articles/Gameboy_sound_hardware */
@@ -75,6 +76,7 @@ static int16_t noise_sample(struct gameboy *gb) {
 
 static int write_sounds(struct gameboy *gb) {
     int32_t left, right, sample;
+    int16_t lout, rout;
 
     if (!SOUND_BUF_SIZE) {
         gb->audio_render = 1;
@@ -99,8 +101,11 @@ static int write_sounds(struct gameboy *gb) {
     left *= (((gb->memory[rAUDVOL] >> 4) & 7) + 1);
     right <<= 4;
     right *= ((gb->memory[rAUDVOL] & 7) + 1);
-    *(int16_t *) &gb->sound_buf[gb->samples_index] = (int16_t)left;
-    *(int16_t *) &gb->sound_buf[gb->samples_index + 2] = (int16_t)right;
+    lout = (int16_t)left;
+    rout = (int16_t)right;
+    (void)highpass(&lout, &rout);
+    *(int16_t *) &gb->sound_buf[gb->samples_index] = lout;
+    *(int16_t *) &gb->sound_buf[gb->samples_index + 2] = rout;
     /* one frame == 2 sixteen bit samples: L, R */
     gb->samples_index += 4;
     gb->audio_render = gb->samples_index >= SOUND_BUF_SIZE;

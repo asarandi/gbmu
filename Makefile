@@ -4,6 +4,7 @@ SRC := \
     src/cpu.c \
     src/debug.c \
     src/endian.c \
+    src/filter.c \
     src/hash.c \
     src/init.c \
     src/interrupts.c \
