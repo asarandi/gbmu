@@ -9,20 +9,17 @@
 static SDL_Window *window = NULL;
 static SDL_Renderer *renderer = NULL;
 static SDL_Texture *texture = NULL;
-const int scale_factor = 3;
 
 int video_open(struct gameboy *gb) {
     (void)gb;
-    int f = scale_factor;
 
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK) != 0) {
         SDL_Log("SDL_Init(): %s", SDL_GetError());
         return 0;
     }
 
-    window = SDL_CreateWindow("gbmu",
-                              SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                              SCRN_X * f, SCRN_Y * f, 0);
+    window = SDL_CreateWindow("gbmu", SDL_WINDOWPOS_CENTERED,
+                              SDL_WINDOWPOS_CENTERED, SCRN_X * 3, SCRN_Y * 3, 0);
 
     if (!window) {
         SDL_Log("SDL_CreateWindow(): %s", SDL_GetError());
@@ -38,9 +35,7 @@ int video_open(struct gameboy *gb) {
 
     SDL_RenderClear(renderer);
     texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888,
-                                SDL_TEXTUREACCESS_STREAMING,
-                                SCRN_X * scale_factor,
-                                SCRN_Y * scale_factor);
+                                SDL_TEXTUREACCESS_STREAMING, SCRN_X, SCRN_Y);
 
     if (!texture) {
         SDL_Log("SDL_CreateTexture(): %s", SDL_GetError());
@@ -77,7 +72,7 @@ extern void video_degradation(uint8_t *rgba, int height, int width);
 int video_write(struct gameboy *gb, uint8_t *data, uint32_t size) {
     uint32_t palette[] = {0xffffff, 0xaaaaaa, 0x555555, 0x000000};
     uint32_t *pixels, px;
-    int pitch, y, x, i, j, f;
+    int pitch, y, x;
     (void)size;
 
     if (gb->screenshot) {
@@ -94,21 +89,13 @@ int video_write(struct gameboy *gb, uint8_t *data, uint32_t size) {
         return 0;
     }
 
-    f = scale_factor;
-
     for (y = 0; y < SCRN_Y; y++) {
         for (x = 0; x < SCRN_X; x++) {
             px = data[y * SCRN_X + x];
-
-            for (i = y * f; i < (y + 1) * f; i++) {
-                for (j = x * f; j < (x + 1) * f; j++) {
-                    pixels[i * f * SCRN_X + j] = palette[px];
-                }
-            }
+            pixels[y * SCRN_X + x] = palette[px];
         }
     }
 
-    (void)video_degradation((uint8_t *)pixels, SCRN_Y * f, SCRN_X * f);
     SDL_UnlockTexture(texture);
     SDL_RenderClear(renderer);
     SDL_RenderCopy(renderer, texture, NULL, NULL);
