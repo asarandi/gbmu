@@ -3,6 +3,7 @@
 #include "hardware.h"
 #include "endian.h"
 #include "hash.h"
+#include <assert.h>
 
 struct {
     int n;
@@ -173,7 +174,7 @@ int screenshot(struct gameboy *gb, char *filename) {
         return 0;
     }
 
-    (void)write(fd, buf, sizeof(buf));
+    assert(write(fd, buf, sizeof(buf)) == sizeof(buf));
     (void)close(fd);
     return 1;
 }

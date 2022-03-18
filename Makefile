@@ -1,25 +1,24 @@
 SRC := \
-    src/bus.c \
-    src/cartridge.c \
-    src/cpu.c \
-    src/debug.c \
-    src/endian.c \
-    src/filter.c \
-    src/hash.c \
-    src/init.c \
-    src/interrupts.c \
-    src/io.c \
-    src/joypad.c \
-    src/lcd.c \
-    src/main.c \
-    src/savefile.c \
-    src/sdl.c \
-    src/serial.c \
-    src/sound.c \
-    src/testing.c \
-    src/timer.c
-
-src/debug.o: CFLAGS += -Wno-unused-result
+	src/core/apu.c \
+	src/core/bus.c \
+	src/core/cpu.c \
+	src/core/irq.c \
+	src/core/joypad.c \
+	src/core/lcd.c \
+	src/core/mbc.c \
+	src/core/rtc.c \
+	src/core/serial.c \
+	src/core/timer.c \
+	src/lib/endian.c \
+	src/lib/filter.c \
+	src/lib/hash.c \
+	src/debug.c \
+	src/init.c \
+	src/io.c \
+	src/main.c \
+	src/savefile.c \
+	src/sdl.c \
+	src/testing.c
 
 CFLAGS += -O2 -Wall -Werror -Wextra -I include/
 CFLAGS += $(shell sdl2-config --cflags)
@@ -31,14 +30,14 @@ gbmu: $(SRC:.c=.o)
 	$(CC) -o $@ $^ $(LDFLAGS)
 
 clean:
-	$(RM) src/*.o
+	$(RM) $(SRC:.c=.o)
 
 fclean: clean
 	$(RM) gbmu
 
 re: fclean all
 
-tidy: src/*.c include/*.h
+tidy: $(SRC) include/*.h
 	clang-tidy $^ -checks=-clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling -- $(CFLAGS)
 
 format:
@@ -57,7 +56,7 @@ format:
 	--indent-continuation=1 \
 	--lineend=linux \
 	--suffix=none \
-	src/*.c include/*.h webrtc/*.c webrtc/*.h
+	$(SRC) include/*.h webrtc/*.c webrtc/*.h
 
 tests: gbmu
 	./tests/mealybug.sh > tests/mealybug.results.csv

@@ -2,12 +2,17 @@
 #include "timer.h"
 #include "hardware.h"
 
-static const int timer_freq[] = {9, 3, 5, 7};
+
+static inline int timer_freq(struct gameboy *gb) {
+    return (int[]) {
+        9, 3, 5, 7
+    }[gb->timer.tac & 3];
+}
 
 // updates div, returns true if tac enabled and appropriate bit goes 1 => 0
 static int is_timer_tick(struct gameboy *gb, uint16_t new_div) {
     int tick = (gb->timer.tac & TACF_START) &&
-               (_IS_FALLING_EDGE(timer_freq[gb->timer.tac & 3], gb->timer.div, new_div));
+               (_IS_FALLING_EDGE(timer_freq(gb), gb->timer.div, new_div));
     gb->timer.div = new_div;
     return tick;
 }
@@ -67,7 +72,7 @@ void timer_write_u8(struct gameboy *gb, uint16_t addr, uint8_t data) {
 
     case rTAC:
         if ((gb->timer.tac & TACF_START) && (!(data & TACF_START)) &&
-                (gb->timer.div & (1 << (timer_freq[gb->timer.tac & 3])))) {
+                (gb->timer.div & (1 << (timer_freq(gb))))) {
             if (!(++gb->timer.tima)) {
                 gb->timer.tima = gb->timer.tma;
                 gb->memory[rIF] |= IEF_TIMER;

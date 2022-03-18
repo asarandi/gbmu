@@ -100,7 +100,7 @@ int main(int ac, char **av) {
     (void)memcpy(gb->memory, gb->cartridge.data, 0x8000);
     (void)io_init(gb);
 
-    if (!cartridge_init(gb)) {
+    if (!mbc_init(gb)) {
         return cleanup(gb, 0);
     }
 

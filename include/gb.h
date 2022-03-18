@@ -173,7 +173,7 @@ void write_u8(struct gameboy *gb, uint16_t addr, uint8_t data);
 
 /* cartridge/mbc */
 
-int cartridge_init(struct gameboy *gb);
+int mbc_init(struct gameboy *gb);
 
 int savefile_read(struct gameboy *gb);
 
