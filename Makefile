@@ -1,4 +1,4 @@
-SRC := \
+CORE := \
 	src/core/apu.c \
 	src/core/bus.c \
 	src/core/cpu.c \
@@ -8,29 +8,39 @@ SRC := \
 	src/core/mbc.c \
 	src/core/rtc.c \
 	src/core/serial.c \
-	src/core/timer.c \
+	src/core/timer.c
+
+LIB := \
 	src/lib/endian.c \
 	src/lib/filter.c \
 	src/lib/hash.c \
 	src/debug.c \
 	src/init.c \
 	src/io.c \
-	src/main.c \
 	src/savefile.c \
-	src/sdl.c \
 	src/testing.c
+
+SDL2 := \
+	src/shell/sdl2/main.c \
+	src/shell/sdl2/audio.c \
+	src/shell/sdl2/video.c \
+	src/shell/sdl2/input.c \
+	src/shell/sdl2/file.c
+
+SRC := $(CORE) $(LIB) $(SDL2)
+OBJ := $(SRC:.c=.o)
 
 CFLAGS += -O2 -Wall -Werror -Wextra -I include/
 CFLAGS += $(shell sdl2-config --cflags)
-LDFLAGS += -O2 $(shell sdl2-config --libs)
+LDFLAGS += -O2 -lm $(shell sdl2-config --libs)
 
 all: gbmu
 
-gbmu: $(SRC:.c=.o)
+gbmu: $(OBJ)
 	$(CC) -o $@ $^ $(LDFLAGS)
 
 clean:
-	$(RM) $(SRC:.c=.o)
+	$(RM) $(OBJ)
 
 fclean: clean
 	$(RM) gbmu
