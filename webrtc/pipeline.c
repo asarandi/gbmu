@@ -1,4 +1,6 @@
 #include "pipeline.h"
+#include <stdio.h>
+#include <assert.h>
 
 extern void BroadcastRTP(int track_id, void *data, int size);
 
@@ -106,7 +108,8 @@ int pipeline_write(int id, uint8_t *data, uint32_t size) {
 }
 
 int pipeline_open(int id) {
-    struct pipeline *p;
+    GError *error = NULL;
+    struct pipeline *p = NULL;
     static int once;
 
     if (!once++) {
@@ -114,12 +117,20 @@ int pipeline_open(int id) {
     }
 
     p = &(pipelines[id]);
-    p->pipeline = gst_parse_launch(p->pipeline_string, NULL);
+    p->pipeline = gst_parse_launch(p->pipeline_string, &error);
+    if (error != NULL) {
+        (void)fprintf(stderr, "domain: %u code: %d message: %s\n",
+            error->domain, error->code, error->message);
+        exit(1);
+    }
     p->appsrc = gst_bin_get_by_name(GST_BIN(p->pipeline), p->appsrc_name);
+    assert(p->appsrc != NULL);
     p->appsink = gst_bin_get_by_name(GST_BIN(p->pipeline), p->appsink_name);
+    assert(p->appsink != NULL);
     (void)g_signal_connect(p->appsink, "new-sample", G_CALLBACK(new_sample),
                            (void *)(uintptr_t)id);
     p->bus = gst_pipeline_get_bus(GST_PIPELINE(p->pipeline));
+    assert(p->bus != NULL);
     p->loop = g_main_loop_new(NULL, FALSE);
     (void)gst_bus_add_watch(p->bus, bus_call, p->loop);
     (void)gst_element_set_state(p->pipeline, GST_STATE_PLAYING);

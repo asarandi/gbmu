@@ -1,8 +1,8 @@
-webrtc: copy gobuild remove
+webrtc: copy gobuild clean
 gobuild:
-	go build -o gbmu
+	go build -a -o gbmu
 
-docker: copy dockerbuild remove
+docker: copy dockerbuild clean
 dockerbuild:
 	docker build -t gbmu .
 
@@ -33,7 +33,7 @@ SRC := \
 copy:
 	@cp $(SRC) .
 
-remove:
+clean:
 	@rm -f $(notdir $(SRC))
 
-.PHONY: copy remove
+.PHONY: copy clean
