@@ -116,8 +116,8 @@ func httpHandler(w http.ResponseWriter, r *http.Request) {
 		romHash := fmt.Sprintf(`%x`, md5.Sum(data))
 		players[peer.playerId].romHash = romHash
 		SetCartridge(peer.playerId, data)
-		event := fmt.Sprintf(`peer-%d, player-%d uploads rom %s`,
-			peer.serial, peer.playerId, romHash)
+		event := fmt.Sprintf(`peer-%d, player-%d uploads rom %s`, peer.serial, peer.playerId, romHash)
+		log.Println(event)
 		go dcBroadcast([]byte(event))
 		return
 	}
@@ -138,13 +138,13 @@ func httpHandler(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set(`content-type`, `application/octet-stream`)
 		w.Header().Set(`content-length`, fmt.Sprintf(`%d`, len(data)))
 		_, err = w.Write(data)
-		event := fmt.Sprintf(`peer-%d, player-%d downloads ram`,
-			peer.serial, peer.playerId)
+		event := fmt.Sprintf(`peer-%d, player-%d downloads ram`, peer.serial, peer.playerId)
+		log.Println(event)
 		go dcBroadcast([]byte(event))
 	} else if r.Method == http.MethodPost {
 		SetSavefile(peer.playerId, data)
-		event := fmt.Sprintf(`peer-%d, player-%d uploads ram`,
-			peer.serial, peer.playerId)
+		event := fmt.Sprintf(`peer-%d, player-%d uploads ram`, peer.serial, peer.playerId)
+		log.Println(event)
 		go dcBroadcast([]byte(event))
 	}
 }
@@ -201,6 +201,7 @@ func offer(w http.ResponseWriter, r *http.Request) {
 	w.Header()[`x-peer-id`] = []string{peer.id.String()}
 	_ = json.NewEncoder(w).Encode(pc.LocalDescription())
 	go waitForAnswer(peer)
+	log.Println(`new peer!`, `id`, peer.id, `serial`, peer.serial, `ua`, r.UserAgent(), `remote`, r.RemoteAddr, `xfwd`, r.Header[`X-Forwarded-For`])
 }
 
 func rtcpLoop(rtpSender *webrtc.RTPSender) {
@@ -262,6 +263,7 @@ func onPeerLeaving(peer *peer) {
 	peer.playerId = -1
 
 	event := fmt.Sprintf(`peer-%d left room. room has %d peers remaining.`, peer.serial, len(peers))
+	log.Println(event)
 	go dcBroadcast([]byte(event))
 
 	if i == -1 {
@@ -276,6 +278,7 @@ func onPeerLeaving(peer *peer) {
 	go dcBroadcast([]byte{ctrlAvailable, byte(i)})
 
 	event = fmt.Sprintf(`peer-%d stopped playing. concedes player-%d controls`, peer.serial, i)
+	log.Println(event)
 	go dcBroadcast([]byte(event))
 
 }
@@ -293,6 +296,7 @@ func onPeerAdded(peer *peer) {
 			dc.Send([]byte{state, byte(i)})
 		}
 		event := fmt.Sprintf(`peer-%d joins, room has %d peers`, peer.serial, len(peers))
+		log.Println(event)
 		go dcBroadcast([]byte(event))
 	})
 	dc.OnMessage(func(msg webrtc.DataChannelMessage) {
@@ -319,6 +323,7 @@ func onPeerAdded(peer *peer) {
 				dcBroadcast([]byte{ctrlBusy, b})
 				dc.Send([]byte{ctrlClaimAck, b})
 				event := fmt.Sprintf(`peer-%d started playing. claims player-%d controls`, peer.serial, i)
+				log.Println(event)
 				go dcBroadcast([]byte(event))
 			} else {
 				dc.Send([]byte{ctrlClaimNack, b})
@@ -337,6 +342,7 @@ func onPeerAdded(peer *peer) {
 			dc.Send([]byte{ctrlConcedeAck, b})
 			dcBroadcast([]byte{ctrlAvailable, b})
 			event := fmt.Sprintf(`peer-%d stopped playing. concedes player-%d controls`, peer.serial, i)
+			log.Println(event)
 			go dcBroadcast([]byte(event))
 
 		case ctrlSetJoypad:
@@ -348,12 +354,14 @@ func onPeerAdded(peer *peer) {
 				players[peer.playerId].frameBlending = b != 0
 				SetFrameBlending(peer.playerId, b != 0)
 				event := fmt.Sprintf(`player-%d has frame blending set to %t`, peer.playerId, b != 0)
+				log.Println(event)
 				go dcBroadcast([]byte(event))
 			}
 		case ctrlReload:
 			if peer.playerId != -1 {
 				ReloadBoth()
 				event := fmt.Sprintf(`peer-%d, player-%d reloads both games`, peer.serial, peer.playerId)
+				log.Println(event)
 				go dcBroadcast([]byte(event))
 			}
 		default:
@@ -367,6 +375,7 @@ func onPeerAdded(peer *peer) {
 			}
 			if ok {
 				event := fmt.Sprintf(`peer-%d: %s`, peer.serial, s)
+				log.Println(event)
 				go dcBroadcast([]byte(event))
 			}
 		}

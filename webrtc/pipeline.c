@@ -118,11 +118,13 @@ int pipeline_open(int id) {
 
     p = &(pipelines[id]);
     p->pipeline = gst_parse_launch(p->pipeline_string, &error);
+
     if (error != NULL) {
         (void)fprintf(stderr, "domain: %u code: %d message: %s\n",
-            error->domain, error->code, error->message);
+                      error->domain, error->code, error->message);
         exit(1);
     }
+
     p->appsrc = gst_bin_get_by_name(GST_BIN(p->pipeline), p->appsrc_name);
     assert(p->appsrc != NULL);
     p->appsink = gst_bin_get_by_name(GST_BIN(p->pipeline), p->appsink_name);

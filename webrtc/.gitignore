@@ -1,6 +1,7 @@
 default.rom
 gbmu
 adapter.js
+access.log
 
 #
 apu.c

@@ -169,8 +169,8 @@ int run() {
         return 0;
     }
 
-    (void)video_message(0, "load rom");
-    (void)video_message(1, "load rom");
+    (void)video_message(0, "upload rom..");
+    (void)video_message(1, "upload rom..");
 
     for (; !done;) {
         pthread_mutex_lock(&lock);
