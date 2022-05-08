@@ -14,8 +14,42 @@
 #define FILTER_CONST_DMG 0.999958
 #define FILTER_CONST_CGB 0.998943
 
+
+// >>> gameboy_frequency = 4194304
+// >>> sample_rate = 44100
+//
+// >>> unscaled_factor = 0.999958
+// >>> scaled_factor = math.pow(unscaled_factor, gameboy_frequency / sample_rate)
+// >>> scaled_factor
+// 0.9960133089108504
+//
+// >>> cutoff_frequency = math.log(scaled_factor) / (-2 * math.pi) * sample_rate
+// >>> cutoff_frequency
+// 28.037445796538698
+//
+// >>> math.exp(-2 * math.pi * cutoff_frequency / sample_rate)
+// 0.9960133089108504
+//
+// >>> unscaled_factor = 0.998943
+// >>> scaled_factor = math.pow(unscaled_factor, gameboy_frequency / sample_rate)
+// >>> scaled_factor
+// 0.9043097701950136
+//
+// >>> cutoff_frequency = math.log(scaled_factor) / (-2 * math.pi) * sample_rate
+// >>> cutoff_frequency
+// 705.9674041889306
+//
+// >>> math.exp(-2 * math.pi * cutoff_frequency / sample_rate)
+// 0.9043097701950136
+//
+//
+// highpass cutoff frequency according to blargg's constants:
+// DMG: 28.0374
+// CGB: 705.9674
+
+
 void highpass(int16_t *left, int16_t *right) {
-    const int32_t alpha = (int32_t)((pow(FILTER_CONST_DMG,
+    const int32_t alpha = (int32_t)((pow(FILTER_CONST_OFF,
                                          4194304 / SAMPLING_FREQUENCY)) * (1 << MA_BIQUAD_FIXED_POINT_SHIFT));
     const int32_t a = ((1 << MA_BIQUAD_FIXED_POINT_SHIFT) - alpha);
     const int32_t b = ((1 << MA_BIQUAD_FIXED_POINT_SHIFT) - a);
