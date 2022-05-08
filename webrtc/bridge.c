@@ -13,17 +13,7 @@ void timer_callback() {
 
 void set_input(int player_id, int input) {
     struct gameboy *gb = &(players[player_id].gb);
-    int i, val, flag;
-
-    for (i = flag = 0; i < 8; i++) {
-        val = (input >> (7 - i)) & 1;
-        flag |= gb->buttons[i] != val;
-        gb->buttons[i] = val;
-    }
-
-    if (flag) {
-        joypad_request_interrupt(gb);
-    }
+    return joypad_set_buttons(gb, input);
 }
 
 static void *load_with_ram(struct gameboy *gb, void *rom_data, int rom_size,

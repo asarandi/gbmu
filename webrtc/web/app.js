@@ -235,26 +235,22 @@ const setupEventListeners = () => {
     .querySelector("button#chatSend")
     .addEventListener("click", sendChatMessage);
 
-  const body = document.querySelector("body");
-  body.addEventListener("keydown", (event) => {
+  function keyEventHandler(event) {
     if (isChatFocus) return;
     if (event.keyCode in keyMapping) {
       event.preventDefault();
-      joyAfter |= keyMapping[event.keyCode];
-      joyAfter &= joyAfter & 0x80 ? ~0x40 : 0xff;
-      joyAfter &= joyAfter & 0x20 ? ~0x10 : 0xff;
+      if (event.type === "keydown") {
+        joyAfter |= keyMapping[event.keyCode];
+      } else if (event.type === "keyup") {
+        joyAfter &= ~keyMapping[event.keyCode];
+      }
       updateJoypad();
     }
-  });
+  }
 
-  body.addEventListener("keyup", (event) => {
-    if (isChatFocus) return;
-    if (event.keyCode in keyMapping) {
-      event.preventDefault();
-      joyAfter &= ~keyMapping[event.keyCode];
-      updateJoypad();
-    }
-  });
+  const body = document.querySelector("body");
+  body.addEventListener("keydown", keyEventHandler);
+  body.addEventListener("keyup", keyEventHandler);
 
   const romInput = document.querySelector("input#romInput");
   romInput.addEventListener(

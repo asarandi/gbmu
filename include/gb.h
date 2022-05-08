@@ -90,7 +90,7 @@ struct gameboy {
     int audio_render;
     uint32_t seq_frame;
     int32_t samples_clock, samples_index;
-    uint8_t buttons[8];
+    uint8_t buttons;
     uint8_t (*ram_read_u8)(struct gameboy *, uint16_t);
     void (*ram_write_u8)(struct gameboy *, uint16_t, uint8_t);
     uint8_t (*rom_read_u8)(struct gameboy *, uint16_t);
@@ -132,6 +132,10 @@ int interrupts_update(struct gameboy *gb);
 int interrupt_step(struct gameboy *gb);
 
 /* joypad */
+
+uint8_t joypad_get_buttons(struct gameboy *gb);
+
+void joypad_set_buttons(struct gameboy *gb, uint8_t new_value);
 
 uint8_t joypad_read_u8(struct gameboy *gb, uint16_t addr);
 

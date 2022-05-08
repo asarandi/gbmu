@@ -6,20 +6,30 @@ static SDL_Joystick *joystick = NULL;
 const char *joystick_name = NULL;
 
 static void set_button_states(struct gameboy *gb, uint32_t key, uint8_t value) {
-    uint32_t i, prev_val, controls[] = {
-        SDLK_DOWN, SDLK_UP, SDLK_LEFT, SDLK_RIGHT,
-        SDLK_RETURN, SDLK_RSHIFT, SDLK_z, SDLK_x,
+    struct {
+        uint32_t sdlk;
+        uint8_t padf;
+    } tab[] = {
+        {SDLK_DOWN,   PADF_DOWN  },
+        {SDLK_UP,     PADF_UP    },
+        {SDLK_LEFT,   PADF_LEFT  },
+        {SDLK_RIGHT,  PADF_RIGHT },
+        {SDLK_RETURN, PADF_START },
+        {SDLK_RSHIFT, PADF_SELECT},
+        {SDLK_z,      PADF_B     },
+        {SDLK_x,      PADF_A     },
     };
+    uint8_t state;
+    int i;
 
     for (i = 0; i < 8; i++) {
-        if (key == controls[i]) {
-            prev_val = gb->buttons[i];
-            gb->buttons[i] = value;
-
-            if (prev_val != value) {
-                joypad_request_interrupt(gb); //TODO: fix bad design
-            }
+        if (key != tab[i].sdlk) {
+            continue ;
         }
+
+        state = joypad_get_buttons(gb);
+        state = value ? (state | tab[i].padf) : (state & ~tab[i].padf);
+        return joypad_set_buttons(gb, state);
     }
 }
 
