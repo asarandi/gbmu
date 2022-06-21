@@ -1,0 +1,11 @@
+lib/filter: remove static variables
+lib/hash: remove static variables
+shell/sdl2: switch to using sdl2 file io
+shell/sdl2: integrate gabomdq/SDL_GameControllerDB
+webrtc/bridge: move video frame blending code to lib/
+webrtc/web/js: sdp munging, fix opus stereo in chrome
+webrtc/ram-file-save: fix download filename
+core/serial, multiplayer: compatibility - tennis freezes
+core, apu: remove noise table, fix blargg dmg_sound
+core, lcd: pixel fifo
+misc: emscripten/wasm build
