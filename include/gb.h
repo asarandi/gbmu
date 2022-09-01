@@ -96,6 +96,7 @@ struct gameboy {
     uint8_t (*rom_read_u8)(struct gameboy *, uint16_t);
     void (*rom_write_u8)(struct gameboy *, uint16_t, uint8_t);
     void (*testing_run_hook)(struct gameboy *);
+    void (*testing_read_hook)(struct gameboy *, uint16_t);
     void (*testing_write_hook)(struct gameboy *, uint16_t, uint8_t);
 };
 
@@ -192,6 +193,8 @@ int rtc_update_to_current(struct gameboy *gb);
 int rtc_tick(struct gameboy *gb);
 
 /* testing  */
+
+int testing_dummy_setup(struct gameboy *gb);
 
 int testing_setup(struct gameboy *gb, char *test_name);
 

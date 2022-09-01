@@ -25,6 +25,9 @@ SRC := \
     ../src/savefile.c \
     ../src/init.c \
     ../src/io.c \
+    ../src/testing.c \
+    ../src/lib/hash.c \
+    ../include/hash.h \
     ../src/lib/endian.c \
     ../include/endian.h \
     ../src/lib/filter.c \

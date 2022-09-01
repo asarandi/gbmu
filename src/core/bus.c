@@ -15,6 +15,8 @@ static int is_dma_conflict(struct gameboy *gb, uint16_t addr) {
 }
 
 uint8_t read_u8(struct gameboy *gb, uint16_t addr) {
+    (void)gb->testing_read_hook(gb, addr);
+
     if (is_dma_conflict(gb, addr)) {
         return gb->dma.byte;
     }

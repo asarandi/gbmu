@@ -1,7 +1,6 @@
 #include "gb.h"
 #include "cpu.h"
 #include "hardware.h"
-#include "endian.h"
 #include "hash.h"
 #include <assert.h>
 
@@ -133,50 +132,6 @@ static void dump_instr(struct gameboy *gb) {
 
     (void)printf("af:%04x bc:%04x de:%04x hl:%04x pc:%04x sp:%04x   %-8s  %-16s",
                  R16AF, R16BC, R16DE, R16HL, R16PC, R16SP, hexdump, name);
-}
-
-int screenshot(struct gameboy *gb, char *filename) {
-    uint8_t buf[5972] = {0};
-    const uint8_t png_head[] = {
-        0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, // png
-        0x00, 0x00, 0x00, 0x0d, 0x49, 0x48, 0x44, 0x52, // ihdr size 13
-        0x00, 0x00, 0x00, 0xa0, 0x00, 0x00, 0x00, 0x90, // 160, 144
-        0x02, 0x00, 0x00, 0x00, 0x00, 0xe0, 0x6e, 0x27, // 2 bit depth, crc
-        0xfd, 0x00, 0x00, 0x17, 0x1b, 0x49, 0x44, 0x41, // idat size 5915
-        0x54, 0x58, 0x09, 0x01, 0x10, 0x17, 0xef, 0xe8  // zlib hdr
-    };
-    const uint8_t png_tail[] = {
-        0xaa, 0xaa, 0xaa, 0xaa, 0xbb, 0xbb, 0xbb, 0xbb, // crc aa=zlib, bb=idat
-        0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4e, 0x44, // iend size 0
-        0xae, 0x42, 0x60, 0x82                          // iend crc
-    };
-    (void)memcpy(buf, png_head, sizeof(png_head));
-    (void)memcpy(buf + 5952, png_tail, sizeof(png_tail));
-    int fd, i, o = 48;
-
-    for (i = 0; i < 144 * 160;) {
-        if (!(i % 160)) {
-            buf[o++] = 0;
-        }
-
-        buf[o] = (3 - gb->lcd.buf[i++]) << 6;
-        buf[o] |= (3 - gb->lcd.buf[i++]) << 4;
-        buf[o] |= (3 - gb->lcd.buf[i++]) << 2;
-        buf[o++] |= 3 - gb->lcd.buf[i++];
-    }
-
-    (void)write_be32(buf + o, my_adler32(buf + 48, 5904)); // zlib
-    (void)write_be32(buf + o + 4, my_crc32(buf + 37, 5919)); // idat
-    fd = open(filename, O_CREAT | O_WRONLY | O_TRUNC | O_BINARY, 0644);
-
-    if (fd < 1) {
-        (void)perror(__func__);
-        return 0;
-    }
-
-    assert(write(fd, buf, sizeof(buf)) == sizeof(buf));
-    (void)close(fd);
-    return 1;
 }
 
 void debug_log_io(struct gameboy *gb, uint16_t addr, uint8_t data) {

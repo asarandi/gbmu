@@ -23,6 +23,7 @@ static void *load_with_ram(struct gameboy *gb, void *rom_data, int rom_size,
     gb->cartridge.size = rom_size;
     (void)memcpy(gb->memory, gb->cartridge.data, 0x8000);
     (void)io_init(gb);
+    (void)testing_dummy_setup(gb);
 
     if (!mbc_init(gb)) {
         return "unsupported rom";

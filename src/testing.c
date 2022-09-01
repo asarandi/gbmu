@@ -1,6 +1,7 @@
 #include "gb.h"
 #include "hardware.h"
 #include "hash.h"
+#include "endian.h"
 #include <time.h>
 #include <ctype.h>
 #include <assert.h>
@@ -12,35 +13,72 @@
 #define RESULT_TIMEOUT 12
 #define RESULT_ERROR   13
 
+void serial_run_hook(struct gameboy *);
+void serial_read_hook(struct gameboy *, uint16_t);
+void serial_write_hook(struct gameboy *, uint16_t, uint8_t);
 void timeout_run_hook(struct gameboy *);
 void blargg1_write_hook(struct gameboy *, uint16_t, uint8_t);
-void blargg2_run_hook(struct gameboy *);
 void blargg2_write_hook(struct gameboy *, uint16_t, uint8_t);
 void mooneye_write_hook(struct gameboy *,uint16_t, uint8_t);
 void screenshot_run_hook(struct gameboy *);
 void mealybug_run_hook(struct gameboy *);
-void screenshot_write_hook(struct gameboy *, uint16_t, uint8_t);
 void gambatte_run_hook(struct gameboy *);
-void gambatte_write_hook(struct gameboy *, uint16_t, uint8_t);
 
+void dummy_run_hook(struct gameboy *gb) {
+    (void)gb;
+}
+
+void dummy_read_hook(struct gameboy *gb, uint16_t addr) {
+    (void)gb;
+    (void)addr;
+}
+
+void dummy_write_hook(struct gameboy *gb, uint16_t addr, uint8_t data) {
+    (void)gb;
+    (void)addr;
+    (void)data;
+}
+
+int testing_dummy_setup(struct gameboy *gb) {
+    gb->testing_run_hook = &dummy_run_hook;
+    gb->testing_read_hook = &dummy_read_hook;
+    gb->testing_write_hook = &dummy_write_hook;
+    gb->testing = 0;
+    return 1;
+}
+
+// assuming run/read/write hook funcs are populated with dummy
 int testing_setup(struct gameboy *gb, char *test_name) {
     struct test {
         char *name;
         void (*run)(struct gameboy *);
+        void (*read)(struct gameboy *, uint16_t);
         void (*write)(struct gameboy *, uint16_t, uint8_t);
     } tests[] = {
-        {"blargg1", &timeout_run_hook, &blargg1_write_hook},
-        {"blargg2", &blargg2_run_hook, &blargg2_write_hook},
-        {"mooneye", &timeout_run_hook, &mooneye_write_hook},
-        {"screenshot", &screenshot_run_hook, &screenshot_write_hook},
-        {"mealybug", &mealybug_run_hook, &screenshot_write_hook},
-        {"gambatte", &gambatte_run_hook, &gambatte_write_hook},
+        // null means run dummy func, else implementation
+        {"serial", &serial_run_hook, &serial_read_hook, &serial_write_hook},
+        {"blargg1", &timeout_run_hook, 0, &blargg1_write_hook},
+        {"blargg2", &timeout_run_hook, 0, &blargg2_write_hook},
+        {"mooneye", &timeout_run_hook, 0, &mooneye_write_hook},
+        {"screenshot", &screenshot_run_hook, 0, 0},
+        {"mealybug", &mealybug_run_hook, 0, 0},
+        {"gambatte", &gambatte_run_hook, 0, 0},
     };
 
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < 7; i++) {
         if (!strcasecmp(test_name, tests[i].name)) {
-            gb->testing_run_hook = tests[i].run;
-            gb->testing_write_hook = tests[i].write;
+            if (tests[i].run) {
+                gb->testing_run_hook = tests[i].run;
+            }
+
+            if (tests[i].read) {
+                gb->testing_read_hook = tests[i].read;
+            }
+
+            if (tests[i].write) {
+                gb->testing_write_hook = tests[i].write;
+            }
+
             gb->testing = 1;
             gb->exit_code = -1;
             return 1;
@@ -49,6 +87,67 @@ int testing_setup(struct gameboy *gb, char *test_name) {
 
     (void)fprintf(stderr, "test not found: %s\n", test_name);
     return 0;
+}
+
+static struct serial_stats {
+    int sb_read;
+    int sb_write;
+    int sc_read;
+    int sc_write;
+    int primary;
+    int secondary;
+} serial_stats = {};
+
+void serial_run_hook(struct gameboy *gb) {
+    if (gb->cycles < (30 * 4194304)) {
+        return ;
+    }
+
+    (void)fprintf(stderr,
+                  "serial: SB r=%04d w=%04d, SC r=%04d w=%04d, primary=%04d secondary=%04d - %s\n",
+                  serial_stats.sb_read, serial_stats.sb_write,
+                  serial_stats.sc_read, serial_stats.sc_write,
+                  serial_stats.primary, serial_stats.secondary,
+                  gb->rom_file);
+    (void)fflush(stderr);
+    gb->done = 1;
+}
+
+void serial_read_hook(struct gameboy *gb, uint16_t addr) {
+    (void)gb;
+
+    switch (addr) {
+    case rSB:
+        serial_stats.sb_read++;
+        break ;
+
+    case rSC:
+        serial_stats.sc_read++;
+        break ;
+    }
+}
+
+void serial_write_hook(struct gameboy *gb, uint16_t addr, uint8_t data) {
+    (void)gb;
+
+    switch (addr) {
+    case rSB:
+        serial_stats.sb_write++;
+        break ;
+
+    case rSC:
+        serial_stats.sc_write++;
+
+        if ((data & 0x81) == 0x81) {
+            serial_stats.primary++;
+        }
+
+        if ((data & 0x81) == 0x80) {
+            serial_stats.secondary++;
+        }
+
+        break ;
+    }
 }
 
 void screenshot_and_exit(struct gameboy *gb, char *exten) {
@@ -83,15 +182,6 @@ void mealybug_run_hook(struct gameboy *gb) {
 
     if (gb->cpu.opcode == 0x40) { // LD B,B
         (void)screenshot_and_exit(gb, "-gbmu.png");
-    }
-}
-
-void screenshot_write_hook(struct gameboy *gb, uint16_t addr, uint8_t data) {
-    (void)addr;
-    (void)data;
-
-    if (!gb->testing) {
-        return ;
     }
 }
 
@@ -167,12 +257,6 @@ void blargg1_write_hook(struct gameboy *gb, uint16_t addr, uint8_t data) {
 
     for (i = 0; i < 5; i++) {
         buf[i] = buf[i + 1];
-    }
-}
-
-void blargg2_run_hook(struct gameboy *gb) {
-    if (!gb->testing) {
-        return;
     }
 }
 
@@ -317,11 +401,46 @@ void gambatte_run_hook(struct gameboy *gb) {
     free(ptr);
 }
 
-void gambatte_write_hook(struct gameboy *gb, uint16_t addr, uint8_t data) {
-    (void)addr;
-    (void)data;
+int screenshot(struct gameboy *gb, char *filename) {
+    uint8_t buf[5972] = {0};
+    const uint8_t png_head[] = {
+        0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, // png
+        0x00, 0x00, 0x00, 0x0d, 0x49, 0x48, 0x44, 0x52, // ihdr size 13
+        0x00, 0x00, 0x00, 0xa0, 0x00, 0x00, 0x00, 0x90, // 160, 144
+        0x02, 0x00, 0x00, 0x00, 0x00, 0xe0, 0x6e, 0x27, // 2 bit depth, crc
+        0xfd, 0x00, 0x00, 0x17, 0x1b, 0x49, 0x44, 0x41, // idat size 5915
+        0x54, 0x58, 0x09, 0x01, 0x10, 0x17, 0xef, 0xe8  // zlib hdr
+    };
+    const uint8_t png_tail[] = {
+        0xaa, 0xaa, 0xaa, 0xaa, 0xbb, 0xbb, 0xbb, 0xbb, // crc aa=zlib, bb=idat
+        0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4e, 0x44, // iend size 0
+        0xae, 0x42, 0x60, 0x82                          // iend crc
+    };
+    (void)memcpy(buf, png_head, sizeof(png_head));
+    (void)memcpy(buf + 5952, png_tail, sizeof(png_tail));
+    int fd, i, o = 48;
 
-    if (!gb->testing) {
-        return;
+    for (i = 0; i < 144 * 160;) {
+        if (!(i % 160)) {
+            buf[o++] = 0;
+        }
+
+        buf[o] = (3 - gb->lcd.buf[i++]) << 6;
+        buf[o] |= (3 - gb->lcd.buf[i++]) << 4;
+        buf[o] |= (3 - gb->lcd.buf[i++]) << 2;
+        buf[o++] |= 3 - gb->lcd.buf[i++];
     }
+
+    (void)write_be32(buf + o, my_adler32(buf + 48, 5904)); // zlib
+    (void)write_be32(buf + o + 4, my_crc32(buf + 37, 5919)); // idat
+    fd = open(filename, O_CREAT | O_WRONLY | O_TRUNC | O_BINARY, 0644);
+
+    if (fd < 1) {
+        (void)perror(__func__);
+        return 0;
+    }
+
+    assert(write(fd, buf, sizeof(buf)) == sizeof(buf));
+    (void)close(fd);
+    return 1;
 }

@@ -60,6 +60,7 @@ int main(int ac, char **av) {
     struct gameboy *gb = &gameboy;
     static int fd, i, ret;
     struct stat stat_buf;
+    (void)testing_dummy_setup(gb);
 
     if (!arg_parse(gb, ac, av)) {
         return 1;
