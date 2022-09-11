@@ -22,6 +22,9 @@ timer.h
 savefile.c
 init.c
 io.c
+testing.c
+hash.c
+hash.h
 endian.c
 endian.h
 filter.c

@@ -1,5 +1,4 @@
 # webrtc
-
 __build__, __run__  then open [`http://localhost:8080/`](http://localhost:8080/) in your browser
 
 ## native
@@ -19,11 +18,10 @@ make docker
 ```
 ### run
 ```
-docker run -p8080:8080 gbmu
+docker run --rm -p8080:8080 gbmu:latest
 ```
 
 ---
-
 
 # instructions:
 - for best experience please use desktop computer with latest mozilla firefox browser
@@ -43,25 +41,27 @@ docker run -p8080:8080 gbmu
 
 # notes about chrome/chromium:
 - video is not pixelated:
-  server sends video with 160x144 resolution,
-  when using the "scale" option video looks blurry,
-  video elements have CSS property "image-rendering: pixelated" -
-  but it seems like chrome does not honor this property for video elements.
-  works as expected in firefox - scaled video looks nice and sharp,
-  see screenshot for side by side comparison: https://i.imgur.com/NP6QGRl.png
+  - server sends video with 160x144 resolution,
+  - when using the "scale" option video looks blurry,
+  - video elements have CSS property "image-rendering: pixelated" -
+  - but it seems like chrome does not honor this property for video elements.
+  - works as expected in firefox - scaled video looks nice and sharp,
+  - see screenshot for side by side comparison: https://i.imgur.com/NP6QGRl.png
+
 - audio is mono (instead of stereo):
-  description: opus audio is always rendered as "mono" in google chrome
-  https://bugs.chromium.org/p/webrtc/issues/detail?id=8133
-  TODO (alex): try SDP munging workaround
-  works as expected in firefox
+  - description: opus audio is always rendered as "mono" in google chrome
+  - https://bugs.chromium.org/p/webrtc/issues/detail?id=8133
+  - TODO (alex): try SDP munging workaround
+  - works as expected in firefox
+
 - sound stops playing:
-  issue: pressing down arrow key slides the volume control down
-  workaround: click away from video to prevent
-  works as expected in firefox
+  - issue: pressing down arrow key slides the volume control down
+  - workaround: click away from video to prevent
+  - works as expected in firefox
 
 
 # game controls [gameboy => web browser]:
-d-pad  => arrow keys
-b, a   => z, x
-start  => return
-select => right shift
+- d-pad  => arrow keys
+- b, a   => z, x
+- start  => return
+- select => right shift

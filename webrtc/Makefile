@@ -4,7 +4,7 @@ gobuild:
 
 docker: copy dockerbuild clean
 dockerbuild:
-	docker build -t gbmu .
+	docker build -t gbmu:latest .
 
 SRC := \
     ../src/core/apu.c \
