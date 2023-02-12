@@ -40,12 +40,18 @@ const activePlayerIndicator = () => {
   }
 };
 
-const connect = () => {
-  const pcConfig = {
-    iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
-  };
+const setConnectionIndicator = (message, color) => {
+  console.log("setConnectionIndicator", message, color);
+  const image = document.querySelector("span#connectionIndicatorImage");
+  image.style["background-color"] = color;
+  const text = document.querySelector("span#connectionIndicatorText");
+  text.innerText = message;
+};
 
-  const pc = new RTCPeerConnection(pcConfig);
+const connect = () => {
+  const pc = new RTCPeerConnection({
+    iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+  });
 
   fetch("/offer", { method: "get" })
     .then((response) => {
@@ -55,47 +61,34 @@ const connect = () => {
     .then((offer) => pc.setRemoteDescription(new RTCSessionDescription(offer)))
     .then(() => pc.createAnswer())
     .then((answer) => pc.setLocalDescription(answer))
-    .catch(console.error);
-  pc.onicecandidate = (event) => {
-    if (event.candidate === null) {
+    .then(() =>
       fetch("/answer", {
         method: "post",
         headers: { "x-peer-id": peerId },
         body: JSON.stringify(pc.localDescription),
-      });
-    }
-  };
+      })
+    )
+    .catch(console.error);
 
-  pc.onconnectionstatechange = (event) => {
-    console.log(`onConnectionStateChange: ${pc.connectionState}`);
-    const setIndicator = (message, color) => {
-      const image = document.querySelector("span#indicatorImage");
-      image.style = `width: 1rem; height: 1rem; border-radius: 50%; display: inline-block; background-color: ${color};`;
-      const text = document.querySelector("span#indicatorText");
-      text.style = `display: inline-block;`;
-      text.innerText = message;
-    };
-    switch (pc.connectionState) {
-      case "connected":
-        setIndicator(pc.connectionState, "green");
-        break;
-      case "disconnected":
-        setIndicator(pc.connectionState, "red");
-        break;
-      case "failed":
-        setIndicator(pc.connectionState, "black");
-        break;
-      case "closed":
-        setIndicator(pc.connectionState, "grey");
-        break;
-      default:
-        setIndicator(pc.connectionState, "orange");
-        break;
-    }
-  };
+  pc.onicecandidate = (event) =>
+    fetch("/candidate", {
+      method: "post",
+      headers: { "x-peer-id": peerId },
+      body: JSON.stringify(event.candidate),
+    });
 
   pc.oniceconnectionstatechange = (event) => {
-    console.log("onIceConnectionStateChange", pc.iceConnectionState);
+    const t = {
+      new: "grey",
+      checking: "orange",
+      connected: "green",
+      completed: "magenta",
+      failed: "black",
+      disconnected: "red",
+      closed: "grey",
+    };
+    const s = pc.iceConnectionState;
+    setConnectionIndicator(s, s in t ? t[s] : "red");
   };
 
   pc.ontrack = (event) => {

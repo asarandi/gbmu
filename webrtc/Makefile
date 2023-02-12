@@ -2,9 +2,20 @@ webrtc: copy gobuild clean
 gobuild:
 	go build -a -o gbmu
 
-docker: copy dockerbuild clean
-dockerbuild:
-	docker build -t gbmu:latest .
+
+docker: copy build clean
+build:
+	docker build -t asarandi/gbmu:latest .
+
+push:
+	docker push asarandi/gbmu:latest
+
+pull:
+	docker pull asarandi/gbmu:latest
+
+run:
+	docker run -it --rm --network host asarandi/gbmu:latest
+
 
 SRC := \
     ../src/core/apu.c \

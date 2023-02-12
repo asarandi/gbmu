@@ -76,75 +76,78 @@ const (
 )
 
 func httpHandler(w http.ResponseWriter, r *http.Request) {
-	id, err := uuid.Parse(r.Header.Get(`x-peer-id`))
+	id, err := uuid.Parse(r.Header.Get("x-peer-id"))
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, err.Error(), 500)
 		return
 	}
 	peer := peersGet(id)
 	if peer == nil {
-		http.Error(w, `peer not found`, http.StatusForbidden)
+		http.Error(w, "peer not found", 403)
 		return
 	}
 	data, err := ioutil.ReadAll(r.Body)
 	_ = r.Body.Close()
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, err.Error(), 500)
 		return
 	}
 
-	log.Println(`received data @`, r.Method, r.RequestURI, `length`, len(data))
+	log.Println("received data @", r.Method, r.RequestURI, "length", len(data))
 
-	if r.RequestURI == `/answer` {
+	if r.RequestURI == "/answer" {
 		answer := &webrtc.SessionDescription{}
-		err := json.Unmarshal(data, answer)
-		if err == nil {
-			err = peer.pc.SetRemoteDescription(*answer)
+		if err := json.Unmarshal(data, answer); err == nil {
+			peer.pc.SetRemoteDescription(*answer)
+		} else {
+			http.Error(w, err.Error(), 500)
 		}
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	} else if r.RequestURI == "/candidate" {
+		candidate := &webrtc.ICECandidateInit{}
+		if err := json.Unmarshal(data, candidate); err == nil {
+			peer.pc.AddICECandidate(*candidate)
+		} else {
+			http.Error(w, err.Error(), 500)
 		}
 		return
 	}
 
 	if peer.playerId == -1 {
-		http.Error(w, `must be a player`, http.StatusForbidden)
+		http.Error(w, "must be a player", 403)
 		return
 	}
 
-	if r.RequestURI == `/upload` {
-		romHash := fmt.Sprintf(`%x`, md5.Sum(data))
+	if r.RequestURI == "/upload" {
+		romHash := fmt.Sprintf("%x", md5.Sum(data))
 		players[peer.playerId].romHash = romHash
 		SetCartridge(peer.playerId, data)
-		event := fmt.Sprintf(`peer-%d, player-%d uploads rom %s`, peer.serial, peer.playerId, romHash)
-		log.Println(event)
+		event := fmt.Sprintf("peer-%d, player-%d uploads rom %s", peer.serial, peer.playerId, romHash)
 		go dcBroadcast([]byte(event))
 		return
 	}
 
-	if r.RequestURI != `/save` {
+	if r.RequestURI != "/save" {
 		return
 	}
 
 	if r.Method == http.MethodGet {
 		data := GetSavefile(peer.playerId)
 		if len(data) == 0 {
-			http.Error(w, `no content`, http.StatusNoContent)
+			http.Error(w, "no content", 204)
 			return
 		}
-		filename := fmt.Sprintf(`gbmu-%s-%d.sav`, players[peer.playerId].romHash, time.Now().Unix())
-		w.Header().Set(`x-filename`, filename)
-		w.Header().Set(`content-disposition`, `attachment; filename="`+filename+`"`)
-		w.Header().Set(`content-type`, `application/octet-stream`)
-		w.Header().Set(`content-length`, fmt.Sprintf(`%d`, len(data)))
+		filename := fmt.Sprintf("gbmu-%s-%d.sav", players[peer.playerId].romHash, time.Now().Unix())
+		w.Header().Set("x-filename", filename)
+		w.Header().Set("content-disposition", "attachment; filename=\""+filename+"\"")
+		w.Header().Set("content-type", "application/octet-stream")
+		w.Header().Set("content-length", fmt.Sprintf("%d", len(data)))
 		_, err = w.Write(data)
-		event := fmt.Sprintf(`peer-%d, player-%d downloads ram`, peer.serial, peer.playerId)
-		log.Println(event)
+		event := fmt.Sprintf("peer-%d, player-%d downloads ram", peer.serial, peer.playerId)
 		go dcBroadcast([]byte(event))
 	} else if r.Method == http.MethodPost {
 		SetSavefile(peer.playerId, data)
-		event := fmt.Sprintf(`peer-%d, player-%d uploads ram`, peer.serial, peer.playerId)
-		log.Println(event)
+		event := fmt.Sprintf("peer-%d, player-%d uploads ram", peer.serial, peer.playerId)
 		go dcBroadcast([]byte(event))
 	}
 }
@@ -154,7 +157,7 @@ func offer(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		panic(err)
 	}
-	dc, err := pc.CreateDataChannel(`events`, nil)
+	dc, err := pc.CreateDataChannel("events", nil)
 	if err != nil {
 		panic(err)
 	}
@@ -163,10 +166,10 @@ func offer(w http.ResponseWriter, r *http.Request) {
 		caps         webrtc.RTPCodecCapability
 		id, streamId string
 	}{
-		{audioCap, `audio0`, `player0`},
-		{videoCap, `video0`, `player0`},
-		{audioCap, `audio1`, `player1`},
-		{videoCap, `video1`, `player1`},
+		{audioCap, "audio0", "player0"},
+		{videoCap, "video0", "player0"},
+		{audioCap, "audio1", "player1"},
+		{videoCap, "video1", "player1"},
 	} {
 		track, err := webrtc.NewTrackLocalStaticRTP(t.caps, t.id, t.streamId)
 		if err != nil {
@@ -198,10 +201,10 @@ func offer(w http.ResponseWriter, r *http.Request) {
 	}
 	peerSerial++
 	peersSet(peer.id, peer)
-	w.Header()[`x-peer-id`] = []string{peer.id.String()}
+	w.Header()["x-peer-id"] = []string{peer.id.String()}
 	_ = json.NewEncoder(w).Encode(pc.LocalDescription())
 	go waitForAnswer(peer)
-	log.Println(`new peer!`, `id`, peer.id, `serial`, peer.serial, `ua`, r.UserAgent(), `remote`, r.RemoteAddr, `xfwd`, r.Header[`X-Forwarded-For`])
+	log.Println("new peer!", "id", peer.id, "serial", peer.serial, "ua", r.UserAgent(), "remote", r.RemoteAddr, "xfwd", r.Header["X-Forwarded-For"])
 }
 
 func rtcpLoop(rtpSender *webrtc.RTPSender) {
@@ -209,7 +212,7 @@ func rtcpLoop(rtpSender *webrtc.RTPSender) {
 		_, _, err := rtpSender.ReadRTCP()
 		if err != nil {
 			if err != io.EOF {
-				log.Println(`ReadRTCP()`, err)
+				log.Println("ReadRTCP()", err)
 			}
 			return
 		}
@@ -237,6 +240,9 @@ func waitForAnswer(peer *peer) {
 }
 
 func dcBroadcast(data []byte) {
+	if len(data) > 2 {
+		log.Println(string(data))
+	}
 	peersMux.Lock()
 	defer peersMux.Unlock()
 	for _, peer := range peers {
@@ -251,7 +257,7 @@ func onPeerLeaving(peer *peer) {
 		return
 	}
 
-	log.Println(`onPeerLeaving()`, peer.id, `playerId`, peer.playerId)
+	log.Println("onPeerLeaving()", peer.id, "playerId", peer.playerId)
 
 	peer.dc.Close()
 	peer.dc = nil
@@ -262,8 +268,7 @@ func onPeerLeaving(peer *peer) {
 	i := peer.playerId
 	peer.playerId = -1
 
-	event := fmt.Sprintf(`peer-%d left room. room has %d peers remaining.`, peer.serial, len(peers))
-	log.Println(event)
+	event := fmt.Sprintf("peer-%d left room. room has %d peers remaining.", peer.serial, len(peers))
 	go dcBroadcast([]byte(event))
 
 	if i == -1 {
@@ -277,8 +282,7 @@ func onPeerLeaving(peer *peer) {
 	players[i].peer = nil
 	go dcBroadcast([]byte{ctrlAvailable, byte(i)})
 
-	event = fmt.Sprintf(`peer-%d stopped playing. concedes player-%d controls`, peer.serial, i)
-	log.Println(event)
+	event = fmt.Sprintf("peer-%d stopped playing. concedes player-%d controls", peer.serial, i)
 	go dcBroadcast([]byte(event))
 
 }
@@ -287,7 +291,7 @@ func onPeerAdded(peer *peer) {
 	dc := peer.dc
 	label := dc.Label()
 	dc.OnOpen(func() {
-		log.Println(peer.id, `DataChannel`, label, `onOpen`)
+		log.Println(peer.id, "DataChannel", label, "onOpen")
 		for i := 0; i < 2; i++ {
 			state := ctrlBusy
 			if players[i].peer == nil {
@@ -295,8 +299,7 @@ func onPeerAdded(peer *peer) {
 			}
 			dc.Send([]byte{state, byte(i)})
 		}
-		event := fmt.Sprintf(`peer-%d joins, room has %d peers`, peer.serial, len(peers))
-		log.Println(event)
+		event := fmt.Sprintf("peer-%d joins, room has %d peers", peer.serial, len(peers))
 		go dcBroadcast([]byte(event))
 	})
 	dc.OnMessage(func(msg webrtc.DataChannelMessage) {
@@ -322,8 +325,7 @@ func onPeerAdded(peer *peer) {
 				peer.playerId = i
 				dcBroadcast([]byte{ctrlBusy, b})
 				dc.Send([]byte{ctrlClaimAck, b})
-				event := fmt.Sprintf(`peer-%d started playing. claims player-%d controls`, peer.serial, i)
-				log.Println(event)
+				event := fmt.Sprintf("peer-%d started playing. claims player-%d controls", peer.serial, i)
 				go dcBroadcast([]byte(event))
 			} else {
 				dc.Send([]byte{ctrlClaimNack, b})
@@ -341,8 +343,7 @@ func onPeerAdded(peer *peer) {
 			peer.playerId = -1
 			dc.Send([]byte{ctrlConcedeAck, b})
 			dcBroadcast([]byte{ctrlAvailable, b})
-			event := fmt.Sprintf(`peer-%d stopped playing. concedes player-%d controls`, peer.serial, i)
-			log.Println(event)
+			event := fmt.Sprintf("peer-%d stopped playing. concedes player-%d controls", peer.serial, i)
 			go dcBroadcast([]byte(event))
 
 		case ctrlSetJoypad:
@@ -353,15 +354,13 @@ func onPeerAdded(peer *peer) {
 			if peer.playerId != -1 {
 				players[peer.playerId].frameBlending = b != 0
 				SetFrameBlending(peer.playerId, b != 0)
-				event := fmt.Sprintf(`player-%d has frame blending set to %t`, peer.playerId, b != 0)
-				log.Println(event)
+				event := fmt.Sprintf("player-%d has frame blending set to %t", peer.playerId, b != 0)
 				go dcBroadcast([]byte(event))
 			}
 		case ctrlReload:
 			if peer.playerId != -1 {
 				ReloadBoth()
-				event := fmt.Sprintf(`peer-%d, player-%d reloads both games`, peer.serial, peer.playerId)
-				log.Println(event)
+				event := fmt.Sprintf("peer-%d, player-%d reloads both games", peer.serial, peer.playerId)
 				go dcBroadcast([]byte(event))
 			}
 		default:
@@ -374,18 +373,17 @@ func onPeerAdded(peer *peer) {
 				ok = ok && strconv.IsPrint(c)
 			}
 			if ok {
-				event := fmt.Sprintf(`peer-%d: %s`, peer.serial, s)
-				log.Println(event)
+				event := fmt.Sprintf("peer-%d: %s", peer.serial, s)
 				go dcBroadcast([]byte(event))
 			}
 		}
 	})
 	dc.OnClose(func() {
-		log.Println(`player`, peer.id, `DataChannel`, label, `onClose`)
+		log.Println("player", peer.id, "DataChannel", label, "onClose")
 		go onPeerLeaving(peer)
 	})
 	dc.OnError(func(err error) {
-		log.Println(`player`, peer.id, `DataChannel`, label, `onError`, err)
+		log.Println("player", peer.id, "DataChannel", label, "onError", err)
 	})
 }
 
@@ -417,21 +415,22 @@ func main() {
 	done := make(chan bool)
 	go emulator(done)
 
-	http.HandleFunc(`/offer`, offer)
-	http.HandleFunc(`/answer`, httpHandler)
-	http.HandleFunc(`/upload`, httpHandler)
-	http.HandleFunc(`/save`, httpHandler)
-	http.Handle(`/`, http.FileServer(http.Dir(`web`)))
+	http.HandleFunc("/offer", offer)
+	http.HandleFunc("/answer", httpHandler)
+	http.HandleFunc("/candidate", httpHandler)
+	http.HandleFunc("/upload", httpHandler)
+	http.HandleFunc("/save", httpHandler)
+	http.Handle("/", http.FileServer(http.Dir("web")))
 
 	server := &http.Server{
-		Addr:         `:8080`,
+		Addr:         ":8080",
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 		IdleTimeout:  15 * time.Second,
 	}
 
 	go func() {
-		log.Println(`listening @`, server.Addr)
+		log.Println("listening @", server.Addr)
 		err := server.ListenAndServe()
 		if err != nil {
 			log.Fatalln(err)
