@@ -48,6 +48,11 @@ const setConnectionIndicator = (message, color) => {
   text.innerText = message;
 };
 
+const showError = (s) => {
+  console.error(s);
+  setConnectionIndicator(s, "red");
+};
+
 const connect = () => {
   const pc = new RTCPeerConnection({
     iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
@@ -60,6 +65,11 @@ const connect = () => {
     })
     .then((offer) => pc.setRemoteDescription(new RTCSessionDescription(offer)))
     .then(() => pc.createAnswer())
+    .then((answer) => {
+      const i = answer.sdp.search(/rtpmap:([0-9]+) H264/g);
+      const s = "Your browser does not support H.264 video codec for WebRTC.";
+      return i === -1 ? Promise.reject(s) : answer;
+    })
     .then((answer) => pc.setLocalDescription(answer))
     .then(() =>
       fetch("/answer", {
@@ -68,7 +78,7 @@ const connect = () => {
         body: JSON.stringify(pc.localDescription),
       })
     )
-    .catch(console.error);
+    .catch(showError);
 
   pc.onicecandidate = (event) =>
     fetch("/candidate", {
@@ -412,6 +422,10 @@ const setupEventListeners = () => {
 };
 
 window.addEventListener("DOMContentLoaded", (event) => {
+  if (!("RTCPeerConnection" in window)) {
+    const s = "Your browser does not support WebRTC.";
+    return showError(s);
+  }
   enablePlayer(false);
   setClaimButton(0, 0);
   setClaimButton(1, 0);
