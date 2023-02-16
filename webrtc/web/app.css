@@ -41,8 +41,12 @@ label {
   display: block;
 }
 
-.active-player {
-  box-shadow: 0 0 3px blue;
+#player0.active-player {
+  box-shadow: 0 0 2px 1px red;
+}
+
+#player1.active-player {
+  box-shadow: 0 0 2px 1px blue;
 }
 
 span#connectionIndicatorImage {

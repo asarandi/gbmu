@@ -31,7 +31,7 @@ const enablePlayer = (enabled) => {
 
 const activePlayerIndicator = () => {
   for (let i = 0; i < 2; i++) {
-    const elem = document.querySelector(`video#player${i}`);
+    const elem = document.querySelector("video#player" + i);
     if (ctrlState[i] == 2) {
       elem.classList.add("active-player");
     } else {
@@ -117,25 +117,25 @@ const connect = () => {
   const newMessage = (s) => {
     messages[mi] = s;
     const elem = document.querySelector("#messages");
-    elem.innerText = ``;
+    elem.innerText = "";
     for (let i = 0; i < messages.length; i++) {
       let j = (mi + messages.length - i) % messages.length;
       if (!messages[j]) continue;
-      elem.innerText += `${messages[j]}\n`;
+      elem.innerText += messages[j] + "\n";
     }
     mi = (mi + 1) % messages.length;
   };
 
   pc.ondatachannel = (event) => {
     event.channel.onopen = () => {
-      console.log(`data channel`, `onOpen`, event.channel.label);
-      if (event.channel.label === `events`) {
+      console.log("data channel", "onOpen", event.channel.label);
+      if (event.channel.label === "events") {
         dataChannel = event.channel;
         event.channel.binaryType = "arraybuffer";
       }
     };
     event.channel.onclose = () => {
-      console.log(`data channel`, `onClose`, event.channel.label);
+      console.log("data channel", "onClose", event.channel.label);
     };
     event.channel.onmessage = (msg) => {
       const data = new Uint8Array(msg.data);
@@ -183,7 +183,7 @@ const connect = () => {
       }
     };
     event.channel.onerror = (err) => {
-      console.log(`data channel`, `onError`, event.channel.label, err);
+      console.log("data channel", "onError", event.channel.label, err);
     };
   };
 };
@@ -210,13 +210,39 @@ const updateJoypad = () => {
   joyBefore = joyAfter;
 };
 
+const setElemStyle = (selector, key, value) =>
+  document.querySelectorAll(selector).forEach((elem) => {
+    elem.style[key] = value;
+  });
+
+const setDarkMode = (on) => {
+  setElemStyle("body", "background-color", on ? "#000" : "");
+  setElemStyle("body", "filter", on ? "invert(1)" : "");
+  setElemStyle("#player0", "filter", on ? "invert(1)" : "");
+  setElemStyle("#player1", "filter", on ? "invert(1)" : "");
+  setElemStyle("#connectionIndicatorImage", "filter", on ? "invert(1)" : "");
+};
+
 const setupEventListeners = () => {
+  const darkModeToggle = document.querySelector("input#dark-mode");
+
+  darkModeToggle.addEventListener("change", (event) => {
+    setDarkMode(event.target.checked);
+    window.localStorage.setItem("dark-mode", event.target.checked);
+  });
+
+  const isDarkMode = window.localStorage.getItem("dark-mode") === "true";
+  if (isDarkMode) {
+    darkModeToggle.checked = true;
+    darkModeToggle.dispatchEvent(new Event("change"));
+  }
+
   const chatInput = document.querySelector("input#chatMessage");
   const sendChatMessage = () => {
     if (!textEncoder) return;
     if (!dataChannel) return;
     const data = textEncoder.encode(chatInput.value.trim());
-    chatInput.value = ``;
+    chatInput.value = "";
     if (!data.length) return;
     if (data.length < 256) {
       dataChannel.send(data);
@@ -340,7 +366,7 @@ const setupEventListeners = () => {
           if (response.status === 200) {
             return Promise.all([
               response.blob(),
-              response.headers.get(`x-filename`),
+              response.headers.get("x-filename"),
             ]);
           } else {
             return Promise.reject(new Error(response.statusText));
@@ -354,8 +380,8 @@ const setupEventListeners = () => {
           ramDownload.download = data[1];
           ramDownload.click();
           URL.revokeObjectURL(data[0]);
-          ramDownload.href = ``;
-          ramDownload.download = ``;
+          ramDownload.href = "";
+          ramDownload.download = "";
         })
         .catch(console.error);
     },
@@ -389,15 +415,30 @@ const setupEventListeners = () => {
     "change",
     (event) => {
       const val = parseInt(event.target.value, 10);
+      const isDarkMode = window.localStorage.getItem("dark-mode") === "true";
+
+      const style = [
+        "image-rendering: pixelated!important;",
+        `width: ${val * 160}px!important;`,
+        `height: ${val * 144}px!important;`,
+        // since dark-mode toggle sets filter on document body,
+        // video elements are inverted twice to reset picture back to normal
+        `filter: ${isDarkMode ? "invert(1)" : ""};`,
+      ].join("");
+
       document.querySelectorAll("video").forEach((element) => {
-        element.style = `
-      		image-rendering: pixelated!important;
-      		width: ${val * 160}px!important;
-      		height: ${val * 144}px!important;`;
+        element.style = style;
       });
+      window.localStorage.setItem("scale", val);
     },
     false
   );
+
+  const scaleValue = window.localStorage.getItem("scale");
+  if (["1", "2", "3", "4", "5"].indexOf(scaleValue) !== -1) {
+    scale.value = scaleValue;
+    scale.dispatchEvent(new Event("change"));
+  }
 
   const claimControls = (i) => {
     if (!dataChannel) return;
