@@ -175,7 +175,7 @@ func offer(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			panic(err)
 		}
-		_, err = pc.AddTrack(track)
+		_, err = pc.AddTransceiverFromTrack(track, webrtc.RTPTransceiverInit{Direction: webrtc.RTPTransceiverDirectionSendonly})
 		if err != nil {
 			panic(err)
 		}
@@ -423,7 +423,7 @@ func main() {
 	http.Handle("/", http.FileServer(http.Dir("web")))
 
 	server := &http.Server{
-		Addr:         ":8080",
+		Addr:         ":8484",
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 		IdleTimeout:  15 * time.Second,
