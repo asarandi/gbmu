@@ -57,6 +57,7 @@ struct lcd {
     int frames;
     int render;
     int wy;
+    int wy_trigger;
     uint32_t cycle;
     uint8_t buf[160 * 144];
     struct OAM_ATTRS *sprites[10 + 1];

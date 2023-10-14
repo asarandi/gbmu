@@ -29,6 +29,10 @@ uint8_t bg_pixel(struct gameboy *gb, uint8_t y, uint8_t x, int win) {
 }
 
 bool is_window_pixel(struct gameboy *gb, uint8_t y, uint8_t x) {
+    if (!gb->lcd.wy_trigger) {
+        return false;
+    }
+
     if (!(gb->memory[rLCDC] & LCDCF_WINON)) {
         return false;
     }
@@ -245,6 +249,8 @@ int lcd_update(struct gameboy *gb) {
             gb->memory[rSTAT] |= STATF_LCD;
         } else {
             // mode 0
+            gb->lcd.wy_trigger |= gb->memory[rLY] == gb->memory[rWY];
+
             if ((gb->memory[rSTAT] & STATF_LCD) == STATF_LCD) { //once
                 if (gb->lcd.frames >= nskipfram) {
                     screen_update(gb);
@@ -271,6 +277,7 @@ int lcd_update(struct gameboy *gb) {
             }
 
             ++(gb->lcd.frames);
+            gb->lcd.wy_trigger = 0;
         }
 
         if (gb->memory[rSTAT] & STATF_MODE01) {
