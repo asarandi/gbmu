@@ -1,11 +1,11 @@
 webrtc: copy gobuild clean
 gobuild:
-	go build -a -o gbmu
+	go build -a -o gbmu -ldflags "-X main.gitCommit=$(shell git rev-parse --short HEAD)"
 
 
 docker: copy build clean
 build:
-	docker build -t asarandi/gbmu:latest .
+	docker build --progress plain --build-arg="GIT_COMMIT=$(shell git rev-parse --short HEAD)" -t asarandi/gbmu:latest .
 
 push:
 	docker push asarandi/gbmu:latest

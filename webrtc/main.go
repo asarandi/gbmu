@@ -37,6 +37,7 @@ type player struct {
 }
 
 var (
+	gitCommit  = "latest"
 	peerSerial = 0
 	players    = [2]player{}
 	playersMux = &sync.RWMutex{}
@@ -430,7 +431,7 @@ func main() {
 	}
 
 	go func() {
-		log.Println("listening @", server.Addr)
+		log.Println("gbmu", gitCommit, "listening @", server.Addr)
 		err := server.ListenAndServe()
 		if err != nil {
 			log.Fatalln(err)
