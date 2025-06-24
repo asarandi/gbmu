@@ -119,6 +119,8 @@ func httpHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	log.Println("x-filename:", r.Header.Get("x-filename"))
+
 	if r.RequestURI == "/upload" {
 		romHash := fmt.Sprintf("%x", md5.Sum(data))
 		players[peer.playerId].romHash = romHash

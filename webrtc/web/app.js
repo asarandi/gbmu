@@ -76,7 +76,7 @@ const connect = () => {
         method: "post",
         headers: { "x-peer-id": peerId },
         body: JSON.stringify(pc.localDescription),
-      })
+      }),
     )
     .catch(showError);
 
@@ -289,9 +289,10 @@ const setupEventListeners = () => {
         return;
       }
       const file = romInput.files[0];
+      const filename = file.name;
       const n = file.size;
       if (!(32768 <= n && n <= 4194304 && (n & (n - 1)) === 0)) {
-        console.error("unsupported file size", n);
+        console.error("unsupported rom file size", n);
         return;
       }
       file
@@ -299,7 +300,7 @@ const setupEventListeners = () => {
         .then((buffer) => {
           return fetch("/upload", {
             method: "post",
-            headers: { "x-peer-id": peerId },
+            headers: { "x-peer-id": peerId, "x-filename": filename },
             body: buffer,
           });
         })
@@ -309,7 +310,7 @@ const setupEventListeners = () => {
         .catch(console.error);
       romInput.value = null;
     },
-    false
+    false,
   );
 
   const uploadRom = document.querySelector("button#uploadRom");
@@ -325,6 +326,7 @@ const setupEventListeners = () => {
         return;
       }
       const file = ramInput.files[0];
+      const filename = file.name;
       const n = file.size;
       if (!(512 <= n && n <= 131072)) {
         console.error("unsupported ram file size", n);
@@ -335,7 +337,7 @@ const setupEventListeners = () => {
         .then((buffer) => {
           return fetch("/save", {
             method: "post",
-            headers: { "x-peer-id": peerId },
+            headers: { "x-peer-id": peerId, "x-filename": filename },
             body: buffer,
           });
         })
@@ -345,7 +347,7 @@ const setupEventListeners = () => {
         .catch(console.error);
       ramInput.value = null;
     },
-    false
+    false,
   );
 
   const uploadRam = document.querySelector("button#uploadRam");
@@ -385,7 +387,7 @@ const setupEventListeners = () => {
         })
         .catch(console.error);
     },
-    false
+    false,
   );
 
   const reload = document.querySelector("button#reload");
@@ -396,7 +398,7 @@ const setupEventListeners = () => {
       // ctrlReload 10
       dataChannel.send(new Uint8Array([10]));
     },
-    false
+    false,
   );
 
   const frameBlending = document.querySelector("input#frame-blending");
@@ -407,7 +409,7 @@ const setupEventListeners = () => {
       // ctrlFrameBlending 9
       dataChannel.send(new Uint8Array([9, event.target.checked]));
     },
-    false
+    false,
   );
 
   const scale = document.querySelector("select#scale");
@@ -431,7 +433,7 @@ const setupEventListeners = () => {
       });
       window.localStorage.setItem("scale", val);
     },
-    false
+    false,
   );
 
   const scaleValue = window.localStorage.getItem("scale");
