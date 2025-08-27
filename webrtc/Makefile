@@ -5,7 +5,7 @@ gobuild:
 
 docker: copy build clean
 build:
-	docker build --progress plain --build-arg="GIT_COMMIT=$(shell git rev-parse --short HEAD)" -t asarandi/gbmu:latest .
+	docker build --build-arg="GIT_COMMIT=$(shell git rev-parse --short HEAD)" -t asarandi/gbmu:latest .
 
 push:
 	docker push asarandi/gbmu:latest
@@ -14,7 +14,7 @@ pull:
 	docker pull asarandi/gbmu:latest
 
 run:
-	docker run -it --rm --network host asarandi/gbmu:latest
+	docker run -it --rm --network=host asarandi/gbmu:latest
 
 
 SRC := \

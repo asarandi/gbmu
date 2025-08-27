@@ -10,9 +10,11 @@ RUN go build -o gbmu -ldflags "-X main.gitCommit=$GIT_COMMIT"
 
 # alpine v3.20.6 with gstreamer dependencies image size  84MB
 # alpine v3.21.3 with gstreamer dependencies image size 372MB
+# alpine v3.21.4 with gstreamer dependencies image size 386MB
 # alpine v3.22.0 with gstreamer dependencies image size 413MB
+# alpine v3.22.1 with gstreamer dependencies image size 427MB
 
-FROM alpine:3.20.6
+FROM alpine:3.20.7
 RUN apk add --no-cache gst-plugins-base gst-plugins-good gst-plugins-ugly
 WORKDIR /app
 COPY ./web ./web
