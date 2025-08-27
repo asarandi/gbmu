@@ -80,4 +80,7 @@ tests-gambatte: gbmu
 	./tests/gambatte.sh tima > tests/gambatte-tima.results.csv
 	./tests/gambatte.sh serial > tests/gambatte-serial.results.csv
 
+tests-gbmicrotest: gbmu
+	./tests/gbmicrotest.sh > tests/gbmicrotest.results.csv
+
 .PHONY: tests

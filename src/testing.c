@@ -23,6 +23,7 @@ void mooneye_write_hook(struct gameboy *,uint16_t, uint8_t);
 void screenshot_run_hook(struct gameboy *);
 void mealybug_run_hook(struct gameboy *);
 void gambatte_run_hook(struct gameboy *);
+void gbmicrotest_run_hook(struct gameboy *);
 
 void dummy_run_hook(struct gameboy *gb) {
     (void)gb;
@@ -55,6 +56,7 @@ int testing_setup(struct gameboy *gb, char *test_name) {
         void (*read)(struct gameboy *, uint16_t);
         void (*write)(struct gameboy *, uint16_t, uint8_t);
     } tests[] = {
+
         // null means run dummy func, else implementation
         {"serial", &serial_run_hook, &serial_read_hook, &serial_write_hook},
         {"blargg1", &timeout_run_hook, 0, &blargg1_write_hook},
@@ -63,9 +65,10 @@ int testing_setup(struct gameboy *gb, char *test_name) {
         {"screenshot", &screenshot_run_hook, 0, 0},
         {"mealybug", &mealybug_run_hook, 0, 0},
         {"gambatte", &gambatte_run_hook, 0, 0},
+        {"gbmicrotest", &gbmicrotest_run_hook, 0, 0},
     };
 
-    for (int i = 0; i < 7; i++) {
+    for (int i = 0; i < 8; i++) {
         if (!strcasecmp(test_name, tests[i].name)) {
             if (tests[i].run) {
                 gb->testing_run_hook = tests[i].run;
@@ -312,6 +315,7 @@ static uint8_t gambatte_identify_tile_hash(uint32_t hash) {
         uint32_t hash;
         uint8_t tile;
     } tab[] = {
+
         { 0x19dd6c31, '0' },
         { 0x1d1c638a, '1' },
         { 0xb96e834c, '2' },
@@ -399,6 +403,31 @@ void gambatte_run_hook(struct gameboy *gb) {
     p = (char *)gambatte_get_tile_string(gb, len);
     gb->exit_code = (!strncmp(s, p, len)) ? RESULT_SUCCESS : RESULT_FAILURE;
     free(ptr);
+}
+
+void gbmicrotest_run_hook(struct gameboy *gb) {
+    if (!gb->testing) {
+        return;
+    }
+
+    if (!(gb->cycles > 2 * 70224)) {
+        return ;
+    }
+
+    switch (gb->memory[0xff82]) {
+    case 1:
+        gb->exit_code = RESULT_SUCCESS;
+        break;
+
+    case 255:
+        gb->exit_code = RESULT_FAILURE;
+        break;
+
+    default:
+        gb->exit_code = RESULT_ERROR;
+    }
+
+    gb->done = 1;
 }
 
 int screenshot(struct gameboy *gb, char *filename) {
