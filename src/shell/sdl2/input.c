@@ -10,6 +10,7 @@ static void set_button_states(struct gameboy *gb, uint32_t key, uint8_t value) {
         uint32_t sdlk;
         uint8_t padf;
     } tab[] = {
+
         {SDLK_DOWN,   PADF_DOWN  },
         {SDLK_UP,     PADF_UP    },
         {SDLK_LEFT,   PADF_LEFT  },
@@ -91,6 +92,7 @@ int input_read(struct gameboy *gb) {
             struct {
                 int axis, value, k1, v1, k2, v2;
             } tab[] = {
+
                 {0,  1, SDLK_RIGHT, 1, SDLK_LEFT, 0},
                 {0, -1, SDLK_RIGHT, 0, SDLK_LEFT, 1},
                 {0,  0, SDLK_RIGHT, 0, SDLK_LEFT, 0},
@@ -118,6 +120,7 @@ int input_read(struct gameboy *gb) {
             struct {
                 int button, key;
             } tab[] = {
+
                 {9, SDLK_RETURN},
                 {8, SDLK_RSHIFT},
                 {2, SDLK_z},

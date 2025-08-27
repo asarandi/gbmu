@@ -110,6 +110,7 @@ int main(int ac, char **av) {
             int(*f)(struct gameboy *gb);
             char *n;
         } fn[] = {
+
             {&savefile_read, "savefile_read()"},
             {&video_open, "video_open()"},
             {&audio_open, "audio_open()"},

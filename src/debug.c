@@ -8,6 +8,7 @@ struct {
     int n;
     char *s;
 } opcodes[] = {
+
     {0, "nop"},             {2, "ld bc, $%04X"},{0, "ld (bc), a"},   {0, "inc bc"},    {0, "inc b"},        {0, "dec b"},     {1, "ld b, $%02X"},   {0, "rlca"},
     {2, "ld ($%04X), sp"},  {0, "add hl, bc"},  {0, "ld a, (bc)"},   {0, "dec bc"},    {0, "inc c"},        {0, "dec c"},     {1, "ld c, $%02X"},   {0, "rrca"},
     {1, "stop $%02X"},      {2, "ld de, $%04X"},{0, "ld (de), a"},   {0, "inc de"},    {0, "inc d"},        {0, "dec d"},     {1, "ld d, $%02X"},   {0, "rla"},
@@ -80,6 +81,7 @@ static void dump_io(struct gameboy *gb) {
         uint16_t   addr;
         uint8_t    mask;
     } io_registers[] = {
+
         {"IF",    rIF,   0b11100000},
         {"IE",    rIE,   0b00000000},
         {"LCDC",  rLCDC, 0b00000000},

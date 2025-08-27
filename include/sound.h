@@ -34,4 +34,5 @@ struct channel {
     int32_t period;
     int32_t counter;
 };
+
 #endif
