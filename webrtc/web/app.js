@@ -66,6 +66,10 @@ const connect = () => {
     .then((offer) => pc.setRemoteDescription(new RTCSessionDescription(offer)))
     .then(() => pc.createAnswer())
     .then((answer) => {
+      // Chrome SDP munging to enable stereo sound in WebRTC
+      // https://issues.webrtc.org/issues/41481053
+      answer.sdp = answer.sdp.replaceAll("minptime=10", "minptime=10;stereo=1");
+
       const i = answer.sdp.search(/rtpmap:([0-9]+) H264/g);
       const s = "Your browser does not support H.264 video codec for WebRTC.";
       return i === -1 ? Promise.reject(s) : answer;
