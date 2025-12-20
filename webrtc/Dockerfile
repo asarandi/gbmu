@@ -8,13 +8,17 @@ COPY apu.c bridge.c bridge.go bridge.h bus.c cpu.c cpu.h endian.c endian.h filte
 RUN apk add --no-cache build-base gstreamer-dev gst-plugins-base-dev
 RUN go build -o gbmu -ldflags "-X main.gitCommit=$GIT_COMMIT"
 
+# https://gitlab.alpinelinux.org/alpine/aports/issues/17012
+#
 # alpine v3.20.6 with gstreamer dependencies image size  84MB
 # alpine v3.21.3 with gstreamer dependencies image size 372MB
 # alpine v3.21.4 with gstreamer dependencies image size 386MB
 # alpine v3.22.0 with gstreamer dependencies image size 413MB
 # alpine v3.22.1 with gstreamer dependencies image size 427MB
+#
+# alpine:3.20.8 release date 2025-10-08
 
-FROM alpine:3.20.7
+FROM alpine:3.20.8
 RUN apk add --no-cache gst-plugins-base gst-plugins-good gst-plugins-ugly
 WORKDIR /app
 COPY ./web ./web
