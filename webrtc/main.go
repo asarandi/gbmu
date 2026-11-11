@@ -223,7 +223,7 @@ func rtcpLoop(rtpSender *webrtc.RTPSender) {
 }
 
 func waitForAnswer(peer *peer) {
-	timeout := time.NewTimer(5 * time.Second)
+	timeout := time.NewTimer(20 * time.Second)
 	peer.pc.OnConnectionStateChange(func(state webrtc.PeerConnectionState) {
 		log.Println(peer.id, "connection state", state.String())
 		if state == webrtc.PeerConnectionStateConnected {

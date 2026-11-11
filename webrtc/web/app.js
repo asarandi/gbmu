@@ -78,7 +78,7 @@ const connect = () => {
     .then(() =>
       fetch("/answer", {
         method: "post",
-        headers: { "x-peer-id": peerId },
+        headers: { "x-peer-id": peerId, "content-type": "text/plain;charset=utf-8" },
         body: JSON.stringify(pc.localDescription),
       }),
     )
@@ -87,7 +87,7 @@ const connect = () => {
   pc.onicecandidate = (event) =>
     fetch("/candidate", {
       method: "post",
-      headers: { "x-peer-id": peerId },
+      headers: { "x-peer-id": peerId, "content-type": "text/plain;charset=utf-8" },
       body: JSON.stringify(event.candidate),
     });
 

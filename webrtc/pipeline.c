@@ -18,7 +18,7 @@ static gboolean bus_call(GstBus *bus, GstMessage *msg, gpointer data) {
         gchar *debug;
         GError *error;
         (void)gst_message_parse_error(msg, &error, &debug);
-        (void)g_free(debug);
+        g_free(debug);
         (void)g_printerr("Error: %s\n", error->message);
         (void)g_error_free(error);
         (void)g_main_loop_quit(loop);

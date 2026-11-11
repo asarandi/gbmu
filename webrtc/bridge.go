@@ -8,7 +8,7 @@ package main
 // #include "pipeline.h"
 // #include "bridge.h"
 // #cgo pkg-config: gstreamer-1.0 gstreamer-plugins-base-1.0
-// #cgo CFLAGS: -Ofast
+// #cgo CFLAGS: -Ofast -Wno-unused-result
 // #cgo LDFLAGS: -pthread -Ofast -lgstapp-1.0 -lpthread
 import "C"
 import (
